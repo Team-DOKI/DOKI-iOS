@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		76ECCF2D2E05C4820056CAF7 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 76ECCF2C2E05C4820056CAF7 /* Kingfisher */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		76ECCDED2E05AFCC0056CAF7 /* DoggyWalker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DoggyWalker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -40,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76ECCF2D2E05C4820056CAF7 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,6 +87,7 @@
 			);
 			name = DoggyWalker;
 			packageProductDependencies = (
+				76ECCF2C2E05C4820056CAF7 /* Kingfisher */,
 			);
 			productName = DoggyWalker;
 			productReference = 76ECCDED2E05AFCC0056CAF7 /* DoggyWalker.app */;
@@ -113,6 +119,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				76ECCF2A2E05C3FD0056CAF7 /* XCRemoteSwiftPackageReference "Moya" */,
+				76ECCF2B2E05C4820056CAF7 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 76ECCDEE2E05AFCC0056CAF7 /* Products */;
@@ -350,7 +357,23 @@
 				minimumVersion = 15.0.3;
 			};
 		};
+		76ECCF2B2E05C4820056CAF7 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.3.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		76ECCF2C2E05C4820056CAF7 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 76ECCF2B2E05C4820056CAF7 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 76ECCDE52E05AFCC0056CAF7 /* Project object */;
 }
