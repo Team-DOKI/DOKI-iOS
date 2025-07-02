@@ -1,5 +1,5 @@
 ---
-name: DoggyWalker Issue template
+name: PAWKEY Issue template
 about: Describe this issue template's purpose here.
 title: "[Type] Issue"
 labels: ''
