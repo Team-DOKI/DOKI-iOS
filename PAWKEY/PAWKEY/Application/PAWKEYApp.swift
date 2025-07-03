@@ -11,7 +11,7 @@ import SwiftUI
 struct PAWKEYApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TabView()
         }
     }
 }
