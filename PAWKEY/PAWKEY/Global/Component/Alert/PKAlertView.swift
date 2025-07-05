@@ -8,11 +8,26 @@
 import SwiftUI
 
 struct PKAlertView: View {
+    var title: String?
+    let content: String
+    
+    let confirmButton: PKAlertButton
+    let cancelButton: PKAlertButton
+    
     var body: some View {
-        Text("Hello, World!")
+        VStack {
+            if let title {
+                Text(title)
+            }
+            Text(content)
+            HStack {
+                confirmButton
+                cancelButton
+            }
+        }
     }
 }
 
-#Preview {
-    PKAlertView()
-}
+//#Preview {
+//    PKAlertView(title: "", content: "")
+//}
