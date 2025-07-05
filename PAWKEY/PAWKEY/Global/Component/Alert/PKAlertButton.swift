@@ -50,12 +50,8 @@ struct PKAlertButton: View {
         .padding()
         .background(buttonType.backgroundColor)
     }
-    
-    func setButtonBackground() {
-        
-    }
 }
 
 #Preview {
-    PKAlertButton(isPresented: .constant(true), buttonTitle: "ddd", buttonType: .confirm, action: nil)
+    PKAlertButton(isPresented: .constant(true), buttonTitle: "확인", buttonType: .confirm, action: nil)
 }
