@@ -17,4 +17,4 @@ Code
 ## 📸 스크린샷
 |    구현 내용    |   SE   |   13 mini   |   15 pro   |
 | :-------------: | :----------: | :----------: | :----------: |
-| GIF | <video src = "" width ="250"> | <video src = "" width ="250"> | <video src = "" width ="250"> |
+| GIF | <img src = "" width ="200"> | <img src = "" width ="200"> | <img src = "" width ="200"> |
