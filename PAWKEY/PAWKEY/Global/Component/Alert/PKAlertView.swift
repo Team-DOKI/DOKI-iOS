@@ -18,6 +18,7 @@ struct PKAlertView: View {
         VStack {
             if let title {
                 Text(title)
+                    .font(.title)
             }
             Text(content)
             HStack {
@@ -25,6 +26,8 @@ struct PKAlertView: View {
                 cancelButton
             }
         }
+        .padding()
+        .background(.gray)
     }
 }
 
