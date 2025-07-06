@@ -11,33 +11,33 @@ struct SubmitButton: View {
     
     enum SubmitButtonStyle {
         case filled
-        case filledInactive
         case outlined
-        case outlinedInactive
         
-        var backgroundColor: Color {
+        // TODO: 디자인시스템 정해지면 색상 바꾸기
+        func backgroundColor(isDisabled: Bool) -> Color {
             switch self {
             case .filled:
-                return .green
-            case .filledInactive:
-                return .white
+                return isDisabled ? .gray : .green
             case .outlined:
-                return .clear
-            case .outlinedInactive:
                 return .clear
             }
         }
         
-        var buttonTextColor: Color {
+        func textColor(isDisabled: Bool) -> Color {
             switch self {
             case .filled:
                 return .white
-            case .filledInactive:
-                return .gray
             case .outlined:
-                return .green
-            case .outlinedInactive:
-                return .gray
+                return isDisabled ? .gray : .green
+            }
+        }
+        
+        func borderColor(isDisabled: Bool) -> Color {
+            switch self {
+            case .filled:
+                return .clear
+            case .outlined:
+                return isDisabled ? .gray : .green
             }
         }
     }
@@ -53,19 +53,20 @@ struct SubmitButton: View {
             action?()
         } label: {
             Text(title)
-                .foregroundStyle(buttonStyle.buttonTextColor)
+                .foregroundStyle(buttonStyle.textColor(isDisabled: isDisabled))
                 .font(.system(size: 16, weight: .semibold))
                 .frame(maxWidth: .infinity, maxHeight: 52.0)
         }
-        .background(buttonStyle.backgroundColor)
+        .background(buttonStyle.backgroundColor(isDisabled: isDisabled))
         .cornerRadius(8.0)
         .overlay(
-            RoundedRectangle(cornerRadius: 8.0).stroke(lineWidth: 2).foregroundStyle(buttonStyle.buttonTextColor)
+            RoundedRectangle(cornerRadius: 8.0).stroke(lineWidth: 2).foregroundStyle(buttonStyle.borderColor(isDisabled: isDisabled))
         )
+        .disabled(isDisabled)
     }
 }
 
 #Preview {
-    SubmitButton(title: "버튼", buttonStyle: .filled)
+    SubmitButton(title: "버튼", isDisabled: false, buttonStyle: .filled)
         .padding(.horizontal, 20)
 }
