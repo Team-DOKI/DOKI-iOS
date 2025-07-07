@@ -16,7 +16,7 @@ enum WalkScreen: Hashable {
     case courseList
     case courseDetail(id: Int)
 
-    case walkCourse(id: Int)
+//    case walkCourse()
     case walkCompletion(id: Int)
     case archive(id: Int)
     

@@ -9,13 +9,34 @@ import SwiftUI
 
 struct WalkCourseView: View {
     @EnvironmentObject var router: TabRouter<WalkScreen>
-    let courseId: Int
+    
+    @ObservedObject var viewModel: WalkCourseViewModel
+    
+    @Binding var showWalkCourseView: Bool
     
     var body: some View {
-        Text("산책 중: \(courseId)")
-        
-        Button("산책 완료") {
-            router.push(.walkCompletion(id: courseId))
+        ZStack {
+            WalkingMapView(region: $viewModel.region,
+                           pathCoordinates: $viewModel.pathCoordinates,
+                           shouldCenterOnUser: $viewModel.shouldCenterOnUser)
+            .edgesIgnoringSafeArea(.all)
+            
+            VStack {
+                Spacer()
+                SubmitButton(
+                    title: "종료하기",
+                    isDisabled: false,
+                    buttonStyle: .filled
+                ) {
+                    viewModel.stopTracking()
+                    showWalkCourseView = false
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 26)
+            }
+        }
+        .onAppear {
+            viewModel.startTracking()
         }
     }
 }

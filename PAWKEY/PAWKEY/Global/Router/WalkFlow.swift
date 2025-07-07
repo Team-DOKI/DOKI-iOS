@@ -27,8 +27,8 @@ struct WalkFlow: View {
         case .courseDetail(let id):
             CourseDetailView(courseId: id)
             
-        case .walkCourse(let id):
-            WalkCourseView(courseId: id)
+//        case .walkCourse:
+//            WalkCourseView()
         case .walkCompletion(let id):
             WalkCompletionView(courseId: id)
         case .archive(let id):
