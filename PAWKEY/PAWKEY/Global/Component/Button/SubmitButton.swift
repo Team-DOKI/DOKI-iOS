@@ -17,7 +17,7 @@ struct SubmitButton: View {
         func backgroundColor(isDisabled: Bool) -> Color {
             switch self {
             case .filled:
-                return isDisabled ? .gray : .green
+                return isDisabled ? .gray200 : .beige500
             case .outlined:
                 return .clear
             }
@@ -26,9 +26,9 @@ struct SubmitButton: View {
         func textColor(isDisabled: Bool) -> Color {
             switch self {
             case .filled:
-                return .white
+                return  isDisabled ? .gray50 : .white
             case .outlined:
-                return isDisabled ? .gray : .green
+                return isDisabled ? .gray200 : .beige500
             }
         }
         
@@ -37,7 +37,7 @@ struct SubmitButton: View {
             case .filled:
                 return .clear
             case .outlined:
-                return isDisabled ? .gray : .green
+                return .clear
             }
         }
     }
@@ -67,6 +67,6 @@ struct SubmitButton: View {
 }
 
 #Preview {
-    SubmitButton(title: "버튼", isDisabled: false, buttonStyle: .filled)
+    SubmitButton(title: "버튼", isDisabled: false, buttonStyle: .outlined)
         .padding(.horizontal, 20)
 }
