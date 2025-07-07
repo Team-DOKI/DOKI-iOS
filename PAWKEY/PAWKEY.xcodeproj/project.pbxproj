@@ -23,8 +23,11 @@
 				Global/Extension/.gitkeep,
 				Global/Resource/Font/.gitkeep,
 				Network/Base/.gitkeep,
-				Presentation/Main/View/.gitkeep,
-				Presentation/Main/ViewModel/.gitkeep,
+				Presentation/Home/ViewModel/.gitkeep,
+				Presentation/MyPage/ViewModel/.gitkeep,
+				Presentation/Onboarding/ViewModel/.gitkeep,
+				Presentation/Walk/SharedWalk/ViewModel/.gitkeep,
+				Presentation/Walk/Walk/ViewModel/.gitkeep,
 			);
 			target = 76ECCDEC2E05AFCC0056CAF7 /* PAWKEY */;
 		};
