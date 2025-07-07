@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public final class TabRouter<Screen: Hashable>: ObservableObject {
+final class TabRouter<Screen: Hashable>: ObservableObject {
     
     @Published var path = NavigationPath()
     
