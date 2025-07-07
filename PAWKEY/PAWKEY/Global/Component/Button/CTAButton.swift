@@ -11,13 +11,13 @@ struct CTAButton: View {
     
     enum SubmitButtonStyle {
         case filled
-        case outlined
+        case text
         
         func backgroundColor(isDisabled: Bool) -> Color {
             switch self {
             case .filled:
                 return isDisabled ? .gray200 : .beige500
-            case .outlined:
+            case .text:
                 return .clear
             }
         }
@@ -26,7 +26,7 @@ struct CTAButton: View {
             switch self {
             case .filled:
                 return  isDisabled ? .gray50 : .white
-            case .outlined:
+            case .text:
                 return isDisabled ? .gray200 : .beige500
             }
         }
@@ -35,7 +35,7 @@ struct CTAButton: View {
             switch self {
             case .filled:
                 return .clear
-            case .outlined:
+            case .text:
                 return .clear
             }
         }
