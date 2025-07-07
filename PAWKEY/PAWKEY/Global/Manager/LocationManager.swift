@@ -7,22 +7,46 @@
 
 import CoreLocation
 
-final class LocationManager: NSObject, CLLocationManagerDelegate {
+final class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     static let shared = LocationManager()
     
     private let locationManager = CLLocationManager()
     
-    private override init() {
+    @Published var currentLocation: CLLocation?
+    
+    override init() {
         super.init()
         setLocationManager()
+    }
+    
+    func setLocationManager() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest // 가장 높은 수준의 정확도
+        locationManager.distanceFilter = 5
     }
     
     func requestLocationPermission() {
         locationManager.requestWhenInUseAuthorization()
     }
     
-    func setLocationManager() {
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest // 가장 높은수준의 정확도
+    func startUpdating() {
+        locationManager.startUpdatingLocation()
+    }
+    
+    func stopUpdating() {
+        locationManager.stopUpdatingLocation()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        currentLocation = locations.last
+    }
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        switch manager.authorizationStatus {
+        case .authorizedWhenInUse, .authorizedAlways:
+            startUpdating()
+        default:
+            break
+        }
     }
 }
