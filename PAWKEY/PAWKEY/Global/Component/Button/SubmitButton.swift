@@ -54,7 +54,7 @@ struct SubmitButton: View {
         } label: {
             Text(title)
                 .foregroundStyle(buttonStyle.textColor(isDisabled: isDisabled))
-                .font(.system(size: 16, weight: .semibold))
+                .font(.body_16_sb)
                 .frame(maxWidth: .infinity, maxHeight: 52.0)
         }
         .background(buttonStyle.backgroundColor(isDisabled: isDisabled))
@@ -67,6 +67,6 @@ struct SubmitButton: View {
 }
 
 #Preview {
-    SubmitButton(title: "버튼", isDisabled: false, buttonStyle: .outlined)
+    SubmitButton(title: "버튼", isDisabled: false, buttonStyle: .filled)
         .padding(.horizontal, 20)
 }
