@@ -10,19 +10,24 @@ import SwiftUI
 struct TabView: View {
     @State private var selectedTab: TabBarItem = .home
     
+    @StateObject private var homeRouter = TabRouter<HomeScreen>()
+    @StateObject private var walkRouter = TabRouter<WalkScreen>()
+    @StateObject private var myPageRouter = TabRouter<MyPageScreen>()
+    
     var body: some View {
         ZStack {
-            Group {
-                switch selectedTab {
-                case .home:
-                    Color.white.ignoresSafeArea().overlay(Text("홈").font(.largeTitle))
-                case .walk:
-                    Color.white.ignoresSafeArea().overlay(Text("산책하기").font(.largeTitle))
-                case .community:
-                    Color.white.ignoresSafeArea().overlay(Text("커뮤니티").font(.largeTitle))
-                case .mypage:
-                    Color.white.ignoresSafeArea().overlay(Text("마이페이지").font(.largeTitle))
-                }
+            switch selectedTab {
+            case .home:
+                HomeFlow()
+                    .environmentObject(homeRouter)
+            case .walk:
+                WalkFlow()
+                    .environmentObject(walkRouter)
+            case .community:
+                CommunityView()
+            case .mypage:
+                MyPageFlow()
+                    .environmentObject(myPageRouter)
             }
             
             VStack {
