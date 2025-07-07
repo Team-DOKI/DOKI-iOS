@@ -7,13 +7,12 @@
 
 import SwiftUI
 
-struct SubmitButton: View {
+struct CTAButton: View {
     
     enum SubmitButtonStyle {
         case filled
         case outlined
         
-        // TODO: 디자인시스템 정해지면 색상 바꾸기
         func backgroundColor(isDisabled: Bool) -> Color {
             switch self {
             case .filled:
@@ -67,6 +66,6 @@ struct SubmitButton: View {
 }
 
 #Preview {
-    SubmitButton(title: "버튼", isDisabled: false, buttonStyle: .filled)
+    CTAButton(title: "버튼", isDisabled: false, buttonStyle: .filled)
         .padding(.horizontal, 20)
 }
