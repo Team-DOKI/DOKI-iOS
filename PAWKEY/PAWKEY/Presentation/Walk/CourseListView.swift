@@ -92,7 +92,14 @@ struct CourseListView: View {
             fetchAddress()
         }
         .fullScreenCover(isPresented: $showWalkCourseView) {
-            WalkCourseView(viewModel: viewModel, showWalkCourseView: $showWalkCourseView)
+            WalkCourseView(viewModel: viewModel, showWalkCourseView: $showWalkCourseView){ distance, elapsedTime, stepCount in
+                router.push(.walkCompletion(
+                    distance: distance,
+                    elapsedTime: elapsedTime,
+                    stepCount: stepCount
+                ))
+                viewModel.resetTrackingData()
+            }
         }
     }
     
