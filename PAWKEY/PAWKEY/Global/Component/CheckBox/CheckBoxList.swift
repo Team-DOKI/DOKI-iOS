@@ -1,5 +1,5 @@
 //
-//  AccordionView.swift
+//  CheckBoxList.swift
 //  PAWKEY
 //
 //  Created by 권석기 on 7/8/25.
@@ -7,10 +7,13 @@
 
 import SwiftUI
 
-struct AccordionView: View {
+struct CheckBoxList: View {
     @Binding var isExpanded: Bool
+    
     let title: String
-    let items: [String]
+    var items: [CheckOption]
+    
+    var action: ((Int) -> Void)?
     
     var body: some View {
         VStack {
@@ -30,8 +33,11 @@ struct AccordionView: View {
             }
             if isExpanded {
                 VStack {
-                    ForEach(items, id: \.self) {
-                        CheckBoxCell(title: $0)
+                    ForEach(Array(items.enumerated()), id: \.offset) { offset, item in
+                        CheckBoxCell(title: item.title, isSelected: item.isSelected)
+                            .onTapGesture {
+                                action?(offset)
+                            }
                     }
                 }
             }
@@ -40,8 +46,4 @@ struct AccordionView: View {
         .padding(.horizontal, 16)
         
     }
-}
-
-#Preview {
-    AccordionView(isExpanded: .constant(true), title: "산책 소요 시간", items: ["20분 이내", "21-40분", "41-60분", "1시간 이상"])
 }
