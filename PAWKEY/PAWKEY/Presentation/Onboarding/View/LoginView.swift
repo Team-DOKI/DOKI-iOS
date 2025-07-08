@@ -9,22 +9,49 @@ import SwiftUI
 
 struct LoginView: View {
     @Binding var isLoggedIn: Bool
+    @State private var idText = ""
+    @State private var passwordText = ""
+    
+    var isDisabled: Bool {
+        idText.isEmpty || passwordText.isEmpty
+    }
     
     var body: some View {
         VStack {
-            Text("로그인 화면")
-                .font(.largeTitle)
-            
-            Button("로그인 성공") {
-                isLoggedIn = true
+            Spacer().frame(height: 120)
+            VStack(alignment: .leading) {
+                Text("아이디")
+                    .font(.body_14_sb)
+                PKTextField(text: $idText, placeholder: "아이디")
+                    .padding(.top, 10)
             }
+            
+            VStack(alignment: .leading) {
+                Text("비밀번호")
+                    .font(.body_14_sb)
+                PKTextField(text: $passwordText, placeholder: "사용하실 비밀번호를 입력해주세요.", type: .password)
+                    .padding(.top, 10)
+            }
+            .padding(.top, 37)
+            
+            Spacer()
+            
+            CTAButton(title: "신규 계정으로 회원가입", buttonStyle: .text)
+            CTAButton(title: "로그인", isDisabled: isDisabled, buttonStyle: .filled)
+                .padding(.top, 12)
+                .padding(.bottom, 60)
         }
+        .padding(.horizontal, 16)
+        .topNavigationView(center: {
+            Text("기존 계정으로 로그인")
+                .font(.body_16_sb)
+        })
     }
 }
 
 struct RootView: View {
     @State private var isLoggedIn = false
-
+    
     var body: some View {
         if isLoggedIn {
             TabView()
