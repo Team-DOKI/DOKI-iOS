@@ -12,7 +12,8 @@ struct RadioGroupCell: View {
     var body: some View {
         HStack {
             Text(checkOption.title)
-                .font(.body_14_r)
+                .font(checkOption.isSelected ? .body_14_r : .body_14_sb)
+                .foregroundStyle(checkOption.isSelected ? .green : .black)
             Spacer()
             Image(checkOption.isSelected ? .radioButtonAct : .radioButtonDeact)
         }
