@@ -7,18 +7,17 @@
 
 import SwiftUI
 
-struct SubmitButton: View {
+struct CTAButton: View {
     
     enum SubmitButtonStyle {
         case filled
-        case outlined
+        case text
         
-        // TODO: 디자인시스템 정해지면 색상 바꾸기
         func backgroundColor(isDisabled: Bool) -> Color {
             switch self {
             case .filled:
-                return isDisabled ? .gray : .green
-            case .outlined:
+                return isDisabled ? .gray200 : .beige500
+            case .text:
                 return .clear
             }
         }
@@ -26,9 +25,9 @@ struct SubmitButton: View {
         func textColor(isDisabled: Bool) -> Color {
             switch self {
             case .filled:
-                return .white
-            case .outlined:
-                return isDisabled ? .gray : .green
+                return  isDisabled ? .gray50 : .white
+            case .text:
+                return isDisabled ? .gray200 : .beige500
             }
         }
         
@@ -36,8 +35,8 @@ struct SubmitButton: View {
             switch self {
             case .filled:
                 return .clear
-            case .outlined:
-                return isDisabled ? .gray : .green
+            case .text:
+                return .clear
             }
         }
     }
@@ -54,7 +53,7 @@ struct SubmitButton: View {
         } label: {
             Text(title)
                 .foregroundStyle(buttonStyle.textColor(isDisabled: isDisabled))
-                .font(.system(size: 16, weight: .semibold))
+                .font(.body_16_sb)
                 .frame(maxWidth: .infinity, maxHeight: 52.0)
         }
         .background(buttonStyle.backgroundColor(isDisabled: isDisabled))
@@ -67,6 +66,6 @@ struct SubmitButton: View {
 }
 
 #Preview {
-    SubmitButton(title: "버튼", isDisabled: false, buttonStyle: .filled)
+    CTAButton(title: "버튼", isDisabled: false, buttonStyle: .filled)
         .padding(.horizontal, 20)
 }

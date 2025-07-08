@@ -24,7 +24,6 @@
 				Global/Resource/Font/.gitkeep,
 				Info.plist,
 				Network/Base/.gitkeep,
-				Presentation/Home/ViewModel/.gitkeep,
 				Presentation/MyPage/ViewModel/.gitkeep,
 				Presentation/Onboarding/ViewModel/.gitkeep,
 				Presentation/Walk/SharedWalk/ViewModel/.gitkeep,
