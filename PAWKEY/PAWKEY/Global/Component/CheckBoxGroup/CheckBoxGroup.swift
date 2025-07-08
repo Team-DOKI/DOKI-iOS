@@ -32,6 +32,7 @@ struct CheckBoxGroup: View {
             }
             .background(.white)
             .frame(height: 64)
+            .padding(.horizontal, 16)
             .onTapGesture {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     isExpanded.toggle()
@@ -46,11 +47,11 @@ struct CheckBoxGroup: View {
                             }
                     }
                 }
+                .padding(.horizontal, 16)
             }
+            Divider()
         }
         .animation(isExpanded ? .default : nil)
-        .padding(.horizontal, 16)
-        
     }
 }
 
