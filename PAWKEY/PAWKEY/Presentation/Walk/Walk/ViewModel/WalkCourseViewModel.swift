@@ -20,7 +20,7 @@ final class WalkCourseViewModel: ObservableObject {
     private var startTime: Date?
     private var pauseTime: Date?
     private var accumulatedPauseTime: TimeInterval = 0
-
+    
     private var previousLocation: CLLocation?
     
     @Published var currentLocation: CLLocationCoordinate2D = .init(latitude: 0, longitude: 0)
@@ -36,28 +36,34 @@ final class WalkCourseViewModel: ObservableObject {
     @Published var distance: Double = 0.0
     @Published var elapsedTime: String = "00:00"
     @Published var stepCount: Int = 0
-
+    
     init(locationManager: LocationManager = .shared) {
         self.locationManager = locationManager
         
+        setupBindings()
+    }
+    
+    private func setupBindings() {
         locationManager.$currentLocation
             .compactMap { $0 }
             .sink { [weak self] location in
-                guard let self = self else { return }
-                
-                let coordinate = location.coordinate
-                
-                self.region = MKCoordinateRegion(
-                    center: coordinate,
-                    span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
-                )
-                
-                if self.isTracking && !self.isPaused {
-                    self.pathCoordinates.append(coordinate)
-                    self.updateDistance(with: location)
-                }
+                self?.handleLocationUpdate(location)
             }
             .store(in: &cancellables)
+    }
+    
+    private func handleLocationUpdate(_ location: CLLocation) {
+        let coordinate = location.coordinate
+        
+        region = MKCoordinateRegion(
+            center: coordinate,
+            span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+        )
+        
+        if isTracking && !isPaused {
+            pathCoordinates.append(coordinate)
+            updateDistance(with: location)
+        }
     }
     
     func startTracking() {
@@ -78,7 +84,7 @@ final class WalkCourseViewModel: ObservableObject {
         stopPedometer()
         stopTimer()
     }
-
+    
     func pauseTracking() {
         isPaused = true
         pauseTime = Date()
@@ -101,11 +107,11 @@ final class WalkCourseViewModel: ObservableObject {
         shouldCenterOnUser = true
     }
     
-     func resetTrackingData() {
+    func resetTrackingData() {
         pathCoordinates = []
-         distance = 0.0
+        distance = 0.0
         stepCount = 0
-         elapsedTime = "00:00"
+        elapsedTime = "00:00"
         previousLocation = nil
         accumulatedPauseTime = 0
         pauseTime = nil
