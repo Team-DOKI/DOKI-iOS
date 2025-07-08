@@ -8,5 +8,6 @@
 import SwiftUI
 
 final class TabBarState: ObservableObject {
+    @Published var selectedTab: TabBarItem = .home
     @Published var isHidden: Bool = false
 }
