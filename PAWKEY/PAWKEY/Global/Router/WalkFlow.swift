@@ -15,6 +15,7 @@ struct WalkFlow: View {
             CourseListView()
                 .navigationDestination(for: WalkScreen.self) { screen in
                     build(screen: screen)
+                        .toolbar(.hidden)
                 }
         }
     }
