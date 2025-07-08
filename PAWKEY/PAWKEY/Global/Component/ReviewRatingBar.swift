@@ -8,11 +8,29 @@
 import SwiftUI
 
 struct ReviewRatingBar: View {
+    let title: String
+    let rating: Double
     var body: some View {
-        Text("Hello, World!")
+        ZStack(alignment: .leading) {
+            GeometryReader { proxy in
+                RoundedRectangle(cornerRadius: 6)
+                    .frame(height: 37)
+                    .foregroundStyle(.pawkeyWhite2)
+                
+                RoundedRectangle(cornerRadius: 6)
+                    .frame(width: proxy.size.width * rating, height: 37)
+                    .foregroundStyle(.green)
+                Text(title)
+                    .font(.caption_12_sb)
+                    .frame(height: 37, alignment: .center)
+                    .padding(.leading, 13)
+            }
+            .fixedSize(horizontal: false, vertical: true)
+        }
     }
 }
 
 #Preview {
-    ReviewRatingBar()
+    ReviewRatingBar(title: "후기 옵션 입력", rating: 0.8)
+        .padding(.horizontal, 20)
 }
