@@ -18,15 +18,32 @@ struct CourseListView: View {
     @State private var shouldCenterOnUser: Bool = false
     @State private var currentAddress: String = ""
     
+    let tabs: [(title: String, mode: Int)] = [("지도", 0), ("리스트", 1)]
+    
     var body: some View {
-        VStack(spacing: 0) {
-            Picker("탭", selection: $selectedMode) {
-                Text("지도").tag(0)
-                Text("리스트").tag(1)
+        VStack {
+            HStack(spacing: 20) {
+                ForEach(tabs, id: \.mode) { tab in
+                    Button {
+                        selectedMode  = tab.mode
+                    } label: {
+                        VStack(spacing: 4) {
+                            Text(tab.title)
+                                .font(.head_22_b)
+                                .foregroundColor(selectedMode == tab.mode ? .pawkeyBlack : .gray200)
+                            
+                            Rectangle()
+                                .frame(height: 4)
+                                .foregroundColor(selectedMode == tab.mode ? .pawkeyBlack : .clear)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
             }
-            .pickerStyle(.segmented)
-            .frame(height: 64)
-            .padding(.horizontal)
+            .frame(width: 155, height: 56)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 8)
+            .padding(.leading, 16)
             
             if selectedMode == 0 {
                 ZStack(alignment: .topLeading) {
@@ -39,13 +56,16 @@ struct CourseListView: View {
                             Spacer()
                             
                             ZStack {
-                                Button("산책 기록 시작하기") {
+                                Button {
                                     showWalkCourseView = true
+                                } label: {
+                                    Text("산책 기록 시작하기")
+                                        .font(.body_16_sb)
+                                        .foregroundColor(.pawkeyWhite1)
                                 }
                                 .padding(.vertical, 16)
                                 .padding(.horizontal, 20)
-                                .background(Color.green)
-                                .foregroundColor(.white)
+                                .background(.green500)
                                 .cornerRadius(8)
                                 .shadow(radius: 2)
                                 
@@ -55,27 +75,22 @@ struct CourseListView: View {
                                         viewModel.centerMapOnCurrentLocation()
                                         shouldCenterOnUser = true
                                     }) {
-                                        Image(systemName: "location.fill")
-                                            .frame(width: 44, height: 44)
-                                            .background(Color.green)
-                                            .foregroundColor(.white)
-                                            .clipShape(Circle())
-                                            .shadow(radius: 2)
+                                        Image(.mapGps)
                                     }
                                     .padding(.trailing, 16)
                                 }
                             }
-                            .padding(.bottom, 96)
+                            .padding(.bottom, 98)
                         },
                         alignment: .bottom
                     )
                     
                     Text(currentAddress)
-                        .font(.system(size: 14, weight: .medium))
+                        .font(.body_16_sb)
+                        .foregroundColor(.green500)
                         .padding(.vertical, 8)
                         .padding(.horizontal, 12)
-                        .background(.white)
-                        .foregroundColor(.green)
+                        .background(.pawkeyWhite1)
                         .cornerRadius(60)
                         .padding(.top, 18)
                         .padding(.leading, 16)
