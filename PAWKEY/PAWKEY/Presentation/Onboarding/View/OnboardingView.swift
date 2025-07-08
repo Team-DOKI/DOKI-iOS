@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    @EnvironmentObject var router: TabRouter<HomeScreen>
+    @EnvironmentObject var router: TabRouter<OnboardingScreen>
     
     var body: some View {
         VStack {
@@ -29,8 +29,8 @@ struct OnboardingView: View {
             
             VStack(spacing: 20) {
                 CTAButton(title: "신규계정으로 회원가입")
-                CTAButton(title: "기존 계정으로 로그인", buttonStyle: .text) {
-                    
+                CTAButton(title: "기존 계정으로 로그인", buttonStyle: .text) {                    
+                    router.push(.login)
                 }
             }
             .padding(.bottom, 47)

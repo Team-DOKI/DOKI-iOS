@@ -29,7 +29,7 @@ struct RootView: View {
         if isLoggedIn {
             TabView()
         } else {
-            LoginView(isLoggedIn: $isLoggedIn)
+            OnboardingFlow()
         }
     }
 }
