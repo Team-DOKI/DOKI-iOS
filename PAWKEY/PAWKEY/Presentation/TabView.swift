@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct TabView: View {
-    @State private var selectedTab: TabBarItem = .home
-    
     @StateObject private var homeRouter = TabRouter<HomeScreen>()
     @StateObject private var walkRouter = TabRouter<WalkScreen>()
     @StateObject private var myPageRouter = TabRouter<MyPageScreen>()
@@ -18,7 +16,7 @@ struct TabView: View {
     
     var body: some View {
         ZStack {
-            switch selectedTab {
+            switch tabBarState.selectedTab {
             case .home:
                 HomeFlow()
                     .environmentObject(homeRouter)
@@ -38,7 +36,7 @@ struct TabView: View {
             VStack {
                 Spacer()
                 
-                TabBarView(selectedTab: $selectedTab)
+                TabBarView()
                     .environmentObject(tabBarState)
             }
         }
