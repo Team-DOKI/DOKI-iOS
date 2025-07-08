@@ -6,10 +6,14 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct ArchiveView: View {
     @EnvironmentObject var router: TabRouter<WalkScreen>
     @EnvironmentObject var tabBarState: TabBarState
+    
+    @State private var selectedItem: PhotosPickerItem? = nil
+    @State private var selectedImage: Image? = nil
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -18,8 +22,26 @@ struct ArchiveView: View {
                     RoundedRectangle(cornerRadius: 8)
                         .frame(width: 160, height: 188)
                     
-                    RoundedRectangle(cornerRadius: 8)
-                        .frame(width: 160, height: 188)
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.gray.opacity(0.1))
+                            .frame(width: 160, height: 188)
+                        
+                        if let image = selectedImage {
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 160, height: 188)
+                                .clipped()
+                                .cornerRadius(8)
+                        } else {
+                            PhotosPicker(selection: $selectedItem, matching: .images) {
+                                VStack {
+                                    Image(.add)
+                                }
+                            }
+                        }
+                    }
                 }
                 .padding(.horizontal, 16)
                 .padding([.vertical, .bottom], 12)
@@ -144,6 +166,14 @@ struct ArchiveView: View {
         .onAppear {
             withAnimation {
                 tabBarState.isHidden = true
+            }
+        }
+        .onChange(of: selectedItem) { newItem in
+            Task {
+                if let data = try? await newItem?.loadTransferable(type: Data.self),
+                   let uiImage = UIImage(data: data) {
+                    selectedImage = Image(uiImage: uiImage)
+                }
             }
         }
     }
