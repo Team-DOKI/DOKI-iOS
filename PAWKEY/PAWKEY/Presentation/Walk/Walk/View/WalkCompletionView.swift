@@ -20,6 +20,7 @@ struct WalkCompletionView: View {
             Text("산책 완료!")
                 .font(.head_20_b)
                 .foregroundColor(.pawkeyBlack)
+                .padding(.top, 20)
                 .padding(.bottom, 29)
             
             Text("포비와 함께한 산책 루트에요.")

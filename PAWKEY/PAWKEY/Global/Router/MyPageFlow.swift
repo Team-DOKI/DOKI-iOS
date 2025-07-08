@@ -15,6 +15,7 @@ struct MyPageFlow: View {
             MyPageView()
                 .navigationDestination(for: MyPageScreen.self) { screen in
                     build(screen: screen)
+                        .toolbar(.hidden)
                 }
         }
     }
