@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TabBarView: View {
     @Binding var selectedTab: TabBarItem
+    @EnvironmentObject var tabBarState: TabBarState
     
     var body: some View {
         HStack(spacing: 0) {
@@ -39,5 +40,7 @@ struct TabBarView: View {
         .cornerRadius(200)
         .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
         .padding(.bottom, 12)
+        .offset(y: tabBarState.isHidden ? 100 : 0)
+        .animation(.easeInOut(duration: 0.3), value: tabBarState.isHidden)
     }
 }
