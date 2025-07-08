@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WalkCompletionView: View {
     @EnvironmentObject var router: TabRouter<WalkScreen>
+    @EnvironmentObject var tabBarState: TabBarState
     
     let distance: Double
     let elapsedTime: String
@@ -75,5 +76,15 @@ struct WalkCompletionView: View {
             .padding(.bottom, 26)
         }
         .padding(.horizontal, 16)
+        .onAppear {
+                    withAnimation {
+                        tabBarState.isHidden = true
+                    }
+                }
+                .onDisappear {
+                    withAnimation {
+                        tabBarState.isHidden = false
+                    }
+                }
     }
 }
