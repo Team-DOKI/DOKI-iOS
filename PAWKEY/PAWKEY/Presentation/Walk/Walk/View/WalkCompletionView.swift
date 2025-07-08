@@ -82,10 +82,5 @@ struct WalkCompletionView: View {
                 tabBarState.isHidden = true
             }
         }
-        .onDisappear {
-            withAnimation {
-                tabBarState.isHidden = false
-            }
-        }
     }
 }
