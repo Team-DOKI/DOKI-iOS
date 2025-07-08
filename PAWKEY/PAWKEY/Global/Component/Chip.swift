@@ -10,6 +10,7 @@ import SwiftUI
 struct Chip: View {
     let title: String
     var isActive: Bool = false
+    
     var body: some View {
         Text(title)
             .font(.pretendard(size: 14, weight: .medium))
