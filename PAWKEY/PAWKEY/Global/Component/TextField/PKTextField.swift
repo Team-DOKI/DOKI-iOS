@@ -32,7 +32,6 @@ struct PKTextField: View {
                                 .focused($isFocused)
                                 .font(.pretendard(size: 14, weight: .regular))
                             
-                            
                             TextField(placeholder ?? "입력해주세요", text: $text)
                                 .opacity(isShowPassword ? 1 : 0)
                                 .focused($isFocused)
@@ -42,7 +41,8 @@ struct PKTextField: View {
                         Button {
                             isShowPassword.toggle()
                         } label: {
-                            Text(isShowPassword ? "hide" : "show")
+                            Image(isShowPassword ? .eyeGray : .eyeSlashGray)
+                                .padding(.trailing, 16)
                         }
                     }
                 } else {
@@ -54,7 +54,7 @@ struct PKTextField: View {
                     .focused($isFocused)
                 }
             }
-            .padding(.leading, 20)
+            .padding(.leading, 16)
         }
         .frame(height: 52.0)
         .overlay(
