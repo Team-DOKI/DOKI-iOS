@@ -77,14 +77,14 @@ struct WalkCompletionView: View {
         }
         .padding(.horizontal, 16)
         .onAppear {
-                    withAnimation {
-                        tabBarState.isHidden = true
-                    }
-                }
-                .onDisappear {
-                    withAnimation {
-                        tabBarState.isHidden = false
-                    }
-                }
+            withAnimation {
+                tabBarState.isHidden = true
+            }
+        }
+        .onDisappear {
+            withAnimation {
+                tabBarState.isHidden = false
+            }
+        }
     }
 }
