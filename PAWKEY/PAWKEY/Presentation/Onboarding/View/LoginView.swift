@@ -44,6 +44,10 @@ struct LoginView: View {
                 .padding(.bottom, 60)
         }
         .padding(.horizontal, 16)
+        .ignoresSafeArea(.keyboard)
+        .onTapGesture {
+            UIApplication.shared.hideKeyboard()
+        }
         .topNavigationView(center: {
             Text("기존 계정으로 로그인")
                 .font(.body_16_sb)
