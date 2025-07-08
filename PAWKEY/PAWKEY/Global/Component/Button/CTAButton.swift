@@ -16,7 +16,7 @@ struct CTAButton: View {
         func backgroundColor(isDisabled: Bool) -> Color {
             switch self {
             case .filled:
-                return isDisabled ? .gray200 : .beige500
+                return isDisabled ? .gray200 : .green500
             case .text:
                 return .clear
             }
@@ -25,9 +25,9 @@ struct CTAButton: View {
         func textColor(isDisabled: Bool) -> Color {
             switch self {
             case .filled:
-                return  isDisabled ? .gray50 : .white
+                return  isDisabled ? .gray50 : .pawkeyWhite1
             case .text:
-                return isDisabled ? .gray200 : .beige500
+                return isDisabled ? .gray200 : .green500
             }
         }
         
@@ -36,7 +36,7 @@ struct CTAButton: View {
             case .filled:
                 return .clear
             case .text:
-                return .clear
+                return isDisabled ? .gray200 : .green500
             }
         }
     }
@@ -56,6 +56,7 @@ struct CTAButton: View {
                 .font(.body_16_sb)
                 .frame(maxWidth: .infinity, maxHeight: 52.0)
         }
+        .frame(maxWidth: .infinity, minHeight: 52)
         .background(buttonStyle.backgroundColor(isDisabled: isDisabled))
         .cornerRadius(8.0)
         .overlay(
