@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ArchiveView: View {
+    @EnvironmentObject var router: TabRouter<WalkScreen>
+    @EnvironmentObject var tabBarState: TabBarState
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -125,9 +127,11 @@ struct ArchiveView: View {
                     .frame(height: 10)
                     .frame(maxWidth: .infinity)
                     .padding(.bottom, 24)
-              
+                
                 VStack(spacing: 13) {
-                    CTAButton(title: "산책 기록 공유하기", isDisabled: true, buttonStyle: .filled)
+                    CTAButton(title: "산책 기록 공유하기", isDisabled: false, buttonStyle: .filled) {
+                        router.push(.courseDetail)
+                    }
                     CTAButton(title: "산책 기록 나만보기", isDisabled: true, buttonStyle: .text)
                 }
                 .padding(.horizontal, 16)
@@ -137,6 +141,11 @@ struct ArchiveView: View {
             Text("산책 기록하기")
                 .font(.body_16_sb)
         })
+        .onAppear {
+            withAnimation {
+                tabBarState.isHidden = true
+            }
+        }
     }
 }
 

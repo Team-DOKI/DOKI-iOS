@@ -25,8 +25,8 @@ struct WalkFlow: View {
         switch screen {
         case .courseList:
             CourseListView()
-        case .courseDetail(let id):
-            CourseDetailView(courseId: id)
+        case .courseDetail:
+            CourseDetailView()
             //        case .walkCourse:
             //            WalkCourseView()
         case .walkCompletion(let distance, let elapsedTime, let stepCount):
