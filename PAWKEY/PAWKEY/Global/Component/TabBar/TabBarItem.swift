@@ -12,19 +12,19 @@ enum TabBarItem: CaseIterable {
 
     var normalImage: Image {
         switch self {
-        case .home: return Image(systemName: "house")
-        case .walk: return Image(systemName: "pawprint")
-        case .community: return Image(systemName: "person.3")
-        case .mypage: return Image(systemName: "person.crop.circle")
+        case .home: return Image(.homeIcon)
+        case .walk: return Image(.walkIcon)
+        case .community: return Image(.communityIcon)
+        case .mypage: return Image(.mypageIcon)
         }
     }
 
     var selectedImage: Image {
         switch self {
-        case .home: return Image(systemName: "house.fill")
-        case .walk: return Image(systemName: "pawprint.fill")
-        case .community: return Image(systemName: "person.3.fill")
-        case .mypage: return Image(systemName: "person.crop.circle.fill")
+        case .home: return Image(.homeIconFill)
+        case .walk: return Image(.walkIconFill)
+        case .community: return Image(.communityIconFill)
+        case .mypage: return Image(.mypageIconFill)
         }
     }
 }

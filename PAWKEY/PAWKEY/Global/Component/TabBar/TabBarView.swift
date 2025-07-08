@@ -27,7 +27,6 @@ struct TabBarView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 24, height: 24)
-                            .foregroundColor(tabBarState.selectedTab == item ? Color(red: 0.09, green: 0.74, blue: 0.18) : .white)
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -35,9 +34,9 @@ struct TabBarView: View {
         }
         .padding(.horizontal, 6)
         .frame(width: 262, height: 60)
-        .background(Color(red: 0.12, green: 0.12, blue: 0.12))
+        .background(.pawkeyBlack)
         .cornerRadius(200)
-        .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
+        .shadow(color: .pawkeyBlack.opacity(0.25), radius: 2, x: 0, y: 4)
         .padding(.bottom, 12)
         .offset(y: tabBarState.isHidden ? 100 : 0)
         .animation(.easeInOut(duration: 0.3), value: tabBarState.isHidden)
