@@ -64,7 +64,16 @@ struct WalkCompletionView: View {
             )
             
             Spacer()
+            
+            SubmitButton(
+                title: "기록하러가기",
+                isDisabled: false,
+                buttonStyle: .filled
+            ) {
+                router.push(.archive)
+            }
+            .padding(.bottom, 26)
         }
-        .padding()
+        .padding(.horizontal, 16)
     }
 }
