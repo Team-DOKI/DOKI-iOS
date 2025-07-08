@@ -66,7 +66,7 @@ struct WalkCompletionView: View {
             
             Spacer()
             
-            SubmitButton(
+            CTAButton(
                 title: "기록하러가기",
                 isDisabled: false,
                 buttonStyle: .filled
