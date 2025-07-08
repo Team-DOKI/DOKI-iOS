@@ -11,9 +11,12 @@ struct WalkCourseView: View {
     @EnvironmentObject var router: TabRouter<WalkScreen>
     
     @ObservedObject var viewModel: WalkCourseViewModel
+    
     @Binding var showWalkCourseView: Bool
     
     @State private var showStopConfirmation = false
+    
+    let onComplete: (Double, String, Int) -> Void
     
     var body: some View {
         ZStack {
@@ -31,8 +34,8 @@ struct WalkCourseView: View {
             
             VStack {
                 HStack(spacing: 32) {
-                    StatView(title: "거리 (km)", value: String(format: "%.1f", viewModel.distanceInKilometers))
-                    StatView(title: "시간 (분)", value: viewModel.elapsedTimeString)
+                    StatView(title: "거리 (km)", value: String(format: "%.1f", viewModel.distance))
+                    StatView(title: "시간 (분)", value: viewModel.elapsedTime)
                     StatView(title: "걸음 수 (걸음)", value: "\(viewModel.stepCount)")
                 }
                 .padding(.vertical, 14)
@@ -59,6 +62,11 @@ struct WalkCourseView: View {
                         onStop: {
                             viewModel.stopTracking()
                             showWalkCourseView = false
+                            onComplete(
+                                viewModel.distance,
+                                viewModel.elapsedTime,
+                                viewModel.stepCount
+                            )
                         }
                     )
                 } else {
