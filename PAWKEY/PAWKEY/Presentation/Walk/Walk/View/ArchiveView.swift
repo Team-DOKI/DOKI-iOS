@@ -12,39 +12,46 @@ struct ArchiveView: View {
     @EnvironmentObject var router: TabRouter<WalkScreen>
     @EnvironmentObject var tabBarState: TabBarState
     
-    @State private var selectedItem: PhotosPickerItem? = nil
-    @State private var selectedImage: Image? = nil
+    @StateObject private var viewModel = ArchiveViewModel()
+    
+    @State private var selectedItems: [PhotosPickerItem] = []
+    @State private var selectedImages: [Image] = []
     
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack {
-                HStack(spacing: 10) {
-                    RoundedRectangle(cornerRadius: 8)
-                        .frame(width: 160, height: 188)
-                    
-                    ZStack {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.gray.opacity(0.1))
                             .frame(width: 160, height: 188)
                         
-                        if let image = selectedImage {
-                            image
+                        ForEach(viewModel.selectedImages, id: \.self) { uiImage in
+                            Image(uiImage: uiImage)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 160, height: 188)
                                 .clipped()
                                 .cornerRadius(8)
-                        } else {
-                            PhotosPicker(selection: $selectedItem, matching: .images) {
-                                VStack {
-                                    Image(.add)
-                                }
+                        }
+                        
+                        if viewModel.selectedImages.count < 4 {
+                            PhotosPicker(selection: $viewModel.selectedItems,
+                                         maxSelectionCount: 4 - viewModel.selectedImages.count,
+                                         matching: .images) {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color.gray5)
+                                    .frame(width: 160, height: 188)
+                                    .overlay(
+                                        Image(.add)
+                                    )
                             }
                         }
                     }
+                    .padding(.horizontal, 16)
                 }
                 .padding(.horizontal, 16)
                 .padding([.vertical, .bottom], 12)
+                
                 
                 VStack(alignment: .leading) {
                     HStack(alignment: .center) {
@@ -126,7 +133,7 @@ struct ArchiveView: View {
                     .padding(.bottom, 24)
                 
                 VStack(alignment: .leading) {
-                    Text("포비와의 산책 어땠나요?")
+                    Text("산책에 대한 감상을 들려주시겠어요?")
                         .font(.body_16_m)
                         .foregroundStyle(.pawkeyBlack)
                         .padding(.bottom, 10)
@@ -152,9 +159,12 @@ struct ArchiveView: View {
                 
                 VStack(spacing: 13) {
                     CTAButton(title: "산책 기록 공유하기", isDisabled: false, buttonStyle: .filled) {
-                        router.push(.courseDetail)
+                        pushCourseDetail(isPrivate: false)
                     }
-                    CTAButton(title: "산책 기록 나만보기", isDisabled: true, buttonStyle: .text)
+                    
+                    CTAButton(title: "산책 기록 나만보기", isDisabled: false, buttonStyle: .text) {
+                        pushCourseDetail(isPrivate: true)
+                    }
                 }
                 .padding(.horizontal, 16)
             }
@@ -168,14 +178,18 @@ struct ArchiveView: View {
                 tabBarState.isHidden = true
             }
         }
-        .onChange(of: selectedItem) { newItem in
+        .onChange(of: viewModel.selectedItems) {
             Task {
-                if let data = try? await newItem?.loadTransferable(type: Data.self),
-                   let uiImage = UIImage(data: data) {
-                    selectedImage = Image(uiImage: uiImage)
-                }
+                await viewModel.loadImagesFromPicker()
             }
         }
+    }
+    
+    private func pushCourseDetail(isPrivate: Bool) {
+        let courseDetailVM = CourseDetailViewModel()
+        courseDetailVM.images = viewModel.selectedImages
+        courseDetailVM.isPrivate = isPrivate
+        router.push(.courseDetail(courseDetailVM))
     }
 }
 
