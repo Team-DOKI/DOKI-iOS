@@ -22,15 +22,16 @@ struct AccordionView: View {
                     .rotationEffect(isExpanded ? .degrees(-180) : .degrees(0))
             }
             .background(.white)
-            .animation(.easeIn(duration: 0.2))
             .frame(height: 64)
             .onTapGesture {
-                isExpanded.toggle()
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isExpanded.toggle()
+                }
             }
             if isExpanded {
                 VStack {
                     ForEach(items, id: \.self) {
-                        Text($0)
+                        CheckBoxCell(title: $0)
                     }
                 }
             }
