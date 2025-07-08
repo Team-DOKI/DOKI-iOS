@@ -11,7 +11,7 @@ struct LoginView: View {
     @Binding var isLoggedIn: Bool
     @State private var idText = ""
     @State private var passwordText = ""
-    
+    @EnvironmentObject var tabBarState: TabBarState
     var isDisabled: Bool {
         idText.isEmpty || passwordText.isEmpty
     }
@@ -37,7 +37,9 @@ struct LoginView: View {
             Spacer()
             
             CTAButton(title: "신규 계정으로 회원가입", buttonStyle: .text)
-            CTAButton(title: "로그인", isDisabled: isDisabled, buttonStyle: .filled)
+            CTAButton(title: "로그인", isDisabled: isDisabled, buttonStyle: .filled) {
+                tabBarState.isLogin = true
+            }
                 .padding(.top, 12)
                 .padding(.bottom, 60)
         }
@@ -51,9 +53,9 @@ struct LoginView: View {
 
 struct RootView: View {
     @State private var isLoggedIn = false
-    
+    @EnvironmentObject var tabBarState: TabBarState
     var body: some View {
-        if isLoggedIn {
+        if tabBarState.isLogin {
             TabView()
         } else {
             OnboardingFlow()
