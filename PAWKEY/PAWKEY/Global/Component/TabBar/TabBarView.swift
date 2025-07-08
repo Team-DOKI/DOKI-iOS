@@ -8,26 +8,26 @@
 import SwiftUI
 
 struct TabBarView: View {
-    @Binding var selectedTab: TabBarItem
+    @EnvironmentObject var tabBarState: TabBarState
     
     var body: some View {
         HStack(spacing: 0) {
             ForEach(TabBarItem.allCases, id: \.self) { item in
                 Button(action: {
-                    selectedTab = item
+                    tabBarState.selectedTab = item
                 }) {
                     ZStack {
-                        if selectedTab == item {
+                        if tabBarState.selectedTab == item {
                             Circle()
                                 .fill(Color.white)
                                 .frame(width: 48, height: 48)
                         }
                         
-                        (selectedTab == item ? item.selectedImage : item.normalImage)
+                        (tabBarState.selectedTab == item ? item.selectedImage : item.normalImage)
                             .resizable()
                             .scaledToFit()
                             .frame(width: 24, height: 24)
-                            .foregroundColor(selectedTab == item ? Color(red: 0.09, green: 0.74, blue: 0.18) : .white)
+                            .foregroundColor(tabBarState.selectedTab == item ? Color(red: 0.09, green: 0.74, blue: 0.18) : .white)
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -39,5 +39,7 @@ struct TabBarView: View {
         .cornerRadius(200)
         .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
         .padding(.bottom, 12)
+        .offset(y: tabBarState.isHidden ? 100 : 0)
+        .animation(.easeInOut(duration: 0.3), value: tabBarState.isHidden)
     }
 }
