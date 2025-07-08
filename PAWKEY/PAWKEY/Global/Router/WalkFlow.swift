@@ -34,8 +34,8 @@ struct WalkFlow: View {
                 elapsedTime: elapsedTime,
                 stepCount: stepCount
             )
-        case .archive(let id):
-            ArchiveView(archiveId: id)
+        case .archive:
+            ArchiveView()
             
         case .sharedWalkCourse(let id):
             SharedWalkCourseView(sharedCourseId: id)

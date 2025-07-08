@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct ArchiveView: View {
-    let archiveId: Int
     
     var body: some View {
-        Text("아카이브: \(archiveId)")
+        Text("아카이브:")
     }
 }
