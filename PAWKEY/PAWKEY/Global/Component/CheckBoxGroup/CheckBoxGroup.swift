@@ -1,5 +1,5 @@
 //
-//  CheckBoxList.swift
+//  CheckBoxGroup.swift
 //  PAWKEY
 //
 //  Created by 권석기 on 7/8/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CheckBoxList: View {
+struct CheckBoxGroup: View {
     @Binding var isExpanded: Bool
     
     let title: String
@@ -53,3 +53,6 @@ struct CheckBoxList: View {
         
     }
 }
+
+
+
