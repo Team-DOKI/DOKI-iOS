@@ -26,13 +26,16 @@ struct WalkFlow: View {
             CourseListView()
         case .courseDetail(let id):
             CourseDetailView(courseId: id)
-            
-        case .walkCourse(let id):
-            WalkCourseView(courseId: id)
-        case .walkCompletion(let id):
-            WalkCompletionView(courseId: id)
-        case .archive(let id):
-            ArchiveView(archiveId: id)
+            //        case .walkCourse:
+            //            WalkCourseView()
+        case .walkCompletion(let distance, let elapsedTime, let stepCount):
+            WalkCompletionView(
+                distance: distance,
+                elapsedTime: elapsedTime,
+                stepCount: stepCount
+            )
+        case .archive:
+            ArchiveView()
             
         case .sharedWalkCourse(let id):
             SharedWalkCourseView(sharedCourseId: id)
