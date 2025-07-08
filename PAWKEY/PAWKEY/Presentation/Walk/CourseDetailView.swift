@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct CourseDetailView: View {
+    @ObservedObject var viewModel: CourseDetailViewModel
+    
     var body: some View {
         ScrollView(showsIndicators: false) {
             Rectangle()
@@ -22,7 +24,11 @@ struct CourseDetailView: View {
                         .font(.head_20_sb)
                         .foregroundColor(.green500)
                     
-                    Image(.eyeFill)
+                    if viewModel.isPrivate {
+                        Image(.eyeSlashFill)
+                    } else {
+                        Image(.eyeFill)
+                    }
                 }
                 .padding(.bottom, 24)
                 
@@ -63,16 +69,17 @@ struct CourseDetailView: View {
                     .cornerRadius(4)
                     .padding(.bottom, 12)
                 
-                HStack(spacing: 6) {
-                    Rectangle()
-                        .foregroundColor(.black)
-                        .frame(width: 100, height: 100)
-                        .cornerRadius(4)
-                    
-                    Rectangle()
-                        .foregroundColor(.black)
-                        .frame(width: 100, height: 100)
-                        .cornerRadius(4)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 6) {
+                        ForEach(viewModel.images, id: \.self) { uiImage in
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 100, height: 100)
+                                .clipped()
+                                .cornerRadius(4)
+                        }
+                    }
                 }
                 
                 Text("gnrlgrnlg")
@@ -94,17 +101,19 @@ struct CourseDetailView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.bottom, 16)
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     Text("이런 점이 좋았어요")
                         .font(.head_18_sb)
                         .foregroundStyle(.pawkeyBlack)
-
-                    Image(.editIconGray)
                     
-                    Text("이런 점이 좋았어요")
-                        .font(.caption_12_m)
-                        .foregroundStyle(.gray200)
+                    HStack(spacing: 4) {
+                        Image(.editIconGray)
+                        
+                        Text("이런 점이 좋았어요")
+                            .font(.caption_12_m)
+                            .foregroundStyle(.gray200)
+                    }
                 }
                 .padding(.bottom, 28)
                 

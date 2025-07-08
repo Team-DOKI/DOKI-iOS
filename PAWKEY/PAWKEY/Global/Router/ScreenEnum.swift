@@ -14,7 +14,7 @@ enum HomeScreen: Hashable {
 
 enum WalkScreen: Hashable {
     case courseList
-    case courseDetail
+    case courseDetail(CourseDetailViewModel)
 
 //    case walkCourse()
     case walkCompletion(distance: Double, elapsedTime: String, stepCount: Int)
