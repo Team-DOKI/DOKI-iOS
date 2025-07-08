@@ -33,8 +33,8 @@ final class WalkCourseViewModel: ObservableObject {
     @Published var shouldCenterOnUser: Bool = false
     @Published var isPaused: Bool = false
     
-    @Published var distanceInKilometers: Double = 0.0
-    @Published var elapsedTimeString: String = "00:00"
+    @Published var distance: Double = 0.0
+    @Published var elapsedTime: String = "00:00"
     @Published var stepCount: Int = 0
 
     init(locationManager: LocationManager = .shared) {
@@ -101,11 +101,11 @@ final class WalkCourseViewModel: ObservableObject {
         shouldCenterOnUser = true
     }
     
-    private func resetTrackingData() {
+     func resetTrackingData() {
         pathCoordinates = []
-        distanceInKilometers = 0.0
+         distance = 0.0
         stepCount = 0
-        elapsedTimeString = "00:00"
+         elapsedTime = "00:00"
         previousLocation = nil
         accumulatedPauseTime = 0
         pauseTime = nil
@@ -113,8 +113,7 @@ final class WalkCourseViewModel: ObservableObject {
     
     private func updateDistance(with newLocation: CLLocation) {
         if let previous = previousLocation {
-            let distance = newLocation.distance(from: previous)
-            distanceInKilometers += distance / 1000.0
+            distance += newLocation.distance(from: previous) / 1000.0
         }
         previousLocation = newLocation
     }
@@ -157,6 +156,6 @@ final class WalkCourseViewModel: ObservableObject {
         let minutes = elapsedSeconds / 60
         let seconds = elapsedSeconds % 60
         
-        elapsedTimeString = String(format: "%02d:%02d", minutes, seconds)
+        elapsedTime = String(format: "%02d:%02d", minutes, seconds)
     }
 }
