@@ -14,7 +14,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObje
     
     @Published var currentLocation: CLLocation?
     
-    override init() {
+    private override init() {
         super.init()
         setLocationManager()
     }
