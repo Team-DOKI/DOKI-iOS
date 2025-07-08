@@ -48,8 +48,8 @@ struct WalkCourseView: View {
                         .inset(by: 0.5)
                         .stroke(.green500, lineWidth: 1)
                 )
-                .padding(.top, 16)
-                .padding(.horizontal, 24)
+                .padding(.top, 24)
+                .padding(.horizontal, 16)
                 
                 Spacer()
                 

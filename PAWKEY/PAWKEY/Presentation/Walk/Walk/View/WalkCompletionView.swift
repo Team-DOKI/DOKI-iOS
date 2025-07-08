@@ -18,28 +18,28 @@ struct WalkCompletionView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text("산책 완료!")
-                .font(.title)
-                .bold()
-                .padding(.bottom, 33)
+                .font(.head_20_b)
+                .foregroundColor(.pawkeyBlack)
+                .padding(.bottom, 29)
             
             Text("포비와 함께한 산책 루트에요.")
-                .font(.headline)
-                .foregroundColor(.gray)
-                .padding(.bottom, 28)
+                .font(.head_18_sb)
+                .foregroundColor(.pawkeyBlack)
+                .padding(.bottom, 24)
             
-            HStack(spacing: 12) {
+            HStack(spacing: 10) {
                 Circle()
                     .fill(Color.gray.opacity(0.3))
                     .frame(width: 43, height: 43)
                 
                 VStack(alignment: .leading, spacing: 6) {
                     Text("포비")
-                        .font(.headline)
+                        .font(.body_16_sb)
                     Text("2025.06.26 (금) | 오후 11:50")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
+                        .font(.caption_12_r)
+                        .foregroundColor(.gray300)
                 }
-                .padding(.bottom, 22)
+                .padding(.bottom, 18)
             }
             
             Rectangle()
@@ -53,21 +53,21 @@ struct WalkCompletionView: View {
                 StatView(title: "시간 (분)", value: elapsedTime)
                 StatView(title: "걸음 수 (걸음)", value: "\(stepCount)")
             }
-            .padding(.vertical, 14)
+            .padding(.vertical, 16)
             .padding(.horizontal, 32)
-            .frame(maxWidth: .infinity, minHeight: 84)
-            .background(.white)
+            .frame(maxWidth: .infinity, minHeight: 74)
+            .background(.pawkeyWhite1)
             .cornerRadius(8)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
                     .inset(by: 0.5)
-                    .stroke(Color(red: 0.09, green: 0.74, blue: 0.18), lineWidth: 1)
+                    .stroke(.green500, lineWidth: 1)
             )
             
             Spacer()
             
             CTAButton(
-                title: "기록하러가기",
+                title: "산책 기록하기",
                 isDisabled: false,
                 buttonStyle: .filled
             ) {
