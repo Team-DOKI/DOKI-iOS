@@ -9,17 +9,18 @@ import SwiftUI
 
 struct CheckBoxCell: View {
     let title: String
+    let isSelected: Bool
     var body: some View {
         HStack {
             Text("차량 거의 없음")
                 .font(.body_14_r)
             Spacer()
-            Image(.rectCheckFill)
+            Image(isSelected ? .rectCheckFill : .rectCheck)
         }
         .frame(height: 61)
     }
 }
 
 #Preview {
-    CheckBoxCell(title: "")
+    CheckBoxCell(title: "", isSelected: false)
 }
