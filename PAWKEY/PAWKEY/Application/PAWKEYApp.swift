@@ -11,10 +11,11 @@ import SwiftUI
 struct PAWKEYApp: App {
     var body: some Scene {
         WindowGroup {
-            TabView()
-                .onAppear {
-                    LocationManager.shared.requestLocationPermission()
-                }
+//            TabView()
+//                .onAppear {
+//                    LocationManager.shared.requestLocationPermission()
+//                }
+            OnboardingView()
         }
     }
 }

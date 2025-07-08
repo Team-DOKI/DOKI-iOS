@@ -72,7 +72,7 @@ struct WalkCourseView: View {
                 } else {
                     Spacer()
                     
-                    SubmitButton(
+                    CTAButton(
                         title: "종료하기",
                         isDisabled: false,
                         buttonStyle: .filled
