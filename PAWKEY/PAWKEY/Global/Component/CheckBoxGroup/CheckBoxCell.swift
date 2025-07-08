@@ -10,9 +10,10 @@ import SwiftUI
 struct CheckBoxCell: View {
     let title: String
     let isSelected: Bool
+    
     var body: some View {
         HStack {
-            Text("차량 거의 없음")
+            Text(title)
                 .font(.body_14_r)
             Spacer()
             Image(isSelected ? .rectCheckFill : .rectCheck)

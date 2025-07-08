@@ -11,7 +11,7 @@ struct RadioGroupCell: View {
     let checkOption: CheckOption
     var body: some View {
         HStack {
-            Text("차량 거의 없음")
+            Text(checkOption.title)
                 .font(.body_14_r)
             Spacer()
             Image(checkOption.isSelected ? .radioButtonAct : .radioButtonDeact)
