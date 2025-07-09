@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ProfileSetUpView: View {
+    
     @StateObject var viewModel: ProfileSetUpViewModel
     
     init(viewModel: ProfileSetUpViewModel) {
@@ -16,7 +17,23 @@ struct ProfileSetUpView: View {
     
     var body: some View {
         VStack {
-            
+            VStack {
+                // 서브뷰
+                Group {
+                    switch viewModel.profileSetupStep {
+                    case .ownerInfo:
+                        UserInfoView()
+                    case .activityArea:
+                        ActivityAreaView()
+                    case .dogInfo:
+                        DogInfoView()
+                    }
+                }
+                Spacer()
+                CTAButton(title: "다음으로")
+                    .padding(.bottom, 29)
+            }
+            .padding(.horizontal, 16)
         }
         .topNavigationView(center: {
             Text("회원가입")
