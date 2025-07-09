@@ -60,9 +60,9 @@ struct WalkCompletionView: View {
             }
             
             HStack(spacing: 32) {
-                StatView(title: "거리 (km)", value: String(format: "%.1f", distance))
-                StatView(title: "시간 (분)", value: elapsedTime)
-                StatView(title: "걸음 수 (걸음)", value: "\(stepCount)")
+                WalkStatView(title: "거리 (km)", value: String(format: "%.1f", distance))
+                WalkStatView(title: "시간 (분)", value: elapsedTime)
+                WalkStatView(title: "걸음 수 (걸음)", value: "\(stepCount)")
             }
             .padding(.vertical, 16)
             .padding(.horizontal, 32)
