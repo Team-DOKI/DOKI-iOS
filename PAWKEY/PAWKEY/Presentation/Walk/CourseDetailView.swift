@@ -12,11 +12,21 @@ struct CourseDetailView: View {
     
     var body: some View {
         ScrollView(showsIndicators: false) {
-            Rectangle()
-                .fill(Color.pawkeyWhite2)
-                .frame(height: 186)
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, 24)
+            if let snapshot = viewModel.images.first {
+                            Image(uiImage: snapshot)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 186)
+                                .frame(maxWidth: .infinity)
+                                .clipped()
+                                .padding(.bottom, 24)
+                        } else {
+                            Rectangle()
+                                .fill(Color.pawkeyWhite2)
+                                .frame(height: 186)
+                                .frame(maxWidth: .infinity)
+                                .padding(.bottom, 24)
+                        }
             
             VStack(alignment: .leading) {
                 HStack(spacing: 10) {
@@ -47,14 +57,14 @@ struct CourseDetailView: View {
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 6) {
-                        ForEach(viewModel.images, id: \.self) { image in
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 100, height: 100)
-                                .clipped()
-                                .cornerRadius(4)
-                        }
+                        ForEach(viewModel.images.dropFirst(), id: \.self) { image in
+                                                    Image(uiImage: image)
+                                                        .resizable()
+                                                        .scaledToFill()
+                                                        .frame(width: 100, height: 100)
+                                                        .clipped()
+                                                        .cornerRadius(4)
+                                                }
                     }
                 }
                 

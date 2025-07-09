@@ -17,13 +17,23 @@ struct ArchiveView: View {
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var selectedImages: [Image] = []
     
+    let snapshot: UIImage?
+    
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
-                        RoundedRectangle(cornerRadius: 8)
-                            .frame(width: 160, height: 188)
+                        if let snapshot = snapshot {
+                                                    Image(uiImage: snapshot)
+                                                        .resizable()
+                                                        .scaledToFill()
+                                                        .frame(width: 160, height: 188)
+                                                        .cornerRadius(8)
+                                                } else {
+                                                    RoundedRectangle(cornerRadius: 8)
+                                                        .frame(width: 160, height: 188)
+                                                }
                         
                         ForEach(viewModel.selectedImages, id: \.self) { image in
                             Image(uiImage: image)
@@ -159,7 +169,13 @@ struct ArchiveView: View {
     
     private func pushCourseDetail(isPrivate: Bool) {
         let courseDetailVM = CourseDetailViewModel()
-        courseDetailVM.images = viewModel.selectedImages
+        var imagesToSend = viewModel.selectedImages
+        
+        if let snapshot = snapshot {
+            imagesToSend.insert(snapshot, at: 0)
+        }
+        
+        courseDetailVM.images = imagesToSend
         courseDetailVM.isPrivate = isPrivate
         router.push(.courseDetail(courseDetailVM))
     }

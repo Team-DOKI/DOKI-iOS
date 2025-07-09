@@ -36,8 +36,8 @@ struct WalkFlow: View {
                 stepCount: stepCount,
                 snapshot: snapshot
             )
-        case .archive:
-            ArchiveView()
+        case .archive(let snapshot):
+                ArchiveView(snapshot: snapshot)
             
         case .sharedWalkCourse(let id):
             SharedWalkCourseView(sharedCourseId: id)
