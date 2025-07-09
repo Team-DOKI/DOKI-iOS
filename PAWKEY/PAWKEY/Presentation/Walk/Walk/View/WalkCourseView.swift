@@ -16,14 +16,17 @@ struct WalkCourseView: View {
     
     @State private var showStopConfirmation = false
     
-    let onComplete: (Double, String, Int) -> Void
+    let onComplete: (Double, String, Int, UIImage?) -> Void
     
     var body: some View {
         ZStack {
             ZStack {
-                WalkingMapView(region: $viewModel.region,
-                               pathCoordinates: $viewModel.pathCoordinates,
-                               shouldCenterOnUser: $viewModel.shouldCenterOnUser)
+                WalkingMapView(
+                    region: $viewModel.region,
+                    pathCoordinates: $viewModel.pathCoordinates,
+                    shouldCenterOnUser: $viewModel.shouldCenterOnUser,
+                    snapshotImage: .constant(nil)
+                )
                 .edgesIgnoringSafeArea(.all)
                 
                 if showStopConfirmation {
@@ -61,12 +64,15 @@ struct WalkCourseView: View {
                         },
                         onStop: {
                             viewModel.stopTracking()
-                            showWalkCourseView = false
-                            onComplete(
-                                viewModel.distance,
-                                viewModel.elapsedTime,
-                                viewModel.stepCount
-                            )
+                            viewModel.captureMapSnapshot { snapshot in
+                                showWalkCourseView = false
+                                onComplete(
+                                    viewModel.distance,
+                                    viewModel.elapsedTime,
+                                    viewModel.stepCount,
+                                    snapshot
+                                )
+                            }
                         }
                     )
                 } else {
@@ -107,6 +113,7 @@ struct WalkCourseView: View {
         }
     }
 }
+
 
 struct StatView: View {
     let title: String

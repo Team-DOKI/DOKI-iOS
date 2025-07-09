@@ -10,28 +10,28 @@ import CoreLocation
 
 struct CourseListView: View {
     @EnvironmentObject var router: TabRouter<WalkScreen>
-    
+
     @StateObject private var viewModel = WalkCourseViewModel()
-    
+
     @State private var selectedMode: Int = 0
     @State private var showWalkCourseView = false
     @State private var shouldCenterOnUser: Bool = false
     @State private var currentAddress: String = ""
-    
+
     let tabs: [(title: String, mode: Int)] = [("지도", 0), ("리스트", 1)]
-    
+
     var body: some View {
         VStack {
             HStack(spacing: 20) {
                 ForEach(tabs, id: \.mode) { tab in
                     Button {
-                        selectedMode  = tab.mode
+                        selectedMode = tab.mode
                     } label: {
                         VStack(spacing: 4) {
                             Text(tab.title)
                                 .font(.head_22_b)
                                 .foregroundColor(selectedMode == tab.mode ? .pawkeyBlack : .gray200)
-                            
+
                             Rectangle()
                                 .frame(height: 4)
                                 .foregroundColor(selectedMode == tab.mode ? .pawkeyBlack : .clear)
@@ -44,17 +44,18 @@ struct CourseListView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, 8)
             .padding(.leading, 16)
-            
+
             if selectedMode == 0 {
                 ZStack(alignment: .topLeading) {
                     WalkingMapView(region: $viewModel.region,
                                    pathCoordinates: $viewModel.pathCoordinates,
-                                   shouldCenterOnUser: $shouldCenterOnUser)
+                                   shouldCenterOnUser: $shouldCenterOnUser,
+                                   snapshotImage: .constant(nil))
                     .edgesIgnoringSafeArea(.bottom)
                     .overlay(
                         VStack {
                             Spacer()
-                            
+
                             ZStack {
                                 Button {
                                     showWalkCourseView = true
@@ -68,7 +69,7 @@ struct CourseListView: View {
                                 .background(.green500)
                                 .cornerRadius(8)
                                 .shadow(radius: 2)
-                                
+
                                 HStack {
                                     Spacer()
                                     Button(action: {
@@ -84,7 +85,7 @@ struct CourseListView: View {
                         },
                         alignment: .bottom
                     )
-                    
+
                     Text(currentAddress)
                         .font(.body_16_sb)
                         .foregroundColor(.green500)
@@ -107,31 +108,33 @@ struct CourseListView: View {
             fetchAddress()
         }
         .fullScreenCover(isPresented: $showWalkCourseView) {
-            WalkCourseView(viewModel: viewModel, showWalkCourseView: $showWalkCourseView){ distance, elapsedTime, stepCount in
+            WalkCourseView(viewModel: viewModel, showWalkCourseView: $showWalkCourseView) { distance, elapsedTime, stepCount, snapshot in
                 router.push(.walkCompletion(
                     distance: distance,
                     elapsedTime: elapsedTime,
-                    stepCount: stepCount
+                    stepCount: stepCount,
+                    snapshot: snapshot
                 ))
                 viewModel.resetTrackingData()
             }
         }
+
     }
-    
+
     func fetchAddress() {
         let geocoder = CLGeocoder()
         let location = CLLocation(latitude: viewModel.region.center.latitude,
                                   longitude: viewModel.region.center.longitude)
-        
+
         geocoder.reverseGeocodeLocation(location) { placemarks, error in
             guard let placemark = placemarks?.first else {
                 self.currentAddress = "주소 오류"
                 return
             }
-            
+
             let dong = placemark.subLocality ?? ""
             var gu = placemark.subAdministrativeArea ?? ""
-            
+
             if gu.isEmpty {
                 let debugDescription = placemark.debugDescription
                 let pattern = #"대한민국.*?,"#
@@ -146,7 +149,7 @@ struct CourseListView: View {
                     }
                 }
             }
-            
+
             if !gu.isEmpty && !dong.isEmpty {
                 self.currentAddress = "\(gu) \(dong)"
             } else if !dong.isEmpty {

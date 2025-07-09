@@ -14,6 +14,7 @@ struct WalkCompletionView: View {
     let distance: Double
     let elapsedTime: String
     let stepCount: Int
+    let snapshot: UIImage?
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -43,11 +44,20 @@ struct WalkCompletionView: View {
                 .padding(.bottom, 18)
             }
             
-            Rectangle()
-                .fill(Color.gray.opacity(0.2))
-                .frame(height: 156)
-                .cornerRadius(8)
-                .padding(.bottom, 10)
+            if let snapshot = snapshot {
+                Image(uiImage: snapshot)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 156)
+                    .cornerRadius(8)
+                    .padding(.bottom, 10)
+            } else {
+                Rectangle()
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(height: 156)
+                    .cornerRadius(8)
+                    .padding(.bottom, 10)
+            }
             
             HStack(spacing: 32) {
                 StatView(title: "거리 (km)", value: String(format: "%.1f", distance))

@@ -29,11 +29,12 @@ struct WalkFlow: View {
             CourseDetailView(viewModel: viewModel)
             //        case .walkCourse:
             //            WalkCourseView()
-        case .walkCompletion(let distance, let elapsedTime, let stepCount):
+        case .walkCompletion(let distance, let elapsedTime, let stepCount, let snapshot):
             WalkCompletionView(
                 distance: distance,
                 elapsedTime: elapsedTime,
-                stepCount: stepCount
+                stepCount: stepCount,
+                snapshot: snapshot
             )
         case .archive:
             ArchiveView()
