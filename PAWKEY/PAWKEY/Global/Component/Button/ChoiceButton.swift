@@ -39,8 +39,9 @@ struct ChoiceButton: View {
             Text(title)
                 .font(isSelected ? .body_14_sb : .body_14_r)
                 .foregroundColor(isSelected ? .green500 : .gray200)
+                .padding(.horizontal, 20)
                 .padding(.vertical, type.edgeInsets.top)
-                .padding(.horizontal, type.edgeInsets.leading)
+                .frame(maxWidth: .infinity)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(isSelected ? Color.green500 : Color.gray50, lineWidth: isSelected ? 2 : 1)
