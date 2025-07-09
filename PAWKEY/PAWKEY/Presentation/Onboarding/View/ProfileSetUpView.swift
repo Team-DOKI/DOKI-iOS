@@ -30,7 +30,7 @@ struct ProfileSetUpView: View {
                     case .ownerInfo:
                         UserInfoView()
                     case .activityArea:
-                        ActivityAreaView()
+                        ActivityAreaView()                            
                     case .dogInfo:
                         DogInfoView()
                     case .dogTendency:
