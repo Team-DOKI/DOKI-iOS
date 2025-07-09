@@ -27,6 +27,7 @@
 				Presentation/Home/ViewModel/.gitkeep,
 				Presentation/MyPage/ViewModel/.gitkeep,
 				Presentation/Onboarding/ViewModel/.gitkeep,
+				"Presentation/Splash/Launch Screen.storyboard",
 				Presentation/Walk/SharedWalk/ViewModel/.gitkeep,
 				Presentation/Walk/Walk/ViewModel/.gitkeep,
 			);
