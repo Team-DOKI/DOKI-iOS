@@ -8,12 +8,34 @@
 import SwiftUI
 
 final class ProfileSetUpViewModel: ObservableObject {
-    enum ProfileSetupStep {
+    
+    enum ProfileStep: Int {
         case ownerInfo
         case activityArea
         case dogInfo
+        case dogTendency
+        
+        var navigationTitle: String {
+            switch self {
+            case .ownerInfo:
+                "회원가입"
+            case .activityArea:
+                "회원가입"
+            case .dogInfo:
+                "반려견 등록하기"
+            case .dogTendency:
+                "반려견 등록하기"
+            }
+        }
     }
     
-    @Published var profileSetupStep: ProfileSetupStep = .ownerInfo
+    @Published var profileStep: ProfileStep = .ownerInfo
     
+    func goToNextStep() {
+        profileStep = ProfileStep(rawValue: profileStep.rawValue + 1) ?? .dogTendency
+    }
+    
+    func goToPrevStep() {
+        profileStep = ProfileStep(rawValue: profileStep.rawValue - 1) ?? .ownerInfo
+    }
 }
