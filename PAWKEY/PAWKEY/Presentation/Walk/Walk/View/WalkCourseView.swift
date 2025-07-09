@@ -37,9 +37,9 @@ struct WalkCourseView: View {
             
             VStack {
                 HStack(spacing: 36) {
-                    StatView(title: "거리 (km)", value: String(format: "%.1f", viewModel.distance))
-                    StatView(title: "시간 (분)", value: viewModel.elapsedTime)
-                    StatView(title: "걸음 수 (걸음)", value: "\(viewModel.stepCount)")
+                    WalkStatView(title: "거리 (km)", value: String(format: "%.1f", viewModel.distance))
+                    WalkStatView(title: "시간 (분)", value: viewModel.elapsedTime)
+                    WalkStatView(title: "걸음 수 (걸음)", value: "\(viewModel.stepCount)")
                 }
                 .padding(.vertical, 16)
                 .padding(.horizontal, 32)
@@ -111,24 +111,6 @@ struct WalkCourseView: View {
         .onAppear {
             viewModel.startTracking()
         }
-    }
-}
-
-struct StatView: View {
-    let title: String
-    let value: String
-    
-    var body: some View {
-        VStack(spacing: 6) {
-            Text(title)
-                .font(.caption_12_sb)
-                .foregroundColor(.gray500)
-            
-            Text(value)
-                .font(.head_20_b)
-                .foregroundColor(.green500)
-        }
-        .frame(width: 67, height: 42)
     }
 }
 
