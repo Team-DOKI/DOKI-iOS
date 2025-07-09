@@ -7,8 +7,11 @@
 
 import SwiftUI
 
-struct SplashView: View {
-    var body: some View {
-        Text("스플래시")
+struct SplashView: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> some UIViewController {
+        let controller = UIStoryboard(name: "Launch Screen", bundle: nil).instantiateInitialViewController()!
+        return controller
+    }
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
     }
 }
