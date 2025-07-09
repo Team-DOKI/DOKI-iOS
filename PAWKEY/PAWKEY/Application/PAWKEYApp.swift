@@ -9,12 +9,14 @@ import SwiftUI
 
 @main
 struct PAWKEYApp: App {
+    @StateObject private var onboardingFlow = TabRouter<OnboardingScreen>()
+    @StateObject private var tabBarState = TabBarState()
+    
     var body: some Scene {
         WindowGroup {
-            TabView()
-                .onAppear {
-                    LocationManager.shared.requestLocationPermission()
-                }
+            RootView()
+                .environmentObject(onboardingFlow)
+                .environmentObject(tabBarState)
         }
     }
 }
