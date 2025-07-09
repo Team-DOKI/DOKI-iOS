@@ -8,6 +8,12 @@
 import SwiftUI
 
 struct ProfileSetUpView: View {
+    @StateObject var viewModel: ProfileSetUpViewModel
+    
+    init(viewModel: ProfileSetUpViewModel) {
+        self._viewModel = StateObject(wrappedValue: viewModel)
+    }
+    
     var body: some View {
         VStack {
             

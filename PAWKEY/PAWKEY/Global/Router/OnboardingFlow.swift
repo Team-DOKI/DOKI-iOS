@@ -25,7 +25,7 @@ struct OnboardingFlow: View {
         case .login:
             LoginView(isLoggedIn: .constant(false))
         case .profileSetUp:
-            ProfileSetUpView()
+            ProfileSetUpView(viewModel: ProfileSetUpViewModel())
         }
     }
 }
