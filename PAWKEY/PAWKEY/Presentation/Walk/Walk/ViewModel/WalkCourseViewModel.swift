@@ -24,13 +24,14 @@ final class WalkCourseViewModel: ObservableObject {
     private var previousLocation: CLLocation?
     
     @Published var currentLocation: CLLocationCoordinate2D = .init(latitude: 0, longitude: 0)
-    @Published var region = MKCoordinateRegion(
+    @Published var region = MKCoordinateRegion( // 지도 영역
         center: CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780),
         span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
     )
-    @Published var pathCoordinates: [CLLocationCoordinate2D] = []
+    @Published var pathCoordinates: [CLLocationCoordinate2D] = [] // 이동 경로 좌표
     @Published var isTracking: Bool = false
-    @Published var shouldCenterOnUser: Bool = false
+    @Published var shouldCenterOnUser: Bool = true
+    @Published var shouldFollowUser: Bool = true
     @Published var isPaused: Bool = false
     
     @Published var distance: Double = 0.0
@@ -43,6 +44,7 @@ final class WalkCourseViewModel: ObservableObject {
         setupBindings()
     }
     
+    // 위치 변경 이벤트 구독 설정
     private func setupBindings() {
         locationManager.$currentLocation
             .compactMap { $0 }
@@ -55,11 +57,15 @@ final class WalkCourseViewModel: ObservableObject {
     private func handleLocationUpdate(_ location: CLLocation) {
         let coordinate = location.coordinate
         
-        region = MKCoordinateRegion(
-            center: coordinate,
-            span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
-        )
+        // 지도 영역 이동
+        if shouldFollowUser {
+                region = MKCoordinateRegion(
+                    center: coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+                )
+            }
         
+        // 기록 중 & 일시정지 아님이면 경로 추가, 거리 갱신
         if isTracking && !isPaused {
             pathCoordinates.append(coordinate)
             updateDistance(with: location)
@@ -85,16 +91,16 @@ final class WalkCourseViewModel: ObservableObject {
         stopTimer()
     }
     
-    func pauseTracking() {
-        isPaused = true
-        pauseTime = Date()
-    }
-    
-    func resumeTracking() {
-        isPaused = false
-        if let pauseTime = pauseTime {
-            accumulatedPauseTime += Date().timeIntervalSince(pauseTime)
-            self.pauseTime = nil
+    func setPaused(_ paused: Bool) {
+        if paused {
+            isPaused = true
+            pauseTime = Date()
+        } else {
+            isPaused = false
+            if let pauseTime = pauseTime {
+                accumulatedPauseTime += Date().timeIntervalSince(pauseTime)
+                self.pauseTime = nil
+            }
         }
     }
     
@@ -117,6 +123,7 @@ final class WalkCourseViewModel: ObservableObject {
         pauseTime = nil
     }
     
+    // 두 위치 간 거리 계산해서 누적
     private func updateDistance(with newLocation: CLLocation) {
         if let previous = previousLocation {
             distance += newLocation.distance(from: previous) / 1000.0
@@ -153,6 +160,7 @@ final class WalkCourseViewModel: ObservableObject {
         timer = nil
     }
     
+    // 경과 시간 업데이트
     private func updateElapsedTime() {
         guard let startTime = startTime, !isPaused else { return }
         
