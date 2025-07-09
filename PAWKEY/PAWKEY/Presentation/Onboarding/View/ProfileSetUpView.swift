@@ -45,11 +45,10 @@ struct ProfileSetUpView: View {
             }
             .topNavigationView(left: {
                 VStack {
-                    if viewModel.profileStep.rawValue != 0 {
-                        Text("뒤로가기")
-                            .onTapGesture {
-                                viewModel.goToPrevStep()
-                            }
+                    if viewModel.step > 1 {
+                        BackButton {
+                            viewModel.goToPrevStep()
+                        }
                     }
                 }
             }, center: {
