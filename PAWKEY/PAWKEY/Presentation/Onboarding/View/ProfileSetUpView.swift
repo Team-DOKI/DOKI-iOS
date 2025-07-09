@@ -16,47 +16,50 @@ struct ProfileSetUpView: View {
     }
     
     var body: some View {
-        GeometryReader { proxy in
-            VStack {
-                ProgessBarView(
-                    width: proxy.size.width,
-                    step:viewModel.step
-                )
-                Spacer()
-                
-                // 서브뷰
-                Group {
-                    switch viewModel.profileStep {
-                    case .ownerInfo:
-                        UserInfoView()
-                    case .activityArea:
-                        ActivityAreaView()                            
-                    case .dogInfo:
-                        DogInfoView()
-                    case .dogTendency:
-                        DogTendencyView()
-                    }
-                }
-                Spacer()
-                CTAButton(title: "다음으로") {
-                    viewModel.goToNextStep()
-                }
-                .padding(.bottom, 29)
-                .padding(.horizontal, 16)
-            }
-            .topNavigationView(left: {
+        ZStack {
+            GeometryReader { proxy in
                 VStack {
-                    if viewModel.step > 1 {
-                        BackButton {
-                            viewModel.goToPrevStep()
+                    ProgessBarView(
+                        width: proxy.size.width,
+                        step:viewModel.step
+                    )
+                    Spacer()
+                    
+                    // 서브뷰
+                    Group {
+                        switch viewModel.profileStep {
+                        case .ownerInfo:
+                            UserInfoView()
+                        case .activityArea:
+                            ActivityAreaView()
+                        case .dogInfo:
+                            DogInfoView()
+                        case .dogTendency:
+                            DogTendencyView()
                         }
                     }
+                    Spacer()
+                    CTAButton(title: "다음으로") {
+                        viewModel.goToNextStep()
+                    }
+                    .padding(.bottom, 29)
+                    .padding(.horizontal, 16)
                 }
-            }, center: {
-                Text(viewModel.profileStep.navigationTitle)
-                    .font(.body_16_sb)
-            })            
+                .topNavigationView(left: {
+                    VStack {
+                        if viewModel.step > 1 {
+                            BackButton {
+                                viewModel.goToPrevStep()
+                            }
+                        }
+                    }
+                }, center: {
+                    Text(viewModel.profileStep.navigationTitle)
+                        .font(.body_16_sb)
+                })
+            }
         }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
 
