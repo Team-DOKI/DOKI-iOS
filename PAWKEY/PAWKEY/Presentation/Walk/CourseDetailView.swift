@@ -37,10 +37,9 @@ struct CourseDetailView: View {
                         .fill(Color.green)
                         .frame(width: 43, height: 43)
                     
-                    Text("rkddkwldlfma")
+                    Text("강아지 이름")
                         .font(.body_16_sb)
                         .foregroundColor(.pawkeyBlack)
-                    
                 }
                 .padding(.bottom, 24)
                 
@@ -71,8 +70,8 @@ struct CourseDetailView: View {
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 6) {
-                        ForEach(viewModel.images, id: \.self) { uiImage in
-                            Image(uiImage: uiImage)
+                        ForEach(viewModel.images, id: \.self) { image in
+                            Image(uiImage: image)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 100, height: 100)
@@ -82,12 +81,12 @@ struct CourseDetailView: View {
                     }
                 }
                 
-                Text("gnrlgrnlg")
+                Text("후기 글 본문")
                     .font(.body_14_r)
                     .foregroundStyle(.pawkeyBlack)
                     .padding(.bottom, 12)
                 
-                Text("gnrlgrnlg")
+                Text("본인 위치에서의 거리")
                     .font(.caption_12_sb)
                     .foregroundStyle(.gray200)
                     .padding(.bottom, 12)
@@ -110,7 +109,7 @@ struct CourseDetailView: View {
                     HStack(spacing: 4) {
                         Image(.editIconGray)
                         
-                        Text("이런 점이 좋았어요")
+                        Text("후기 숫자")
                             .font(.caption_12_m)
                             .foregroundStyle(.gray200)
                     }
@@ -125,9 +124,9 @@ struct CourseDetailView: View {
             .padding(.horizontal, 16)
         }
         .topNavigationView(left: {
-            Image(.arrowUpBlack)
+            Image(.arrowRightBlack)
         }, center: {
-            Text("냐냐")
+            Text("산책 후기 작성")
                 .font(.body_16_sb)
         })
     }
