@@ -8,7 +8,74 @@
 import SwiftUI
 
 struct UserProfileView: View {
+    @EnvironmentObject var router: TabRouter<MyPageScreen>
+    
     var body: some View {
-        Text("견주 프로필")
+        VStack(alignment: .leading, spacing: 16) {
+            // 이름
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Text("이름")
+                        .font(.body_14_m)
+                        .padding(.leading, 16)
+                    Spacer()
+                }
+                HStack {
+                    Text("김도기")
+                        .font(.head_18_sb)
+                        .foregroundStyle(Color.green500)
+                        .padding(.leading, 16)
+                }
+            }
+
+            // 성별
+            VStack(alignment: .leading, spacing: 10) {
+                Text("성별")
+                    .font(.body_14_m)
+                    .padding(.leading, 16)
+                Text("여성")
+                    .font(.head_18_sb)
+                    .foregroundStyle(Color.green500)
+                    .padding(.leading, 16)
+            }
+
+            // 나이
+            VStack(alignment: .leading, spacing: 10) {
+                Text("나이")
+                    .font(.body_14_m)
+                    .padding(.leading, 16)
+                Text("24세")
+                    .font(.head_18_sb)
+                    .foregroundStyle(Color.green500)
+                    .padding(.leading, 16)
+            }
+
+            // 활동지역
+            VStack(alignment: .leading, spacing: 10) {
+                Text("활동지역")
+                    .font(.body_14_m)
+                    .padding(.leading, 16)
+                Text("강남구 역삼동")
+                    .font(.head_18_sb)
+                    .foregroundStyle(Color.green500)
+                    .padding(.leading, 16)
+            }
+            
+            Spacer()
+        }
+        .navigationBarBackButtonHidden()
+        .topNavigationView(left: {
+            Button {
+                router.pop()
+            } label: {
+                Text("dsfds")
+                    .foregroundStyle(Color.pawkeyBlack)
+            }
+            
+        }, center: {
+            Text("견주 프로필")
+                .font(.body_16_sb)
+        })
+        
     }
 }
