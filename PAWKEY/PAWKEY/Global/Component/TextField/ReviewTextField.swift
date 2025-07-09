@@ -69,16 +69,23 @@ struct ReviewTextField: View {
                 .frame(width: 343, height: type.height)
                 .background(Color.clear)
                 .focused($isFocused)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(isFocused ? Color.pawkeyBlack : Color.gray50.opacity(0.5), lineWidth: 1)
-                    Text(type.placeholder)
-                        .foregroundStyle(text.isEmpty ? .gray200 : .clear)
-                        .font(type.font)
-                        .padding(.top, 12)
-                        .padding(.leading, 20)
+                .overlay(alignment: .topLeading) {
+                    ZStack(alignment: .topLeading) {
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(isFocused ? Color.pawkeyBlack : Color.gray50.opacity(0.5), lineWidth: 1)
+                        Text(type.placeholder)
+                            .foregroundStyle(text.isEmpty ? .gray200 : .clear)
+                            .font(type.font)
+                            .padding(.leading, 20)
+                            .padding(.top, 12)
+                    }
                 }
+                
                 .background(Color.pawkeyWhite2)
         }
     }
+}
+
+#Preview {
+    ReviewTextField(type: .body, text: .constant(""))
 }

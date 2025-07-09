@@ -42,6 +42,7 @@ struct ProfileSetUpView: View {
                     viewModel.goToNextStep()
                 }
                 .padding(.bottom, 29)
+                .padding(.horizontal, 16)
             }
             .topNavigationView(left: {
                 VStack {
@@ -54,7 +55,7 @@ struct ProfileSetUpView: View {
             }, center: {
                 Text(viewModel.profileStep.navigationTitle)
                     .font(.body_16_sb)
-            })
+            })            
         }
     }
 }
