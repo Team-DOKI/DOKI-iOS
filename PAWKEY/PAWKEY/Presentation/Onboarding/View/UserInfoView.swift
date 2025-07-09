@@ -31,7 +31,10 @@ struct UserInfoView: View {
                 VStack(alignment:.leading) {
                     Text("성별")
                         .font(.body_14_sb)
-                   
+                    HStack {
+                        ChoiceButton("남성")
+                        ChoiceButton("여자")
+                    }
                 }
                 
                 Spacer().frame(height: 30)
