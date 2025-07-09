@@ -8,5 +8,12 @@
 import SwiftUI
 
 final class ProfileSetUpViewModel: ObservableObject {
+    enum ProfileSetupStep {
+        case ownerInfo
+        case activityArea
+        case dogInfo
+    }
+    
+    @Published var profileSetupStep: ProfileSetupStep = .ownerInfo
     
 }
