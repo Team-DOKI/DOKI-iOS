@@ -16,7 +16,7 @@ struct CTAButton: View {
         func backgroundColor(isDisabled: Bool) -> Color {
             switch self {
             case .filled:
-                return isDisabled ? .gray200 : .beige500
+                return isDisabled ? .gray200 : .green500
             case .text:
                 return .clear
             }
@@ -27,7 +27,7 @@ struct CTAButton: View {
             case .filled:
                 return  isDisabled ? .gray50 : .white
             case .text:
-                return isDisabled ? .gray200 : .beige500
+                return isDisabled ? .gray200 : .green500
             }
         }
         
