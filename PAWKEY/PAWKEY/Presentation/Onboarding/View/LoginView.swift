@@ -9,9 +9,13 @@ import SwiftUI
 
 struct LoginView: View {
     @Binding var isLoggedIn: Bool
+    
     @State private var idText = ""
     @State private var passwordText = ""
+    
     @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var router: TabRouter<OnboardingScreen>
+    
     var isDisabled: Bool {
         idText.isEmpty || passwordText.isEmpty
     }
@@ -36,7 +40,9 @@ struct LoginView: View {
             
             Spacer()
             
-            CTAButton(title: "신규 계정으로 회원가입", buttonStyle: .text)
+            CTAButton(title: "신규 계정으로 회원가입", buttonStyle: .text) {
+                router.push(.profileSetUp)
+            }
             CTAButton(title: "로그인", isDisabled: isDisabled, buttonStyle: .filled) {
                 tabBarState.isLogin = true
             }

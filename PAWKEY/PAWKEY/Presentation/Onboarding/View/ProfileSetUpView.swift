@@ -9,6 +9,12 @@ import SwiftUI
 
 struct ProfileSetUpView: View {
     var body: some View {
-        Text("프로필 설정")
+        VStack {
+            
+        }
+        .topNavigationView(center: {
+            Text("회원가입")
+                .font(.body_16_sb)
+        })
     }
 }
