@@ -60,7 +60,7 @@ struct WalkCourseView: View {
                     StopConfirmationView(
                         onResume: {
                             showStopConfirmation = false
-                            viewModel.resumeTracking()
+                            viewModel.setPaused(false)
                         },
                         onStop: {
                             viewModel.stopTracking()
@@ -84,7 +84,7 @@ struct WalkCourseView: View {
                         buttonStyle: .filled
                     ) {
                         showStopConfirmation = true
-                        viewModel.pauseTracking()
+                        viewModel.setPaused(true)
                     }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 26)
@@ -97,8 +97,8 @@ struct WalkCourseView: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            viewModel.centerMapOnCurrentLocation()
                             viewModel.shouldCenterOnUser = true
+                            viewModel.centerMapOnCurrentLocation()
                         }) {
                             Image(.mapGps)
                         }
