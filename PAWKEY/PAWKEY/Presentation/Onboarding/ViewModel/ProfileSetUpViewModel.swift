@@ -10,7 +10,7 @@ import SwiftUI
 final class ProfileSetUpViewModel: ObservableObject {
     
     enum ProfileStep: Int {
-        case ownerInfo
+        case ownerInfo = 1
         case activityArea
         case dogInfo
         case dogTendency
@@ -30,6 +30,8 @@ final class ProfileSetUpViewModel: ObservableObject {
     }
     
     @Published var profileStep: ProfileStep = .ownerInfo
+    
+    var step: Int { profileStep.rawValue }
     
     func goToNextStep() {
         profileStep = ProfileStep(rawValue: profileStep.rawValue + 1) ?? .dogTendency
