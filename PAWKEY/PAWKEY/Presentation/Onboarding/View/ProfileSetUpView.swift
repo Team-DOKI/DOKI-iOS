@@ -17,27 +17,48 @@ struct ProfileSetUpView: View {
     
     var body: some View {
         VStack {
-            VStack {
-                // 서브뷰
-                Group {
-                    switch viewModel.profileSetupStep {
-                    case .ownerInfo:
-                        UserInfoView()
-                    case .activityArea:
-                        ActivityAreaView()
-                    case .dogInfo:
-                        DogInfoView()
-                    }
+            ProgessBarView()
+            Spacer()
+            
+            // 서브뷰
+            Group {
+                switch viewModel.profileStep {
+                case .ownerInfo:
+                    UserInfoView()
+                case .activityArea:
+                    ActivityAreaView()
+                case .dogInfo:
+                    DogInfoView()
+                case .dogTendency:
+                    DogTendencyView()
                 }
-                Spacer()
-                CTAButton(title: "다음으로")
-                    .padding(.bottom, 29)
             }
-            .padding(.horizontal, 16)
+            Spacer()
+            CTAButton(title: "다음으로") {
+                viewModel.goToNextStep()
+            }
+            .padding(.bottom, 29)
         }
-        .topNavigationView(center: {
-            Text("회원가입")
+        .topNavigationView(left: {
+            VStack {
+                if viewModel.profileStep.rawValue != 0 {
+                    Text("뒤로가기")
+                        .onTapGesture {
+                            viewModel.goToPrevStep()
+                        }
+                }
+            }
+        }, center: {
+            Text(viewModel.profileStep.navigationTitle)
                 .font(.body_16_sb)
         })
+    }
+}
+
+struct ProgessBarView: View {
+    var body: some View {
+        Rectangle()
+            .frame(height: 2)
+            .foregroundStyle(.gray100)
     }
 }
