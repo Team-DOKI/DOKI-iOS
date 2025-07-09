@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct DogInfoView: View {
-    @State var profileImage: Image?
+    @State var profileImage: [UIImage] = []
+    @State var selectedItems: [PhotosPickerItem] = []
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -25,9 +27,28 @@ struct DogInfoView: View {
                 
                 HStack {
                     Spacer()
-                    Circle()
-                        .frame(width: 108, height: 108)
-                        .foregroundStyle(.gray100)
+                    PhotosPicker(selection: $selectedItems,
+                                 maxSelectionCount: 1,
+                                 matching: .images) {
+                        
+                        if let profileImage = profileImage.last {
+                            Image(uiImage: profileImage)
+                                .resizable()
+                                .frame(width: 108, height: 108)
+                                .aspectRatio(contentMode: .fill)
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(.green500, lineWidth: 2))
+                        } else {
+                            Circle()
+                                .frame(width: 108, height: 108)
+                                .foregroundStyle(.pawkeyWhite2)
+                                .overlay(Image(.add))
+                        }
+                    }
+                                 .onChange(of: selectedItems) { _, selectedPhoto in
+                                     handleSelectedPhotos(selectedPhoto)
+                                 }
+                    
                     Spacer()
                 }
                 
@@ -68,12 +89,32 @@ struct DogInfoView: View {
                         ChoiceButton("나이를 몰라요")
                     }
                 }
-                
                 Spacer()
                 
             }
             .padding(.horizontal, 16)
         }
+    }
+    
+    private func handleSelectedPhotos(_ newPhotos: [PhotosPickerItem]) {
+        for newPhoto in newPhotos {
+            newPhoto.loadTransferable(type: Data.self) { result in
+                switch result {
+                case .success(let data):
+                    if let data = data, let newImage = UIImage(data: data) {
+                        if !profileImage.contains(where: { $0.pngData() == newImage.pngData() }) {
+                            DispatchQueue.main.async {
+                                profileImage.append(newImage)
+                            }
+                        }
+                    }
+                case .failure:
+                    break
+                }
+            }
+        }
+        
+        selectedItems.removeAll()
     }
 }
 
