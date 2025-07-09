@@ -22,8 +22,8 @@ struct ReviewOptionButton: View {
             Text(title)
                 .font(isSelected ? .body_14_sb : .body_14_r)
                 .foregroundColor(isSelected ? .green500 : .gray400)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 20)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 16)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(isSelected ? Color.green500 : Color.gray50, lineWidth: isSelected ? 2 : 1)
