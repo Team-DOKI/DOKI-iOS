@@ -114,7 +114,6 @@ struct WalkCourseView: View {
     }
 }
 
-
 struct StatView: View {
     let title: String
     let value: String
@@ -142,7 +141,7 @@ struct StopConfirmationView: View {
             Spacer()
             
             Text("산책이 중단되었어요.")
-                .font(.head_22_b) // 24 추가해야 함
+                .font(.head_24_b)
                 .foregroundColor(.pawkeyWhite1)
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 88)
