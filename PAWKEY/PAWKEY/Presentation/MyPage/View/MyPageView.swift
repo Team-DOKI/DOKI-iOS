@@ -13,13 +13,22 @@ struct MyPageView: View {
     var body: some View {
         VStack {
             Text("마이페이지")
-            
+                .font(.head_20_b)
+                .padding(.top, 20)
+                .padding(.leading, 16)
+            Spacer()
             Button("견주 프로필") {
                 router.push(.userProfile)
             }
+          
             Button("반려견 프로필") {
                 router.push(.petProfile)
             }
+            
+            Spacer()
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        
     }
 }
+
