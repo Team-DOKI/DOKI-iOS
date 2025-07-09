@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum HomeScreen: Hashable {
     case home
@@ -17,7 +18,7 @@ enum WalkScreen: Hashable {
     case courseDetail(CourseDetailViewModel)
 
 //    case walkCourse()
-    case walkCompletion(distance: Double, elapsedTime: String, stepCount: Int)
+    case walkCompletion(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?)
     case archive
     
     case sharedWalkCourse(id: Int)
