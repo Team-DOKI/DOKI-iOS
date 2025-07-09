@@ -24,6 +24,8 @@ struct OnboardingFlow: View {
         switch screen {
         case .login:
             LoginView(isLoggedIn: .constant(false))
+        case .profileSetUp:
+            ProfileSetUpView()
         }
     }
 }
