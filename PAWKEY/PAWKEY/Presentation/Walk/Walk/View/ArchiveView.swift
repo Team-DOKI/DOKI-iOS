@@ -25,8 +25,8 @@ struct ArchiveView: View {
                         RoundedRectangle(cornerRadius: 8)
                             .frame(width: 160, height: 188)
                         
-                        ForEach(viewModel.selectedImages, id: \.self) { uiImage in
-                            Image(uiImage: uiImage)
+                        ForEach(viewModel.selectedImages, id: \.self) { image in
+                            Image(uiImage: image)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 160, height: 188)
@@ -52,35 +52,7 @@ struct ArchiveView: View {
                 .padding(.horizontal, 16)
                 .padding([.vertical, .bottom], 12)
                 
-                
-                VStack(alignment: .leading) {
-                    HStack(alignment: .center) {
-                        Image(.locationGreen)
-                        Text("강남구 역삼동")
-                            .font(.body_14_m)
-                            .foregroundColor(.gray400)
-                    }
-                    .padding(.bottom, 10)
-                    
-                    HStack(alignment: .center) {
-                        Image(.clockGreen)
-                        Text("2025.07.08(화) | 오후 11:28")
-                            .font(.body_14_m)
-                            .foregroundColor(.gray400)
-                    }
-                    .padding(.bottom, 12)
-                    
-                    Text("옵션")
-                        .font(.body_14_m)
-                        .foregroundStyle(.gray200)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(.pawkeyWhite2)
-                        .cornerRadius(4)
-                        .padding(.bottom, 12)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 16)
+                LocationDateView()
                 
                 Rectangle()
                     .fill(Color.pawkeyWhite2)
@@ -223,53 +195,56 @@ struct QuestionKeywordView: View {
 
 struct FlowLayout: Layout {
     var spacing: CGFloat = 8
-    var alignment: HorizontalAlignment = .leading
-    
+
+    // 전체 레이아웃 크기 계산
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        var width: CGFloat = 0
-        var height: CGFloat = 0
-        var currentLineWidth: CGFloat = 0
-        var maxHeightInLine: CGFloat = 0
-        
         let maxWidth = proposal.width ?? .infinity
         
+        var x: CGFloat = 0 // 현재 줄에 채워진 너비
+        var y: CGFloat = 0 // 누적 높이
+        var lineHeight: CGFloat = 0 // 현재 줄에서 가장 큰 높이
+
         for subview in subviews {
             let size = subview.sizeThatFits(.unspecified)
-            if currentLineWidth + size.width > maxWidth {
-                width = max(width, currentLineWidth)
-                height += maxHeightInLine + spacing
-                currentLineWidth = size.width + spacing
-                maxHeightInLine = size.height
-            } else {
-                currentLineWidth += size.width + spacing
-                maxHeightInLine = max(maxHeightInLine, size.height)
+
+            // // 현재 줄 너비 넘으면 다음 줄로 이동
+            if x + size.width > maxWidth {
+                x = 0
+                y += lineHeight + spacing
+                lineHeight = 0
             }
+
+            x += size.width + spacing
+            lineHeight = max(lineHeight, size.height)
         }
-        
-        width = max(width, currentLineWidth)
-        height += maxHeightInLine
-        
-        return CGSize(width: width, height: height)
+
+        // 마지막 줄 높이 더하기
+        return CGSize(width: maxWidth, height: y + lineHeight)
     }
-    
+
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let maxWidth = bounds.width
         var x: CGFloat = 0
         var y: CGFloat = 0
-        var maxHeightInLine: CGFloat = 0
-        
+        var lineHeight: CGFloat = 0
+
         for subview in subviews {
             let size = subview.sizeThatFits(.unspecified)
-            
-            if x + size.width > bounds.width {
+
+            if x + size.width > maxWidth {
+                // 다음 줄로
                 x = 0
-                y += maxHeightInLine + spacing
-                maxHeightInLine = 0
+                y += lineHeight + spacing
+                lineHeight = 0
             }
-            
-            subview.place(at: CGPoint(x: bounds.minX + x, y: bounds.minY + y),
-                          proposal: ProposedViewSize(size))
+
+            subview.place(
+                at: CGPoint(x: bounds.minX + x, y: bounds.minY + y),
+                proposal: ProposedViewSize(size)
+            )
+
             x += size.width + spacing
-            maxHeightInLine = max(maxHeightInLine, size.height)
+            lineHeight = max(lineHeight, size.height)
         }
     }
 }
