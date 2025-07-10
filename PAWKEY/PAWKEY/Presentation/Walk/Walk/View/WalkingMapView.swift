@@ -62,7 +62,7 @@ struct WalkingMapView: UIViewRepresentable {
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             if let polyline = overlay as? MKPolyline {
                 let renderer = MKPolylineRenderer(polyline: polyline)
-                renderer.strokeColor = .green
+                renderer.strokeColor = .green500
                 renderer.lineWidth = 6
                 renderer.lineCap = .round
                 renderer.lineJoin = .round
