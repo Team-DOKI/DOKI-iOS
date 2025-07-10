@@ -65,11 +65,8 @@ struct UserProfileView: View {
         }
         .navigationBarBackButtonHidden()
         .topNavigationView(left: {
-            Button {
+            BackButton {
                 router.pop()
-            } label: {
-                Text("dsfds")
-                    .foregroundStyle(Color.pawkeyBlack)
             }
             
         }, center: {
