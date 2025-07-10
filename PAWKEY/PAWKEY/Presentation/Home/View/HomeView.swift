@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     let topSafeAreaInset = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
     @EnvironmentObject var router: TabRouter<HomeScreen>
+    @EnvironmentObject var tabBarstate: TabBarState
     @State private var isShowMenu = false
     
     var body: some View {
@@ -56,7 +57,8 @@ struct HomeView: View {
                     .cornerRadius(8)
                     .padding(.trailing, 16)
                     .onTapGesture {
-                        
+                        isShowMenu = false
+                        router.push(.changeMyArea)
                     }
                     Spacer()
                 }
@@ -145,7 +147,7 @@ struct HomeView: View {
     
     private var startWalkButton: some View {
         Button {
-            
+            tabBarstate.selectedTab = .walk
         } label: {
             HStack {
                 Text("산책 시작하기")
