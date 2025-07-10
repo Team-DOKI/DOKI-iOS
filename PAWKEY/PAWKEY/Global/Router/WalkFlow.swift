@@ -15,6 +15,7 @@ struct WalkFlow: View {
             CourseListView()
                 .navigationDestination(for: WalkScreen.self) { screen in
                     build(screen: screen)
+                        .toolbar(.hidden)
                 }
         }
     }
@@ -24,18 +25,19 @@ struct WalkFlow: View {
         switch screen {
         case .courseList:
             CourseListView()
-        case .courseDetail(let id):
-            CourseDetailView(courseId: id)
+        case .courseDetail(let viewModel):
+            CourseDetailView(viewModel: viewModel)
             //        case .walkCourse:
             //            WalkCourseView()
-        case .walkCompletion(let distance, let elapsedTime, let stepCount):
+        case .walkCompletion(let distance, let elapsedTime, let stepCount, let snapshot):
             WalkCompletionView(
                 distance: distance,
                 elapsedTime: elapsedTime,
-                stepCount: stepCount
+                stepCount: stepCount,
+                snapshot: snapshot
             )
-        case .archive:
-            ArchiveView()
+        case .archive(let snapshot):
+                ArchiveView(snapshot: snapshot)
             
         case .sharedWalkCourse(let id):
             SharedWalkCourseView(sharedCourseId: id)
