@@ -16,7 +16,7 @@ struct CheckBoxGroup: View {
     var action: ((Int) -> Void)?
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {                      
             HStack {
                 let itemCount = items.filter{ $0.isSelected}.count
                 Text(title)
