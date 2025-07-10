@@ -173,3 +173,102 @@ final class WalkCourseViewModel: ObservableObject {
         elapsedTime = String(format: "%02d:%02d", minutes, seconds)
     }
 }
+
+extension WalkCourseViewModel {
+    // 현재 경로를 기반으로 지도의 이미지 스냅샷 생성
+    func captureMapSnapshot(completion: @escaping (UIImage?) -> Void) {
+        guard !pathCoordinates.isEmpty else {
+            completion(nil)
+            return
+        }
+        
+        // 경로의 위도, 경도 min/max 계산
+        // 경로가 보이도록 영역 설정
+        let lats = pathCoordinates.map { $0.latitude }
+        let lons = pathCoordinates.map { $0.longitude }
+        
+        guard let minLat = lats.min(),
+              let maxLat = lats.max(),
+              let minLon = lons.min(),
+              let maxLon = lons.max() else {
+            completion(nil)
+            return
+        }
+        
+        let centerLat = (minLat + maxLat) / 2
+        let centerLon = (minLon + maxLon) / 2
+        
+        // 영역 계산 + 최소값 보장
+        var latSpan = maxLat - minLat
+        var lonSpan = maxLon - minLon
+        
+        let minSpan = 0.0005
+        latSpan = max(latSpan, minSpan)
+        lonSpan = max(lonSpan, minSpan)
+        
+        // 패딩
+        let paddingFactor = 1.3
+        latSpan *= paddingFactor
+        lonSpan *= paddingFactor
+        
+        // 스냅샷 이미지 사이즈 계산
+        let contentWidth = (UIScreen.main.bounds.width - 32) * UIScreen.main.scale
+        let imageWidth: CGFloat = contentWidth
+        let imageHeight: CGFloat = 156 * UIScreen.main.scale
+        
+        // 이미지 비율과 영역 비율 맞추기
+        let imageAspect = imageWidth / imageHeight
+        let spanAspect = lonSpan / latSpan
+        
+        if spanAspect > imageAspect {
+            latSpan = lonSpan / imageAspect
+        } else {
+            lonSpan = latSpan * imageAspect
+        }
+        
+        // 최종 영역 설정
+        let region = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon),
+            span: MKCoordinateSpan(latitudeDelta: latSpan, longitudeDelta: lonSpan)
+        )
+        
+        // MKMapSnapshotter 옵션 설정
+        let options = MKMapSnapshotter.Options()
+        options.region = region
+        options.size = CGSize(width: imageWidth, height: imageHeight)
+        options.scale = UIScreen.main.scale
+        
+        // 스냅샷 생성 시작
+        let snapshotter = MKMapSnapshotter(options: options)
+        snapshotter.start { snapshot, error in
+            guard let snapshot = snapshot else {
+                completion(nil)
+                return
+            }
+            
+            // 스냅샷 이미지 위에 경로를 직접 그림
+            UIGraphicsBeginImageContextWithOptions(options.size, true, 0)
+            snapshot.image.draw(at: .zero)
+            
+            if self.pathCoordinates.count > 1 {
+                let context = UIGraphicsGetCurrentContext()
+                context?.setStrokeColor(UIColor.green500.cgColor)
+                context?.setLineWidth(4.0 * UIScreen.main.scale)
+                context?.setLineJoin(.round)
+                context?.setLineCap(.round)
+                
+                let points = self.pathCoordinates.map { snapshot.point(for: $0) }
+                context?.move(to: points.first!)
+                for point in points.dropFirst() {
+                    context?.addLine(to: point)
+                }
+                context?.strokePath()
+            }
+            
+            // 최종 이미지 반환
+            let finalImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            completion(finalImage)
+        }
+    }
+}
