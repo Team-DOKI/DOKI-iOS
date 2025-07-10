@@ -90,6 +90,7 @@ struct WalkHistoryCard: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .background(.gray300)
                 .padding(.horizontal, 16)
             
             Divider()

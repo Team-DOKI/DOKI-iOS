@@ -92,10 +92,27 @@ struct CourseListView: View {
                         .padding(.leading, 16)
                 }
             } else {
-                Button {
-                    isShowSheet = true
-                } label: {
-                    Text("hihi")
+                VStack {
+                    Button {
+                        isShowSheet = true
+                    } label: {
+                        Text("Filter")
+                    }
+                    
+                    ScrollView {
+                        VStack {
+                            ForEach(1...10, id: \.self) { _ in
+                                WalkHistoryCard(
+                                    type: .mine,
+                                    walkRouteImg: "walkRoute",
+                                    profileImg: "",
+                                    walkTitle: "제목을 입력해주세요",
+                                    petName: "반려견 이름",
+                                    postDate: "2025-07-11"
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -116,7 +133,7 @@ struct CourseListView: View {
         .sheet(isPresented: $isShowSheet) {
             WalkOptionSheet()
                 .presentationDragIndicator(.visible)
-            .presentationDetents([.fraction(0.85)])
+                .presentationDetents([.fraction(0.85)])
         }
     }
 }
@@ -125,14 +142,14 @@ struct TabButton: View {
     let title: String
     let isSelected: Bool
     let action: () -> Void
-
+    
     var body: some View {
         Button(action: action) {
             VStack(spacing: 4) {
                 Text(title)
                     .font(.head_22_b)
                     .foregroundColor(isSelected ? .pawkeyBlack : .gray200)
-
+                
                 Rectangle()
                     .frame(height: 4)
                     .foregroundColor(isSelected ? .pawkeyBlack : .clear)
