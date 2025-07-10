@@ -65,13 +65,9 @@ struct UserProfileView: View {
         }
         .navigationBarBackButtonHidden()
         .topNavigationView(left: {
-            Button {
+            BackButton {
                 router.pop()
-            } label: {
-                Text("dsfds")
-                    .foregroundStyle(Color.pawkeyBlack)
-            }
-            
+            }      
         }, center: {
             Text("견주 프로필")
                 .font(.body_16_sb)

@@ -109,14 +109,12 @@ struct PetProfileView: View {
         }
         .navigationBarBackButtonHidden()
         .topNavigationView {
-            Button {
+            BackButton {
                 router.pop()
-            } label: {
-                Text("스꾸피~")
-            }
-            
+            }            
         } center: {
             Text("반려견 프로필")
+                .font(.body_16_sb)
         }
     }
 }
