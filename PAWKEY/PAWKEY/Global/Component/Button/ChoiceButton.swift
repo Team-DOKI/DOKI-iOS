@@ -25,16 +25,20 @@ struct ChoiceButton: View {
     
     let title: String
     var type: ChoiceButtonType = .medium
-    @State private var isSelected = false
+    let isSelected: Bool
+    
+    var action: ((String) -> ())?
 
-    init(_ title: String, type: ChoiceButtonType = .medium) {
+    init(_ title: String, type: ChoiceButtonType = .medium, isSelected: Bool = false, action: ((String) -> ())? = nil) {
         self.title = title
         self.type = type
+        self.isSelected = isSelected
+        self.action = action
     }
 
     var body: some View {
         Button {
-            isSelected.toggle()
+            action?(title)
         } label: {
             Text(title)
                 .font(isSelected ? .body_14_sb : .body_14_r)
