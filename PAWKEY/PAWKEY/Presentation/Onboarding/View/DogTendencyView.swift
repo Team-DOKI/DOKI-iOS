@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DogTendencyView: View {
+struct DogTendencyView: View {    
     @ObservedObject var viewModel: ProfileSetUpViewModel
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
       
