@@ -25,7 +25,8 @@ struct UserInfoView: View {
                 VStack(alignment:.leading) {
                     Text("이름")
                         .font(.body_14_sb)
-                    PKTextField(text: $viewModel.userProfile.userName)
+                    PKTextField(text: $viewModel.userProfile.userName,
+                                placeholder: "이름을 입력해주세요.")
                 }
                 
                 Spacer().frame(height: 30)
@@ -47,14 +48,12 @@ struct UserInfoView: View {
                 VStack(alignment:.leading) {
                     Text("나이")
                         .font(.body_14_sb)
-                    PKTextField(text: $viewModel.userProfile.userAge, type: .number)
+                    PKTextField(text: $viewModel.userProfile.userAge,
+                                placeholder: "나이를 입력해주세요.", type: .number)
                 }
                 
                 Spacer()
-            }
-            .onTapGesture {
-                UIApplication.shared.hideKeyboard()
-            }
+            }          
             .padding(.horizontal, 16)
         }
     }
