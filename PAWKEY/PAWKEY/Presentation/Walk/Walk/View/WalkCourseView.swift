@@ -16,40 +16,43 @@ struct WalkCourseView: View {
     
     @State private var showStopConfirmation = false
     
-    let onComplete: (Double, String, Int) -> Void
+    let onComplete: (Double, String, Int, UIImage?) -> Void
     
     var body: some View {
         ZStack {
             ZStack {
-                WalkingMapView(region: $viewModel.region,
-                               pathCoordinates: $viewModel.pathCoordinates,
-                               shouldCenterOnUser: $viewModel.shouldCenterOnUser)
+                WalkingMapView(
+                    region: $viewModel.region,
+                    pathCoordinates: $viewModel.pathCoordinates,
+                    shouldCenterOnUser: $viewModel.shouldCenterOnUser,
+                    snapshotImage: .constant(nil)
+                )
                 .edgesIgnoringSafeArea(.all)
                 
                 if showStopConfirmation {
-                    Color.black.opacity(0.4)
+                    Color.pawkeyBlack.opacity(0.5)
                         .edgesIgnoringSafeArea(.all)
                 }
             }
             
             VStack {
-                HStack(spacing: 32) {
-                    StatView(title: "거리 (km)", value: String(format: "%.1f", viewModel.distance))
-                    StatView(title: "시간 (분)", value: viewModel.elapsedTime)
-                    StatView(title: "걸음 수 (걸음)", value: "\(viewModel.stepCount)")
+                HStack(spacing: 36) {
+                    WalkStatView(title: "거리 (km)", value: String(format: "%.1f", viewModel.distance))
+                    WalkStatView(title: "시간 (분)", value: viewModel.elapsedTime)
+                    WalkStatView(title: "걸음 수 (걸음)", value: "\(viewModel.stepCount)")
                 }
-                .padding(.vertical, 14)
+                .padding(.vertical, 16)
                 .padding(.horizontal, 32)
-                .frame(maxWidth: .infinity, minHeight: 84)
-                .background(.white)
+                .frame(maxWidth: .infinity, minHeight: 74)
+                .background(.pawkeyWhite1)
                 .cornerRadius(8)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
                         .inset(by: 0.5)
-                        .stroke(Color(red: 0.09, green: 0.74, blue: 0.18), lineWidth: 1)
+                        .stroke(.green500, lineWidth: 1)
                 )
-                .padding(.top, 16)
-                .padding(.horizontal, 23)
+                .padding(.top, 24)
+                .padding(.horizontal, 16)
                 
                 Spacer()
                 
@@ -57,16 +60,19 @@ struct WalkCourseView: View {
                     StopConfirmationView(
                         onResume: {
                             showStopConfirmation = false
-                            viewModel.resumeTracking()
+                            viewModel.setPaused(false)
                         },
                         onStop: {
                             viewModel.stopTracking()
-                            showWalkCourseView = false
-                            onComplete(
-                                viewModel.distance,
-                                viewModel.elapsedTime,
-                                viewModel.stepCount
-                            )
+                            viewModel.captureMapSnapshot { snapshot in
+                                showWalkCourseView = false
+                                onComplete(
+                                    viewModel.distance,
+                                    viewModel.elapsedTime,
+                                    viewModel.stepCount,
+                                    snapshot
+                                )
+                            }
                         }
                     )
                 } else {
@@ -78,7 +84,7 @@ struct WalkCourseView: View {
                         buttonStyle: .filled
                     ) {
                         showStopConfirmation = true
-                        viewModel.pauseTracking()
+                        viewModel.setPaused(true)
                     }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 26)
@@ -91,18 +97,13 @@ struct WalkCourseView: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            viewModel.centerMapOnCurrentLocation()
                             viewModel.shouldCenterOnUser = true
+                            viewModel.centerMapOnCurrentLocation()
                         }) {
-                            Image(systemName: "location.fill")
-                                .frame(width: 44, height: 44)
-                                .background(Color.green)
-                                .foregroundColor(.white)
-                                .clipShape(Circle())
-                                .shadow(radius: 2)
+                            Image(.mapGps)
                         }
                         .padding(.trailing, 16)
-                        .padding(.bottom, 104)
+                        .padding(.bottom, 102)
                     }
                 }
             }
@@ -110,23 +111,6 @@ struct WalkCourseView: View {
         .onAppear {
             viewModel.startTracking()
         }
-    }
-}
-
-struct StatView: View {
-    let title: String
-    let value: String
-    
-    var body: some View {
-        VStack {
-            Text(title)
-                .font(.caption2)
-                .foregroundColor(.gray)
-            Text(value)
-                .font(.title3).bold()
-                .foregroundColor(.green)
-        }
-        .frame(width: 66)
     }
 }
 
@@ -138,34 +122,43 @@ struct StopConfirmationView: View {
         VStack {
             Spacer()
             
-            Text("산책이 중단되었어요.\n산책을 정말 종료하시겠어요?")
-                .multilineTextAlignment(.center)
-                .foregroundColor(.white)
+            Text("산책이 중단되었어요.")
+                .font(.head_24_b)
+                .foregroundColor(.pawkeyWhite1)
                 .frame(maxWidth: .infinity)
-                .padding(.horizontal, 40)
+                .padding(.horizontal, 88)
+                .padding(.bottom, 12)
+            
+            Text("산책을 정말 종료하시겠어요?")
+                .font(.body_16_m)
+                .foregroundColor(.pawkeyWhite2)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 96)
             
             Spacer()
             
-            HStack(spacing: 12) {
+            HStack(spacing: 16) {
                 Button(action: onResume) {
                     Text("계속 산책하기")
+                        .font(.body_16_sb)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.white)
-                        .foregroundColor(.green)
+                        .background(.pawkeyWhite1)
+                        .foregroundColor(.green500)
                         .cornerRadius(8)
                 }
                 
                 Button(action: onStop) {
                     Text("산책 종료하기")
+                        .font(.body_16_sb)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.green)
-                        .foregroundColor(.white)
+                        .background(.green500)
+                        .foregroundColor(.pawkeyWhite1)
                         .cornerRadius(8)
                 }
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 16)
             .padding(.bottom, 26)
         }
     }

@@ -15,6 +15,7 @@ struct HomeFlow: View {
             HomeView()
                 .navigationDestination(for: HomeScreen.self) { screen in
                     build(screen: screen)
+                        .toolbar(.hidden)
                 }
         }
     }
