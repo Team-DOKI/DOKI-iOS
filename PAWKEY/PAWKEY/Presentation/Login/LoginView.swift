@@ -40,7 +40,7 @@ struct LoginView: View {
                 .padding(.top, 37)
                 .padding(.bottom, 154)
                 
-            CTAButton(title: "신규 계정으로 회원가입", buttonStyle: .text) {
+                CTAButton(title: "신규 계정으로 회원가입", buttonStyle: .borderless) {
                     router.push(.profileSetUp)
                 }
                 CTAButton(title: "로그인", isDisabled: isDisabled, buttonStyle: .filled) {
