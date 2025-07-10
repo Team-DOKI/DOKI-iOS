@@ -24,12 +24,12 @@ struct PKTextField: View {
     
     var body: some View {
         ZStack {
-            Group {
+            VStack {
                 switch type {
                 case .normal:
                     TextField(text: $text) {
                         Text(placeholder ?? "입력해주세요")
-                            .font(.pretendard(size: 14, weight: .regular))
+                            .font(.body_14_r)
                             .foregroundStyle(.gray200)
                     }
                     .focused($isFocused)
@@ -39,12 +39,12 @@ struct PKTextField: View {
                             SecureField("", text: $text)
                                 .opacity(isShowPassword ? 0 : 1)
                                 .focused($isFocused)
-                                .font(.pretendard(size: 14, weight: .regular))
+                                .font(.body_14_r)
                             
                             TextField(placeholder ?? "입력해주세요", text: $text)
                                 .opacity(isShowPassword ? 1 : 0)
                                 .focused($isFocused)
-                                .font(.pretendard(size: 14, weight: .regular))
+                                .font(.body_14_r)
                         }
                         
                         Button {
@@ -57,7 +57,7 @@ struct PKTextField: View {
                 case .number:
                     TextField(text: $text) {
                         Text(placeholder ?? "입력해주세요")
-                            .font(.pretendard(size: 14, weight: .regular))
+                            .font(.body_14_r)
                             .foregroundStyle(.gray200)
                     }
                     .focused($isFocused)
