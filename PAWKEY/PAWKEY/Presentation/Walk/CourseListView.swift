@@ -16,6 +16,10 @@ struct CourseListView: View {
     @State private var selectedMode: Int = 0
     @State private var showWalkCourseView = false
     @State private var shouldCenterOnUser: Bool = false
+    @State private var isShowSheet = false
+    @State var isExapndWalkingTime: Bool = false
+    @State var isExapndSafeOption: Bool = false
+    
     
     let tabs: [(title: String, mode: Int)] = [("지도", 0), ("리스트", 1)]
     
@@ -88,10 +92,11 @@ struct CourseListView: View {
                         .padding(.leading, 16)
                 }
             } else {
-                Button("킁킁") {
-                    router.push(.sharedWalkCourse(id: 1))
+                Button {
+                    isShowSheet = true
+                } label: {
+                    Text("hihi")
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .onAppear {
@@ -107,6 +112,11 @@ struct CourseListView: View {
                 ))
                 viewModel.resetTrackingData()
             }
+        }
+        .sheet(isPresented: $isShowSheet) {
+            WalkOptionSheet()
+                .presentationDragIndicator(.visible)
+            .presentationDetents([.fraction(0.85)])
         }
     }
 }
