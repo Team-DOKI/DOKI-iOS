@@ -33,7 +33,7 @@ struct PKTextField: View {
             case .password:
                 HStack {
                     ZStack {
-                                .focused($isFocused)
+                        SecureField(placeholder ?? "입력해주세요", text: $text)
                             .opacity(isShowPassword ? 0 : 1)
                             .focused($isFocused)
                             .font(.body_14_r)
