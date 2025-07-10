@@ -9,6 +9,8 @@ import SwiftUI
 import PhotosUI
 
 struct DogInfoView: View {
+    @ObservedObject var viewModel: ProfileSetUpViewModel
+    
     @State var profileImage: [UIImage] = []
     @State var selectedItems: [PhotosPickerItem] = []
     
@@ -57,7 +59,7 @@ struct DogInfoView: View {
                 VStack(alignment:.leading) {
                     Text("반려견 이름")
                         .font(.body_14_sb)
-                    PKTextField(text: .constant(""))
+                    PKTextField(text: $viewModel.userProfile.dogName)
                 }
                 
                 Spacer().frame(height: 30)
@@ -66,8 +68,11 @@ struct DogInfoView: View {
                     Text("성별")
                         .font(.body_14_sb)
                     HStack {
-                        ChoiceButton("남아")
-                        ChoiceButton("여아")
+                        ForEach(viewModel.dogGenderList, id: \.self) { dogGender in
+                            ChoiceButton(dogGender, isSelected: dogGender == viewModel.userProfile.dogGender) { dogGender in
+                                viewModel.changeUserInfo(.dogGender(dogGender))
+                            }
+                        }
                     }
                 }
                 
@@ -76,7 +81,7 @@ struct DogInfoView: View {
                 VStack(alignment:.leading) {
                     Text("견종")
                         .font(.body_14_sb)
-                    PKTextField(text: .constant(""))
+                    PKTextField(text: $viewModel.userProfile.dogBreed)
                 }
                 
                 Spacer().frame(height: 30)
@@ -85,8 +90,11 @@ struct DogInfoView: View {
                     Text("나이")
                         .font(.body_14_sb)
                     HStack {
-                        ChoiceButton("나이를 알아요")
-                        ChoiceButton("나이를 몰라요")
+                        ForEach(viewModel.KnownDogAgeList, id: \.self) {
+                            ChoiceButton($0, isSelected: $0 == viewModel.userProfile.knownDogAgeResult) { result in
+                                viewModel.changeUserInfo(.KnownDogAge(result))
+                            }
+                        }
                     }
                 }
                 Spacer()
@@ -118,6 +126,4 @@ struct DogInfoView: View {
     }
 }
 
-#Preview {
-    DogInfoView()
-}
+
