@@ -26,13 +26,7 @@ struct LocationDateView: View {
             }
             .padding(.bottom, 12)
             
-            Text("옵션")
-                .font(.body_14_m)
-                .foregroundStyle(.gray200)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(.pawkeyWhite2)
-                .cornerRadius(4)
+            Chip(title: "옵션")
                 .padding(.bottom, 12)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
