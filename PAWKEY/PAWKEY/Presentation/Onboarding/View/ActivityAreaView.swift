@@ -39,18 +39,20 @@ struct ActivityAreaView: View {
                 
                 Spacer().frame(height: 42)
                 
-                VStack(alignment: .leading) {
-                    Text("법정동")
-                        .font(.body_14_sb)
-                    FlexibleGridView(availableWidth: proxy.size.width - 32,
-                                     data: viewModel.legalRegionList,
-                                     spacing: 14,
-                                     alignment: .leading, content: {
-                        ChoiceButton($0, type: .small, isSelected: $0 == viewModel.userProfile.legalRegion) { legalRegion in
-                            viewModel.changeUserInfo(.legalRegion(legalRegion))
-                        }
-                    })
-                    .padding(.trailing, 72)
+                if !viewModel.userProfile.region.isEmpty {
+                    VStack(alignment: .leading) {
+                        Text("법정동")
+                            .font(.body_14_sb)
+                        FlexibleGridView(availableWidth: proxy.size.width - 32,
+                                         data: viewModel.legalRegionList,
+                                         spacing: 14,
+                                         alignment: .leading, content: {
+                            ChoiceButton($0, type: .small, isSelected: $0 == viewModel.userProfile.legalRegion) { legalRegion in
+                                viewModel.changeUserInfo(.legalRegion(legalRegion))
+                            }
+                        })
+                        .padding(.trailing, 72)
+                    }
                 }
                 
                 Spacer()

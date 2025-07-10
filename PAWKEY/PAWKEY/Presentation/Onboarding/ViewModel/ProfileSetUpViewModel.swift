@@ -19,6 +19,7 @@ struct UserProfile {
     var societyLevel: String = ""
     var knownDogAgeResult = ""
     var dogBreed: String = ""
+    var isNeutered = false
 }
 
 enum ProfileField {
@@ -33,6 +34,7 @@ enum ProfileField {
     case energyLevel(String)
     case societyLevel(String)
     case dogBreed(String)
+    case neutered(Bool)
 }
 
 final class ProfileSetUpViewModel: ObservableObject {
@@ -129,6 +131,8 @@ final class ProfileSetUpViewModel: ObservableObject {
             userProfile.societyLevel = societyLevel
         case .dogBreed(let dogBreed):
             userProfile.dogBreed = dogBreed
+        case .neutered(let neutered):
+            userProfile.isNeutered = neutered
         }
     }
 }
