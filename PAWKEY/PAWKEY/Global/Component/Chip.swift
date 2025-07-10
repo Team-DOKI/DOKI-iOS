@@ -17,7 +17,7 @@ struct Chip: View {
             .foregroundStyle(isActive ? .black : .gray300)
             .padding(.horizontal, 6)
             .padding(.vertical, 4)
-            .background(.white)
+            .background(isActive ? .pawkeyWhite1 : .pawkeyWhite2)
             .cornerRadius(4)
     }
 }
