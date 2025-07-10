@@ -116,7 +116,7 @@ struct CourseDetailView: View {
             .padding(.horizontal, 16)
         }
         .topNavigationView(left: {
-            Image(.arrowRightBlack)
+            Image(.chevronLeft)
         }, center: {
             Text("산책 후기 작성")
                 .font(.body_16_sb)
