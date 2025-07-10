@@ -30,6 +30,7 @@ enum MyPageScreen: Hashable {
     case myPage
     case userProfile
     case petProfile
+    case savedRoute
 }
 
 enum OnboardingScreen: Hashable {

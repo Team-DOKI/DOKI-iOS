@@ -29,6 +29,8 @@ struct MyPageFlow: View {
             UserProfileView()
         case .petProfile:
             PetProfileView()
+        case .savedRoute:
+            SavedRouteView()
         }
     }
 }
