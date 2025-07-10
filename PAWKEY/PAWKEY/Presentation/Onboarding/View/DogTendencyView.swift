@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct DogTendencyView: View {
+    @ObservedObject var viewModel: ProfileSetUpViewModel
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
-    var energyLevel = ["매우 차분해요", "조금 느긋해요", "활동적이에요", "아주 활발해요"]
-    var societyLevel = ["잘 어울려요", "천천히 친해져요", "낯을 가려요", "상관없어요"]
-    
+      
     var body: some View {
         GeometryReader { proxy in
             VStack(alignment: .leading) {
@@ -27,8 +26,10 @@ struct DogTendencyView: View {
                     Text("에너지 레벨")
                         .font(.body_14_sb)
                     LazyVGrid(columns: columns) {
-                        ForEach(energyLevel, id: \.self) {
-                            ChoiceButton($0)
+                        ForEach(viewModel.energyLevel, id: \.self) {
+                            ChoiceButton($0, isSelected: $0 == viewModel.userProfile.energyLevel) { result in
+                                viewModel.changeUserInfo(.energyLevel(result))
+                            }
                         }
                     }
                 }
@@ -39,8 +40,10 @@ struct DogTendencyView: View {
                     Text("사회성 레벨")
                         .font(.body_14_sb)
                     LazyVGrid(columns: columns) {
-                        ForEach(societyLevel, id: \.self) {
-                            ChoiceButton($0)
+                        ForEach(viewModel.societyLevel, id: \.self) {
+                            ChoiceButton($0, isSelected: $0 == viewModel.userProfile.societyLevel) { result in
+                                viewModel.changeUserInfo(.societyLevel(result))
+                            }
                         }
                     }
                 }
@@ -48,8 +51,4 @@ struct DogTendencyView: View {
             .padding(.horizontal, 16)
         }
     }
-}
-
-#Preview {
-    DogTendencyView()
 }

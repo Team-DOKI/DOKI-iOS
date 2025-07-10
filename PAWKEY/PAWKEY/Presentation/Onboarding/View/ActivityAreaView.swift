@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ActivityAreaView: View {
-    
+    @ObservedObject var viewModel: ProfileSetUpViewModel
     
     var body: some View {
         GeometryReader { proxy in
@@ -27,10 +27,12 @@ struct ActivityAreaView: View {
                     Text("지역구")
                         .font(.body_14_sb)
                     FlexibleGridView(availableWidth: proxy.size.width - 32,
-                                     data: ["강남구"],
+                                     data: viewModel.regionList,
                                      spacing: 14,
                                      alignment: .leading, content: {
-                        ChoiceButton($0, type: .small)
+                        ChoiceButton($0, type: .small, isSelected: $0 == viewModel.userProfile.region) { region in
+                            viewModel.changeUserInfo(.region(region))
+                        }
                     })
                     .clipped()
                 }
@@ -41,10 +43,12 @@ struct ActivityAreaView: View {
                     Text("법정동")
                         .font(.body_14_sb)
                     FlexibleGridView(availableWidth: proxy.size.width - 32,
-                                     data: ["개포동", "논현동", "대치동", "도곡동", "삼성동", "세곡동", "수서동", "신사동", "압구정동", "역삼동", "율현동", "자곡동", "청담동", "일원동"],
+                                     data: viewModel.legalRegionList,
                                      spacing: 14,
                                      alignment: .leading, content: {
-                        ChoiceButton($0, type: .small)
+                        ChoiceButton($0, type: .small, isSelected: $0 == viewModel.userProfile.legalRegion) { legalRegion in
+                            viewModel.changeUserInfo(.legalRegion(legalRegion))
+                        }
                     })
                     .padding(.trailing, 72)
                 }
@@ -54,8 +58,4 @@ struct ActivityAreaView: View {
             .padding(.horizontal, 16)
         }
     }
-}
-
-#Preview {
-    ActivityAreaView()
 }

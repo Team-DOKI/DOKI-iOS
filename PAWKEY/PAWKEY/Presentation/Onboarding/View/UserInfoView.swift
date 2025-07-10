@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct UserInfoView: View {
+    @ObservedObject var viewModel: ProfileSetUpViewModel
+    
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 0) {
@@ -23,7 +25,7 @@ struct UserInfoView: View {
                 VStack(alignment:.leading) {
                     Text("이름")
                         .font(.body_14_sb)
-                    PKTextField(text: .constant(""))
+                    PKTextField(text: $viewModel.userProfile.userName)
                 }
                 
                 Spacer().frame(height: 30)
@@ -32,8 +34,11 @@ struct UserInfoView: View {
                     Text("성별")
                         .font(.body_14_sb)
                     HStack {
-                        ChoiceButton("남성")
-                        ChoiceButton("여자")
+                        ForEach(viewModel.genderList, id: \.self) { gender in
+                            ChoiceButton(gender, isSelected: gender == viewModel.userProfile.userGender) { gender in
+                                viewModel.changeUserInfo(.userGender(gender))
+                            }
+                        }
                     }
                 }
                 
@@ -42,7 +47,7 @@ struct UserInfoView: View {
                 VStack(alignment:.leading) {
                     Text("나이")
                         .font(.body_14_sb)
-                    PKTextField(text: .constant(""))
+                    PKTextField(text: $viewModel.userProfile.userAge, type: .number)
                 }
                 
                 Spacer()
@@ -53,8 +58,4 @@ struct UserInfoView: View {
             .padding(.horizontal, 16)
         }
     }
-}
-
-#Preview {
-    UserInfoView()
 }

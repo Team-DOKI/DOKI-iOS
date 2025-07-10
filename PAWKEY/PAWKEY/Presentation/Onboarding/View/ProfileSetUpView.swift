@@ -9,52 +9,61 @@ import SwiftUI
 
 struct ProfileSetUpView: View {
     
-    @StateObject var viewModel: ProfileSetUpViewModel
-    
-    init(viewModel: ProfileSetUpViewModel) {
-        self._viewModel = StateObject(wrappedValue: viewModel)
-    }
+    @StateObject var viewModel = ProfileSetUpViewModel()
     
     var body: some View {
         ZStack {
             GeometryReader { proxy in
                 VStack {
-                    ProgessBarView(
+                    ProgressBarView(
                         width: proxy.size.width,
-                        step:viewModel.step
+                        step: viewModel.currentStepIndex
                     )
+                    
                     Spacer()
                     
                     // 서브뷰
                     Group {
-                        switch viewModel.profileStep {
+                        switch viewModel.currentStep {
                         case .ownerInfo:
-                            UserInfoView()
+                            UserInfoView(viewModel: viewModel)
+                            
                         case .activityArea:
-                            ActivityAreaView()
+                            ActivityAreaView(viewModel: viewModel)
+                            
                         case .dogInfo:
-                            DogInfoView()
+                            DogInfoView(viewModel: viewModel)
+                            
                         case .dogTendency:
-                            DogTendencyView()
+                            DogTendencyView(viewModel: viewModel)
                         }
                     }
+                    
                     Spacer()
-                    CTAButton(title: "다음으로") {
-                        viewModel.goToNextStep()
+                                        
+                    CTAButton(
+                        title: viewModel.currentStep == .dogTendency ? "등록하기" : "다음으로",
+                        isDisabled: viewModel.isButtonDisabled
+                    ) {
+                        if viewModel.currentStep == .dogTendency {
+                            print("등록")
+                        } else {
+                            viewModel.goToNextStep()
+                        }
                     }
                     .padding(.bottom, 29)
                     .padding(.horizontal, 16)
                 }
                 .topNavigationView(left: {
                     VStack {
-                        if viewModel.step > 1 {
+                        if viewModel.currentStepIndex > 1 {
                             BackButton {
                                 viewModel.goToPrevStep()
                             }
                         }
                     }
                 }, center: {
-                    Text(viewModel.profileStep.navigationTitle)
+                    Text(viewModel.currentStep.title)
                         .font(.body_16_sb)
                 })
             }
@@ -63,7 +72,7 @@ struct ProfileSetUpView: View {
     }
 }
 
-struct ProgessBarView: View {
+struct ProgressBarView: View {
     let width: CGFloat
     let step: Int
     
@@ -72,8 +81,9 @@ struct ProgessBarView: View {
             Rectangle()
                 .frame(height: 2)
                 .foregroundStyle(.gray100)
+            
             Rectangle()
-                .frame(width: width * Double(step) / 4, height: 2)
+                .frame(width: width * CGFloat(step) / 4, height: 2)
                 .foregroundStyle(.green500)
         }
         .animation(.easeInOut, value: step)
