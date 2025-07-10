@@ -11,35 +11,49 @@ struct TabBarView: View {
     @EnvironmentObject var tabBarState: TabBarState
     
     var body: some View {
-        HStack(spacing: 0) {
-            ForEach(TabBarItem.allCases, id: \.self) { item in
-                Button(action: {
-                    tabBarState.selectedTab = item
-                }) {
-                    ZStack {
-                        if tabBarState.selectedTab == item {
-                            Circle()
-                                .fill(Color.white)
-                                .frame(width: 48, height: 48)
+        GeometryReader { geo in
+            let buttonWidth = geo.size.width / CGFloat(TabBarItem.allCases.count)
+            
+            ZStack(alignment: .leading) {
+                Circle()
+                    .fill(Color.white)
+                    .frame(width: 48, height: 48)
+                    .offset(x: indicatorOffset(buttonWidth: buttonWidth))
+                    .animation(.easeInOut(duration: 0.2), value: tabBarState.selectedTab)
+                
+                HStack(spacing: 0) {
+                    ForEach(TabBarItem.allCases, id: \.self) { item in
+                        Button(action: {
+                            tabBarState.selectedTab = item
+                        }) {
+                            (tabBarState.selectedTab == item ? item.selectedImage : item.normalImage)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 24, height: 24)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 60)
                         }
-                        
-                        (tabBarState.selectedTab == item ? item.selectedImage : item.normalImage)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 24, height: 24)
-                            .foregroundColor(tabBarState.selectedTab == item ? Color(red: 0.09, green: 0.74, blue: 0.18) : .white)
                     }
-                    .frame(maxWidth: .infinity)
                 }
             }
+            .frame(width: geo.size.width, height: 60)
+            .background(.pawkeyBlack)
+            .cornerRadius(200)
+            .shadow(color: .pawkeyBlack.opacity(0.25), radius: 2, x: 0, y: 4)
+            .padding(.bottom, 12)
+            .offset(y: tabBarState.isHidden ? 100 : 0)
+            .animation(.easeInOut(duration: 0.3), value: tabBarState.isHidden)
         }
-        .padding(.horizontal, 6)
         .frame(width: 262, height: 60)
-        .background(Color(red: 0.12, green: 0.12, blue: 0.12))
-        .cornerRadius(200)
-        .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
-        .padding(.bottom, 12)
-        .offset(y: tabBarState.isHidden ? 100 : 0)
-        .animation(.easeInOut(duration: 0.3), value: tabBarState.isHidden)
+        .padding(.horizontal, 6)
+    }
+    
+    private func indicatorOffset(buttonWidth: CGFloat) -> CGFloat {
+        guard let index = TabBarItem.allCases.firstIndex(of: tabBarState.selectedTab) else {
+            return 0
+        }
+        
+        let centerOffset = (buttonWidth - 48) / 2
+        return CGFloat(index) * buttonWidth + centerOffset
     }
 }
