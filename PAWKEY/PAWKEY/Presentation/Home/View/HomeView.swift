@@ -135,14 +135,13 @@ struct HomeView: View {
             Text("일출")
                 .font(.body_16_sb)
                 .foregroundStyle(.pawkeyBlack)
-                .padding(.bottom, 16)
+                .padding(.bottom, 12)
         }
         .frame(width: 91, height: 120)
         .background(alignment: .bottom) {
             Image(.sunrise)
         }
         .cornerRadius(15)
-        .background(.pawkeyWhite1)
     }
     
     private var startWalkButton: some View {
