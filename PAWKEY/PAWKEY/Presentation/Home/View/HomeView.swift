@@ -178,9 +178,12 @@ struct HomeView: View {
                     .foregroundStyle(.pawkeyBlack)
             }
             Spacer()
-            ForEach(14...20, id: \.self) { day in
+            ForEach(viewModel.dayList, id: \.self) { dayInfo in
                 VStack(spacing: 15) {
-                    Text("\(day)\n월")
+                    Text(dayInfo.day)
+                        .font(.body_14_r)
+                        .foregroundStyle(.gray400)
+                    Text("\(dayInfo.dayNumber)")
                         .font(.body_14_r)
                         .foregroundStyle(.gray400)
                     Circle()
