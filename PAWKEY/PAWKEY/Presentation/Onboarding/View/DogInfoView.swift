@@ -74,6 +74,15 @@ struct DogInfoView: View {
                             }
                         }
                     }
+                    
+                    Button {
+                        viewModel.changeUserInfo(.neutered(!viewModel.userProfile.isNeutered))
+                    } label: {
+                        Text("중성화했어요")
+                            .font(.body_14_r)
+                            .foregroundStyle(viewModel.userProfile.isNeutered ? .pawkeyBlack : .gray300)
+                    }
+
                 }
                 
                 Spacer().frame(height: 30)
@@ -90,7 +99,7 @@ struct DogInfoView: View {
                     Text("나이")
                         .font(.body_14_sb)
                     HStack {
-                        ForEach(viewModel.KnownDogAgeList, id: \.self) {
+                        ForEach(viewModel.knownDogAgeList, id: \.self) {
                             ChoiceButton($0, isSelected: $0 == viewModel.userProfile.knownDogAgeResult) { result in
                                 viewModel.changeUserInfo(.KnownDogAge(result))
                             }
