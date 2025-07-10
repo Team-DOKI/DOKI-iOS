@@ -25,15 +25,15 @@ struct ArchiveView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
                         if let snapshot = snapshot {
-                                                    Image(uiImage: snapshot)
-                                                        .resizable()
-                                                        .scaledToFill()
-                                                        .frame(width: 160, height: 188)
-                                                        .cornerRadius(8)
-                                                } else {
-                                                    RoundedRectangle(cornerRadius: 8)
-                                                        .frame(width: 160, height: 188)
-                                                }
+                            Image(uiImage: snapshot)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 160, height: 188)
+                                .cornerRadius(8)
+                        } else {
+                            RoundedRectangle(cornerRadius: 8)
+                                .frame(width: 160, height: 188)
+                        }
                         
                         ForEach(viewModel.selectedImages, id: \.self) { image in
                             Image(uiImage: image)
@@ -211,7 +211,7 @@ struct QuestionKeywordView: View {
 
 struct FlowLayout: Layout {
     var spacing: CGFloat = 8
-
+    
     // 전체 레이아웃 크기 계산
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let maxWidth = proposal.width ?? .infinity
@@ -219,46 +219,46 @@ struct FlowLayout: Layout {
         var x: CGFloat = 0 // 현재 줄에 채워진 너비
         var y: CGFloat = 0 // 누적 높이
         var lineHeight: CGFloat = 0 // 현재 줄에서 가장 큰 높이
-
+        
         for subview in subviews {
             let size = subview.sizeThatFits(.unspecified)
-
+            
             // // 현재 줄 너비 넘으면 다음 줄로 이동
             if x + size.width > maxWidth {
                 x = 0
                 y += lineHeight + spacing
                 lineHeight = 0
             }
-
+            
             x += size.width + spacing
             lineHeight = max(lineHeight, size.height)
         }
-
+        
         // 마지막 줄 높이 더하기
         return CGSize(width: maxWidth, height: y + lineHeight)
     }
-
+    
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
         let maxWidth = bounds.width
         var x: CGFloat = 0
         var y: CGFloat = 0
         var lineHeight: CGFloat = 0
-
+        
         for subview in subviews {
             let size = subview.sizeThatFits(.unspecified)
-
+            
             if x + size.width > maxWidth {
                 // 다음 줄로
                 x = 0
                 y += lineHeight + spacing
                 lineHeight = 0
             }
-
+            
             subview.place(
                 at: CGPoint(x: bounds.minX + x, y: bounds.minY + y),
                 proposal: ProposedViewSize(size)
             )
-
+            
             x += size.width + spacing
             lineHeight = max(lineHeight, size.height)
         }
