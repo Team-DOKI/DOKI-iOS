@@ -67,8 +67,7 @@ struct UserProfileView: View {
         .topNavigationView(left: {
             BackButton {
                 router.pop()
-            }
-            
+            }      
         }, center: {
             Text("견주 프로필")
                 .font(.body_16_sb)
