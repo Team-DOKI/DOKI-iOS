@@ -8,15 +8,18 @@
 import SwiftUI
 
 struct HomeView: View {
+    let topSafeAreaInset = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
     @EnvironmentObject var router: TabRouter<HomeScreen>
+    @State private var isShowMenu = false
     
     var body: some View {
         ZStack {
-            Color.pawkeyWhite1.ignoresSafeArea(.all, edges: .top)
+            Color.pawkeyWhite1
+            
             VStack(spacing: 0) {
                 topHeaderView
                 VStack {
-                    Spacer().frame(height: 36)
+                    Spacer().frame(height: 12)
                     weatherView
                     Spacer().frame(height: 12)
                     HStack {
@@ -32,45 +35,69 @@ struct HomeView: View {
                 .padding(.horizontal, 16)
                 Spacer()
             }
-        }        
+            .padding(.top, -topSafeAreaInset)
+            .onTapGesture {
+                isShowMenu = false
+            }
+        }
+        .contextMenu(isPresented: $isShowMenu) {
+            ZStack {
+                VStack(alignment: .trailing, spacing: 0){
+                    topHeaderView
+                    HStack(spacing: 6) {
+                        Image(.systemIcon)
+                        Text("내 지역 관리")
+                            .font(.body_16_sb)
+                            .foregroundStyle(.pawkeyBlack)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 20)
+                    .background(.white)
+                    .cornerRadius(8)
+                    .padding(.trailing, 16)
+                    .onTapGesture {
+                        
+                    }
+                    Spacer()
+                }
+                .padding(.top, -topSafeAreaInset)
+            }
+        }
     }
     
     private var topHeaderView: some View {
-        Color.clear.overlay(
-            VStack {
-                HStack {
-                    Text("D+36")
-                        .font(.caption_12_sb)
-                        .foregroundStyle(.pawkeyWhite1)
-                        .padding(.vertical, 2)
-                        .padding(.horizontal, 12)
-                        .background(.pawkeyGreen)
-                        .clipShape(Capsule())
-                    Text("연속산책")
-                        .font(.body_14_sb)
-                        .foregroundStyle(.pawkeyWhite1)
-                    Spacer()
-                    Button {
-                        
-                    } label: {
-                        HStack {
-                            Image(.location)
-                            Text("강남구 역삼동")
-                                .font(.body_14_sb)
-                                .foregroundStyle(.pawkeyWhite1)
-                            Image(.arrowDownWhite)
-                        }
+        VStack {
+            HStack {
+                Text("D+36")
+                    .font(.caption_12_sb)
+                    .foregroundStyle(.pawkeyWhite1)
+                    .padding(.vertical, 2)
+                    .padding(.horizontal, 12)
+                    .background(.pawkeyGreen)
+                    .clipShape(Capsule())
+                Text("연속산책")
+                    .font(.body_14_sb)
+                    .foregroundStyle(.pawkeyWhite1)
+                Spacer()
+                Button {
+                    isShowMenu = true
+                } label: {
+                    HStack {
+                        Image(.location)
+                        Text("강남구 역삼동")
+                            .font(.body_14_sb)
+                            .foregroundStyle(.pawkeyWhite1)
+                        Image(.arrowDownWhite)
                     }
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
             }
-                .background(.pawkeyBlack)
-                .cornerRadius(12, corners: [.bottomLeft, .bottomRight])
-        )
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .padding(.top, topSafeAreaInset)
+        }
         .background(.pawkeyBlack)
-        .fixedSize(horizontal: false, vertical: true)
-        
+        .cornerRadius(12, corners: [.bottomLeft, .bottomRight])
+        .ignoresSafeArea(edges: .top)
     }
     
     private var weatherView: some View {
