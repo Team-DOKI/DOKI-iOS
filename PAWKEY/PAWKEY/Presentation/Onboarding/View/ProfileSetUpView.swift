@@ -69,6 +69,9 @@ struct ProfileSetUpView: View {
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
+        .onTapGesture {
+            UIApplication.shared.hideKeyboard()
+        }
     }
 }
 

@@ -59,7 +59,7 @@ struct DogInfoView: View {
                 VStack(alignment:.leading) {
                     Text("반려견 이름")
                         .font(.body_14_sb)
-                    PKTextField(text: $viewModel.userProfile.dogName)
+                    PKTextField(text: $viewModel.userProfile.dogName, placeholder: "이름을 입력해주세요")
                 }
                 
                 Spacer().frame(height: 30)
@@ -82,7 +82,6 @@ struct DogInfoView: View {
                             .font(.body_14_r)
                             .foregroundStyle(viewModel.userProfile.isNeutered ? .pawkeyBlack : .gray300)
                     }
-
                 }
                 
                 Spacer().frame(height: 30)
@@ -99,13 +98,17 @@ struct DogInfoView: View {
                     Text("나이")
                         .font(.body_14_sb)
                     HStack {
-                        ForEach(viewModel.knownDogAgeList, id: \.self) {
-                            ChoiceButton($0, isSelected: $0 == viewModel.userProfile.knownDogAgeResult) { result in
-                                viewModel.changeUserInfo(.KnownDogAge(result))
+                        ForEach(KnownDogAge.allCases, id: \.self) {
+                            ChoiceButton($0.rawValue, isSelected: viewModel.userProfile.knownDogAge != nil ? viewModel.userProfile.knownDogAge == $0 : false) { selected in
+                                viewModel.changeUserInfo(.KnownDogAge(.init(rawValue: selected)))
                             }
                         }
                     }
+                    if viewModel.userProfile.isKnownAge {
+                        PKTextField(text: $viewModel.userProfile.dogAge, placeholder: "나이를 입력해주세요.", type: .number)
+                    }
                 }
+                Spacer().frame(height: 50)
                 Spacer()
                 
             }

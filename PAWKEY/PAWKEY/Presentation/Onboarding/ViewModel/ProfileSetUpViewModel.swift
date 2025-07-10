@@ -14,12 +14,22 @@ struct UserProfile {
     var region: String = ""
     var legalRegion: String = ""
     var dogName: String = ""
+    var dogAge: String = ""
     var dogGender: String = ""
     var energyLevel: String = ""
     var societyLevel: String = ""
-    var knownDogAgeResult = ""
+    var knownDogAge: KnownDogAge?
     var dogBreed: String = ""
     var isNeutered = false
+    
+    var isKnownAge: Bool {
+        knownDogAge == .known
+    }
+}
+
+enum KnownDogAge: String, CaseIterable, Hashable {
+    case known = "나이를 알아요"
+    case unknown = "나이를 몰라요"
 }
 
 enum ProfileField {
@@ -30,7 +40,7 @@ enum ProfileField {
     case legalRegion(String)
     case dogName(String)
     case dogGender(String)
-    case KnownDogAge(String)
+    case KnownDogAge(KnownDogAge?)
     case energyLevel(String)
     case societyLevel(String)
     case dogBreed(String)
@@ -71,10 +81,10 @@ final class ProfileSetUpViewModel: ObservableObject {
     let knownDogAgeList = ["나이를 알아요", "나이를 몰라요"]
     let energyLevel = ["매우 차분해요", "조금 느긋해요", "활동적이에요", "아주 활발해요"]
     let societyLevel = ["잘 어울려요", "천천히 친해져요", "낯을 가려요", "상관없어요"]
-        
+    
     @Published var userProfile = UserProfile()
     @Published var currentStep: ProfileStep = .ownerInfo
-
+    
     var currentStepIndex: Int { currentStep.rawValue }
     var isButtonDisabled: Bool {
         switch currentStep {
@@ -91,7 +101,8 @@ final class ProfileSetUpViewModel: ObservableObject {
             return userProfile.dogName.isEmpty ||
             userProfile.dogGender.isEmpty ||
             userProfile.dogBreed.isEmpty ||
-            userProfile.knownDogAgeResult.isEmpty
+            userProfile.knownDogAge == .none ||
+            (userProfile.isKnownAge && userProfile.dogAge.isEmpty)
             
         case .dogTendency:
             return userProfile.energyLevel.isEmpty ||
@@ -123,8 +134,8 @@ final class ProfileSetUpViewModel: ObservableObject {
             userProfile.dogName = name
         case .dogGender(let gender):
             userProfile.dogGender = gender
-        case .KnownDogAge(let knownDogAgeResult):
-            userProfile.knownDogAgeResult = knownDogAgeResult
+        case .KnownDogAge(let knownDogAge):
+            userProfile.knownDogAge = knownDogAge
         case .energyLevel(let energyLevel):
             userProfile.energyLevel = energyLevel
         case .societyLevel(let societyLevel):
