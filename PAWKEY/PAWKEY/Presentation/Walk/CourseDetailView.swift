@@ -13,20 +13,20 @@ struct CourseDetailView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             if let snapshot = viewModel.images.first {
-                            Image(uiImage: snapshot)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 186)
-                                .frame(maxWidth: .infinity)
-                                .clipped()
-                                .padding(.bottom, 24)
-                        } else {
-                            Rectangle()
-                                .fill(Color.pawkeyWhite2)
-                                .frame(height: 186)
-                                .frame(maxWidth: .infinity)
-                                .padding(.bottom, 24)
-                        }
+                Image(uiImage: snapshot)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 186)
+                    .frame(maxWidth: .infinity)
+                    .clipped()
+                    .padding(.bottom, 24)
+            } else {
+                Rectangle()
+                    .fill(Color.pawkeyWhite2)
+                    .frame(height: 186)
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom, 24)
+            }
             
             VStack(alignment: .leading) {
                 HStack(spacing: 10) {
@@ -52,21 +52,26 @@ struct CourseDetailView: View {
                         .foregroundColor(.pawkeyBlack)
                 }
                 .padding(.bottom, 24)
-                
-                LocationDateView()
-                
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 16)
+            
+            LocationDateView()
+            
+            VStack(alignment: .leading) {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 6) {
                         ForEach(viewModel.images.dropFirst(), id: \.self) { image in
-                                                    Image(uiImage: image)
-                                                        .resizable()
-                                                        .scaledToFill()
-                                                        .frame(width: 100, height: 100)
-                                                        .clipped()
-                                                        .cornerRadius(4)
-                                                }
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 100, height: 100)
+                                .clipped()
+                                .cornerRadius(4)
+                        }
                     }
                 }
+                .padding(.bottom, 12)
                 
                 Text("후기 글 본문")
                     .font(.body_14_r)
