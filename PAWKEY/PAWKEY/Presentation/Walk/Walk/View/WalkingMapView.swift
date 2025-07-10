@@ -152,7 +152,7 @@ extension WalkCourseViewModel {
             
             if self.pathCoordinates.count > 1 {
                 let context = UIGraphicsGetCurrentContext()
-                context?.setStrokeColor(UIColor.green.cgColor)
+                context?.setStrokeColor(UIColor.green500.cgColor)
                 context?.setLineWidth(4.0 * UIScreen.main.scale)
                 context?.setLineJoin(.round)
                 context?.setLineCap(.round)
