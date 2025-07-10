@@ -12,6 +12,7 @@ struct PKTextField: View {
     enum TextFieldType {
         case normal
         case password
+        case number
     }
     
     @State var isShowPassword = false
@@ -24,7 +25,15 @@ struct PKTextField: View {
     var body: some View {
         ZStack {
             Group {
-                if type == .password {
+                switch type {
+                case .normal:
+                    TextField(text: $text) {
+                        Text(placeholder ?? "입력해주세요")
+                            .font(.pretendard(size: 14, weight: .regular))
+                            .foregroundStyle(.gray200)
+                    }
+                    .focused($isFocused)
+                case .password:
                     HStack {
                         ZStack {
                             SecureField("", text: $text)
@@ -45,13 +54,14 @@ struct PKTextField: View {
                                 .padding(.trailing, 16)
                         }
                     }
-                } else {
+                case .number:
                     TextField(text: $text) {
                         Text(placeholder ?? "입력해주세요")
                             .font(.pretendard(size: 14, weight: .regular))
                             .foregroundStyle(.gray200)
                     }
                     .focused($isFocused)
+                    .keyboardType(.numberPad)
                 }
             }
             .padding(.leading, 16)

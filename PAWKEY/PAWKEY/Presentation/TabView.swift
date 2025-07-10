@@ -12,7 +12,7 @@ struct TabView: View {
     @StateObject private var walkRouter = TabRouter<WalkScreen>()
     @StateObject private var myPageRouter = TabRouter<MyPageScreen>()
     
-    @StateObject private var tabBarState = TabBarState()
+    @EnvironmentObject var tabBarState: TabBarState
     
     var body: some View {
         ZStack {
@@ -20,24 +20,20 @@ struct TabView: View {
             case .home:
                 HomeFlow()
                     .environmentObject(homeRouter)
-                    .environmentObject(tabBarState)
             case .walk:
                 WalkFlow()
                     .environmentObject(walkRouter)
-                    .environmentObject(tabBarState)
             case .community:
                 CommunityView()
             case .mypage:
                 MyPageFlow()
                     .environmentObject(myPageRouter)
-                    .environmentObject(tabBarState)
             }
             
             VStack {
                 Spacer()
                 
                 TabBarView()
-                    .environmentObject(tabBarState)
             }
         }
     }

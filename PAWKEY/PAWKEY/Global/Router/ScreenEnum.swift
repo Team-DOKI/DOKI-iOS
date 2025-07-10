@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 enum HomeScreen: Hashable {
-    case home
+    case home    
     case changeMyArea
 }
 
@@ -30,4 +30,9 @@ enum MyPageScreen: Hashable {
     case myPage
     case userProfile
     case petProfile
+}
+
+enum OnboardingScreen: Hashable {
+    case login
+    case profileSetUp
 }
