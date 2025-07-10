@@ -207,6 +207,24 @@ struct HomeView: View {
                 .resizable()
                 .frame(maxWidth: .infinity, maxHeight: 168)
                 .background(.gray50)
+                .overlay(alignment: .bottomLeading) {
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Image(.locationFill)
+                            Text("강남구 역삼동")
+                                .font(.body_14_m)
+                                .foregroundStyle(.pawkeyWhite1)
+                        }
+                        HStack {
+                            Image(.clockWhite)
+                            Text("년도.월.일(요일) | 시작시간 - 종료 시간")
+                                .font(.body_14_m)
+                                .foregroundStyle(.pawkeyWhite1)
+                        }
+                    }
+                    .padding(.leading, 16)
+                    .padding(.bottom, 12)
+                }
             
             HStack(spacing: 6) {
                 Chip(title: "산책 옵션 입력", isActive: true)
