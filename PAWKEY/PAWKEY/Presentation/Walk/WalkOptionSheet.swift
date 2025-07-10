@@ -20,7 +20,7 @@ struct WalkOptionSheet: View {
         .init(title: "41~60분", isSelected: false),
         .init(title: "1시간 넘게", isSelected: false),
     ]
-
+    
     @State private var safetyList: [CheckOption] = [
         .init(title: "킥보드/자전거 거의 없음", isSelected: false),
         .init(title: "차량 거의 없음", isSelected: false),
@@ -28,27 +28,27 @@ struct WalkOptionSheet: View {
         .init(title: "보도/차도 구분됨", isSelected: false),
         .init(title: "넓은 보도", isSelected: false),
     ]
-
+    
     @State private var convenienceList: [CheckOption] = [
         .init(title: "배변 봉투 쓰레기통", isSelected: false),
         .init(title: "벤치", isSelected: false),
         .init(title: "편의점", isSelected: false),
         .init(title: "반려견 동반 카페", isSelected: false),
     ]
-
+    
     @State private var environmentList: [CheckOption] = [
-        .init(title: "풀 많은 길 위주", isSelected: false),
+        .init(title: "풀 많은 길 위주", isSelected: true),
         .init(title: "흙길 위주", isSelected: false),
         .init(title: "아스팔트/벽돌길 위주", isSelected: false),
         .init(title: "뛰어놀 공간", isSelected: false),
     ]
-
+    
     @State private var moodList: [CheckOption] = [
-        .init(title: "조용한 분위기", isSelected: false),
+        .init(title: "조용한 분위기", isSelected: true),
         .init(title: "적당한 유동인구", isSelected: false),
         .init(title: "유동 인구 많음", isSelected: false),
     ]
-
+    
     
     var body: some View {
         ScrollView {
@@ -58,46 +58,60 @@ struct WalkOptionSheet: View {
                     .font(.head_20_b)
                     .padding(.leading, 16)
                 Spacer().frame(height: 36)
+                Text("복수 선택 옵션")
+                    .font(.caption_12_sb)
+                    .foregroundStyle(.green500)
+                    .frame(maxWidth: .infinity, maxHeight: 30, alignment: .leading)
+                    .padding(.leading, 16)
                 CheckBoxGroup(
                     isExpanded: $isExpandWalkingTime,
                     title: "🚶 산책 시간",
                     items: walkingTimeList
-                ) { selectedOption in
-                    
+                ) { itemIndex in
+                    walkingTimeList[itemIndex].isSelected.toggle()
                 }
-
                 CheckBoxGroup(
                     isExpanded: $isExpandSafety,
                     title: "🚸 안전",
                     items: safetyList
-                ) { selectedOption in
-                    
+                ) { itemIndex in
+                    safetyList[itemIndex].isSelected.toggle()
                 }
-
+                
                 CheckBoxGroup(
                     isExpanded: $isExpandConvenience,
                     title: "🧺 편리성 관련",
                     items: convenienceList
-                ) { selectedOption in
-                    
+                ) { itemIndex in
+                    convenienceList[itemIndex].isSelected.toggle()
                 }
-
-                CheckBoxGroup(
+                
+                Spacer().frame(height: 36)
+                Text("단일 선택 옵션")
+                    .font(.caption_12_sb)
+                    .foregroundStyle(.green500)
+                    .frame(maxWidth: .infinity, maxHeight: 30, alignment: .leading)
+                    .padding(.leading, 16)
+                
+                RadioGroup(
                     isExpanded: $isExpandEnvironment,
                     title: "🌿 환경 관련",
                     items: environmentList
-                ) { selectedOption in
-                    
+                ) { itemIndex in
+                    guard let index = environmentList.firstIndex(where: {$0.isSelected}) else { return }
+                    environmentList[index].isSelected = false
+                    environmentList[itemIndex].isSelected = true
                 }
-
-                CheckBoxGroup(
+                
+                RadioGroup(
                     isExpanded: $isExpandMood,
                     title: "😌 분위기",
                     items: moodList
-                ) { selectedOption in
-                    
+                ) { itemIndex in
+                    guard let index = moodList.firstIndex(where: {$0.isSelected}) else { return }
+                    moodList[index].isSelected = false
+                    moodList[itemIndex].isSelected = true
                 }
-
             }
         }
     }
