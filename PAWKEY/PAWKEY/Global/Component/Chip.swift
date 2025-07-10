@@ -13,7 +13,7 @@ struct Chip: View {
     
     var body: some View {
         Text(title)
-            .font(.pretendard(size: 14, weight: .medium))
+            .font(.body_14_m)
             .foregroundStyle(isActive ? .black : .gray300)
             .padding(.horizontal, 6)
             .padding(.vertical, 4)
