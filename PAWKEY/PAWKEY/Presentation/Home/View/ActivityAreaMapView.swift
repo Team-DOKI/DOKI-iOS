@@ -129,8 +129,6 @@ struct PolygonMapView: UIViewRepresentable {
             let polygon = MKPolygon(coordinates: coords, count: coords.count)
             uiView.addOverlay(polygon)
         }
-        
-        uiView.setRegion(region, animated: true)
     }
     
     func makeCoordinator() -> Coordinator {
