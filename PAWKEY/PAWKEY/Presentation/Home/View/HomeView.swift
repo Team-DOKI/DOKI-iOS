@@ -11,7 +11,7 @@ struct HomeView: View {
     let topSafeAreaInset = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
     @EnvironmentObject var router: TabRouter<HomeScreen>
     @EnvironmentObject var tabBarstate: TabBarState
-    @State private var isShowMenu = false
+    @StateObject var viewModel = HomeViewModel()
     
     var body: some View {
         ZStack {
@@ -38,10 +38,10 @@ struct HomeView: View {
             }
             .padding(.top, -topSafeAreaInset)
             .onTapGesture {
-                isShowMenu = false
+                viewModel.isShowMenu = false
             }
         }
-        .contextMenu(isPresented: $isShowMenu) {
+        .contextMenu(isPresented: $viewModel.isShowMenu) {
             ZStack {
                 VStack(alignment: .trailing, spacing: 0){
                     topHeaderView
@@ -57,7 +57,7 @@ struct HomeView: View {
                     .cornerRadius(8)
                     .padding(.trailing, 16)
                     .onTapGesture {
-                        isShowMenu = false
+                        viewModel.isShowMenu = false
                         router.push(.changeMyArea)
                     }
                     Spacer()
@@ -82,7 +82,7 @@ struct HomeView: View {
                     .foregroundStyle(.pawkeyWhite1)
                 Spacer()
                 Button {
-                    isShowMenu = true
+                    viewModel.isShowMenu = true
                 } label: {
                     HStack {
                         Image(.location)
