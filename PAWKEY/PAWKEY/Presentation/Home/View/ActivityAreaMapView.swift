@@ -23,11 +23,18 @@ struct ActivityAreaMapView: View {
     )
     
     @State private var activityAreas: [ActivityArea] = []
+    @State private var showToast = false
     
     var body: some View {
         ZStack(alignment: .bottom) {
             PolygonMapView(region: region, polygons: activityAreas.map { $0.coordinates })
                 .edgesIgnoringSafeArea(.all)
+            
+            if showToast {
+                ToastMessage(message: "지역을 강남구 역삼동으로 변경했어요.")
+                    .transition(.opacity)
+                    .padding(.bottom, 246 + 22)
+            }
             
             VStack(alignment: .leading) {
                 Color.pawkeyWhite1
@@ -57,6 +64,14 @@ struct ActivityAreaMapView: View {
                                 .fixedSize(horizontal: false, vertical: true)
                             
                             CTAButton(title: "지역 변경하기") {
+                                withAnimation {
+                                    showToast = true
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                    withAnimation {
+                                        showToast = false
+                                    }
+                                }
                             }
                             .padding(.horizontal, 16)
                             .padding(.top, 32)
