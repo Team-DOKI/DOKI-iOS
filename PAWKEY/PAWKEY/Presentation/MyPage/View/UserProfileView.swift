@@ -27,7 +27,7 @@ struct UserProfileView: View {
                         .padding(.leading, 16)
                 }
             }
-
+            
             // 성별
             VStack(alignment: .leading, spacing: 10) {
                 Text("성별")
@@ -38,7 +38,7 @@ struct UserProfileView: View {
                     .foregroundStyle(Color.green500)
                     .padding(.leading, 16)
             }
-
+            
             // 나이
             VStack(alignment: .leading, spacing: 10) {
                 Text("나이")
@@ -49,7 +49,7 @@ struct UserProfileView: View {
                     .foregroundStyle(Color.green500)
                     .padding(.leading, 16)
             }
-
+            
             // 활동지역
             VStack(alignment: .leading, spacing: 10) {
                 Text("활동지역")
@@ -65,11 +65,8 @@ struct UserProfileView: View {
         }
         .navigationBarBackButtonHidden()
         .topNavigationView(left: {
-            Button {
+            BackButton {
                 router.pop()
-            } label: {
-                Text("dsfds")
-                    .foregroundStyle(Color.pawkeyBlack)
             }
             
         }, center: {
