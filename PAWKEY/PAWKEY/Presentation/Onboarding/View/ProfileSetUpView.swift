@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileSetUpView: View {
-    
+    @EnvironmentObject var tabBarState: TabBarState
     @StateObject var viewModel = ProfileSetUpViewModel()
     
     var body: some View {
@@ -46,7 +46,7 @@ struct ProfileSetUpView: View {
                         isDisabled: viewModel.isButtonDisabled
                     ) {
                         if viewModel.currentStep == .dogTendency {
-                            print("등록")
+                            tabBarState.isLogin = true
                         } else {
                             viewModel.goToNextStep()
                         }
