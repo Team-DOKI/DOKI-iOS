@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-enum cardType {
-case mine
-case others
+enum CardType {
+    case mine
+    case others
     
     var iconName: Image {
         switch self {
@@ -24,13 +24,13 @@ case others
 
 struct WalkHistoryCard: View {
     
-    let type: cardType
-    let walkRouteImg: String
-    let profileImg: String
-    let walkTitle: String
-    let petName: String
-    let postDate: String
-    var buttonPressed: Bool = false
+    @State var type: CardType
+    @State var walkRouteImg: String
+    @State var profileImg: String
+    @State var walkTitle: String
+    @State var petName: String
+    @State var postDate: String
+    @State var buttonPressed: Bool = false
     
     var body: some View {
         
