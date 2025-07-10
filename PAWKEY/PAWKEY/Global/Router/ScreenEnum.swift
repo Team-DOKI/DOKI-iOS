@@ -11,6 +11,7 @@ import UIKit
 enum HomeScreen: Hashable {
     case home    
     case changeMyArea
+    case acvitiyAreaMap
 }
 
 enum WalkScreen: Hashable {

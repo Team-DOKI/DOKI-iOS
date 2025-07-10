@@ -18,6 +18,10 @@ struct PetProfileView: View {
                 .frame(width: 108, height: 108)
                 .clipShape(Circle())
                 .padding(.vertical, 36)
+                .overlay {
+                    Circle()
+                        .stroke(Color.green500, lineWidth: 2)
+                }
             
             VStack(alignment: .leading, spacing: 16) {
                 // 이름
@@ -109,14 +113,13 @@ struct PetProfileView: View {
         }
         .navigationBarBackButtonHidden()
         .topNavigationView {
-            Button {
+            BackButton {
                 router.pop()
-            } label: {
-                Text("스꾸피~")
             }
-            
         } center: {
             Text("반려견 프로필")
         }
+        
+        
     }
 }
