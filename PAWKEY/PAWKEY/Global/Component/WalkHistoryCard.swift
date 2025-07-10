@@ -97,8 +97,3 @@ struct WalkHistoryCard: View {
         }
     }
 }
-
-
-#Preview {
-    WalkHistoryCard(type: .others, walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "산책띠", petName: "길냥이", postDate: "2025/07/07", buttonPressed: true)
-}
