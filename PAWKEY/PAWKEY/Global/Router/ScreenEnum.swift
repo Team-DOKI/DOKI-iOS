@@ -33,4 +33,5 @@ enum MyPageScreen: Hashable {
 
 enum OnboardingScreen: Hashable {
     case login
+    case profileSetUp
 }
