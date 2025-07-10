@@ -26,7 +26,9 @@ struct HomeFlow: View {
         case .home:
             HomeView()
         case .changeMyArea:
-            ChangeMyAreaView()
+            ChangeMyAreaView(viewModel: ChangeMyAreaViewModel())
+        case .acvitiyAreaMap:
+            ActivityAreaMapView()
         }
     }
 }
