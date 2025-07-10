@@ -155,6 +155,7 @@ struct MyPageView: View {
                     Spacer()
                     
                     Button {
+                        router.push(.savedRoute)
                     } label: {
                         Image(.arrowRightBlack20)
                     }
