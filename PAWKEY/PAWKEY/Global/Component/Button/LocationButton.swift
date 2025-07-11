@@ -13,44 +13,69 @@ struct LocationButton: View {
         case medium
         case small
         
-        var edgeInsets: EdgeInsets {
+        var verticalPadding: CGFloat {
             switch self {
             case .medium:
-                return .init(top: 15, leading: 70, bottom: 15, trailing: 70)
+                return 16
             case .small:
-                return .init(top: 10, leading: 20, bottom: 10, trailing: 20)
+                return 10
             }
         }
     }
     
     let title: String
-    var type: LocationButtonType = .medium
     let isSelected: Bool
+    let buttonType: LocationButtonType
     
     var action: ((String) -> ())?
+    
+    private var font: Font {
+        isSelected ? .body_14_sb : .body_14_r
+    }
 
-    init(_ title: String, type: LocationButtonType = .medium, isSelected: Bool = false, action: ((String) -> ())? = nil) {
+    private var foregroundColor: Color {
+        isSelected ? .green500 : .gray200
+    }
+
+    private var borderColor: Color {
+        isSelected ? .green500 : .gray50
+    }
+
+    private var lineWidth: CGFloat {
+        isSelected ? 2 : 1
+    }
+    
+    init(
+        _ title: String,
+        type: LocationButtonType = .medium,
+        isSelected: Bool = false,
+        action: ((String) -> ())? = nil
+    ) {
         self.title = title
-        self.type = type
+        self.buttonType = type
         self.isSelected = isSelected
         self.action = action
     }
-
+    
     var body: some View {
         Button {
             action?(title)
         } label: {
             Text(title)
-                .font(isSelected ? .body_14_sb : .body_14_r)
-                .foregroundColor(isSelected ? .green500 : .gray200)
+                .font(font)
+                .foregroundColor(foregroundColor)
                 .padding(.horizontal, 20)
-                .padding(.vertical, type.edgeInsets.top)
+                .padding(.vertical, buttonType.verticalPadding)
                 .frame(maxWidth: .infinity)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
-                        .stroke(isSelected ? Color.green500 : Color.gray50, lineWidth: isSelected ? 2 : 1)
+                        .stroke(borderColor, lineWidth: lineWidth)
                 )
                 .cornerRadius(8)
         }
     }
+}
+
+#Preview {
+    LocationButton("강남구", type: .small, isSelected: true)
 }
