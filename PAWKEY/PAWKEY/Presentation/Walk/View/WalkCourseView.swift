@@ -36,7 +36,7 @@ struct WalkCourseView: View {
             }
             
             VStack {
-                StatBox(distance: viewModel.distance, elapsedTime: viewModel.elapsedTime, stepCount: viewModel.stepCount)
+                StatBox(type: .bordered, distance: viewModel.distance, elapsedTime: viewModel.elapsedTime, stepCount: viewModel.stepCount)
                     .padding(.top, 24)
                     .padding(.horizontal, 16)
                 

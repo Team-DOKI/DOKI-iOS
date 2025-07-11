@@ -65,6 +65,7 @@ struct WalkCompletionView: View {
                 
                 Divider().background(.gray100)
                 
+                StatBox(type: .borderless, distance: distance, elapsedTime: elapsedTime, stepCount: stepCount)
             }
             .padding(.bottom, 8)
             .background(.pawkeyWhite1)
