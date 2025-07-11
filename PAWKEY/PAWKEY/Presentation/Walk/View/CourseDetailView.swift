@@ -114,6 +114,7 @@ struct CourseDetailView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 16)
+            .padding(.bottom, 24)
         }
         .topNavigationView(left: {
             Image(.chevronLeft)

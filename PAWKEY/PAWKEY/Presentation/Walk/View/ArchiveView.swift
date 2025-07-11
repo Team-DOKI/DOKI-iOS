@@ -149,6 +149,7 @@ struct ArchiveView: View {
                     }
                 }
                 .padding(.horizontal, 16)
+                .padding(.bottom, 34)
             }
         }
         .topNavigationView(center: {
