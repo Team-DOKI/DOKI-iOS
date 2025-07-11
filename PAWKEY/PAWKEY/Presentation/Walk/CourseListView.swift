@@ -89,6 +89,7 @@ struct CourseListView: View {
                         .padding(.leading, 16)
                 }
             } else {
+                // TODO: 별도의 뷰로 분리할 필요가 있을듯함
                 VStack {
                     HStack {
                         Button {
@@ -104,6 +105,20 @@ struct CourseListView: View {
                                 .overlay(Image(.settingGray))
                         }
                         Spacer()
+                        if courseListViewModel.selectedOptions.isEmpty {
+                            HStack {
+                                FilterButton(title: "")
+                                Spacer()
+                            }
+                        } else {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack {
+                                    ForEach(courseListViewModel.selectedOptions, id: \.self.id) {
+                                        FilterButton(title: $0.title)
+                                    }
+                                }
+                            }
+                        }
                     }
                     .padding(.horizontal, 16)
                     
