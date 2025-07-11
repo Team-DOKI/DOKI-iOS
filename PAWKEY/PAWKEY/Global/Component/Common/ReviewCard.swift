@@ -31,6 +31,9 @@ struct ReviewCard: View {
     @State var petName: String
     @State var postDate: String
     @State var buttonPressed: Bool = false
+    @State var isSpread = false
+    
+    let data: [String]
     
     var body: some View {
         
@@ -94,25 +97,26 @@ struct ReviewCard: View {
             }
             .padding(.top, 8)
             .padding(.horizontal, 8)
-                  
-            VStack(spacing: 0) {
-                let data = ["이륜차 거의 없음", "배변 쓰레기통", "쉼터", "편의점", "동반 카페", "아스팔트/벽돌", "시끌벅적"]
-                FlexibleGrid(availableWidth: UIScreen.main.bounds.size.width - 32, data: data, spacing: 8, alignment: .leading) {
-                    Chip(title: $0, isActive: true)
+            
+            VStack(alignment: .leading, spacing: 0) {
+                HStack {
+                    FlexibleGrid(availableWidth: UIScreen.main.bounds.size.width - 64, data: isSpread ? data : Array(data[0..<3]), spacing: 8, alignment: .leading) {
+                        Chip(title: $0, isActive: true)
+                    }
+                    if !isSpread {
+                        Chip(title: "+\(data.count - 3)")
+                            .onTapGesture {
+                                isSpread = true
+                            }
+                    }
+                    Spacer()
                 }
             }
             .padding(16)
-            .fixedSize(horizontal: false, vertical: true)
         }
         .background(Color.pawkeyWhite1)
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .layoutPriority(30)
     }
-
-}
-
-#Preview {
-    ZStack {
-        Color.gray
-        ReviewCard(type: .others, walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "외로운 산책", petName: "길냥이", postDate: "2025/01/02", buttonPressed: true)
-    }
+    
 }
