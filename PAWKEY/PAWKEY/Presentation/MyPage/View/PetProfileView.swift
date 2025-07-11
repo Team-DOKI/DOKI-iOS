@@ -118,6 +118,7 @@ struct PetProfileView: View {
             }
         } center: {
             Text("반려견 프로필")
+                .font(.body_16_sb)
         }
         
         
