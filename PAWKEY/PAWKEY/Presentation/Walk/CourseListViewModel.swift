@@ -73,6 +73,19 @@ final class CourseListViewModel: ObservableObject {
         }
     }
     
+    func resetAllOptions() {
+        walkingTimeList = walkingTimeList.map { .init(title: $0.title, isSelected: false)}
+        safetyList = safetyList.map { .init(title: $0.title, isSelected: false)}
+        convenienceList = convenienceList.map { .init(title: $0.title, isSelected: false)}
+        environmentList = environmentList.map { .init(title: $0.title, isSelected: false)}
+        moodList = moodList.map { .init(title: $0.title, isSelected: false)}
+        isExpandWalkingTime = false
+        isExpandSafety = false
+        isExpandConvenience = false
+        isExpandEnvironment = false
+        isExpandMood = false
+    }
+    
     private func selecteSingleOption(at index: Int, from list: [CheckOption]) -> [CheckOption] {
         guard let findIndex = list.firstIndex(where: {$0.isSelected}) else { return [] }
         var newList = list
