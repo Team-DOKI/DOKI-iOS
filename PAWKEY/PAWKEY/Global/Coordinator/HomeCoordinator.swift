@@ -30,7 +30,7 @@ struct HomeCoordinator: View {
         case .acvitiyAreaMap:
             ActivityAreaMapView()
         case .sharedCourseDetail:
-            SharedCourseDetailView(viewModel: CourseDetailViewModel())
+            CourseDetailView(viewModel: CourseDetailViewModel())
         }
     }
 }
