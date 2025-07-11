@@ -7,20 +7,55 @@
 
 import SwiftUI
 
-struct StatBox: View { // TODO: 묶자.
-    let title: String
-    let value: String
+struct StatBox: View {
+    let distance: Double
+    let elapsedTime: String
+    let stepCount: Int
     
     var body: some View {
-        VStack(spacing: 6) {
-            Text(title)
-                .font(.caption_12_sb)
-                .foregroundColor(.gray500)
+        HStack(spacing: 32) {
+            VStack(spacing: 6) {
+                Text("거리 (km)")
+                    .font(.caption_12_sb)
+                    .foregroundColor(.gray500)
+                
+                Text(String(format: "%.1f", distance))
+                    .font(.head_20_b)
+                    .foregroundColor(.green500)
+            }
+            .frame(width: 67, height: 42)
             
-            Text(value)
-                .font(.head_20_b)
-                .foregroundColor(.green500)
+            VStack(spacing: 6) {
+                Text("시간 (분)")
+                    .font(.caption_12_sb)
+                    .foregroundColor(.gray500)
+                
+                Text(elapsedTime)
+                    .font(.head_20_b)
+                    .foregroundColor(.green500)
+            }
+            .frame(width: 67, height: 42)
+            
+            VStack(spacing: 6) {
+                Text("걸음 수 (걸음)")
+                    .font(.caption_12_sb)
+                    .foregroundColor(.gray500)
+                
+                Text("\(stepCount)")
+                    .font(.head_20_b)
+                    .foregroundColor(.green500)
+            }
+            .frame(width: 67, height: 42)
         }
-        .frame(width: 67, height: 42)
+        .padding(.vertical, 16)
+        .padding(.horizontal, 32)
+        .frame(maxWidth: .infinity, minHeight: 74)
+        .background(Color.pawkeyWhite1)
+        .cornerRadius(8)
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .inset(by: 0.5)
+                .stroke(Color.green500, lineWidth: 1)
+        )
     }
 }

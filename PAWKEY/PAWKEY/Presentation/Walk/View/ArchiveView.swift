@@ -62,8 +62,19 @@ struct ArchiveView: View {
                 .padding(.horizontal, 16)
                 .padding([.vertical, .bottom], 12)
                 
-                TimePlaceCell()
-                
+                VStack(alignment: .leading) {
+                    TimePlaceCell(type: .place("강남구 역삼동"))
+                        .padding(.bottom, 4)
+                    
+                    TimePlaceCell(type: .time("2025.07.08(화) | 오후 11:28"))
+                        .padding(.bottom, 12)
+                    
+                    Chip(title: "옵션")
+                        .padding(.bottom, 12)
+                }
+                .padding(.horizontal, 16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+               
                 Rectangle()
                     .fill(Color.pawkeyWhite2)
                     .frame(height: 10)
@@ -149,6 +160,7 @@ struct ArchiveView: View {
                     }
                 }
                 .padding(.horizontal, 16)
+                .padding(.bottom, 34)
             }
         }
         .topNavigationView(center: {

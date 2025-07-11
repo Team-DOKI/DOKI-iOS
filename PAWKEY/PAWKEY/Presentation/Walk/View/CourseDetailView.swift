@@ -56,7 +56,18 @@ struct CourseDetailView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 16)
             
-            TimePlaceCell()
+            VStack(alignment: .leading) {
+                TimePlaceCell(type: .place("강남구 역삼동"))
+                    .padding(.bottom, 4)
+                
+                TimePlaceCell(type: .time("2025.07.08(화) | 오후 11:28"))
+                    .padding(.bottom, 12)
+                
+                Chip(title: "옵션")
+                    .padding(.bottom, 12)
+            }
+            .padding(.horizontal, 16)
+            .frame(maxWidth: .infinity, alignment: .leading)
             
             VStack(alignment: .leading) {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -114,6 +125,7 @@ struct CourseDetailView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 16)
+            .padding(.bottom, 24)
         }
         .topNavigationView(left: {
             Image(.chevronLeft)

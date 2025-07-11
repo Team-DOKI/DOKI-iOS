@@ -59,22 +59,8 @@ struct WalkCompletionView: View {
                     .padding(.bottom, 10)
             }
             
-            HStack(spacing: 32) {
-                StatBox(title: "거리 (km)", value: String(format: "%.1f", distance))
-                StatBox(title: "시간 (분)", value: elapsedTime)
-                StatBox(title: "걸음 수 (걸음)", value: "\(stepCount)")
-            }
-            .padding(.vertical, 16)
-            .padding(.horizontal, 32)
-            .frame(maxWidth: .infinity, minHeight: 74)
-            .background(.pawkeyWhite1)
-            .cornerRadius(8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .inset(by: 0.5)
-                    .stroke(.green500, lineWidth: 1)
-            )
-            
+            StatBox(distance: distance, elapsedTime: elapsedTime, stepCount: stepCount)
+              
             Spacer()
             
             CTAButton(
