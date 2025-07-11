@@ -27,13 +27,22 @@ struct ArchiveView: View {
             VStack {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
-                        ForEach(viewModel.selectedImages, id: \.self) { image in
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 160, height: 160)
-                                .clipped()
-                                .cornerRadius(8)
+                        ForEach(Array(viewModel.selectedImages.enumerated()), id: \.element) { index, image in
+                            ZStack(alignment: .topTrailing) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 160, height: 160)
+                                    .clipped()
+                                    .cornerRadius(8)
+                                
+                                Button(action: {
+                                    viewModel.selectedImages.remove(at: index)
+                                }) {
+                                    Image(.delete)
+                                        .padding(4)
+                                }
+                            }
                         }
                         
                         if viewModel.selectedImages.count < 5 {
