@@ -36,23 +36,9 @@ struct WalkCourseView: View {
             }
             
             VStack {
-                HStack(spacing: 36) {
-                    StatBox(title: "거리 (km)", value: String(format: "%.1f", viewModel.distance))
-                    StatBox(title: "시간 (분)", value: viewModel.elapsedTime)
-                    StatBox(title: "걸음 수 (걸음)", value: "\(viewModel.stepCount)")
-                }
-                .padding(.vertical, 16)
-                .padding(.horizontal, 32)
-                .frame(maxWidth: .infinity, minHeight: 74)
-                .background(.pawkeyWhite1)
-                .cornerRadius(8)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .inset(by: 0.5)
-                        .stroke(.green500, lineWidth: 1)
-                )
-                .padding(.top, 24)
-                .padding(.horizontal, 16)
+                StatBox(distance: viewModel.distance, elapsedTime: viewModel.elapsedTime, stepCount: viewModel.stepCount)
+                    .padding(.top, 24)
+                    .padding(.horizontal, 16)
                 
                 Spacer()
                 
