@@ -46,6 +46,7 @@ struct RadioGroup: View {
                     }
                 }
             }
+            Divider()
         }
         .animation(isExpanded ? .default : nil)
         .padding(.horizontal, 16)
