@@ -229,6 +229,10 @@ struct HomeView: View {
                     .padding(.leading, 16)
                     .padding(.bottom, 12)
                 }
+                .onTapGesture {
+                    router.push(.sharedCourseDetail)
+                    tabBarstate.isHidden = true
+                }
             
             HStack(spacing: 6) {
                 Chip(title: "산책 옵션 입력", isActive: true)
