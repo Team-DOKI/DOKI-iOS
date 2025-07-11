@@ -13,18 +13,18 @@ struct Chip: View {
     
     var body: some View {
         Text(title)
-            .font(.body_14_m)
-            .foregroundStyle(isActive ? .black : .gray300)
-            .padding(.horizontal, 6)
+            .font(.caption_12_r)
+            .foregroundStyle(isActive ? .green600 : .pawkeyBlack)
+            .padding(.horizontal, 8)
             .padding(.vertical, 4)
-            .background(isActive ? .pawkeyWhite1 : .pawkeyWhite2)
-            .cornerRadius(4)
+            .background(isActive ? .green50 : .pawkeyWhite2)
+            .clipShape(Capsule())
     }
 }
 
 #Preview {
     ZStack {
         Color.gray
-        Chip(title: "선택된 옵션 입력")
+        Chip(title: "옵션1", isActive: true)
     }
 }

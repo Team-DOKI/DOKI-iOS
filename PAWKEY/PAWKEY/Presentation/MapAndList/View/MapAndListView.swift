@@ -132,7 +132,8 @@ struct MapAndListView: View {
                                     profileImg: "profile",
                                     walkTitle: "제목을 입력해주세요",
                                     petName: "반려견 이름",
-                                    postDate: "2025-07-11"
+                                    postDate: "2025-07-11",
+                                    data: ["이륜차 거의 없음", "배변 쓰레기통", "쉼터", "편의점", "동반 카페", "아스팔트/벽돌", "시끌벅적"]
                                 )
                             }
                         }
