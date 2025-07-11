@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     let topSafeAreaInset = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
-    @EnvironmentObject var router: TabRouter<HomeScreen>
+    @EnvironmentObject var router: Coordinator<HomeScreen>
     @EnvironmentObject var tabBarstate: TabBarState
     @StateObject var viewModel = HomeViewModel()
     

@@ -1,5 +1,5 @@
 //
-//  SubmitButton.swift
+//  CTAButton.swift
 //  PAWKEY
 //
 //  Created by 권석기 on 7/6/25.
@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CTAButton: View {
     
-    enum SubmitButtonStyle {
+    enum CTAButtonStyle {
         case filled
         case text
         case borderless
@@ -53,7 +53,7 @@ struct CTAButton: View {
     let title: String
     
     var isDisabled: Bool = false
-    var buttonStyle: SubmitButtonStyle = .filled
+    var buttonStyle: CTAButtonStyle = .filled
     var action: (()->())?
     
     var body: some View {
