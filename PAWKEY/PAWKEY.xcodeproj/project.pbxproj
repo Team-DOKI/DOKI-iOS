@@ -19,15 +19,10 @@
 		767E02172E15304100BFCADB /* Exceptions for "PAWKEY" folder in "PAWKEY" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Global/Component/.gitkeep,
-				Global/Extension/.gitkeep,
-				Global/Resource/Font/.gitkeep,
 				Info.plist,
 				Network/Base/.gitkeep,
-				Presentation/Home/ViewModel/.gitkeep,
 				Presentation/MyPage/ViewModel/.gitkeep,
-				Presentation/Onboarding/ViewModel/.gitkeep,
-				Presentation/Walk/SharedWalk/ViewModel/.gitkeep,
+				Presentation/SharedWalk/ViewModel/.gitkeep,
 			);
 			target = 76ECCDEC2E05AFCC0056CAF7 /* PAWKEY */;
 		};

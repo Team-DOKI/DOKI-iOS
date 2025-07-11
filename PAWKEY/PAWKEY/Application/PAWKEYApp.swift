@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct PAWKEYApp: App {
-    @StateObject private var onboardingFlow = TabRouter<OnboardingScreen>()
+    @StateObject private var onboardingFlow = Coordinator<OnboardingScreen>()
     @StateObject private var tabBarState = TabBarState()
     
     var body: some Scene {
