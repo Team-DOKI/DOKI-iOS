@@ -45,14 +45,11 @@ struct WalkCompletionView: View {
                 if let snapshot = snapshot {
                     Image(uiImage: snapshot)
                         .resizable()
-                        .scaledToFill()
-                        .frame(maxWidth: .infinity)
                         .frame(height: 218)
-                        .clipped()
+                        .frame(maxWidth: .infinity)
                         .cornerRadius(8)
                         .padding(.horizontal, 8)
                         .padding(.bottom, 16)
-                    
                 } else {
                     Rectangle()
                         .fill(Color.gray.opacity(0.2))
