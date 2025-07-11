@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum TextFieldType {
+enum TextFieldType { // TODO: 기능 분리
     case title
     case body
     
