@@ -31,70 +31,92 @@ struct ReviewCard: View {
     @State var petName: String
     @State var postDate: String
     @State var buttonPressed: Bool = false
+    @State var isSpread = false
+    
+    let data: [String]
     
     var body: some View {
         
-        VStack(spacing: 16) {
-            
-            // 상단 프로필
-            HStack {
-                // 반려견 사진
-                Image(profileImg)
+        VStack(spacing: 0) {
+            ZStack(alignment: .bottom) {
+                Image(walkRouteImg)
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 43, height: 43)
-                    .clipShape(Circle())
-                
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(walkTitle)
-                        .font(.body_14_m)
-                        .foregroundStyle(Color.green500)
+                    .aspectRatio(contentMode: .fit)
+                    .overlay(
+                        // 그라데이션 오버레이
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.pawkeyBlack.opacity(0.5), .clear]),
+                            startPoint: .bottom,
+                            endPoint: .top
+                        )
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                // 상단 프로필
+                HStack {
+                    // 반려견 사진
+                    Image(profileImg)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 43, height: 43)
+                        .clipShape(Circle())
+                        .padding(.bottom, 12)
                     
-                    HStack {
-                        Text(petName)
-                            .font(.caption_12_sb)
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(walkTitle)
+                            .font(.body_14_m)
+                            .foregroundStyle(Color.pawkeyWhite1)
                         
-                        Text(postDate)
-                            .font(.caption_12_r)
-                            .foregroundStyle(Color.gray300)
+                        HStack {
+                            Text(petName)
+                                .font(.caption_12_sb)
+                                .foregroundStyle(Color.gray50)
+                            
+                            Text(postDate)
+                                .font(.caption_12_r)
+                                .foregroundStyle(Color.gray100)
+                        }
                     }
-                }
-                .padding(.leading, 10)
-                
-                Spacer()
-                
-                Button {
+                    .padding(.leading, 10)
+                    .padding(.bottom, 12)
                     
-                } label: {
-                    if type == .mine {
-                        buttonPressed ? Image(.eyeSlashFill) : type.iconName
-                    }
-                    else {
-                        buttonPressed ? Image(.heartIconFill) : type.iconName
+                    Spacer()
+                    
+                    Button {
+                        
+                    } label: {
+                        if type == .mine {
+                            buttonPressed ? Image(.eyeSlashFill) : type.iconName
+                        }
+                        else {
+                            buttonPressed ? Image(.heartIconFill) : type.iconName
+                        }
                     }
                 }
+                .padding(.horizontal, 10)
             }
+            .padding(.top, 8)
+            .padding(.horizontal, 8)
             
-            // 옵션 칩들
-            HStack {
-                Chip(title: "옵션", isActive: false)
-                Chip(title: "오션", isActive: false)
-                Chip(title: "좋아요", isActive: false)
-                Spacer()
+            VStack(alignment: .leading, spacing: 0) {
+                HStack {
+                    FlexibleGrid(availableWidth: UIScreen.main.bounds.size.width - 64, data: isSpread ? data : Array(data[0..<3]), spacing: 8, alignment: .leading) {
+                        Chip(title: $0, isActive: true)
+                    }
+                    if !isSpread {
+                        Chip(title: "+\(data.count - 3)")
+                            .onTapGesture {
+                                isSpread = true
+                            }
+                    }
+                    Spacer()
+                }
             }
-            
-            // 지도 SnapShot
-            Image(walkRouteImg)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: .infinity)
-                .frame(height: 194)
-                .background(.gray300)
-                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-            
-            Divider()
+            .padding(16)
         }
-        .padding(.horizontal, 16)
+        .background(Color.pawkeyWhite1)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .layoutPriority(30)
     }
+    
 }
