@@ -9,7 +9,8 @@ import SwiftUI
 
 struct SharedCourseDetailView: View {
     @ObservedObject var viewModel: CourseDetailViewModel
-    
+    @EnvironmentObject var tabBarstate: TabBarState
+    @EnvironmentObject var router: Coordinator<HomeScreen>
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 0) {
@@ -38,7 +39,10 @@ struct SharedCourseDetailView: View {
         }
         .ignoresSafeArea(.all, edges: .bottom)
         .topNavigationView(left: {
-            Image(.chevronLeft)
+            BackButton {
+                tabBarstate.isHidden = false
+                router.pop()
+            }
         }, center: {
             Text("루트 상세 정보")
                 .font(.body_16_sb)
@@ -133,7 +137,6 @@ extension SharedCourseDetailView {
             .fill(Color.pawkeyWhite2)
             .frame(height: 10)
             .frame(maxWidth: .infinity)
-        
     }
     
     private var reviewChartView: some View {

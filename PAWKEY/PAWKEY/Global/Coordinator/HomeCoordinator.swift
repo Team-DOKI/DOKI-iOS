@@ -29,6 +29,8 @@ struct HomeCoordinator: View {
             ChangeActivityAreaView(viewModel: ChangeActivityAreaViewModel())
         case .acvitiyAreaMap:
             ActivityAreaMapView()
+        case .sharedCourseDetail:
+            SharedCourseDetailView(viewModel: CourseDetailViewModel())
         }
     }
 }
