@@ -26,7 +26,7 @@ struct ReviewTextEditor: View {
             .font(.body_14_r)
             .padding(.leading, 16)
             .padding(.top, 12)
-            .frame(width: 343, height: 214)
+            .frame(maxWidth: .infinity, minHeight: 214)
             .background(Color.clear)
             .focused($isFocused)
             .overlay(alignment: .topLeading) {
