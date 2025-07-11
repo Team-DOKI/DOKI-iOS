@@ -12,7 +12,7 @@ struct SavedRouteView: View {
     
     var body: some View {
         VStack {
-            ScrollView(showsIndicators: true) {
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
                     WalkHistoryCard(type: .others, walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "외로운 산책", petName: "길냥이", postDate: "2025/01/02", buttonPressed: true)
                     WalkHistoryCard(type: .others, walkRouteImg: "walkRoute2", profileImg: "profile2", walkTitle: "신나는 산책", petName: "쮸비", postDate: "2025/03/04", buttonPressed: true)
