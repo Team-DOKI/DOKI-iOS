@@ -29,7 +29,7 @@ struct OnboardingView: View {
             
             VStack(spacing: 20) {
                 CTAButton(title: "신규계정으로 회원가입")
-                CTAButton(title: "기존 계정으로 로그인", buttonStyle: .text) {                    
+                CTAButton(title: "기존 계정으로 로그인", buttonStyle: .borderless) {                    
                     router.push(.login)
                 }
             }

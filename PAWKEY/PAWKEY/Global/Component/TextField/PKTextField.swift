@@ -15,7 +15,7 @@ struct PKTextField: View {
         case number
     }
     
-    @State var isShowPassword = false
+    @State private var isShowPassword = false
     @Binding var text: String
     @FocusState private var isFocused: Bool
     
@@ -23,52 +23,46 @@ struct PKTextField: View {
     var type: TextFieldType = .normal
     
     var body: some View {
-        ZStack {
-            VStack {
-                switch type {
-                case .normal:
-                    TextField(text: $text) {
-                        Text(placeholder ?? "입력해주세요")
-                            .font(.body_14_r)
-                            .foregroundStyle(.gray200)
-                    }
+        Group {
+            switch type {
+            case .normal:
+                TextField(placeholder ?? "입력해주세요", text: $text)
                     .focused($isFocused)
-                case .password:
-                    HStack {
-                        ZStack {
-                            SecureField("", text: $text)
-                                .opacity(isShowPassword ? 0 : 1)
-                                .focused($isFocused)
-                                .font(.body_14_r)
-                            
-                            TextField(placeholder ?? "입력해주세요", text: $text)
-                                .opacity(isShowPassword ? 1 : 0)
-                                .focused($isFocused)
-                                .font(.body_14_r)
-                        }
+                    .font(.body_14_r)
+                
+            case .password:
+                HStack {
+                    ZStack {
+                        SecureField(placeholder ?? "입력해주세요", text: $text)
+                            .opacity(isShowPassword ? 0 : 1)
+                            .focused($isFocused)
+                            .font(.body_14_r)
                         
-                        Button {
-                            isShowPassword.toggle()
-                        } label: {
-                            Image(isShowPassword ? .eyeGray : .eyeSlashGray)
-                                .padding(.trailing, 16)
-                        }
-                    }
-                case .number:
-                    TextField(text: $text) {
-                        Text(placeholder ?? "입력해주세요")
+                        TextField(placeholder ?? "입력해주세요", text: $text)
+                            .opacity(isShowPassword ? 1 : 0)
+                            .focused($isFocused)
                             .font(.body_14_r)
-                            .foregroundStyle(.gray200)
                     }
-                    .focused($isFocused)
-                    .keyboardType(.numberPad)
+                    
+                    Button {
+                        isShowPassword.toggle()
+                    } label: {
+                        Image(isShowPassword ? .eyeGray : .eyeSlashGray)
+                            .padding(.trailing, 16)
+                    }
                 }
+                
+            case .number:
+                TextField(placeholder ?? "입력해주세요", text: $text)
+                    .keyboardType(.numberPad)
+                    .focused($isFocused)
+                    .font(.body_14_r)
             }
-            .padding(.leading, 16)
         }
-        .frame(height: 52.0)
+        .padding(.leading, 16)
+        .frame(height: 52)
         .overlay(
-            RoundedRectangle(cornerRadius: 8.0)
+            RoundedRectangle(cornerRadius: 8)
                 .stroke(lineWidth: 1)
                 .foregroundStyle(isFocused ? .black : .gray200)
         )
@@ -76,6 +70,6 @@ struct PKTextField: View {
 }
 
 #Preview {
-    PKTextField(text: .constant(""), placeholder: "비번입력", type: .password)
+    PKTextField(text: .constant(""), placeholder: "비밀번호 입력", type: .password)
         .padding(.horizontal, 20)
 }
