@@ -12,6 +12,7 @@ struct CourseListView: View {
     @EnvironmentObject var router: TabRouter<WalkScreen>
     
     @StateObject private var viewModel = WalkCourseViewModel()
+    @StateObject private var courseListViewModel = CourseListViewModel()
     
     @State private var selectedMode: Int = 0
     @State private var showWalkCourseView = false
@@ -131,7 +132,7 @@ struct CourseListView: View {
             }
         }
         .sheet(isPresented: $isShowSheet) {
-            WalkOptionSheet()
+            WalkOptionSheet(viewModel: courseListViewModel)
                 .presentationDragIndicator(.visible)
                 .presentationDetents([.fraction(0.85)])
         }
