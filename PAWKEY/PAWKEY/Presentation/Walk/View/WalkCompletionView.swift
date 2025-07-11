@@ -87,7 +87,11 @@ struct WalkCompletionView: View {
             }
         }
         .background(.pawkeyWhite2)
-        .topNavigationView(center: {
+        .topNavigationView(left: {
+            BackButton {
+                router.pop()
+            }
+        }, center: {
             Text("산책 완료")
                 .font(.body_16_sb)
         })
