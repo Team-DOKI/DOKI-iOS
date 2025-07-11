@@ -1,16 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "산책.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "산책 1.svg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "산책3.svg",
       "idiom" : "universal",
       "scale" : "3x"
     }
