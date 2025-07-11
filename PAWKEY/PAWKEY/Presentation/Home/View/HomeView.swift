@@ -9,17 +9,19 @@ import SwiftUI
 
 struct HomeView: View {
     let topSafeAreaInset = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
+    let dummyData = ["이륜차 거의 없음", "배변 쓰레기통", "쉼터", "편의점", "동반 카페", "아스팔트/벽돌", "시끌벅적"]
+    
     @EnvironmentObject var router: Coordinator<HomeScreen>
     @EnvironmentObject var tabBarstate: TabBarState
     @StateObject var viewModel = HomeViewModel()
     
     var body: some View {
         ZStack {
-            Color.pawkeyWhite1
+            Color.pawkeyWhite2
             
             VStack(spacing: 0) {
                 topHeaderView
-                VStack {
+                VStack(alignment: .leading) {
                     Spacer().frame(height: 12)
                     weatherView
                     Spacer().frame(height: 12)
@@ -31,7 +33,14 @@ struct HomeView: View {
                     Spacer().frame(height: 12)
                     calendarView
                     Spacer().frame(height: 12)
-                    recentWalkView
+                    Text("최근 산책")
+                        .font(.head_18_sb)
+                        .foregroundStyle(.pawkeyBlack)
+                    
+                    ReviewCard(type: .others, walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "외로운 산책", petName: "길냥이", postDate: "2025/01/02", buttonPressed: true, data: dummyData)
+                        .onTapGesture {
+                            router.push(.sharedCourseDetail)
+                        }
                 }
                 .padding(.horizontal, 16)
                 Spacer()
@@ -140,7 +149,9 @@ struct HomeView: View {
         .frame(width: 91, height: 120)
         .background(alignment: .bottom) {
             Image(.sunrise)
+                .scaledToFit()
         }
+        .background(.pawkeyWhite1)
         .cornerRadius(15)
     }
     
@@ -160,7 +171,7 @@ struct HomeView: View {
             }
             .padding(.leading, 18)
             .padding(.trailing, 12)
-            .frame(maxWidth: .infinity, maxHeight: 120)
+            .frame(maxWidth: .infinity, minHeight: 120)
             .background(alignment: .bottomTrailing) {
                 Image(.dogFoot)
             }
@@ -193,7 +204,7 @@ struct HomeView: View {
             }
         }
         .padding(16)
-        .background(.pawkeyWhite2)
+        .background(.pawkeyWhite1)
         .cornerRadius(12)
     }
     
