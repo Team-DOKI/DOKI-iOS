@@ -131,18 +131,19 @@ struct StopConfirmationView: View {
                         .padding()
                         .background(.pawkeyWhite1)
                         .foregroundColor(.green500)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.green500, lineWidth: 1)
+                        )
                         .cornerRadius(8)
                 }
                 
-                Button(action: onStop) {
-                    Text("산책 종료하기")
-                        .font(.body_16_sb)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(.green500)
-                        .foregroundColor(.pawkeyWhite1)
-                        .cornerRadius(8)
-                }
+                CTAButton(
+                    title: "산책 종료하기",
+                    isDisabled: false,
+                    buttonStyle: .filled,
+                    action: onStop
+                )
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 26)
