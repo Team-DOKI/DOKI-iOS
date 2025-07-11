@@ -16,47 +16,62 @@ struct PawkeyTextField: View {
     }
     
     @State private var isShowPassword = false
+    
     @Binding var text: String
+    
     @FocusState private var isFocused: Bool
     
     var placeholder: String?
     var type: TextFieldType = .normal
     
+    private var placeholderText: String {
+        placeholder ?? "입력해주세요"
+    }
+    
+    private var normalTextField: some View {
+        TextField(placeholderText, text: $text)
+            .font(.body_14_r)
+            .focused($isFocused)
+    }
+    
+    private var passwordTextField: some View {
+        HStack {
+            ZStack {
+                SecureField(placeholderText, text: $text)
+                    .font(.body_14_r)
+                    .opacity(isShowPassword ? 0 : 1)
+                    .focused($isFocused)
+                
+                TextField(placeholderText, text: $text)
+                    .font(.body_14_r)
+                    .opacity(isShowPassword ? 1 : 0)
+                    .focused($isFocused)
+            }
+            Button {
+                isShowPassword.toggle()
+            } label: {
+                Image(isShowPassword ? .eyeGray : .eyeSlashGray)
+                    .padding(.trailing, 16)
+            }
+        }
+    }
+    
+    private var numberTextField: some View {
+        TextField(placeholderText, text: $text)
+            .keyboardType(.numberPad)
+            .focused($isFocused)
+            .font(.body_14_r)
+    }
+    
     var body: some View {
         Group {
             switch type {
             case .normal:
-                TextField(placeholder ?? "입력해주세요", text: $text)
-                    .focused($isFocused)
-                    .font(.body_14_r)
-                
+                normalTextField
             case .password:
-                HStack {
-                    ZStack {
-                        SecureField(placeholder ?? "입력해주세요", text: $text)
-                            .opacity(isShowPassword ? 0 : 1)
-                            .focused($isFocused)
-                            .font(.body_14_r)
-                        
-                        TextField(placeholder ?? "입력해주세요", text: $text)
-                            .opacity(isShowPassword ? 1 : 0)
-                            .focused($isFocused)
-                            .font(.body_14_r)
-                    }
-                    
-                    Button {
-                        isShowPassword.toggle()
-                    } label: {
-                        Image(isShowPassword ? .eyeGray : .eyeSlashGray)
-                            .padding(.trailing, 16)
-                    }
-                }
-                
+                passwordTextField
             case .number:
-                TextField(placeholder ?? "입력해주세요", text: $text)
-                    .keyboardType(.numberPad)
-                    .focused($isFocused)
-                    .font(.body_14_r)
+                numberTextField
             }
         }
         .padding(.leading, 16)
