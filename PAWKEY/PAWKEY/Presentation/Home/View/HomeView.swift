@@ -131,7 +131,7 @@ struct HomeView: View {
                 .font(.body_14_sb)
         }
         .padding(12)
-        .background(.pawkeyWhite2)
+        .background(.pawkeyWhite1)
         .cornerRadius(8)
     }
     
