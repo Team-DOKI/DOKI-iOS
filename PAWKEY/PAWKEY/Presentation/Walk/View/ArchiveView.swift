@@ -17,6 +17,9 @@ struct ArchiveView: View {
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var selectedImages: [Image] = []
     
+    @State private var titleText = ""
+    @State private var reviewText = ""
+    
     let snapshot: UIImage?
     
     var body: some View {
@@ -120,15 +123,9 @@ struct ArchiveView: View {
                         .foregroundStyle(.pawkeyBlack)
                         .padding(.bottom, 10)
                     
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.gray.opacity(0.1))
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 54)
+                  ReviewTextField(type: .normal, text: $titleText)
                     
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.gray.opacity(0.1))
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 214)
+                   ReviewTextEditor(text: $reviewText)
                 }
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
