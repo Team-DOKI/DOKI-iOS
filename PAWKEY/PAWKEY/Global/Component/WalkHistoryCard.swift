@@ -88,10 +88,13 @@ struct WalkHistoryCard: View {
             Image(walkRouteImg)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
+                .frame(maxWidth: .infinity)
+                .frame(height: 194)
                 .background(.gray300)
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             
             Divider()
         }
+        .padding(.horizontal, 16)
     }
 }
