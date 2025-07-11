@@ -12,6 +12,7 @@ struct CourseListView: View {
     @EnvironmentObject var router: TabRouter<WalkScreen>
     
     @StateObject private var viewModel = WalkCourseViewModel()
+    @StateObject private var courseListViewModel = CourseListViewModel()
     
     @State private var selectedMode: Int = 0
     @State private var showWalkCourseView = false
@@ -88,10 +89,56 @@ struct CourseListView: View {
                         .padding(.leading, 16)
                 }
             } else {
-                Button("킁킁") {
-                    router.push(.sharedWalkCourse(id: 1))
+                // TODO: 별도의 뷰로 분리할 필요가 있을듯함
+                VStack {
+                    HStack {
+                        Button {
+                            courseListViewModel.isShowSheet = true
+                        } label: {
+                            Circle()
+                                .frame(width: 36, height: 36)
+                                .foregroundStyle(.pawkeyWhite1)
+                                .overlay {
+                                    Circle()
+                                        .stroke(Color.gray100, lineWidth: 1)
+                                }
+                                .overlay(Image(.settingGray))
+                        }
+                        Spacer()
+                        if courseListViewModel.selectedOptions.isEmpty {
+                            HStack {
+                                FilterButton(title: "")
+                                Spacer()
+                            }
+                        } else {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack {
+                                    ForEach(courseListViewModel.selectedOptions, id: \.self.id) {
+                                        FilterButton(title: $0.title)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    
+                    ScrollView(showsIndicators: false) {
+                        Spacer().frame(height: 34)
+                        VStack {
+                            ForEach(1...10, id: \.self) { _ in
+                                WalkHistoryCard(
+                                    type: .others,
+                                    walkRouteImg: "walkRoute",
+                                    profileImg: "profile",
+                                    walkTitle: "제목을 입력해주세요",
+                                    petName: "반려견 이름",
+                                    postDate: "2025-07-11"
+                                )
+                            }
+                        }
+                        .padding(.horizontal, 16)
+                    }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .onAppear {
@@ -108,6 +155,11 @@ struct CourseListView: View {
                 viewModel.resetTrackingData()
             }
         }
+        .sheet(isPresented: $courseListViewModel.isShowSheet) {
+            WalkOptionSheet(viewModel: courseListViewModel)
+                .presentationDragIndicator(.visible)
+                .presentationDetents([.fraction(0.9)])
+        }
     }
 }
 
@@ -115,14 +167,14 @@ struct TabButton: View {
     let title: String
     let isSelected: Bool
     let action: () -> Void
-
+    
     var body: some View {
         Button(action: action) {
             VStack(spacing: 4) {
                 Text(title)
                     .font(.head_22_b)
                     .foregroundColor(isSelected ? .pawkeyBlack : .gray200)
-
+                
                 Rectangle()
                     .frame(height: 4)
                     .foregroundColor(isSelected ? .pawkeyBlack : .clear)
