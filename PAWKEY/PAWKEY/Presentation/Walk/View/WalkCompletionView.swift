@@ -90,11 +90,7 @@ struct WalkCompletionView: View {
                     tabBarState.isHidden = true
                 }
             }
-            .topNavigationView(left: {
-                BackButton {
-                    router.pop()
-                }
-            }, center: {
+            .topNavigationView(center: {
                 Text("산책 완료")
                     .font(.body_16_sb)
             })
