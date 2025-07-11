@@ -47,17 +47,25 @@ final class CourseListViewModel: ObservableObject {
     ]
     
     @Published var environmentList: [CheckOption] = [
-        .init(title: "풀 많은 길 위주", isSelected: true),
+        .init(title: "풀 많은 길 위주", isSelected: false),
         .init(title: "흙길 위주", isSelected: false),
         .init(title: "아스팔트/벽돌길 위주", isSelected: false),
         .init(title: "뛰어놀 공간", isSelected: false),
     ]
     
     @Published var moodList: [CheckOption] = [
-        .init(title: "조용한 분위기", isSelected: true),
+        .init(title: "조용한 분위기", isSelected: false),
         .init(title: "적당한 유동인구", isSelected: false),
         .init(title: "유동 인구 많음", isSelected: false),
     ]
+    
+    var selectedOptions: [CheckOption] {
+        return walkingTimeList.filter { $0.isSelected } +
+        safetyList.filter { $0.isSelected } +
+        convenienceList.filter { $0.isSelected } +
+        environmentList.filter { $0.isSelected } +
+        moodList.filter { $0.isSelected }
+    }
     
     func selectWalkRouteOption(_ option: WalkRouteOption) {
         switch option {
@@ -88,10 +96,15 @@ final class CourseListViewModel: ObservableObject {
     }
     
     private func selecteSingleOption(at index: Int, from list: [CheckOption]) -> [CheckOption] {
-        guard let findIndex = list.firstIndex(where: {$0.isSelected}) else { return [] }
         var newList = list
-        newList[findIndex].isSelected = false
-        newList[index].isSelected = true
+        
+        if let firstIndex = list.firstIndex(where: {$0.isSelected}) {
+            newList[firstIndex].isSelected = false
+            newList[index].isSelected = true            
+        } else {
+            newList[index].isSelected = true
+        }
+        
         return newList
     }
     
