@@ -184,6 +184,8 @@ struct QuestionKeywordView: View {
     let question: String
     let keywords: [String]
     
+    @State private var selectedKeywords: Set<String> = []
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text(question)
@@ -193,18 +195,23 @@ struct QuestionKeywordView: View {
             
             FlowLayout(spacing: 8) {
                 ForEach(keywords, id: \.self) { keyword in
-                    Text(keyword)
-                        .font(.body_14_r)
-                        .foregroundColor(.gray400)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 16)
-                        .background(
-                            RoundedRectangle(cornerRadius: 4)
-                                .stroke(Color.gray50, lineWidth: 1)
+                    ReviewTagButton(
+                        title: keyword,
+                        isSelected: Binding(
+                            get: {
+                                selectedKeywords.contains(keyword)
+                            },
+                            set: { newValue in
+                                if newValue {
+                                    selectedKeywords.insert(keyword)
+                                } else {
+                                    selectedKeywords.remove(keyword)
+                                }
+                            }
                         )
+                    )
                 }
             }
-            
         }
     }
 }
