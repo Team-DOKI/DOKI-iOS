@@ -72,7 +72,9 @@ struct WalkOptionSheet: View {
                 }
             }
             HStack {
-                CTAButton(title: "옵션 적용하기")
+                CTAButton(title: "옵션 적용하기") {
+                    viewModel.isShowSheet = false
+                }
                 Button {
                     viewModel.resetAllOptions()
                 } label: {

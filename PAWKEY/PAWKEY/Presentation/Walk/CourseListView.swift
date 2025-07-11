@@ -16,11 +16,7 @@ struct CourseListView: View {
     
     @State private var selectedMode: Int = 0
     @State private var showWalkCourseView = false
-    @State private var shouldCenterOnUser: Bool = false
-    @State private var isShowSheet = false
-    @State var isExapndWalkingTime: Bool = false
-    @State var isExapndSafeOption: Bool = false
-    
+    @State private var shouldCenterOnUser: Bool = false        
     
     let tabs: [(title: String, mode: Int)] = [("지도", 0), ("리스트", 1)]
     
@@ -95,7 +91,7 @@ struct CourseListView: View {
             } else {
                 VStack {
                     Button {
-                        isShowSheet = true
+                        courseListViewModel.isShowSheet = true
                     } label: {
                         Text("Filter")
                     }
@@ -131,10 +127,10 @@ struct CourseListView: View {
                 viewModel.resetTrackingData()
             }
         }
-        .sheet(isPresented: $isShowSheet) {
+        .sheet(isPresented: $courseListViewModel.isShowSheet) {
             WalkOptionSheet(viewModel: courseListViewModel)
                 .presentationDragIndicator(.visible)
-                .presentationDetents([.fraction(0.85)])
+                .presentationDetents([.fraction(0.9)])
         }
     }
 }

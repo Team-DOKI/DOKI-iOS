@@ -17,6 +17,7 @@ final class CourseListViewModel: ObservableObject {
         case mood(index: Int)
     }
     
+    @Published var isShowSheet = false
     @Published var isExpandWalkingTime = false
     @Published var isExpandSafety = false
     @Published var isExpandConvenience = false
