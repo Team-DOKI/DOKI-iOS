@@ -16,7 +16,7 @@ struct CourseListView: View {
     
     @State private var selectedMode: Int = 0
     @State private var showWalkCourseView = false
-    @State private var shouldCenterOnUser: Bool = false        
+    @State private var shouldCenterOnUser: Bool = false
     
     let tabs: [(title: String, mode: Int)] = [("지도", 0), ("리스트", 1)]
     
@@ -90,25 +90,38 @@ struct CourseListView: View {
                 }
             } else {
                 VStack {
-                    Button {
-                        courseListViewModel.isShowSheet = true
-                    } label: {
-                        Text("Filter")
+                    HStack {
+                        Button {
+                            courseListViewModel.isShowSheet = true
+                        } label: {
+                            Circle()
+                                .frame(width: 36, height: 36)
+                                .foregroundStyle(.pawkeyWhite1)
+                                .overlay {
+                                    Circle()
+                                        .stroke(Color.gray100, lineWidth: 1)
+                                }
+                                .overlay(Image(.settingGray))
+                        }
+                        Spacer()
                     }
+                    .padding(.horizontal, 16)
                     
-                    ScrollView {
+                    ScrollView(showsIndicators: false) {
+                        Spacer().frame(height: 34)
                         VStack {
                             ForEach(1...10, id: \.self) { _ in
                                 WalkHistoryCard(
-                                    type: .mine,
+                                    type: .others,
                                     walkRouteImg: "walkRoute",
-                                    profileImg: "",
+                                    profileImg: "profile",
                                     walkTitle: "제목을 입력해주세요",
                                     petName: "반려견 이름",
                                     postDate: "2025-07-11"
                                 )
                             }
                         }
+                        .padding(.horizontal, 16)
                     }
                 }
             }
