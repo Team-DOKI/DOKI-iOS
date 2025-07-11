@@ -24,33 +24,22 @@ struct ArchiveView: View {
             VStack {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
-                        if let snapshot = snapshot {
-                            Image(uiImage: snapshot)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 160, height: 188)
-                                .cornerRadius(8)
-                        } else {
-                            RoundedRectangle(cornerRadius: 8)
-                                .frame(width: 160, height: 188)
-                        }
-                        
                         ForEach(viewModel.selectedImages, id: \.self) { image in
                             Image(uiImage: image)
                                 .resizable()
                                 .scaledToFill()
-                                .frame(width: 160, height: 188)
+                                .frame(width: 160, height: 160)
                                 .clipped()
                                 .cornerRadius(8)
                         }
                         
-                        if viewModel.selectedImages.count < 4 {
+                        if viewModel.selectedImages.count < 5 {
                             PhotosPicker(selection: $viewModel.selectedItems,
-                                         maxSelectionCount: 4 - viewModel.selectedImages.count,
+                                         maxSelectionCount: 5 - viewModel.selectedImages.count,
                                          matching: .images) {
                                 RoundedRectangle(cornerRadius: 8)
                                     .fill(Color.gray5)
-                                    .frame(width: 160, height: 188)
+                                    .frame(width: 160, height: 160)
                                     .overlay(
                                         Image(.add)
                                     )
@@ -74,7 +63,7 @@ struct ArchiveView: View {
                 }
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
-               
+                
                 Rectangle()
                     .fill(Color.pawkeyWhite2)
                     .frame(height: 10)
@@ -117,6 +106,7 @@ struct ArchiveView: View {
                     }
                 }
                 .padding(.horizontal, 16)
+                .padding(.bottom, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Rectangle()
@@ -217,6 +207,7 @@ struct QuestionKeywordView: View {
                         )
                 }
             }
+            
         }
     }
 }
@@ -275,4 +266,10 @@ struct FlowLayout: Layout {
             lineHeight = max(lineHeight, size.height)
         }
     }
+}
+
+#Preview {
+    ArchiveView(snapshot: UIImage(named: "arrowRightWhite"))
+        .environmentObject(Coordinator<WalkScreen>())
+        .environmentObject(TabBarState())
 }
