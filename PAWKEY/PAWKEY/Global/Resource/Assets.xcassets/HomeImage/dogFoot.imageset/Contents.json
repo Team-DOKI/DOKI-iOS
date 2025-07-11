@@ -1,16 +1,17 @@
 {
   "images" : [
     {
+      "filename" : "dogFoot.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "산책 1.svg",
+      "filename" : "logo@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "산책 2.svg",
+      "filename" : "logo@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

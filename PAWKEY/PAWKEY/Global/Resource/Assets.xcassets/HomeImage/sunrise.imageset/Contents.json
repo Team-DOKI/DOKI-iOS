@@ -1,16 +1,17 @@
 {
   "images" : [
     {
+      "filename" : "sunrise.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "산책 1.svg",
+      "filename" : "Frame@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "산책 2.svg",
+      "filename" : "Frame@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

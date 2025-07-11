@@ -45,18 +45,19 @@ struct WalkHistoryCard: View {
                     .frame(width: 43, height: 43)
                     .clipShape(Circle())
                 
+                
                 VStack(alignment: .leading, spacing: 4) {
                     Text(walkTitle)
                         .font(.body_14_m)
                         .foregroundStyle(Color.green500)
                     
                     HStack {
-                            Text(petName)
-                                .font(.caption_12_sb)
-                            
-                            Text(postDate)
-                                .font(.caption_12_r)
-                                .foregroundStyle(Color.gray300)
+                        Text(petName)
+                            .font(.caption_12_sb)
+                        
+                        Text(postDate)
+                            .font(.caption_12_r)
+                            .foregroundStyle(Color.gray300)
                     }
                 }
                 .padding(.leading, 10)
@@ -64,7 +65,7 @@ struct WalkHistoryCard: View {
                 Spacer()
                 
                 Button {
-            
+                    
                 } label: {
                     if type == .mine {
                         buttonPressed ? Image(.eyeSlashFill) : type.iconName
@@ -74,7 +75,6 @@ struct WalkHistoryCard: View {
                     }
                 }
             }
-            .padding(.horizontal, 16)
             
             // 옵션 칩들
             HStack {
@@ -83,17 +83,18 @@ struct WalkHistoryCard: View {
                 Chip(title: "좋아요", isActive: false)
                 Spacer()
             }
-            .padding(.leading, 16)
             
             // 지도 SnapShot
             Image(walkRouteImg)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
+                .frame(maxWidth: .infinity)
+                .frame(height: 194)
+                .background(.gray300)
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                .padding(.horizontal, 16)
             
             Divider()
-                .padding(.horizontal, 16)
         }
+        .padding(.horizontal, 16)
     }
 }
