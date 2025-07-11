@@ -18,7 +18,7 @@ struct Chip: View {
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
             .background(isActive ? .green50 : .pawkeyWhite2)
-            .cornerRadius(20)
+            .clipShape(Capsule())
     }
 }
 

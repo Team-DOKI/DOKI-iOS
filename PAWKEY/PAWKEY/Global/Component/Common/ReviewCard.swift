@@ -34,67 +34,85 @@ struct ReviewCard: View {
     
     var body: some View {
         
-        VStack(spacing: 16) {
-            
-            // 상단 프로필
-            HStack {
-                // 반려견 사진
-                Image(profileImg)
+        VStack(spacing: 0) {
+            ZStack(alignment: .bottom) {
+                Image(walkRouteImg)
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 43, height: 43)
-                    .clipShape(Circle())
-                
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(walkTitle)
-                        .font(.body_14_m)
-                        .foregroundStyle(Color.green500)
+                    .aspectRatio(contentMode: .fit)
+                    .overlay(
+                        // 그라데이션 오버레이
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.pawkeyBlack.opacity(0.5), .clear]),
+                            startPoint: .bottom,
+                            endPoint: .top
+                        )
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                // 상단 프로필
+                HStack {
+                    // 반려견 사진
+                    Image(profileImg)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 43, height: 43)
+                        .clipShape(Circle())
+                        .padding(.bottom, 12)
                     
-                    HStack {
-                        Text(petName)
-                            .font(.caption_12_sb)
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(walkTitle)
+                            .font(.body_14_m)
+                            .foregroundStyle(Color.pawkeyWhite1)
                         
-                        Text(postDate)
-                            .font(.caption_12_r)
-                            .foregroundStyle(Color.gray300)
+                        HStack {
+                            Text(petName)
+                                .font(.caption_12_sb)
+                                .foregroundStyle(Color.gray50)
+                            
+                            Text(postDate)
+                                .font(.caption_12_r)
+                                .foregroundStyle(Color.gray100)
+                        }
                     }
-                }
-                .padding(.leading, 10)
-                
-                Spacer()
-                
-                Button {
+                    .padding(.leading, 10)
+                    .padding(.bottom, 12)
                     
-                } label: {
-                    if type == .mine {
-                        buttonPressed ? Image(.eyeSlashFill) : type.iconName
-                    }
-                    else {
-                        buttonPressed ? Image(.heartIconFill) : type.iconName
+                    Spacer()
+                    
+                    Button {
+                        
+                    } label: {
+                        if type == .mine {
+                            buttonPressed ? Image(.eyeSlashFill) : type.iconName
+                        }
+                        else {
+                            buttonPressed ? Image(.heartIconFill) : type.iconName
+                        }
                     }
                 }
+                .padding(.horizontal, 10)
             }
-            
-            // 옵션 칩들
-            HStack {
-                Chip(title: "옵션", isActive: false)
-                Chip(title: "오션", isActive: false)
-                Chip(title: "좋아요", isActive: false)
-                Spacer()
+            .padding(.top, 8)
+            .padding(.horizontal, 8)
+                  
+            VStack(spacing: 0) {
+                let data = ["이륜차 거의 없음", "배변 쓰레기통", "쉼터", "편의점", "동반 카페", "아스팔트/벽돌", "시끌벅적"]
+                FlexibleGrid(availableWidth: UIScreen.main.bounds.size.width - 32, data: data, spacing: 8, alignment: .leading) {
+                    Chip(title: $0, isActive: true)
+                }
             }
-            
-            // 지도 SnapShot
-            Image(walkRouteImg)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: .infinity)
-                .frame(height: 194)
-                .background(.gray300)
-                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-            
-            Divider()
+            .padding(16)
+            .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(.horizontal, 16)
+        .background(Color.pawkeyWhite1)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+    }
+
+}
+
+#Preview {
+    ZStack {
+        Color.gray
+        ReviewCard(type: .others, walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "외로운 산책", petName: "길냥이", postDate: "2025/01/02", buttonPressed: true)
     }
 }
