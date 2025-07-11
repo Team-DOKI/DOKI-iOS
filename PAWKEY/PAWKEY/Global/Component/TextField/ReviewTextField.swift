@@ -45,6 +45,7 @@ struct ReviewTextField: View {
             switch type {
             case .normal:
                 TextField(type.placeholder, text: $text)
+                    .padding(.leading, 20)
                     .font(type.self.font)
                     .frame(width: 343, height: type.height)
                     .frame(maxWidth: .infinity, maxHeight: type.height)
