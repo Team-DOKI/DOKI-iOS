@@ -8,47 +8,7 @@
 import SwiftUI
 
 struct WalkOptionSheet: View {
-    @State private var isExpandWalkingTime = false
-    @State private var isExpandSafety = false
-    @State private var isExpandConvenience = false
-    @State private var isExpandEnvironment = false
-    @State private var isExpandMood = false
-    
-    @State private var walkingTimeList: [CheckOption] = [
-        .init(title: "20분 이내", isSelected: false),
-        .init(title: "21~40분", isSelected: false),
-        .init(title: "41~60분", isSelected: false),
-        .init(title: "1시간 넘게", isSelected: false),
-    ]
-    
-    @State private var safetyList: [CheckOption] = [
-        .init(title: "킥보드/자전거 거의 없음", isSelected: false),
-        .init(title: "차량 거의 없음", isSelected: false),
-        .init(title: "야간에도 밝음", isSelected: false),
-        .init(title: "보도/차도 구분됨", isSelected: false),
-        .init(title: "넓은 보도", isSelected: false),
-    ]
-    
-    @State private var convenienceList: [CheckOption] = [
-        .init(title: "배변 봉투 쓰레기통", isSelected: false),
-        .init(title: "벤치", isSelected: false),
-        .init(title: "편의점", isSelected: false),
-        .init(title: "반려견 동반 카페", isSelected: false),
-    ]
-    
-    @State private var environmentList: [CheckOption] = [
-        .init(title: "풀 많은 길 위주", isSelected: true),
-        .init(title: "흙길 위주", isSelected: false),
-        .init(title: "아스팔트/벽돌길 위주", isSelected: false),
-        .init(title: "뛰어놀 공간", isSelected: false),
-    ]
-    
-    @State private var moodList: [CheckOption] = [
-        .init(title: "조용한 분위기", isSelected: true),
-        .init(title: "적당한 유동인구", isSelected: false),
-        .init(title: "유동 인구 많음", isSelected: false),
-    ]
-    
+    @ObservedObject var viewModel: CourseListViewModel
     
     var body: some View {
         ScrollView {
@@ -64,26 +24,26 @@ struct WalkOptionSheet: View {
                     .frame(maxWidth: .infinity, maxHeight: 30, alignment: .leading)
                     .padding(.leading, 16)
                 CheckBoxGroup(
-                    isExpanded: $isExpandWalkingTime,
+                    isExpanded: $viewModel.isExpandWalkingTime,
                     title: "🚶 산책 시간",
-                    items: walkingTimeList
+                    items: viewModel.walkingTimeList
                 ) { itemIndex in
-                    walkingTimeList[itemIndex].isSelected.toggle()
+                    viewModel.selectWalkRouteOption(.walkingTime(index: itemIndex))
                 }
                 CheckBoxGroup(
-                    isExpanded: $isExpandSafety,
+                    isExpanded: $viewModel.isExpandSafety,
                     title: "🚸 안전",
-                    items: safetyList
+                    items: viewModel.safetyList
                 ) { itemIndex in
-                    safetyList[itemIndex].isSelected.toggle()
+                    viewModel.selectWalkRouteOption(.safety(index: itemIndex))
                 }
                 
                 CheckBoxGroup(
-                    isExpanded: $isExpandConvenience,
+                    isExpanded: $viewModel.isExpandConvenience,
                     title: "🧺 편리성 관련",
-                    items: convenienceList
+                    items: viewModel.convenienceList
                 ) { itemIndex in
-                    convenienceList[itemIndex].isSelected.toggle()
+                    viewModel.selectWalkRouteOption(.convenience(index: itemIndex))
                 }
                 
                 Spacer().frame(height: 36)
@@ -94,23 +54,19 @@ struct WalkOptionSheet: View {
                     .padding(.leading, 16)
                 
                 RadioGroup(
-                    isExpanded: $isExpandEnvironment,
+                    isExpanded: $viewModel.isExpandEnvironment,
                     title: "🌿 환경 관련",
-                    items: environmentList
+                    items: viewModel.environmentList
                 ) { itemIndex in
-                    guard let index = environmentList.firstIndex(where: {$0.isSelected}) else { return }
-                    environmentList[index].isSelected = false
-                    environmentList[itemIndex].isSelected = true
+                    viewModel.selectWalkRouteOption(.environment(index: itemIndex))
                 }
                 
                 RadioGroup(
-                    isExpanded: $isExpandMood,
+                    isExpanded: $viewModel.isExpandMood,
                     title: "😌 분위기",
-                    items: moodList
+                    items: viewModel.moodList
                 ) { itemIndex in
-                    guard let index = moodList.firstIndex(where: {$0.isSelected}) else { return }
-                    moodList[index].isSelected = false
-                    moodList[itemIndex].isSelected = true
+                    viewModel.selectWalkRouteOption(.mood(index: itemIndex))
                 }
             }
         }
