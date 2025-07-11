@@ -16,7 +16,7 @@ struct BackButton: View {
         } label: {
             Image(.chevronLeft)
         }
-
+        .padding(.leading, -9)
     }
 }
 
