@@ -172,9 +172,9 @@ struct HomeView: View {
             .padding(.leading, 18)
             .padding(.trailing, 12)
             .frame(maxWidth: .infinity, minHeight: 120)
-            .background(alignment: .bottomTrailing) {
-                Image(.dogFoot)
-            }
+//            .background(alignment: .bottomTrailing) {
+//                Image(.dogFoot)
+//            }
             .background(.pawkeyBlack)
             .cornerRadius(15)
         }
