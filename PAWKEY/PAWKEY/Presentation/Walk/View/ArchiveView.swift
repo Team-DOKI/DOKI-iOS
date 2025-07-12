@@ -94,9 +94,9 @@ struct ArchiveView: View {
                         .padding(.bottom, 23)
                     
                     VStack(alignment: .leading, spacing: 32) {
-                        QuestionKeywordView(
+                        QuestionForm(
                             question: "🚸 산책 중 안전 요소는 어땠나요?",
-                            keywords: [
+                            tags: [
                                 "킥보드나 자전거가 거의 없어요",
                                 "차량이 거의 다니지 않아요",
                                 "야간 조명이 잘 되어있어요",
@@ -105,9 +105,9 @@ struct ArchiveView: View {
                             ]
                         )
                         
-                        QuestionKeywordView(
+                        QuestionForm(
                             question: "🧺 산책 중 어떤 편의 시설이 있었나요?",
-                            keywords: [
+                            tags: [
                                 "배변 봉투 쓰레기통이 있어요",
                                 "애견 산책로가 있어요",
                                 "쉴 곳이 있어요",
@@ -187,47 +187,4 @@ struct ArchiveView: View {
         courseDetailVM.isPrivate = isPrivate
         router.push(.courseDetail(courseDetailVM))
     }
-}
-
-struct QuestionKeywordView: View {
-    let question: String
-    let keywords: [String]
-    
-    @State private var selectedKeywords: Set<String> = []
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text(question)
-                .font(.body_16_m)
-                .foregroundColor(.pawkeyBlack)
-                .padding(.bottom, 12)
-            
-            FlexibleGrid(
-                availableWidth: UIScreen.main.bounds.width - 32,
-                data: keywords,
-                spacing: 8,
-                alignment: .leading
-            ) { keyword in
-                ReviewTagButton(
-                    title: keyword,
-                    isSelected: Binding(
-                        get: { selectedKeywords.contains(keyword) },
-                        set: { newValue in
-                            if newValue {
-                                selectedKeywords.insert(keyword)
-                            } else {
-                                selectedKeywords.remove(keyword)
-                            }
-                        }
-                    )
-                )
-            }
-        }
-    }
-}
-
-#Preview {
-    ArchiveView(snapshot: UIImage(named: "arrowRightWhite"))
-        .environmentObject(Coordinator<WalkScreen>())
-        .environmentObject(TabBarState())
 }
