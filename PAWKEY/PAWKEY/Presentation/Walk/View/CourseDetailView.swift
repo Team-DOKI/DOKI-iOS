@@ -39,6 +39,26 @@ struct CourseDetailView: View {
             }
         }
         .ignoresSafeArea(.all, edges: .bottom)
+        .contextMenu(isPresented: $viewModel.isShowPhotoPreview, content: {
+            VStack {
+                HStack {
+                    Spacer()
+                    Button {
+                        viewModel.isShowPhotoPreview = false
+                    } label: {
+                        Image(.xmark)
+                    }
+
+                }
+                if let image = viewModel.selectedImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .frame(maxHeight: 228)
+                        .aspectRatio(contentMode: .fit)
+                }
+            }
+            .padding(.horizontal, 16)
+        })
         .topNavigationView(left: {
             BackButton {
                 tabBarstate.isHidden = false
@@ -112,6 +132,10 @@ extension CourseDetailView {
                             .frame(width: 100, height: 100)
                             .clipped()
                             .cornerRadius(4)
+                            .onTapGesture {
+                                viewModel.isShowPhotoPreview = true
+                                viewModel.selectedImage = image
+                            }
                     }
                 }
             }

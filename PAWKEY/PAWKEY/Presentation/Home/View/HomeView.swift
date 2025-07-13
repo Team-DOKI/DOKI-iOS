@@ -14,6 +14,7 @@ struct HomeView: View {
     @EnvironmentObject var router: Coordinator<HomeScreen>
     @EnvironmentObject var tabBarstate: TabBarState
     @StateObject var viewModel = HomeViewModel()
+    @StateObject var courseDetailViewModel = CourseDetailViewModel()
     
     var body: some View {
         ZStack {
@@ -39,7 +40,8 @@ struct HomeView: View {
                     
                     ReviewCard(type: .others, walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "외로운 산책", petName: "길냥이", postDate: "2025/01/02", buttonPressed: true, data: dummyData)
                         .onTapGesture {
-                            router.push(.sharedCourseDetail)
+                            courseDetailViewModel.images = [.walkRoute, .profile, .profile2, .profile3]
+                            router.push(.sharedCourseDetail(courseDetailViewModel))
                         }
                 }
                 .padding(.horizontal, 16)
@@ -240,8 +242,8 @@ struct HomeView: View {
                     .padding(.leading, 16)
                     .padding(.bottom, 12)
                 }
-                .onTapGesture {
-                    router.push(.sharedCourseDetail)
+                .onTapGesture {                    
+                    router.push(.sharedCourseDetail(courseDetailViewModel))
                     tabBarstate.isHidden = true
                 }
             
