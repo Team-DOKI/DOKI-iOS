@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct WalkCourseView: View {
     @EnvironmentObject var router: Coordinator<WalkScreen>
@@ -16,6 +17,8 @@ struct WalkCourseView: View {
     
     @State private var showStopConfirmation = false
     
+    @State private var userTrackingMode: MKUserTrackingMode = .follow
+    
     let onComplete: (Double, String, Int, UIImage?) -> Void
     
     var body: some View {
@@ -25,7 +28,8 @@ struct WalkCourseView: View {
                     region: $viewModel.region,
                     pathCoordinates: $viewModel.pathCoordinates,
                     shouldCenterOnUser: $viewModel.shouldCenterOnUser,
-                    snapshotImage: .constant(nil)
+                    snapshotImage: .constant(nil),
+                    userTrackingMode: $userTrackingMode
                 )
                 .edgesIgnoringSafeArea(.all)
                 
