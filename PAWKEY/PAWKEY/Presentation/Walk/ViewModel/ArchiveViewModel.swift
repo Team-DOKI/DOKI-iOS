@@ -12,6 +12,19 @@ class ArchiveViewModel: ObservableObject {
     @Published var selectedItems: [PhotosPickerItem] = []
     @Published var selectedImages: [UIImage] = []
     
+    @Published var safetyTags: Set<String> = []
+    @Published var facilityTags: Set<String> = []
+    
+    @Published var titleText: String = ""
+    @Published var reviewText: String = ""
+    
+    var isButtonDisabled: Bool {
+        !titleText.trimmingCharacters(in: .whitespaces).isEmpty &&
+        !reviewText.trimmingCharacters(in: .whitespaces).isEmpty &&
+        !safetyTags.isEmpty &&
+        !facilityTags.isEmpty
+    }
+    
     @MainActor
     func loadImagesFromPicker() async {
         var newImages: [UIImage] = []
