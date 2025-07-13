@@ -71,5 +71,27 @@ struct WalkMap: UIViewRepresentable {
             }
             return MKOverlayRenderer()
         }
+        
+        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            // 사용자 위치 아이콘 커스텀 뷰 반환
+            if annotation is MKUserLocation {
+                let identifier = "UserLocation"
+                
+                var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+                if annotationView == nil {
+                    annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                    annotationView?.image = UIImage(resource: .myLocation)
+                    annotationView?.bounds = CGRect(x: 0, y: 0, width: 50, height: 50)
+                    annotationView?.centerOffset = CGPoint(x: 0, y: 0)
+                } else {
+                    annotationView?.annotation = annotation
+                }
+                
+                return annotationView
+            }
+            
+            return nil
+        }
+
     }
 }
