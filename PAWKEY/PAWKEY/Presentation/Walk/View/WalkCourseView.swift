@@ -117,15 +117,11 @@ struct StopConfirmationView: View {
             Text("산책이 중단되었어요.")
                 .font(.head_24_b)
                 .foregroundColor(.pawkeyWhite1)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, 88)
                 .padding(.bottom, 12)
             
             Text(description)
                 .font(.body_16_m)
                 .foregroundColor(.pawkeyWhite2)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, 96)
             
             Spacer()
             
