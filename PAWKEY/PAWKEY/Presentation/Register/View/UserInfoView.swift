@@ -54,7 +54,7 @@ struct UserInfoView: View {
                 
                 Spacer()
             }          
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 16)        
         }
     }
 }

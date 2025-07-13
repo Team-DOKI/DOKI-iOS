@@ -104,7 +104,7 @@ struct ReviewCard: View {
                         Chip(title: $0, isActive: true)
                     }
                     if !isSpread {
-                        Chip(title: "+\(data.count - 3)")
+                        Chip(title: "+\(data.count - 3)", isActive: false)
                             .onTapGesture {
                                 isSpread = true
                             }
@@ -116,8 +116,7 @@ struct ReviewCard: View {
         }
         .background(Color.pawkeyWhite1)
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .layoutPriority(30)
-        .animation(.default)
+        .layoutPriority(30)        
     }
         
 }
