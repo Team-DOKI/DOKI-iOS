@@ -18,21 +18,25 @@ struct MapAndListView: View {
     @State private var showWalkCourseView = false
     @State private var shouldCenterOnUser: Bool = false
     
+    @Namespace private var namespace
+    
     let tabs: [(title: String, mode: Int)] = [("지도", 0), ("리스트", 1)]
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             HStack(spacing: 20) {
                 ForEach(tabs, id: \.mode) { tab in
                     TabButton(
                         title: tab.title,
-                        isSelected: selectedMode == tab.mode
+                        isSelected: selectedMode == tab.mode,
+                        namespace: namespace
                     ) {
                         selectedMode = tab.mode
                     }
+                    .fixedSize(horizontal: true, vertical: false)
                 }
+                Spacer()
             }
-            .frame(width: 155, height: 56)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, 8)
             .padding(.leading, 16)
@@ -40,9 +44,9 @@ struct MapAndListView: View {
             if selectedMode == 0 {
                 ZStack(alignment: .topLeading) {
                     WalkMap(region: $viewModel.region,
-                                   pathCoordinates: $viewModel.pathCoordinates,
-                                   shouldCenterOnUser: $shouldCenterOnUser,
-                                   snapshotImage: .constant(nil))
+                            pathCoordinates: $viewModel.pathCoordinates,
+                            shouldCenterOnUser: $shouldCenterOnUser,
+                            snapshotImage: .constant(nil))
                     .edgesIgnoringSafeArea(.bottom)
                     .overlay(
                         VStack {
@@ -167,6 +171,7 @@ struct MapAndListView: View {
 struct TabButton: View {
     let title: String
     let isSelected: Bool
+    let namespace: Namespace.ID
     let action: () -> Void
     
     var body: some View {
@@ -176,9 +181,15 @@ struct TabButton: View {
                     .font(.head_22_b)
                     .foregroundColor(isSelected ? .pawkeyBlack : .gray200)
                 
-                Rectangle()
-                    .frame(height: 4)
-                    .foregroundColor(isSelected ? .pawkeyBlack : .clear)
+                if isSelected {
+                    Rectangle()
+                        .frame(height: 4)
+                        .foregroundColor(.pawkeyBlack)
+                        .matchedGeometryEffect(id: "arrow", in: namespace)
+                } else {
+                    Color.clear
+                        .frame(height: 4)
+                }
             }
         }
         .buttonStyle(.plain)
