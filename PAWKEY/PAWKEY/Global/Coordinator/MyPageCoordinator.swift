@@ -29,8 +29,10 @@ struct MyPageCoordinator: View {
             UserProfileView()
         case .petProfile:
             PetProfileView()
-        case .savedRoute:
+        case .savedCourse:
             SavedCourseView()
+        case .myCourse:
+            MyCourseView()
         }
     }
 }
