@@ -9,7 +9,7 @@ import SwiftUI
 
 struct Chip: View {
     let title: String
-    var isActive: Bool = false
+    var isActive: Bool = true
     
     var body: some View {
         Text(title)

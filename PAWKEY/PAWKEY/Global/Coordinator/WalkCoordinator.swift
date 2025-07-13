@@ -43,8 +43,8 @@ struct WalkCoordinator: View {
             SharedWalkCourseView(sharedCourseId: id)
         case .sharedWalkCompletion(let id):
             SharedWalkCompletionView(sharedWalkId: id)
-        case .reviewWrite(let id):
-            ReviewWriteView(reviewId: id)
+        case .reviewWrite:
+            ReviewWriteView()
         }
     }
 }

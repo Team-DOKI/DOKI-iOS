@@ -10,29 +10,27 @@ import PhotosUI
 
 struct DogInfoView: View {
     @ObservedObject var viewModel: ProfileSetUpViewModel
-
+    
     @State var profileImage: [UIImage] = []
     @State var selectedItems: [PhotosPickerItem] = []
-
+    
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading) {
-
+                
                 Spacer().frame(height: 20)
-
+                
                 Text("견주님의 반려견이 궁금해요!")
                     .font(.head_22_sb)
                     .foregroundStyle(.pawkeyBlack)
                     .frame(alignment: .center)
-
                 Spacer().frame(height: 32)
-
                 HStack {
                     Spacer()
                     PhotosPicker(selection: $selectedItems,
                                  maxSelectionCount: 1,
                                  matching: .images) {
-
+                        
                         if let profileImage = profileImage.last {
                             Image(uiImage: profileImage)
                                 .resizable()
@@ -47,23 +45,23 @@ struct DogInfoView: View {
                                 .overlay(Image(.add))
                         }
                     }
-                    .onChange(of: selectedItems) { _, selectedPhoto in
-                        handleSelectedPhotos(selectedPhoto)
-                    }
-
+                                 .onChange(of: selectedItems) { _, selectedPhoto in
+                                     handleSelectedPhotos(selectedPhoto)
+                                 }
+                    
                     Spacer()
                 }
-
+                
                 Spacer().frame(height: 24)
-
+                
                 VStack(alignment: .leading) {
                     Text("반려견 이름")
                         .font(.body_14_sb)
                     PawkeyTextField(text: $viewModel.userProfile.dogName, placeholder: "이름을 입력해주세요")
                 }
-
+                
                 Spacer().frame(height: 30)
-
+                
                 VStack(alignment: .leading) {
                     Text("성별")
                         .font(.body_14_sb)
@@ -75,7 +73,7 @@ struct DogInfoView: View {
                             }
                         }
                     }
-
+                    
                     Button {
                         viewModel.changeUserInfo(.neutered(!viewModel.userProfile.isNeutered))
                     } label: {
@@ -84,17 +82,17 @@ struct DogInfoView: View {
                             .foregroundStyle(viewModel.userProfile.isNeutered ? .pawkeyBlack : .gray300)
                     }
                 }
-
+                
                 Spacer().frame(height: 30)
-
+                
                 VStack(alignment: .leading) {
                     Text("견종")
                         .font(.body_14_sb)
-                    PawkeyTextField(text: $viewModel.userProfile.dogBreed)
+                    PawkeyTextField(text: $viewModel.userProfile.dogBreed)                    
                 }
-
+                
                 Spacer().frame(height: 30)
-
+                
                 VStack(alignment: .leading) {
                     Text("나이")
                         .font(.body_14_sb)
@@ -111,12 +109,11 @@ struct DogInfoView: View {
                 }
                 Spacer().frame(height: 50)
                 Spacer()
-
             }
             .padding(.horizontal, 16)
         }
     }
-
+    
     private func handleSelectedPhotos(_ newPhotos: [PhotosPickerItem]) {
         for newPhoto in newPhotos {
             newPhoto.loadTransferable(type: Data.self) { result in
@@ -134,7 +131,7 @@ struct DogInfoView: View {
                 }
             }
         }
-
+        
         selectedItems.removeAll()
     }
 }
