@@ -20,4 +20,6 @@ class CourseDetailViewModel: ObservableObject, Hashable {
     
     @Published var images: [UIImage] = []
     @Published var isPrivate: Bool = false
+    @Published var selectedImage: UIImage?
+    @Published var isShowPhotoPreview = false
 }

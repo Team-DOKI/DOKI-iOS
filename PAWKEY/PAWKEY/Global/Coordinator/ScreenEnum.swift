@@ -12,7 +12,7 @@ enum HomeScreen: Hashable {
     case home    
     case changeMyArea
     case acvitiyAreaMap
-    case sharedCourseDetail
+    case sharedCourseDetail(CourseDetailViewModel)
 }
 
 enum WalkScreen: Hashable {
