@@ -12,6 +12,8 @@ struct CourseDetailView: View {
     @EnvironmentObject var tabBarstate: TabBarState
     @EnvironmentObject var router: Coordinator<HomeScreen>
     
+    @State var isShowPhotoPreview: Bool = false
+    
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 0) {
@@ -39,6 +41,21 @@ struct CourseDetailView: View {
             }
         }
         .ignoresSafeArea(.all, edges: .bottom)
+        .contextMenu(isPresented: $viewModel.isShowPhotoPreview, content: {
+            VStack {
+                HStack {
+                    Spacer()
+//                    Image(.x)
+                }
+                if let image = viewModel.selectedImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .frame(maxHeight: 228)
+                        .aspectRatio(contentMode: .fit)
+                }
+            }
+            .padding(.horizontal, 16)
+        })
         .topNavigationView(left: {
             BackButton {
                 tabBarstate.isHidden = false
@@ -112,6 +129,10 @@ extension CourseDetailView {
                             .frame(width: 100, height: 100)
                             .clipped()
                             .cornerRadius(4)
+                            .onTapGesture {
+                                viewModel.isShowPhotoPreview = true
+                                viewModel.selectedImage = image
+                            }
                     }
                 }
             }
