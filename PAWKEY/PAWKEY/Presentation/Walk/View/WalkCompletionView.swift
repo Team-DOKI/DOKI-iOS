@@ -27,7 +27,6 @@ struct WalkCompletionView: View {
                     .foregroundColor(.pawkeyBlack)
                     .padding(.top, 36)
                     .padding(.bottom, 16)
-                    .padding(.horizontal, 16)
                 
                 VStack(alignment: .leading) {
                     HStack(alignment: .center, spacing: 10) {
@@ -71,7 +70,6 @@ struct WalkCompletionView: View {
                 .padding(.bottom, 8)
                 .background(.pawkeyWhite1)
                 .cornerRadius(16)
-                .padding(.horizontal, 16)
                 
                 Spacer()
                 
