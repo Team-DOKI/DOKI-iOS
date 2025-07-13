@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PetProfileView: View {
-    @EnvironmentObject var router: Coordinator<MyPageScreen>
+   // @EnvironmentObject var router: Coordinator<MyPageScreen>
     
     var body: some View {
         VStack(spacing: 8) {
@@ -94,6 +94,9 @@ struct PetProfileView: View {
                                 .foregroundStyle(Color.green500)
                         }
                         .padding(.leading, 16)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        Spacer()
                         
                         VStack(alignment: .leading, spacing: 10) {
                             Text("사회성 레벨")
@@ -103,9 +106,8 @@ struct PetProfileView: View {
                                 .font(.head_18_sb)
                                 .foregroundStyle(Color.green500)
                         }
-                        .padding(.leading, 32)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 
                 Spacer()
@@ -114,7 +116,7 @@ struct PetProfileView: View {
         .navigationBarBackButtonHidden()
         .topNavigationView {
             BackButton {
-                router.pop()
+                //router.pop()
             }
         } center: {
             Text("반려견 프로필")
@@ -123,4 +125,8 @@ struct PetProfileView: View {
         
         
     }
+}
+
+#Preview {
+    PetProfileView()
 }
