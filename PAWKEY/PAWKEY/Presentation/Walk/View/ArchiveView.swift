@@ -27,33 +27,31 @@ struct ArchiveView: View {
             VStack {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
-                        if let snapshot = snapshot {
-                            Image(uiImage: snapshot)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 160, height: 188)
-                                .cornerRadius(8)
-                        } else {
-                            RoundedRectangle(cornerRadius: 8)
-                                .frame(width: 160, height: 188)
+                        ForEach(Array(viewModel.selectedImages.enumerated()), id: \.element) { index, image in
+                            ZStack(alignment: .topTrailing) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 160, height: 160)
+                                    .clipped()
+                                    .cornerRadius(8)
+                                
+                                Button(action: {
+                                    viewModel.selectedImages.remove(at: index)
+                                }) {
+                                    Image(.delete)
+                                        .padding(4)
+                                }
+                            }
                         }
                         
-                        ForEach(viewModel.selectedImages, id: \.self) { image in
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 160, height: 188)
-                                .clipped()
-                                .cornerRadius(8)
-                        }
-                        
-                        if viewModel.selectedImages.count < 4 {
+                        if viewModel.selectedImages.count < 5 {
                             PhotosPicker(selection: $viewModel.selectedItems,
-                                         maxSelectionCount: 4 - viewModel.selectedImages.count,
+                                         maxSelectionCount: 5 - viewModel.selectedImages.count,
                                          matching: .images) {
                                 RoundedRectangle(cornerRadius: 8)
                                     .fill(Color.gray5)
-                                    .frame(width: 160, height: 188)
+                                    .frame(width: 160, height: 160)
                                     .overlay(
                                         Image(.add)
                                     )
@@ -77,7 +75,7 @@ struct ArchiveView: View {
                 }
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
-               
+                
                 Rectangle()
                     .fill(Color.pawkeyWhite2)
                     .frame(height: 10)
@@ -96,9 +94,9 @@ struct ArchiveView: View {
                         .padding(.bottom, 23)
                     
                     VStack(alignment: .leading, spacing: 32) {
-                        QuestionKeywordView(
+                        QuestionForm(
                             question: "🚸 산책 중 안전 요소는 어땠나요?",
-                            keywords: [
+                            tags: [
                                 "킥보드나 자전거가 거의 없어요",
                                 "차량이 거의 다니지 않아요",
                                 "야간 조명이 잘 되어있어요",
@@ -107,9 +105,9 @@ struct ArchiveView: View {
                             ]
                         )
                         
-                        QuestionKeywordView(
+                        QuestionForm(
                             question: "🧺 산책 중 어떤 편의 시설이 있었나요?",
-                            keywords: [
+                            tags: [
                                 "배변 봉투 쓰레기통이 있어요",
                                 "애견 산책로가 있어요",
                                 "쉴 곳이 있어요",
@@ -120,6 +118,7 @@ struct ArchiveView: View {
                     }
                 }
                 .padding(.horizontal, 16)
+                .padding(.bottom, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Rectangle()
@@ -134,9 +133,9 @@ struct ArchiveView: View {
                         .foregroundStyle(.pawkeyBlack)
                         .padding(.bottom, 10)
                     
-                  ReviewTextField(type: .normal, text: $titleText)
+                    ReviewTextField(type: .normal, text: $titleText)
                     
-                   ReviewTextEditor(text: $reviewText)
+                    ReviewTextEditor(text: $reviewText)
                 }
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -187,89 +186,5 @@ struct ArchiveView: View {
         courseDetailVM.images = imagesToSend
         courseDetailVM.isPrivate = isPrivate
         router.push(.courseDetail(courseDetailVM))
-    }
-}
-
-struct QuestionKeywordView: View {
-    let question: String
-    let keywords: [String]
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text(question)
-                .font(.body_16_m)
-                .foregroundColor(.pawkeyBlack)
-                .padding(.bottom, 12)
-            
-            FlowLayout(spacing: 8) {
-                ForEach(keywords, id: \.self) { keyword in
-                    Text(keyword)
-                        .font(.body_14_r)
-                        .foregroundColor(.gray400)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 16)
-                        .background(
-                            RoundedRectangle(cornerRadius: 4)
-                                .stroke(Color.gray50, lineWidth: 1)
-                        )
-                }
-            }
-        }
-    }
-}
-
-struct FlowLayout: Layout {
-    var spacing: CGFloat = 8
-    
-    // 전체 레이아웃 크기 계산
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let maxWidth = proposal.width ?? .infinity
-        
-        var x: CGFloat = 0 // 현재 줄에 채워진 너비
-        var y: CGFloat = 0 // 누적 높이
-        var lineHeight: CGFloat = 0 // 현재 줄에서 가장 큰 높이
-        
-        for subview in subviews {
-            let size = subview.sizeThatFits(.unspecified)
-            
-            // // 현재 줄 너비 넘으면 다음 줄로 이동
-            if x + size.width > maxWidth {
-                x = 0
-                y += lineHeight + spacing
-                lineHeight = 0
-            }
-            
-            x += size.width + spacing
-            lineHeight = max(lineHeight, size.height)
-        }
-        
-        // 마지막 줄 높이 더하기
-        return CGSize(width: maxWidth, height: y + lineHeight)
-    }
-    
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let maxWidth = bounds.width
-        var x: CGFloat = 0
-        var y: CGFloat = 0
-        var lineHeight: CGFloat = 0
-        
-        for subview in subviews {
-            let size = subview.sizeThatFits(.unspecified)
-            
-            if x + size.width > maxWidth {
-                // 다음 줄로
-                x = 0
-                y += lineHeight + spacing
-                lineHeight = 0
-            }
-            
-            subview.place(
-                at: CGPoint(x: bounds.minX + x, y: bounds.minY + y),
-                proposal: ProposedViewSize(size)
-            )
-            
-            x += size.width + spacing
-            lineHeight = max(lineHeight, size.height)
-        }
     }
 }
