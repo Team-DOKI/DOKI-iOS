@@ -8,6 +8,12 @@
 import SwiftUI
 
 struct StatBox: View {
+    enum BoxType {
+        case bordered
+        case borderless
+    }
+    
+    let type: BoxType
     let distance: Double
     let elapsedTime: String
     let stepCount: Int
@@ -55,7 +61,7 @@ struct StatBox: View {
         .overlay(
             RoundedRectangle(cornerRadius: 8)
                 .inset(by: 0.5)
-                .stroke(Color.green500, lineWidth: 1)
+                .stroke(type == .bordered ? Color.green500 : Color.clear, lineWidth: 1)
         )
     }
 }
