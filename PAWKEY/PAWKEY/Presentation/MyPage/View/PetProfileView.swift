@@ -127,6 +127,3 @@ struct PetProfileView: View {
     }
 }
 
-#Preview {
-    PetProfileView()
-}
