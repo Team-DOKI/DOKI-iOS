@@ -26,14 +26,14 @@ struct FilterBottomSheet: View {
                         .padding(.leading, 16)
                     CheckBoxGroup(
                         isExpanded: $viewModel.isExpandWalkingTime,
-                        title: "🚶 산책 시간",
+                        title: "산책 시간",
                         items: viewModel.walkingTimeList
                     ) { itemIndex in
                         viewModel.selectWalkRouteOption(.walkingTime(index: itemIndex))
                     }
                     CheckBoxGroup(
                         isExpanded: $viewModel.isExpandSafety,
-                        title: "🚸 안전",
+                        title: "안전",
                         items: viewModel.safetyList
                     ) { itemIndex in
                         viewModel.selectWalkRouteOption(.safety(index: itemIndex))
@@ -41,7 +41,7 @@ struct FilterBottomSheet: View {
                     
                     CheckBoxGroup(
                         isExpanded: $viewModel.isExpandConvenience,
-                        title: "🧺 편리성 관련",
+                        title: "편리성 관련",
                         items: viewModel.convenienceList
                     ) { itemIndex in
                         viewModel.selectWalkRouteOption(.convenience(index: itemIndex))
@@ -56,7 +56,7 @@ struct FilterBottomSheet: View {
                     
                     RadioGroup(
                         isExpanded: $viewModel.isExpandEnvironment,
-                        title: "🌿 환경 관련",
+                        title: "환경 관련",
                         items: viewModel.environmentList
                     ) { itemIndex in
                         viewModel.selectWalkRouteOption(.environment(index: itemIndex))
@@ -64,7 +64,7 @@ struct FilterBottomSheet: View {
                     
                     RadioGroup(
                         isExpanded: $viewModel.isExpandMood,
-                        title: "😌 분위기",
+                        title: "분위기",
                         items: viewModel.moodList
                     ) { itemIndex in
                         viewModel.selectWalkRouteOption(.mood(index: itemIndex))
