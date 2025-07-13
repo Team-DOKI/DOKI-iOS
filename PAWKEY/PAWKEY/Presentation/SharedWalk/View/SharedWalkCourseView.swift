@@ -43,6 +43,7 @@ struct SharedWalkCourseView: View {
                 
                 if showStopConfirmation {
                     StopConfirmationView(
+                        description: "아직 설정된 산책 루트를 다 돌지 못했어요.",
                         onResume: {
                             showStopConfirmation = false
                             viewModel.setPaused(false)
@@ -62,7 +63,7 @@ struct SharedWalkCourseView: View {
                     Spacer()
                     
                     CTAButton(
-                        title: "종료하기",
+                        title: "산책 기록 중지",
                         isDisabled: false,
                         buttonStyle: .filled
                     ) {
