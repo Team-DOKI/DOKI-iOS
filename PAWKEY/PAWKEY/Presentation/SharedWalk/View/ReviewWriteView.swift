@@ -104,7 +104,7 @@ struct ReviewWriteView: View {
                 .padding(.bottom, 30)
             }
             .topNavigationView(center: {
-                Text("산책 완료")
+                Text("산책 후기 작성")
                     .font(.body_16_sb)
             })
         }
