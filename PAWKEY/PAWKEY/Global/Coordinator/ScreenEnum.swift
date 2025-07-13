@@ -25,7 +25,7 @@ enum WalkScreen: Hashable {
     
     case sharedWalkCourse(id: Int)
     case sharedWalkCompletion(id: Int)
-    case reviewWrite(id: Int)
+    case reviewWrite
 }
 
 enum MyPageScreen: Hashable {
