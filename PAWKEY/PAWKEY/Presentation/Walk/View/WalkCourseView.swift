@@ -44,6 +44,7 @@ struct WalkCourseView: View {
                 
                 if showStopConfirmation {
                     StopConfirmationView(
+                        description: "산책을 정말 종료하시겠어요?",
                         onResume: {
                             showStopConfirmation = false
                             viewModel.setPaused(false)
@@ -101,6 +102,7 @@ struct WalkCourseView: View {
 }
 
 struct StopConfirmationView: View {
+    let description: String
     let onResume: () -> Void
     let onStop: () -> Void
     
@@ -115,7 +117,7 @@ struct StopConfirmationView: View {
                 .padding(.horizontal, 88)
                 .padding(.bottom, 12)
             
-            Text("산책을 정말 종료하시겠어요?")
+            Text(description)
                 .font(.body_16_m)
                 .foregroundColor(.pawkeyWhite2)
                 .frame(maxWidth: .infinity)
@@ -139,7 +141,7 @@ struct StopConfirmationView: View {
                 }
                 
                 CTAButton(
-                    title: "산책 종료하기",
+                    title: "산책 기록 중지",
                     isDisabled: false,
                     buttonStyle: .filled,
                     action: onStop
