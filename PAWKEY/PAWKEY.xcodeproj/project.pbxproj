@@ -22,7 +22,6 @@
 				Info.plist,
 				Network/Base/.gitkeep,
 				Presentation/MyPage/ViewModel/.gitkeep,
-				Presentation/SharedWalk/ViewModel/.gitkeep,
 			);
 			target = 76ECCDEC2E05AFCC0056CAF7 /* PAWKEY */;
 		};
