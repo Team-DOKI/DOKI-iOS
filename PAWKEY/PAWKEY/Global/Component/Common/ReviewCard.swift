@@ -104,7 +104,7 @@ struct ReviewCard: View {
                         Chip(title: $0, isActive: true)
                     }
                     if !isSpread {
-                        Chip(title: "+\(data.count - 3)")
+                        Chip(title: "+\(data.count - 3)", isActive: false)
                             .onTapGesture {
                                 isSpread = true
                             }
