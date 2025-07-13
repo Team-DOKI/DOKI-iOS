@@ -66,6 +66,9 @@ struct ActivityAreaMapView: View {
                                     withAnimation {
                                         showToast = false
                                     }
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        router.reset()
+                                    }
                                 }
                             }
                             .padding(.horizontal, 16)
