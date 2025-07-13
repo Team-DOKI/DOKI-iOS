@@ -145,6 +145,7 @@ struct MyPageView: View {
                         Spacer()
                     }
                     
+                    // 저장한 산책 루트
                     HStack {
                         HStack(spacing: 12) {
                             Image(.heartIconBlack)
@@ -154,11 +155,11 @@ struct MyPageView: View {
                         
                         Spacer()
                         
-                        Button {
-                            router.push(.savedRoute)
-                        } label: {
-                            Image(.arrowRightBlack20)
-                        }
+                        Image(.arrowRightBlack20)
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        router.push(.savedCourse)
                     }
                     .padding(.horizontal, 20)
                     .padding(.vertical, 16)
@@ -167,6 +168,7 @@ struct MyPageView: View {
                         .padding(.horizontal, 16)
                         .foregroundStyle(Color.gray50)
                     
+                    // 내가 기록한 산책 루트
                     HStack {
                         HStack(spacing: 12) {
                             Image(.editIconBlack)
@@ -175,10 +177,12 @@ struct MyPageView: View {
                         }
                         
                         Spacer()
-                        Button {
-                        } label: {
-                            Image(.arrowRightBlack20)
-                        }
+                        
+                        Image(.arrowRightBlack20)
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        router.push(.myCourse)
                     }
                     .padding(.horizontal, 20)
                     .padding(.vertical, 16)
