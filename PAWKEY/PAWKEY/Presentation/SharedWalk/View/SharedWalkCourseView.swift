@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct SharedWalkCourseView: View {
     @EnvironmentObject var router: Coordinator<WalkScreen>
@@ -16,6 +17,8 @@ struct SharedWalkCourseView: View {
     
     @State private var showStopConfirmation = false
     
+    @State private var userTrackingMode: MKUserTrackingMode = .follow
+    
     let onComplete: (Double, String, Int, UIImage?) -> Void
     
     var body: some View {
@@ -24,6 +27,7 @@ struct SharedWalkCourseView: View {
                 SharedWalkMap(
                     region: $viewModel.region,
                     shouldCenterOnUser: $viewModel.shouldCenterOnUser,
+                    userTrackingMode: $userTrackingMode,
                     pathCoordinates: viewModel.examplePathCoordinates
                 )
                 .edgesIgnoringSafeArea(.all)
