@@ -37,12 +37,17 @@ struct WalkCoordinator: View {
                 snapshot: snapshot
             )
         case .archive(let snapshot):
-                ArchiveView(snapshot: snapshot)
+            ArchiveView(snapshot: snapshot)
             
-        case .sharedWalkCourse(let id):
-            SharedWalkCourseView(sharedCourseId: id)
-        case .sharedWalkCompletion(let id):
-            SharedWalkCompletionView(sharedWalkId: id)
+            //        case .sharedWalkCourse:
+            //            SharedWalkCourseView()
+        case .sharedWalkCompletion(let distance, let elapsedTime, let stepCount, let snapshot):
+            SharedWalkCompletionView(
+                distance: distance,
+                elapsedTime: elapsedTime,
+                stepCount: stepCount,
+                snapshot: snapshot
+            )
         case .reviewWrite:
             ReviewWriteView()
         }
