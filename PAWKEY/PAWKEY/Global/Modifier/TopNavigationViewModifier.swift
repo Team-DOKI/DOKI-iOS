@@ -37,15 +37,11 @@ struct TopNavigationViewModifier<C, L, R>: ViewModifier where C: View, L: View, 
                     center?()
                     Spacer()
                 }
-            }
-            
-            Spacer()
+            }            
             
             content
-            
-            Spacer()
         }
-        .navigationBarHidden(true)
+        .navigationBarHidden(true)        
     }
 }
 
