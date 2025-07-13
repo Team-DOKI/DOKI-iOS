@@ -10,21 +10,23 @@ import SwiftUI
 struct Chip: View {
     let title: String
     var isActive: Bool = true
+    var textColor: Color = Color.pawkeyBlack
     
     var body: some View {
         Text(title)
             .font(.caption_12_r)
-            .foregroundStyle(isActive ? .green600 : .pawkeyBlack)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
+            .foregroundStyle(isActive ? .green600 : textColor)
             .background(isActive ? .green50 : .pawkeyWhite2)
             .clipShape(Capsule())
+            
     }
 }
 
 #Preview {
     ZStack {
         Color.gray
-        Chip(title: "옵션1", isActive: true)
+        Chip(title: "옵션1asdfsadfsdf", isActive: false)
     }
 }
