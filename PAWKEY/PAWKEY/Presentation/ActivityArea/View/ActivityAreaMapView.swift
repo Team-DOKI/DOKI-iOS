@@ -67,7 +67,9 @@ struct ActivityAreaMapView: View {
                                         showToast = false
                                     }
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        tabBarState.isHidden = false
                                         router.reset()
+                                        
                                     }
                                 }
                             }
