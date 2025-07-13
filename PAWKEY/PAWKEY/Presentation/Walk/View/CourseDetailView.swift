@@ -10,9 +10,7 @@ import SwiftUI
 struct CourseDetailView: View {
     @ObservedObject var viewModel: CourseDetailViewModel
     @EnvironmentObject var tabBarstate: TabBarState
-    @EnvironmentObject var router: Coordinator<HomeScreen>
-    
-    @State var isShowPhotoPreview: Bool = false
+    @EnvironmentObject var router: Coordinator<HomeScreen>        
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -45,7 +43,12 @@ struct CourseDetailView: View {
             VStack {
                 HStack {
                     Spacer()
-//                    Image(.x)
+                    Button {
+                        viewModel.isShowPhotoPreview = false
+                    } label: {
+                        Image(.xmark)
+                    }
+
                 }
                 if let image = viewModel.selectedImage {
                     Image(uiImage: image)
