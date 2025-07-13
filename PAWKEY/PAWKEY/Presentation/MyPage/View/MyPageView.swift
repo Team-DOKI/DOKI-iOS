@@ -155,7 +155,7 @@ struct MyPageView: View {
                         Spacer()
                         
                         Button {
-                            router.push(.savedRoute)
+                            router.push(.savedCourse)
                         } label: {
                             Image(.arrowRightBlack20)
                         }
@@ -176,6 +176,7 @@ struct MyPageView: View {
                         
                         Spacer()
                         Button {
+                            router.push(.myCourse)
                         } label: {
                             Image(.arrowRightBlack20)
                         }
