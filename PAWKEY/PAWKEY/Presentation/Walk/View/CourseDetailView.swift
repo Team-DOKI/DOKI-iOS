@@ -10,7 +10,11 @@ import SwiftUI
 struct CourseDetailView: View {
     @ObservedObject var viewModel: CourseDetailViewModel
     @EnvironmentObject var tabBarstate: TabBarState
-    @EnvironmentObject var router: Coordinator<HomeScreen>
+//    @EnvironmentObject var router: Coordinator<HomeScreen>
+    @EnvironmentObject var router: Coordinator<WalkScreen>
+    
+    @StateObject private var sharedWalkCourseViewModel = SharedWalkCourseViewModel()
+    @State private var showSharedWalkCourseView = false
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -71,6 +75,17 @@ struct CourseDetailView: View {
         .overlay(alignment: .bottom) {
             submitButton
         }
+        .fullScreenCover(isPresented: $showSharedWalkCourseView) {
+            SharedWalkCourseView(viewModel: sharedWalkCourseViewModel, showSharedWalkCourseView: $showSharedWalkCourseView) { distance, elapsedTime, stepCount, snapshot in
+                router.push(.sharedWalkCompletion(
+                    distance: distance,
+                    elapsedTime: elapsedTime,
+                    stepCount: stepCount,
+                    snapshot: snapshot
+                ))
+                sharedWalkCourseViewModel.resetTrackingData()
+            }
+        }
     }
 }
 
@@ -80,7 +95,7 @@ extension CourseDetailView {
             if let snapshot = viewModel.images.first {
                 Image(uiImage: snapshot)
                     .resizable()
-                    .scaledToFit()
+//                    .scaledToFit()
                     .frame(height: 250)
                     .frame(maxWidth: .infinity)
                     .clipped()
@@ -123,23 +138,25 @@ extension CourseDetailView {
     
     private var reviewImageScrollView: some View {
         VStack(alignment: .leading) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 6) {
-                    ForEach(viewModel.images.dropFirst(), id: \.self) { image in
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 100, height: 100)
-                            .clipped()
-                            .cornerRadius(4)
-                            .onTapGesture {
-                                viewModel.isShowPhotoPreview = true
-                                viewModel.selectedImage = image
+            if viewModel.images.count > 1 {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 6) {
+                                ForEach(viewModel.images.dropFirst(), id: \.self) { image in
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 100, height: 100)
+                                        .clipped()
+                                        .cornerRadius(4)
+                                        .onTapGesture {
+                                            viewModel.isShowPhotoPreview = true
+                                            viewModel.selectedImage = image
+                                        }
+                                }
                             }
+                        }
+                        .padding(.bottom, 12)
                     }
-                }
-            }
-            .padding(.bottom, 12)
             
             Text("""
                  후기 글 본문 후기 글 본문 후기 글 본문ㅇ
@@ -152,7 +169,6 @@ extension CourseDetailView {
             Text("본인 위치에서의 거리")
                 .font(.caption_12_sb)
                 .foregroundStyle(.gray200)
-                .padding(.bottom, 12)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -191,13 +207,21 @@ extension CourseDetailView {
     private var locationDateInfoView: some View {
         VStack(alignment: .leading) {
             TimePlaceCell(type: .place("강남구 역삼동"))
+                .padding(.bottom, 4)
+            
             TimePlaceCell(type: .time("2025.07.08(화) | 오후 11:28"))
+                .padding(.bottom, 12)
+            
             Chip(title: "옵션")
+                .padding(.top, 10)
+                .padding(.bottom, 12)
         }
     }
     
     private var submitButton: some View {
-        Button(action: {}) {
+        Button(action: {
+            showSharedWalkCourseView = true
+        }) {
             Text("해당 루트로 산책하기")
                 .font(.body_16_sb)
                 .foregroundStyle(.pawkeyWhite1)

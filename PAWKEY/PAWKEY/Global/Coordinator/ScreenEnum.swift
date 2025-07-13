@@ -23,8 +23,8 @@ enum WalkScreen: Hashable {
     case walkCompletion(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?)
     case archive(snapshot: UIImage?)
     
-    case sharedWalkCourse(id: Int)
-    case sharedWalkCompletion(id: Int)
+//    case sharedWalkCourse
+    case sharedWalkCompletion(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?)
     case reviewWrite
 }
 
