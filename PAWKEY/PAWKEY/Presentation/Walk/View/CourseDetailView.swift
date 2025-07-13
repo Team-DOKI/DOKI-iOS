@@ -10,7 +10,7 @@ import SwiftUI
 struct CourseDetailView: View {
     @ObservedObject var viewModel: CourseDetailViewModel
     @EnvironmentObject var tabBarstate: TabBarState
-    @EnvironmentObject var router: Coordinator<HomeScreen>        
+    @EnvironmentObject var router: Coordinator<HomeScreen>
     
     var body: some View {
         ScrollView(showsIndicators: false) {
