@@ -180,6 +180,7 @@ struct TabButton: View {
                 Text(title)
                     .font(.head_22_b)
                     .foregroundColor(isSelected ? .pawkeyBlack : .gray200)
+                    .padding(10)
                 
                 if isSelected {
                     Rectangle()
