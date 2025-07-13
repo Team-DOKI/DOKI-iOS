@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ReviewWriteView: View {
+    @StateObject private var viewModel = ReviewWriteViewModel()
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -59,29 +60,31 @@ struct ReviewWriteView: View {
                         .foregroundStyle(.gray200)
                         .padding(.bottom, 23)
                     
-//                    VStack(alignment: .leading, spacing: 32) {
-//                        QuestionForm(
-//                            question: "🚸 산책 중 안전 요소는 어땠나요?",
-//                            tags: [
-//                                "킥보드나 자전거가 거의 없어요",
-//                                "차량이 거의 다니지 않아요",
-//                                "야간 조명이 잘 되어있어요",
-//                                "보도와 차도가 구분되어 있어요",
-//                                "보도가 넓어서 산책하기 편했어요"
-//                            ]
-//                        )
-//                        
-//                        QuestionForm(
-//                            question: "🧺 산책 중 어떤 편의 시설이 있었나요?",
-//                            tags: [
-//                                "배변 봉투 쓰레기통이 있어요",
-//                                "애견 산책로가 있어요",
-//                                "쉴 곳이 있어요",
-//                                "편의점이 있어요",
-//                                "반려견 동반 가능한 카페가 있어요"
-//                            ]
-//                        )
-//                    }
+                    VStack(alignment: .leading, spacing: 32) {
+                        QuestionForm(
+                            question: "🚸 산책 중 안전 요소는 어땠나요?",
+                            tags: [
+                                "킥보드나 자전거가 거의 없어요",
+                                "차량이 거의 다니지 않아요",
+                                "야간 조명이 잘 되어있어요",
+                                "보도와 차도가 구분되어 있어요",
+                                "보도가 넓어서 산책하기 편했어요"
+                            ],
+                            selectedTags: $viewModel.safetyTags
+                        )
+                        
+                        QuestionForm(
+                            question: "🧺 산책 중 어떤 편의 시설이 있었나요?",
+                            tags: [
+                                "배변 봉투 쓰레기통이 있어요",
+                                "애견 산책로가 있어요",
+                                "쉴 곳이 있어요",
+                                "편의점이 있어요",
+                                "반려견 동반 가능한 카페가 있어요"
+                            ],
+                            selectedTags: $viewModel.facilityTags
+                        )
+                    }
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 16)
@@ -95,7 +98,7 @@ struct ReviewWriteView: View {
                 
                 CTAButton(
                     title: "산책 후기 남기기",
-                    isDisabled: false,
+                    isDisabled: !viewModel.isButtonDisabled,
                     buttonStyle: .filled
                 ) {
                     
