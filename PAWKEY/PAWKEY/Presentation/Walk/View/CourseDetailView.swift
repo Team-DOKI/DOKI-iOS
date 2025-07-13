@@ -10,7 +10,11 @@ import SwiftUI
 struct CourseDetailView: View {
     @ObservedObject var viewModel: CourseDetailViewModel
     @EnvironmentObject var tabBarstate: TabBarState
-    @EnvironmentObject var router: Coordinator<HomeScreen>
+//    @EnvironmentObject var router: Coordinator<HomeScreen>
+    @EnvironmentObject var router: Coordinator<WalkScreen>
+    
+    @StateObject private var sharedWalkCourseViewModel = SharedWalkCourseViewModel()
+    @State private var showSharedWalkCourseView = false
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -50,6 +54,17 @@ struct CourseDetailView: View {
         })
         .overlay(alignment: .bottom) {
             submitButton
+        }
+        .fullScreenCover(isPresented: $showSharedWalkCourseView) {
+            SharedWalkCourseView(viewModel: sharedWalkCourseViewModel, showSharedWalkCourseView: $showSharedWalkCourseView) { distance, elapsedTime, stepCount, snapshot in
+                router.push(.sharedWalkCompletion(
+                    distance: distance,
+                    elapsedTime: elapsedTime,
+                    stepCount: stepCount,
+                    snapshot: snapshot
+                ))
+                sharedWalkCourseViewModel.resetTrackingData()
+            }
         }
     }
 }
@@ -180,7 +195,9 @@ extension CourseDetailView {
     }
     
     private var submitButton: some View {
-        Button(action: {}) {
+        Button(action: {
+            showSharedWalkCourseView = true
+        }) {
             Text("해당 루트로 산책하기")
                 .font(.body_16_sb)
                 .foregroundStyle(.pawkeyWhite1)
