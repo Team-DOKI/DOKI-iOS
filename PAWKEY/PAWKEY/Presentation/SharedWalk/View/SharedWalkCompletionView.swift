@@ -15,7 +15,7 @@ struct SharedWalkCompletionView: View {
         Text("공유 산책 완료: \(sharedWalkId)")
         
         Button("후기 작성하기") {
-            router.push(.reviewWrite(id: sharedWalkId))
+            router.push(.reviewWrite)
         }
     }
 }
