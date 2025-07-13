@@ -80,7 +80,7 @@ struct SharedWalkCompletionView: View {
                     isDisabled: false,
                     buttonStyle: .filled
                 ) {
-                    router.push(.archive(snapshot: snapshot))
+                    router.push(.reviewWrite)
                 }
                 .padding(.bottom, 26)
             }
