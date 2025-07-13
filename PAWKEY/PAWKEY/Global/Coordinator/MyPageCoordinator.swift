@@ -33,6 +33,8 @@ struct MyPageCoordinator: View {
             SavedCourseView()
         case .myCourse:
             MyCourseView()
+        case .courseDetail:
+            CourseDetailView(viewModel: CourseDetailViewModel())
         }
     }
 }

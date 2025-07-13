@@ -34,6 +34,7 @@ enum MyPageScreen: Hashable {
     case petProfile
     case savedCourse
     case myCourse
+    case courseDetail
 }
 
 enum OnboardingScreen: Hashable {
