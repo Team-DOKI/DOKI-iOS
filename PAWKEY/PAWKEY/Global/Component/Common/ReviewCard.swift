@@ -117,6 +117,7 @@ struct ReviewCard: View {
         .background(Color.pawkeyWhite1)
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .layoutPriority(30)
+        .animation(.default)
     }
-    
+        
 }
