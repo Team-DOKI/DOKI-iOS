@@ -17,7 +17,7 @@ struct ProfileSetUpView: View, KeyboardReadable {
     var body: some View {
         ZStack {
             GeometryReader { proxy in
-                VStack {
+                VStack(spacing: 0) {
                     ProgressBarView(
                         width: proxy.size.width,
                         step: viewModel.currentStepIndex
@@ -39,7 +39,6 @@ struct ProfileSetUpView: View, KeyboardReadable {
                         }
                     }
                     
-                    Spacer()
                     if !isKeyboardVisible {
                         CTAButton(
                             title: viewModel.currentStep == .dogTendency ? "등록하기" : "다음으로",
@@ -55,6 +54,9 @@ struct ProfileSetUpView: View, KeyboardReadable {
                         .padding(.horizontal, 16)
                     }
                 }
+                .safeAreaInset(edge: .bottom) {
+                    Color.clear.frame(height: isKeyboardVisible ? 20 : 0)
+                }                
                 .topNavigationView(left: {
                     VStack {
                         if viewModel.currentStepIndex > 1 {
@@ -72,7 +74,7 @@ struct ProfileSetUpView: View, KeyboardReadable {
                 }
                 .onTapGesture {
                     UIApplication.shared.hideKeyboard()
-                }
+                }                
             }
         }
     }
