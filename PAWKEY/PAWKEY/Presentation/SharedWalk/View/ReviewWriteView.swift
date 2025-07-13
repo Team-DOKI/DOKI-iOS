@@ -37,7 +37,7 @@ struct ReviewWriteView: View {
                     
                     Chip(title: "옵션")
                         .padding(.top, 10)
-                        .padding(.bottom, 12)
+                        .padding(.bottom, 16)
                 }
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)

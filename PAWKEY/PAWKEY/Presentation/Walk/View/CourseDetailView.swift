@@ -60,7 +60,7 @@ extension CourseDetailView {
             if let snapshot = viewModel.images.first {
                 Image(uiImage: snapshot)
                     .resizable()
-                    .scaledToFit()
+//                    .scaledToFit()
                     .frame(height: 250)
                     .frame(maxWidth: .infinity)
                     .clipped()
@@ -103,19 +103,21 @@ extension CourseDetailView {
     
     private var reviewImageScrollView: some View {
         VStack(alignment: .leading) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 6) {
-                    ForEach(viewModel.images.dropFirst(), id: \.self) { image in
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 100, height: 100)
-                            .clipped()
-                            .cornerRadius(4)
+            if viewModel.images.count > 1 {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 6) {
+                                ForEach(viewModel.images.dropFirst(), id: \.self) { image in
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 100, height: 100)
+                                        .clipped()
+                                        .cornerRadius(4)
+                                }
+                            }
+                        }
+                        .padding(.bottom, 12)
                     }
-                }
-            }
-            .padding(.bottom, 12)
             
             Text("""
                  후기 글 본문 후기 글 본문 후기 글 본문ㅇ
@@ -128,7 +130,6 @@ extension CourseDetailView {
             Text("본인 위치에서의 거리")
                 .font(.caption_12_sb)
                 .foregroundStyle(.gray200)
-                .padding(.bottom, 12)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -167,8 +168,14 @@ extension CourseDetailView {
     private var locationDateInfoView: some View {
         VStack(alignment: .leading) {
             TimePlaceCell(type: .place("강남구 역삼동"))
+                .padding(.bottom, 4)
+            
             TimePlaceCell(type: .time("2025.07.08(화) | 오후 11:28"))
+                .padding(.bottom, 12)
+            
             Chip(title: "옵션")
+                .padding(.top, 10)
+                .padding(.bottom, 12)
         }
     }
     

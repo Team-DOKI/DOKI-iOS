@@ -71,7 +71,8 @@ struct ArchiveView: View {
                         .padding(.bottom, 12)
                     
                     Chip(title: "옵션")
-                        .padding(.bottom, 12)
+                        .padding(.top, 10)
+                        .padding(.bottom, 16)
                 }
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -144,7 +145,7 @@ struct ArchiveView: View {
                     .fill(Color.pawkeyWhite2)
                     .frame(height: 10)
                     .frame(maxWidth: .infinity)
-                    .padding(.bottom, 24)
+                    .padding(.vertical, 24)
                 
                 VStack(spacing: 13) {
                     CTAButton(title: "산책 기록 공유하기", isDisabled: false, buttonStyle: .filled) {
