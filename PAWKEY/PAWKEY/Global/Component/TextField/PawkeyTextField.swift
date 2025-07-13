@@ -16,9 +16,7 @@ struct PawkeyTextField: View {
     }
     
     @State private var isShowPassword = false
-    
     @Binding var text: String
-    
     @FocusState private var isFocused: Bool
     
     var placeholder: String?
@@ -32,10 +30,12 @@ struct PawkeyTextField: View {
         TextField(placeholderText, text: $text)
             .font(.body_14_r)
             .focused($isFocused)
+            .frame(height: 52)
+            .padding(.horizontal, 16)
     }
     
     private var passwordTextField: some View {
-        HStack {
+        HStack(spacing: 0) {
             ZStack {
                 SecureField(placeholderText, text: $text)
                     .font(.body_14_r)
@@ -47,6 +47,9 @@ struct PawkeyTextField: View {
                     .opacity(isShowPassword ? 1 : 0)
                     .focused($isFocused)
             }
+            .frame(height: 52)
+            .padding(.leading, 16)
+            
             Button {
                 isShowPassword.toggle()
             } label: {
@@ -61,6 +64,8 @@ struct PawkeyTextField: View {
             .keyboardType(.numberPad)
             .focused($isFocused)
             .font(.body_14_r)
+            .frame(height: 52)
+            .padding(.horizontal, 16)
     }
     
     var body: some View {
@@ -74,17 +79,10 @@ struct PawkeyTextField: View {
                 numberTextField
             }
         }
-        .padding(.leading, 16)
-        .frame(height: 52)
-        .overlay(
+        .background(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(lineWidth: 1)
-                .foregroundStyle(isFocused ? .black : .gray200)
+                .stroke(isFocused ? Color.black : Color.gray.opacity(0.2), lineWidth: 1)
         )
+        .contentShape(Rectangle())
     }
-}
-
-#Preview {
-    PawkeyTextField(text: .constant(""), placeholder: "비밀번호 입력", type: .password)
-        .padding(.horizontal, 20)
 }

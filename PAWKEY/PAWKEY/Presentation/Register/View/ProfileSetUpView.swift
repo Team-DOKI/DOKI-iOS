@@ -6,15 +6,18 @@
 //
 
 import SwiftUI
+import Combine
 
-struct ProfileSetUpView: View {
+struct ProfileSetUpView: View, KeyboardReadable {
     @EnvironmentObject var tabBarState: TabBarState
     @StateObject var viewModel = ProfileSetUpViewModel()
+    
+    @State private var isKeyboardVisible = false
     
     var body: some View {
         ZStack {
             GeometryReader { proxy in
-                VStack {
+                VStack(spacing: 0) {
                     ProgressBarView(
                         width: proxy.size.width,
                         step: viewModel.currentStepIndex
@@ -27,33 +30,33 @@ struct ProfileSetUpView: View {
                         switch viewModel.currentStep {
                         case .ownerInfo:
                             UserInfoView(viewModel: viewModel)
-                            
                         case .activityArea:
                             ActivityAreaView(viewModel: viewModel)
-                            
                         case .dogInfo:
                             DogInfoView(viewModel: viewModel)
-                            
                         case .dogTendency:
                             DogTendencyView(viewModel: viewModel)
                         }
                     }
                     
-                    Spacer()
-                                        
-                    CTAButton(
-                        title: viewModel.currentStep == .dogTendency ? "등록하기" : "다음으로",
-                        isDisabled: viewModel.isButtonDisabled
-                    ) {
-                        if viewModel.currentStep == .dogTendency {
-                            tabBarState.isLogin = true
-                        } else {
-                            viewModel.goToNextStep()
+                    if !isKeyboardVisible {
+                        CTAButton(
+                            title: viewModel.currentStep == .dogTendency ? "등록하기" : "다음으로",
+                            isDisabled: viewModel.isButtonDisabled
+                        ) {
+                            if viewModel.currentStep == .dogTendency {
+                                tabBarState.isLogin = true
+                            } else {
+                                viewModel.goToNextStep()
+                            }
                         }
+                        .padding(.bottom, 29)
+                        .padding(.horizontal, 16)
                     }
-                    .padding(.bottom, 29)
-                    .padding(.horizontal, 16)
                 }
+                .safeAreaInset(edge: .bottom) {
+                    Color.clear.frame(height: isKeyboardVisible ? 20 : 0)
+                }                
                 .topNavigationView(left: {
                     VStack {
                         if viewModel.currentStepIndex > 1 {
@@ -66,11 +69,13 @@ struct ProfileSetUpView: View {
                     Text(viewModel.currentStep.title)
                         .font(.body_16_sb)
                 })
+                .onReceive(keyboardPublisher) { newIsKeyboardVisible in
+                    isKeyboardVisible = newIsKeyboardVisible
+                }
+                .onTapGesture {
+                    UIApplication.shared.hideKeyboard()
+                }                
             }
-        }
-        .ignoresSafeArea(.keyboard, edges: .bottom)
-        .onTapGesture {
-            UIApplication.shared.hideKeyboard()
         }
     }
 }
@@ -92,3 +97,5 @@ struct ProgressBarView: View {
         .animation(.easeInOut, value: step)
     }
 }
+
+
