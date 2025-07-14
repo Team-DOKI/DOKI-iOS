@@ -54,7 +54,12 @@ class ActivityAreaMapViewModel: ObservableObject {
         do {
             let response: BaseDTO<EmptyDTO> = try await provider.async.request(.updateUserRegion(regionId: regionId))
             
-            print(response.message)
+            print("\(response.message): 지역 변경 성공")
+            
+            DispatchQueue.main.async {
+                self.isShowToast = true
+            }
+            
         } catch {
             errorMessage = "지역 변경 실패: \(error.localizedDescription)"
         }
