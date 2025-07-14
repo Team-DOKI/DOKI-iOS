@@ -9,6 +9,7 @@ import SwiftUI
 
 struct UserProfileView: View {
     @EnvironmentObject var router: Coordinator<MyPageScreen>
+    @EnvironmentObject var tabBarState: TabBarState
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -67,7 +68,8 @@ struct UserProfileView: View {
         .topNavigationView(left: {
             BackButton {
                 router.pop()
-            }      
+                tabBarState.isHidden = false
+            }
         }, center: {
             Text("견주 프로필")
                 .font(.body_16_sb)
