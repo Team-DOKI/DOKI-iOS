@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct HomeCoordinatorView: View {
-    @EnvironmentObject var router: Coordinator<HomeScene>
+    @EnvironmentObject var coordinator: Coordinator<HomeScene>
     
     var body: some View {
-        NavigationStack(path: $router.path) {
+        NavigationStack(path: $coordinator.path) {
             HomeView()
                 .navigationDestination(for: HomeScene.self) { scene in
                     scene.build()

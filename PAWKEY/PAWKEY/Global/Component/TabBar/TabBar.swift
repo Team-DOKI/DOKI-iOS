@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TabBar: View {
-    @EnvironmentObject var tabBarState: MainTabViewModel
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
     private let tabBarWidth: CGFloat = 262
     
@@ -20,14 +20,14 @@ struct TabBar: View {
                 .fill(Color.white)
                 .frame(width: 48, height: 48)
                 .offset(x: indicatorOffset(buttonWidth: buttonWidth))
-                .animation(.easeInOut(duration: 0.2), value: tabBarState.selectedTab)
+                .animation(.easeInOut(duration: 0.2), value: mainTabViewModel.selectedTab)
             
             HStack(spacing: 0) {
                 ForEach(TabBarItem.allCases, id: \.self) { item in
                     Button(action: {
-                        tabBarState.selectedTab = item
+                        mainTabViewModel.selectedTab = item
                     }) {
-                        (tabBarState.selectedTab == item ? item.selectedImage : item.normalImage)
+                        (mainTabViewModel.selectedTab == item ? item.selectedImage : item.normalImage)
                             .resizable()
                             .scaledToFit()
                             .frame(width: 24, height: 24)
@@ -45,7 +45,7 @@ struct TabBar: View {
     }
     
     private func indicatorOffset(buttonWidth: CGFloat) -> CGFloat {
-        guard let index = TabBarItem.allCases.firstIndex(of: tabBarState.selectedTab) else {
+        guard let index = TabBarItem.allCases.firstIndex(of: mainTabViewModel.selectedTab) else {
             return 0
         }
         
