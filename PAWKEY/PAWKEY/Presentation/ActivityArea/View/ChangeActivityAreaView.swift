@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct ChangeActivityAreaView: View {
-    @EnvironmentObject var router: Coordinator<HomeScene>
-    
     @ObservedObject var viewModel: ChangeActivityAreaViewModel
     
-    @EnvironmentObject var tabBarState: MainTabViewModel
+    @EnvironmentObject var router: Coordinator<HomeScene>
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
     var body: some View {
         GeometryReader { proxy in
@@ -72,7 +71,7 @@ struct ChangeActivityAreaView: View {
         })
         .onAppear {
             withAnimation {
-                tabBarState.isHidden = true
+                mainTabViewModel.isHidden = true
             }
         }
     }

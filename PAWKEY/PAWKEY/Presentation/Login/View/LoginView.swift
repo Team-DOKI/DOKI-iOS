@@ -61,15 +61,3 @@ struct LoginView: View {
         })
     }
 }
-
-struct RootView: View {
-    @State private var isLoggedIn = false
-    @EnvironmentObject var tabBarState: MainTabViewModel
-    var body: some View {
-        if tabBarState.isLogin {
-            MainTabView()
-        } else {
-            OnboardingCoordinatorView()
-        }
-    }
-}
