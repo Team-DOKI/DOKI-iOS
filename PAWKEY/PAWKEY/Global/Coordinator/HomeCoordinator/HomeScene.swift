@@ -11,19 +11,21 @@ enum HomeScene: AppScene {
     case home
     case changeMyArea
     case acvitiyAreaMap
-    case sharedCourseDetail(CourseDetailViewModel)
+    case sharedCourseDetail(id: Int)
     
     @ViewBuilder
     func build() -> some View {
         switch self {
         case .home:
-            HomeView()
+            let viewModel = HomeViewModel()
+            HomeView(viewModel: viewModel)
         case .changeMyArea:
             ChangeActivityAreaView(viewModel: ChangeActivityAreaViewModel())
         case .acvitiyAreaMap:
             let viewModel = ActivityAreaMapViewModel()
             ActivityAreaMapView(viewModel: viewModel)
-        case .sharedCourseDetail(let viewModel):
+        case .sharedCourseDetail(_):
+            let viewModel = CourseDetailViewModel()
             CourseDetailView(viewModel: viewModel)
         }
     }
