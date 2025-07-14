@@ -19,6 +19,9 @@ struct Review: Identifiable {
 
 struct MyCourseView: View {
     @EnvironmentObject var router: Coordinator<MyPageScreen>
+    
+    @EnvironmentObject var tabBarState: TabBarState
+    
     let tagList = ["이륜차 거의 없음", "배변 쓰레기통", "쉼터", "편의점", "동반 카페", "아스팔트/벽돌", "시끌벅적"]
     
     let myReviewList: [Review] = [
@@ -46,6 +49,7 @@ struct MyCourseView: View {
                         )
                         .onTapGesture {
                             router.push(.courseDetail)
+                            tabBarState.isHidden = true
                         }
                     }
                 }
@@ -58,6 +62,7 @@ struct MyCourseView: View {
         .topNavigationView(left: {
             BackButton {
                 router.pop()
+                tabBarState.isHidden = false
             }
         }, center: {
             Text("내가 기록한 산책 루트")
