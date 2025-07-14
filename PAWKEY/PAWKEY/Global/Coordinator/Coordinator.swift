@@ -13,7 +13,8 @@ protocol AppScene: Hashable {
 }
 
 protocol CoordinatorProtocol: ObservableObject {
-    func push(_ scene: any AppScene)
+    associatedtype Scene: AppScene
+    func push(_ scene: Scene)
     func pop()
     func popToRoot()
 }
@@ -22,7 +23,7 @@ final class Coordinator<Scene: AppScene>: CoordinatorProtocol {
     
     @Published var path = NavigationPath()
     
-    func push(_ scene: any AppScene) {
+    func push(_ scene: Scene) {
         path.append(scene)
     }
         
