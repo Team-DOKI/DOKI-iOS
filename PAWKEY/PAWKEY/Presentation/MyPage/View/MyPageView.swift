@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MyPageView: View {
     @EnvironmentObject var router: Coordinator<MyPageScreen>
+    @EnvironmentObject var tabBarState: TabBarState
     //@State var ownerName: String
     
     var body: some View {
@@ -41,6 +42,7 @@ struct MyPageView: View {
                     
                     Button {
                         router.push(.userProfile)
+                        tabBarState.isHidden = true
                     } label: {
                         Image(.arrowRightGray)
                     }
@@ -61,6 +63,7 @@ struct MyPageView: View {
                         Spacer()
                         Button {
                             router.push(.petProfile)
+                            tabBarState.isHidden = true
                         } label: {
                             Image(.arrowRightWhite)
                         }
