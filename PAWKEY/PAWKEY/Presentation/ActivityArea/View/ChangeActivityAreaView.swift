@@ -10,7 +10,7 @@ import SwiftUI
 struct ChangeActivityAreaView: View {
     @StateObject var viewModel: ChangeActivityAreaViewModel
     
-    @EnvironmentObject var router: Coordinator<HomeScene>
+    @EnvironmentObject var coordinator: Coordinator<HomeScene>
     @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
     init(viewModel: ChangeActivityAreaViewModel) {
@@ -59,7 +59,7 @@ struct ChangeActivityAreaView: View {
                     title: "다음으로",
                     isDisabled: viewModel.userProfile.region.isEmpty || viewModel.userProfile.legalRegion.isEmpty
                 ) {
-                    router.push(.acvitiyAreaMap)                    
+                    coordinator.push(.acvitiyAreaMap)                    
                 }
                 .padding(.bottom, 29)
             }
@@ -67,7 +67,7 @@ struct ChangeActivityAreaView: View {
         }
         .topNavigationView(left: {
             BackButton {
-                router.pop()
+                coordinator.pop()
             }
         }, center: {
             Text("내 동네 설정")
