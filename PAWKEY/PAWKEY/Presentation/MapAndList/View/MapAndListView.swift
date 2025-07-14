@@ -17,7 +17,7 @@ struct MapAndListView: View {
     
     @State private var selectedMode: Int = 0
     @State private var showWalkCourseView = false
-    @State private var userTrackingMode: MKUserTrackingMode = .follow
+    @State private var userTrackingMode: MKUserTrackingMode = .none
     @State private var shouldCenterOnUser: Bool = false
     
     @Namespace private var namespace
