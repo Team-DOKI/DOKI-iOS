@@ -61,13 +61,13 @@ struct ActivityAreaMapView: View {
                                     await viewModel.updateUserRegion(regionId: 40)
                                     
                                     withAnimation {
-                                        viewModel.isShowToast = false
+                                        viewModel.isShowToast = true
                                         mainTabViewModel.isHidden = true
                                     }
                                     
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                         withAnimation {
-                                            mainTabViewModel.isHidden = false
+                                            viewModel.isShowToast = false
                                         }
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                             mainTabViewModel.isHidden = false
