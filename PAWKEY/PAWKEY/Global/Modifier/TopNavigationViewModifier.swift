@@ -31,6 +31,7 @@ struct TopNavigationViewModifier<C, L, R>: ViewModifier where C: View, L: View, 
                 .frame(height: 60)
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 16)
+                .background(.white)
                 
                 HStack {
                     Spacer()

@@ -17,7 +17,7 @@ struct ActivityAreaView: View {
                 Spacer().frame(height: 20)
                 
                 Text("활동 범위가 어떻게 되시나요?")
-                    .font(.head_22_sb)
+                    .font(.head_24_sb)
                     .foregroundStyle(.pawkeyBlack)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 

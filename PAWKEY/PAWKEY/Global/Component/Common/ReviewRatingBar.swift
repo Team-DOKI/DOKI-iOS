@@ -15,11 +15,11 @@ struct ReviewRatingBar: View {
     var progessBarColor: Color {
         switch rank {
         case 1:
-            return .green500
-        case 2:
-            return .green400
-        default:
             return .green300
+        case 2:
+            return .green100
+        default:
+            return .green100
         }
     }
     
@@ -38,7 +38,7 @@ struct ReviewRatingBar: View {
                 }
                 Text(title)
                     .font(.caption_12_sb)
-                    .foregroundStyle(.pawkeyWhite1)
+                    .foregroundStyle(.pawkeyBlack)
                     .frame(height: 37, alignment: .center)
                     .padding(.leading, 13)
             }

@@ -39,6 +39,7 @@ extension Font {
     }
     
     static let head_24_b = Font.pretendard(size: 24, weight: .bold)
+    static let head_24_sb = Font.pretendard(size: 24, weight: .semibold)
     static let head_22_b = Font.pretendard(size: 22, weight: .bold)
     static let head_22_sb = Font.pretendard(size: 22, weight: .semibold)
     static let head_20_b = Font.pretendard(size: 20, weight: .bold)

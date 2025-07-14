@@ -20,7 +20,7 @@ struct CheckBoxGroup: View {
             HStack {
                 let itemCount = items.filter{ $0.isSelected}.count
                 Text(title)
-                    .font(.body_16_sb)
+                    .font(.body_16_sb)                    
                 Spacer()
                 if itemCount > 0 {
                     Text("\(itemCount)개 항목 선택")
@@ -30,13 +30,11 @@ struct CheckBoxGroup: View {
                 Image(.arrowDownBlack)
                     .rotationEffect(isExpanded ? .degrees(-180) : .degrees(0))
             }
-            .background(.white)
             .frame(height: 64)
             .padding(.horizontal, 16)
+            .background(.white)
             .onTapGesture {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    isExpanded.toggle()
-                }
+                isExpanded.toggle()
             }
             if isExpanded {
                 VStack {
@@ -50,7 +48,9 @@ struct CheckBoxGroup: View {
                 .padding(.horizontal, 16)
             }
             Divider()
+                .animation(nil)
         }
-        .animation(isExpanded ? .default : nil)
+
+        .animation(isExpanded ? .easeInOut(duration: 0.2) : nil)
     }
 }

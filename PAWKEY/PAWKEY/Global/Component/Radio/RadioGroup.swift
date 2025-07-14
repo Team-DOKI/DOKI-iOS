@@ -32,9 +32,7 @@ struct RadioGroup: View {
             .background(.white)
             .frame(height: 64)
             .onTapGesture {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    isExpanded.toggle()
-                }
+                isExpanded.toggle()
             }
             if isExpanded {
                 VStack {
@@ -47,8 +45,9 @@ struct RadioGroup: View {
                 }
             }
             Divider()
+                .animation(nil)
         }
-        .animation(isExpanded ? .default : nil)
+        .animation(isExpanded ? .easeInOut(duration: 0.2) : nil)
         .padding(.horizontal, 16)
         
     }
