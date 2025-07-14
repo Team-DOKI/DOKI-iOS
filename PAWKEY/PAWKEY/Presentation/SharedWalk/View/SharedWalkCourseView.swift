@@ -9,7 +9,7 @@ import SwiftUI
 import MapKit
 
 struct SharedWalkCourseView: View {
-    @EnvironmentObject var router: Coordinator<WalkScene>
+    @EnvironmentObject var coordinator: Coordinator<WalkScene>
     
     @ObservedObject var viewModel: SharedWalkCourseViewModel
     
