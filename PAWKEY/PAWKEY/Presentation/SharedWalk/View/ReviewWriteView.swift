@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ReviewWriteView: View {
+    @StateObject private var viewModel = ReviewWriteViewModel()
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -68,7 +69,8 @@ struct ReviewWriteView: View {
                                 "야간 조명이 잘 되어있어요",
                                 "보도와 차도가 구분되어 있어요",
                                 "보도가 넓어서 산책하기 편했어요"
-                            ]
+                            ],
+                            selectedTags: $viewModel.safetyTags
                         )
                         
                         QuestionForm(
@@ -79,7 +81,8 @@ struct ReviewWriteView: View {
                                 "쉴 곳이 있어요",
                                 "편의점이 있어요",
                                 "반려견 동반 가능한 카페가 있어요"
-                            ]
+                            ],
+                            selectedTags: $viewModel.facilityTags
                         )
                     }
                 }
@@ -95,7 +98,7 @@ struct ReviewWriteView: View {
                 
                 CTAButton(
                     title: "산책 후기 남기기",
-                    isDisabled: false,
+                    isDisabled: !viewModel.isButtonDisabled,
                     buttonStyle: .filled
                 ) {
                     
@@ -104,7 +107,7 @@ struct ReviewWriteView: View {
                 .padding(.bottom, 30)
             }
             .topNavigationView(center: {
-                Text("산책 완료")
+                Text("산책 후기 작성")
                     .font(.body_16_sb)
             })
         }
