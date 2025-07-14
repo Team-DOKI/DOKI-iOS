@@ -96,7 +96,7 @@ struct MyPageView: View {
                                 Chip(title: "#대형견", isActive: false, textColor: .gray400)
                                 Spacer()
                             }
-                            //.padding(.top, 16)
+                            .padding(.top, 16)
                         }
                         .padding(.leading, 16)
                         
