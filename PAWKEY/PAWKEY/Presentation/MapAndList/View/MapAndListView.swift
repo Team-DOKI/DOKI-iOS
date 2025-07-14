@@ -143,6 +143,7 @@ struct MapAndListView: View {
                         }
                         .padding(.horizontal, 16)
                     }
+                    .background(.pawkeyWhite2)
                 }
                 .padding(.top, 10)
             }
