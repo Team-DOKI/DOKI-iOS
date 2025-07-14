@@ -163,7 +163,9 @@ struct HomeView: View {
         .frame(width: 91, height: 120)
         .background(alignment: .bottom) {
             Image(.sunrise)
-                .scaledToFit()
+                .resizable()
+                .frame(maxWidth: .infinity)
+                .aspectRatio(contentMode: .fill)
         }
         .background(.pawkeyWhite1)
         .cornerRadius(15)
