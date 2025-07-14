@@ -8,12 +8,11 @@
 import SwiftUI
 
 struct MainTabView: View {
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
-    var body: some View {
-        @EnvironmentObject var tabBarState: MainTabViewModel
-        
+    var body: some View {        
         ZStack {
-            switch tabBarState.selectedTab {
+            switch mainTabViewModel.selectedTab {
             case .home:
                 HomeCoordinatorView()
             case .walk:
@@ -29,8 +28,8 @@ struct MainTabView: View {
                 
                 TabBar()
                     .padding(.bottom, 12)
-                    .offset(y: tabBarState.isHidden ? 100 : 0)
-                    .animation(.easeInOut(duration: 0.3), value: tabBarState.isHidden)
+                    .offset(y: mainTabViewModel.isHidden ? 100 : 0)
+                    .animation(.easeInOut(duration: 0.3), value: mainTabViewModel.isHidden)
             }
             .ignoresSafeArea(.keyboard, edges: .bottom)
         }

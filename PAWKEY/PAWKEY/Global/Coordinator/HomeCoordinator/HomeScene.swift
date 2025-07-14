@@ -21,7 +21,8 @@ enum HomeScene: AppScene {
         case .changeMyArea:
             ChangeActivityAreaView(viewModel: ChangeActivityAreaViewModel())
         case .acvitiyAreaMap:
-            ActivityAreaMapView()
+            let viewModel = ActivityAreaMapViewModel()
+            ActivityAreaMapView(viewModel: viewModel)
         case .sharedCourseDetail(let viewModel):
             CourseDetailView(viewModel: viewModel)
         }

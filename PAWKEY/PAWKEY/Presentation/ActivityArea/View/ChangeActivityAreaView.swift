@@ -8,10 +8,14 @@
 import SwiftUI
 
 struct ChangeActivityAreaView: View {
-    @ObservedObject var viewModel: ChangeActivityAreaViewModel
+    @StateObject var viewModel: ChangeActivityAreaViewModel
     
     @EnvironmentObject var router: Coordinator<HomeScene>
     @EnvironmentObject var mainTabViewModel: MainTabViewModel
+    
+    init(viewModel: ChangeActivityAreaViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         GeometryReader { proxy in
@@ -55,7 +59,7 @@ struct ChangeActivityAreaView: View {
                     title: "다음으로",
                     isDisabled: viewModel.userProfile.region.isEmpty || viewModel.userProfile.legalRegion.isEmpty
                 ) {
-                    router.push(.acvitiyAreaMap)
+                    router.push(.acvitiyAreaMap)                    
                 }
                 .padding(.bottom, 29)
             }
