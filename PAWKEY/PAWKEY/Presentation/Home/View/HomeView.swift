@@ -11,7 +11,7 @@ struct HomeView: View {
     let topSafeAreaInset = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
     let dummyData = ["이륜차 거의 없음", "배변 쓰레기통", "쉼터", "편의점", "동반 카페", "아스팔트/벽돌", "시끌벅적"]
     
-    @EnvironmentObject var router: Coordinator<HomeScreen>
+    @EnvironmentObject var router: Coordinator<HomeScene>
     @EnvironmentObject var tabBarstate: TabBarState
     @StateObject var viewModel = HomeViewModel()
     @StateObject var courseDetailViewModel = CourseDetailViewModel()

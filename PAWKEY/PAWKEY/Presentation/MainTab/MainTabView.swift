@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @StateObject private var homeCoordinator = Coordinator<HomeScreen>()
-    @StateObject private var walkCoordinator = Coordinator<WalkScreen>()
-    @StateObject private var myPageCoordinator = Coordinator<MyPageScreen>()
+    @StateObject private var homeCoordinator = Coordinator<HomeScene>()
+    @StateObject private var walkCoordinator = Coordinator<WalkScene>()
+    @StateObject private var myPageCoordinator = Coordinator<MyPageScene>()
     
     @EnvironmentObject var tabBarState: TabBarState
     
@@ -18,15 +18,15 @@ struct MainTabView: View {
         ZStack {
             switch tabBarState.selectedTab {
             case .home:
-                HomeCoordinator()
+                HomeCoordinatorView()
                     .environmentObject(homeCoordinator)
             case .walk:
-                WalkCoordinator()
+                WalkCoordinatorView()
                     .environmentObject(walkCoordinator)
             case .community:
                 CommunityView()
             case .mypage:
-                MyPageCoordinator()
+                MyPageCoordinatorView()
                     .environmentObject(myPageCoordinator)
             }
             

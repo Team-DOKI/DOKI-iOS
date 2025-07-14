@@ -9,7 +9,7 @@ import SwiftUI
 import MapKit
 
 struct ActivityAreaMapView: View {
-    @EnvironmentObject var router: Coordinator<HomeScreen>
+    @EnvironmentObject var router: Coordinator<HomeScene>
     @EnvironmentObject var tabBarState: TabBarState
     
     @State private var region = MKCoordinateRegion(

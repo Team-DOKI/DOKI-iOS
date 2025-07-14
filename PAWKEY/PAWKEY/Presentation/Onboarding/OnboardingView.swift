@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    @EnvironmentObject var router: Coordinator<OnboardingScreen>
+    @EnvironmentObject var router: Coordinator<OnboardingScene>
     
     @State private var pawPrints: [PawPrint] = []
     

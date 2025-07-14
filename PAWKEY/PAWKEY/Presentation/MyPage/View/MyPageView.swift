@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MyPageView: View {
-    @EnvironmentObject var router: Coordinator<MyPageScreen>
+    @EnvironmentObject var router: Coordinator<MyPageScene>
     @EnvironmentObject var tabBarState: TabBarState
     //@State var ownerName: String
     

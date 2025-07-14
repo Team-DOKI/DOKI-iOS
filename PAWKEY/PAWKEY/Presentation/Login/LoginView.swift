@@ -14,7 +14,7 @@ struct LoginView: View {
     @State private var passwordText = ""
     
     @EnvironmentObject var tabBarState: TabBarState
-    @EnvironmentObject var router: Coordinator<OnboardingScreen>
+    @EnvironmentObject var router: Coordinator<OnboardingScene>
     
     var isDisabled: Bool {
         idText.isEmpty || passwordText.isEmpty
@@ -69,7 +69,7 @@ struct RootView: View {
         if tabBarState.isLogin {
             MainTabView()
         } else {
-            OnboardingCoordinator()
+            OnboardingCoordinatorView()
         }
     }
 }
