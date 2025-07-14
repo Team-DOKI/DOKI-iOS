@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct MyPageCoordinatorView: View {
-    @EnvironmentObject var router: Coordinator<MyPageScene>
+    @EnvironmentObject var coordinator: Coordinator<MyPageScene>
     
     var body: some View {
-        NavigationStack(path: $router.path) {
+        NavigationStack(path: $coordinator.path) {
             MyPageView()
                 .navigationDestination(for: MyPageScene.self) { scene in
                     scene.build()
