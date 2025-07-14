@@ -9,18 +9,14 @@ import SwiftUI
 import PhotosUI
 
 struct ArchiveView: View {
-    @EnvironmentObject var router: Coordinator<WalkScene>
-    @EnvironmentObject var tabBarState: MainTabViewModel
+    @EnvironmentObject var coordinator: Coordinator<WalkScene>
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
-    @StateObject private var viewModel = ArchiveViewModel()
+    @StateObject var viewModel: ArchiveViewModel
     
-    @State private var selectedItems: [PhotosPickerItem] = []
-    @State private var selectedImages: [Image] = []
-    
-    @State private var titleText = ""
-    @State private var reviewText = ""
-    
-    let snapshot: UIImage?
+    init(viewModel: ArchiveViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }        
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -167,7 +163,7 @@ struct ArchiveView: View {
         })
         .onAppear {
             withAnimation {
-                tabBarState.isHidden = true
+                mainTabViewModel.isHidden = true
             }
         }
         .onChange(of: viewModel.selectedItems) {
@@ -181,12 +177,12 @@ struct ArchiveView: View {
         let courseDetailVM = CourseDetailViewModel()
         var imagesToSend = viewModel.selectedImages
         
-        if let snapshot = snapshot {
+        if let snapshot = viewModel.snapshot {
             imagesToSend.insert(snapshot, at: 0)
         }
         
         courseDetailVM.images = imagesToSend
         courseDetailVM.isPrivate = isPrivate
-        router.push(.courseDetail(courseDetailVM))
+        coordinator.push(.courseDetail(courseDetailVM))
     }
 }
