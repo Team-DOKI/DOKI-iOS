@@ -23,11 +23,14 @@ enum MyPageScene: AppScene {
         case .userProfile:
             UserProfileView()
         case .petProfile:
-            PetProfileView()
+            let viewModel = PetProfileViewModel()
+            PetProfileView(viewModel: viewModel)
         case .savedCourse:
-            SavedCourseView()
+            let viewModel = SavedCourseViewModel()
+            SavedCourseView(viewModel: viewModel)
         case .myCourse:
-            MyCourseView()
+            let viewModel = MyCourseViewModel()
+            MyCourseView(viewModel: viewModel)
         case .courseDetail:
             CourseDetailView(viewModel: CourseDetailViewModel())
         }
