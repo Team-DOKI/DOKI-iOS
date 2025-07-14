@@ -17,64 +17,76 @@ struct HomeView: View {
     @StateObject var courseDetailViewModel = CourseDetailViewModel()
     
     var body: some View {
-        ZStack {
-            Color.pawkeyWhite2
-            
-            VStack(spacing: 0) {
-                topHeaderView
-                VStack(alignment: .leading) {
-                    Spacer().frame(height: 12)
-                    weatherView
-                    Spacer().frame(height: 12)
-                    HStack {
-                        sunriseInfoView
-                        Spacer().frame(width: 10)
-                        startWalkButton
-                    }
-                    Spacer().frame(height: 12)
-                    calendarView
-                    Spacer().frame(height: 12)
-                    Text("최근 산책")
-                        .font(.head_18_sb)
-                        .foregroundStyle(.pawkeyBlack)
-                    
-                    ReviewCard(type: .others, walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "외로운 산책", petName: "길냥이", postDate: "2025/01/02", buttonPressed: true, data: dummyData)
-                        .onTapGesture {
-                            courseDetailViewModel.images = [.walkRoute, .profile, .profile2, .profile3]
-                            router.push(.sharedCourseDetail(courseDetailViewModel))
-                        }
-                }
-                .padding(.horizontal, 16)
-                Spacer()
-            }
-            .padding(.top, -topSafeAreaInset)
-            .onTapGesture {
-                viewModel.isShowMenu = false
-            }
-        }
-        .contextMenu(isPresented: $viewModel.isShowMenu) {
+        ScrollView {
             ZStack {
-                VStack(alignment: .trailing, spacing: 0){
+                Color.pawkeyWhite2
+                
+                VStack(spacing: 0) {
                     topHeaderView
-                    HStack(spacing: 6) {
-                        Image(.systemIcon)
-                        Text("내 지역 관리")
-                            .font(.body_16_sb)
+                        .opacity(0)
+                    VStack(alignment: .leading) {
+                        Spacer().frame(height: 12)
+                        weatherView
+                        Spacer().frame(height: 12)
+                        HStack {
+                            sunriseInfoView
+                            Spacer().frame(width: 10)
+                            startWalkButton
+                        }
+                        Spacer().frame(height: 12)
+                        calendarView
+                        Spacer().frame(height: 12)
+                        Text("최근 산책")
+                            .font(.head_18_sb)
                             .foregroundStyle(.pawkeyBlack)
+                        
+                        ReviewCard(type: .others, walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "외로운 산책", petName: "길냥이", postDate: "2025/01/02", buttonPressed: true, data: dummyData)
+                            .onTapGesture {
+                                courseDetailViewModel.images = [.walkRoute, .profile, .profile2, .profile3]
+                                router.push(.sharedCourseDetail(courseDetailViewModel))
+                            }
                     }
                     .padding(.horizontal, 16)
-                    .padding(.vertical, 20)
-                    .background(.white)
-                    .cornerRadius(8)
-                    .padding(.trailing, 16)
-                    .onTapGesture {
-                        viewModel.isShowMenu = false
-                        router.push(.changeMyArea)
-                    }
                     Spacer()
                 }
                 .padding(.top, -topSafeAreaInset)
+                .onTapGesture {
+                    viewModel.isShowMenu = false
+                }
             }
+            Spacer().frame(height: 60)
+        }
+        .background(.pawkeyWhite2)
+        .overlay(alignment: .top, content: {
+            topHeaderView
+        })
+        .contextMenu(isPresented: $viewModel.isShowMenu) {
+            contextMenu
+        }
+    }
+    
+    private var contextMenu: some View {
+        ZStack {
+            VStack(alignment: .trailing, spacing: 0){
+                topHeaderView
+                HStack(spacing: 6) {
+                    Image(.systemIcon)
+                    Text("내 지역 관리")
+                        .font(.body_16_sb)
+                        .foregroundStyle(.pawkeyBlack)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 20)
+                .background(.white)
+                .cornerRadius(8)
+                .padding(.trailing, 16)
+                .onTapGesture {
+                    viewModel.isShowMenu = false
+                    router.push(.changeMyArea)
+                }
+                Spacer()
+            }
+            .padding(.top, -topSafeAreaInset)
         }
     }
     
@@ -174,9 +186,6 @@ struct HomeView: View {
             .padding(.leading, 18)
             .padding(.trailing, 12)
             .frame(maxWidth: .infinity, minHeight: 120)
-//            .background(alignment: .bottomTrailing) {
-//                Image(.dogFoot)
-//            }
             .background(.pawkeyBlack)
             .cornerRadius(15)
         }
@@ -208,7 +217,7 @@ struct HomeView: View {
         .padding(16)
         .background(.pawkeyWhite1)
         .cornerRadius(12)
-    }        
+    }
 }
 
 
