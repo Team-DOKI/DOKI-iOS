@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		766B2E492E254BD600F3A668 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 766B2E482E254BD600F3A668 /* Moya */; };
 		76ECCF2D2E05C4820056CAF7 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 76ECCF2C2E05C4820056CAF7 /* Kingfisher */; };
 		76ECCF302E05C4CC0056CAF7 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 76ECCF2F2E05C4CC0056CAF7 /* Lottie */; };
 /* End PBXBuildFile section */
@@ -20,7 +21,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				Network/Base/.gitkeep,
 				Presentation/MyPage/ViewModel/.gitkeep,
 			);
 			target = 76ECCDEC2E05AFCC0056CAF7 /* PAWKEY */;
@@ -45,6 +45,7 @@
 			files = (
 				76ECCF2D2E05C4820056CAF7 /* Kingfisher in Frameworks */,
 				76ECCF302E05C4CC0056CAF7 /* Lottie in Frameworks */,
+				766B2E492E254BD600F3A668 /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,6 +90,7 @@
 			packageProductDependencies = (
 				76ECCF2C2E05C4820056CAF7 /* Kingfisher */,
 				76ECCF2F2E05C4CC0056CAF7 /* Lottie */,
+				766B2E482E254BD600F3A668 /* Moya */,
 			);
 			productName = DoggyWalker;
 			productReference = 76ECCDED2E05AFCC0056CAF7 /* PAWKEY.app */;
@@ -119,9 +121,9 @@
 			mainGroup = 76ECCDE42E05AFCC0056CAF7;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				76ECCF2A2E05C3FD0056CAF7 /* XCRemoteSwiftPackageReference "Moya" */,
 				76ECCF2B2E05C4820056CAF7 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				76ECCF2E2E05C4CC0056CAF7 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				766B2E472E254BD600F3A668 /* XCRemoteSwiftPackageReference "Moya" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 76ECCDEE2E05AFCC0056CAF7 /* Products */;
@@ -156,9 +158,12 @@
 /* Begin XCBuildConfiguration section */
 		76ECCDF62E05AFCC0056CAF7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 76ECCDEF2E05AFCC0056CAF7 /* PAWKEY */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BASE_URL = "www.pawkey.o-r.kr/api/v1/";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -219,9 +224,12 @@
 		};
 		76ECCDF72E05AFCC0056CAF7 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 76ECCDEF2E05AFCC0056CAF7 /* PAWKEY */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BASE_URL = "www.pawkey.o-r.kr/api/v1/";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -313,7 +321,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9BG2HLD4GJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PAWKEY/Info.plist;
@@ -363,7 +371,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		76ECCF2A2E05C3FD0056CAF7 /* XCRemoteSwiftPackageReference "Moya" */ = {
+		766B2E472E254BD600F3A668 /* XCRemoteSwiftPackageReference "Moya" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Moya/Moya.git";
 			requirement = {
@@ -390,6 +398,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		766B2E482E254BD600F3A668 /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 766B2E472E254BD600F3A668 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
 		76ECCF2C2E05C4820056CAF7 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 76ECCF2B2E05C4820056CAF7 /* XCRemoteSwiftPackageReference "Kingfisher" */;
