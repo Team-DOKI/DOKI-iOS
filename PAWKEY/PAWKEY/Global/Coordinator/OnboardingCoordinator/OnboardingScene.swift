@@ -15,9 +15,10 @@ enum OnboardingScene: AppScene {
     func build() -> some View {
         switch self {
         case .login:
-            LoginView(isLoggedIn: .constant(false))
+            LoginView()
         case .profileSetUp:
-            ProfileSetUpView()
+            let viewModel = ProfileSetUpViewModel()
+            ProfileSetUpView(viewModel: viewModel)
         }
     }
 }
