@@ -17,10 +17,11 @@ struct DogTendencyView: View {
                 Spacer().frame(height: 20)
                 
                 Text("반려견 성향은 어떤가요?")
-                    .font(.head_22_sb)
+                    .font(.head_24_sb)
                     .foregroundStyle(.pawkeyBlack)
                 
                 Spacer().frame(height: 42)
+            
                 
                 VStack(alignment:.leading) {
                     Text("에너지 레벨")
