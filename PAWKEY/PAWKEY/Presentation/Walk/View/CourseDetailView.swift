@@ -10,7 +10,7 @@ import SwiftUI
 struct CourseDetailView: View {
     @ObservedObject var viewModel: CourseDetailViewModel
     @EnvironmentObject var tabBarstate: TabBarState
-//    @EnvironmentObject var router: Coordinator<HomeScreen>
+    //    @EnvironmentObject var router: Coordinator<HomeScreen>
     @EnvironmentObject var router: Coordinator<WalkScreen>
     
     @StateObject private var sharedWalkCourseViewModel = SharedWalkCourseViewModel()
@@ -52,13 +52,16 @@ struct CourseDetailView: View {
                     } label: {
                         Image(.xmark)
                     }
-
+                    
                 }
                 if let image = viewModel.selectedImage {
-                    Image(uiImage: image)
-                        .resizable()
-                        .frame(maxHeight: 228)
-                        .aspectRatio(contentMode: .fit)
+                    ZStack {
+                        Color.black
+                        Image(uiImage: image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 228, maxHeight: 228)
                 }
             }
             .padding(.horizontal, 16)
@@ -95,7 +98,7 @@ extension CourseDetailView {
             if let snapshot = viewModel.images.first {
                 Image(uiImage: snapshot)
                     .resizable()
-//                    .scaledToFit()
+                //                    .scaledToFit()
                     .frame(height: 250)
                     .frame(maxWidth: .infinity)
                     .clipped()
@@ -139,24 +142,24 @@ extension CourseDetailView {
     private var reviewImageScrollView: some View {
         VStack(alignment: .leading) {
             if viewModel.images.count > 1 {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 6) {
-                                ForEach(viewModel.images.dropFirst(), id: \.self) { image in
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 100, height: 100)
-                                        .clipped()
-                                        .cornerRadius(4)
-                                        .onTapGesture {
-                                            viewModel.isShowPhotoPreview = true
-                                            viewModel.selectedImage = image
-                                        }
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 6) {
+                        ForEach(viewModel.images.dropFirst(), id: \.self) { image in
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 100, height: 100)
+                                .clipped()
+                                .cornerRadius(4)
+                                .onTapGesture {
+                                    viewModel.isShowPhotoPreview = true
+                                    viewModel.selectedImage = image
                                 }
-                            }
                         }
-                        .padding(.bottom, 12)
                     }
+                }
+                .padding(.bottom, 12)
+            }
             
             Text("""
                  후기 글 본문 후기 글 본문 후기 글 본문ㅇ
