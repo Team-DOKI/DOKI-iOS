@@ -9,7 +9,7 @@ import SwiftUI
 
 struct WalkCompletionView: View {
     @EnvironmentObject var router: Coordinator<WalkScene>
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var tabBarState: MainTabViewModel
     
     let distance: Double
     let elapsedTime: String

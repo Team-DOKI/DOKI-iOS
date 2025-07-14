@@ -9,7 +9,7 @@ import SwiftUI
 
 struct UserProfileView: View {
     @EnvironmentObject var router: Coordinator<MyPageScene>
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var tabBarState: MainTabViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {

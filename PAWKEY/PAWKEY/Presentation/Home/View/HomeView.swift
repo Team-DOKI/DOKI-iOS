@@ -12,7 +12,7 @@ struct HomeView: View {
     let dummyData = ["이륜차 거의 없음", "배변 쓰레기통", "쉼터", "편의점", "동반 카페", "아스팔트/벽돌", "시끌벅적"]
     
     @EnvironmentObject var router: Coordinator<HomeScene>
-    @EnvironmentObject var tabBarstate: TabBarState
+    @EnvironmentObject var tabBarstate: MainTabViewModel
     @StateObject var viewModel = HomeViewModel()
     @StateObject var courseDetailViewModel = CourseDetailViewModel()
     @State var isShowContextMenu = false

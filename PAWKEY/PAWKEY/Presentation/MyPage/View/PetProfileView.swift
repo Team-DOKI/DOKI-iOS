@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PetProfileView: View {
     @EnvironmentObject var router: Coordinator<MyPageScene>
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var tabBarState: MainTabViewModel
     
     var body: some View {
         VStack(spacing: 8) {

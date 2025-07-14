@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TabBar: View {
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var tabBarState: MainTabViewModel
     
     private let tabBarWidth: CGFloat = 262
     

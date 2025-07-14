@@ -12,7 +12,7 @@ struct ChangeActivityAreaView: View {
     
     @ObservedObject var viewModel: ChangeActivityAreaViewModel
     
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var tabBarState: MainTabViewModel
     
     var body: some View {
         GeometryReader { proxy in

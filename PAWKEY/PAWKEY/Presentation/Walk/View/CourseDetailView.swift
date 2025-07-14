@@ -10,7 +10,7 @@ import SwiftUI
 struct CourseDetailView: View {
     @ObservedObject var viewModel: CourseDetailViewModel
     //    @EnvironmentObject var router: Coordinator<HomeScreen>
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var tabBarState: MainTabViewModel
     @EnvironmentObject var router: Coordinator<WalkScene>
     
     @StateObject private var sharedWalkCourseViewModel = SharedWalkCourseViewModel()
