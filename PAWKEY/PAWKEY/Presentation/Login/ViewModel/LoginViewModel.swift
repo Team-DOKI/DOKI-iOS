@@ -7,4 +7,11 @@
 
 import SwiftUI
 
-final class LoginViewModel: ObservableObject {}
+final class LoginViewModel: ObservableObject {
+    @Published var idText = ""
+    @Published var passwordText = ""
+    
+    var isDisabled: Bool {
+        idText.isEmpty || passwordText.isEmpty
+    }
+}
