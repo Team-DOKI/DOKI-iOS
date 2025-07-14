@@ -39,7 +39,7 @@ struct CourseDetailView: View {
                 reviewChartView
                     .padding(.horizontal, 16)
                 divider
-                Spacer().frame(height: 70)
+                Spacer().frame(height: 116)
             }
         }
         .ignoresSafeArea(.all, edges: .bottom)
