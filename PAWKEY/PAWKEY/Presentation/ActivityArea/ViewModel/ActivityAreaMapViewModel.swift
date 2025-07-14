@@ -8,7 +8,6 @@
 import MapKit
 import Moya
 
-@MainActor
 class ActivityAreaMapViewModel: ObservableObject {    
     @Published var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.5215, longitude: 127.0250),
@@ -17,6 +16,7 @@ class ActivityAreaMapViewModel: ObservableObject {
     @Published var activityAreas: [ActivityArea] = []
     @Published var regionName: String = ""
     @Published var errorMessage: String?
+    @Published var isShowToast = false
     
     private let provider = MoyaProvider<ActivityAreaMapAPI>()
     

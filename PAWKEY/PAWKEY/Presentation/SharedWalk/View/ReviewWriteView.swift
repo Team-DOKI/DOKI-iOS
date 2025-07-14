@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct ReviewWriteView: View {
-    @StateObject private var viewModel = ReviewWriteViewModel()
+    @StateObject private var viewModel: ReviewWriteViewModel
+    
+    init(viewModel: ReviewWriteViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         ScrollView(showsIndicators: false) {

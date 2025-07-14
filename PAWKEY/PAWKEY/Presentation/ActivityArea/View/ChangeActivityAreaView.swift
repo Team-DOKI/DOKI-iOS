@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct ChangeActivityAreaView: View {
-    @EnvironmentObject var router: Coordinator<HomeScreen>
+    @StateObject var viewModel: ChangeActivityAreaViewModel
     
-    @ObservedObject var viewModel: ChangeActivityAreaViewModel
+    @EnvironmentObject var coordinator: Coordinator<HomeScene>
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
-    @EnvironmentObject var tabBarState: TabBarState
+    init(viewModel: ChangeActivityAreaViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         GeometryReader { proxy in
@@ -56,7 +59,7 @@ struct ChangeActivityAreaView: View {
                     title: "다음으로",
                     isDisabled: viewModel.userProfile.region.isEmpty || viewModel.userProfile.legalRegion.isEmpty
                 ) {
-                    router.push(.acvitiyAreaMap)
+                    coordinator.push(.acvitiyAreaMap)                    
                 }
                 .padding(.bottom, 29)
             }
@@ -64,7 +67,7 @@ struct ChangeActivityAreaView: View {
         }
         .topNavigationView(left: {
             BackButton {
-                router.pop()
+                coordinator.pop()
             }
         }, center: {
             Text("내 동네 설정")
@@ -72,7 +75,7 @@ struct ChangeActivityAreaView: View {
         })
         .onAppear {
             withAnimation {
-                tabBarState.isHidden = true
+                mainTabViewModel.isHidden = true
             }
         }
     }

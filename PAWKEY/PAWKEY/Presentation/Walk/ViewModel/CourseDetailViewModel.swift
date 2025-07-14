@@ -22,4 +22,6 @@ class CourseDetailViewModel: ObservableObject, Hashable {
     @Published var isPrivate: Bool = false
     @Published var selectedImage: UIImage?
     @Published var isShowPhotoPreview = false
+    @Published var isShowContextMenu = false
+    @Published var isShowSharedWalkCourseView = false
 }

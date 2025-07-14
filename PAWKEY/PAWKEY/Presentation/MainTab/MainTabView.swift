@@ -8,26 +8,19 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @StateObject private var homeCoordinator = Coordinator<HomeScreen>()
-    @StateObject private var walkCoordinator = Coordinator<WalkScreen>()
-    @StateObject private var myPageCoordinator = Coordinator<MyPageScreen>()
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
-    @EnvironmentObject var tabBarState: TabBarState
-    
-    var body: some View {
+    var body: some View {        
         ZStack {
-            switch tabBarState.selectedTab {
+            switch mainTabViewModel.selectedTab {
             case .home:
-                HomeCoordinator()
-                    .environmentObject(homeCoordinator)
+                HomeCoordinatorView()
             case .walk:
-                WalkCoordinator()
-                    .environmentObject(walkCoordinator)
+                WalkCoordinatorView()
             case .community:
                 CommunityView()
             case .mypage:
-                MyPageCoordinator()
-                    .environmentObject(myPageCoordinator)
+                MyPageCoordinatorView()
             }
             
             VStack {
@@ -35,8 +28,8 @@ struct MainTabView: View {
                 
                 TabBar()
                     .padding(.bottom, 12)
-                    .offset(y: tabBarState.isHidden ? 100 : 0)
-                    .animation(.easeInOut(duration: 0.3), value: tabBarState.isHidden)
+                    .offset(y: mainTabViewModel.isHidden ? 100 : 0)
+                    .animation(.easeInOut(duration: 0.3), value: mainTabViewModel.isHidden)
             }
             .ignoresSafeArea(.keyboard, edges: .bottom)
         }
