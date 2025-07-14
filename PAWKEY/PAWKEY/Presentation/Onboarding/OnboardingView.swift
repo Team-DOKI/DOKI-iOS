@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    @EnvironmentObject var router: Coordinator<OnboardingScene>
+    @EnvironmentObject var coordinator: Coordinator<OnboardingScene>
     
     @State private var pawPrints: [PawPrint] = []
     
@@ -33,7 +33,7 @@ struct OnboardingView: View {
                 VStack(spacing: 20) {
                     CTAButton(title: "신규계정으로 회원가입")
                     CTAButton(title: "기존 계정으로 로그인", buttonStyle: .borderless) {
-                        router.push(.login)
+                        coordinator.push(.login)
                     }
                 }
                 .padding(.bottom, 47)
