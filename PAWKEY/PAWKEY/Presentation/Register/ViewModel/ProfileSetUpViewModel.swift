@@ -84,6 +84,7 @@ final class ProfileSetUpViewModel: ObservableObject {
     
     @Published var userProfile = UserProfile()
     @Published var currentStep: ProfileStep = .ownerInfo
+    @Published var isKeyboardVisible = false
     
     var currentStepIndex: Int { currentStep.rawValue }
     var isButtonDisabled: Bool {
