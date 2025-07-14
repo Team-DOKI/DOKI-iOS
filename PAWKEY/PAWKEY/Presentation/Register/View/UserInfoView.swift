@@ -13,11 +13,12 @@ struct UserInfoView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 0) {
+                
                 Spacer().frame(height: 20)
                 
                 // TODO: head24로 변경
                 Text("견주님에 대해 알려주세요.")
-                    .font(.head_22_sb)
+                    .font(.head_24_sb)
                     .foregroundStyle(.pawkeyBlack)
                 
                 Spacer().frame(height: 42)
@@ -28,7 +29,7 @@ struct UserInfoView: View {
                     PawkeyTextField(text: $viewModel.userProfile.userName,
                                 placeholder: "이름을 입력해주세요.")
                 }
-                
+                                
                 Spacer().frame(height: 30)
                 
                 VStack(alignment:.leading) {
