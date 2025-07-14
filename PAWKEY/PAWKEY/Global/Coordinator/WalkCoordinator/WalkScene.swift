@@ -1,34 +1,27 @@
 //
-//  WalkCoordinator.swift
+//  WalkScene.swift
 //  PAWKEY
 //
-//  Created by 이세민 on 7/6/25.
+//  Created by 권석기 on 7/15/25.
 //
 
 import SwiftUI
 
-struct WalkCoordinator: View {
-    @EnvironmentObject var router: Coordinator<WalkScreen>
-    
-    var body: some View {
-        NavigationStack(path: $router.path) {
-            MapAndListView()
-                .navigationDestination(for: WalkScreen.self) { screen in
-                    build(screen: screen)
-                        .toolbar(.hidden)
-                }
-        }
-    }
+enum WalkScene: AppScene {
+    case courseList
+    case courseDetail(CourseDetailViewModel)
+    case walkCompletion(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?)
+    case archive(snapshot: UIImage?)
+    case sharedWalkCompletion(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?)
+    case reviewWrite
     
     @ViewBuilder
-    private func build(screen: WalkScreen) -> some View {
-        switch screen {
+    func build() -> some View {
+        switch self {
         case .courseList:
             MapAndListView()
         case .courseDetail(let viewModel):
             CourseDetailView(viewModel: viewModel)
-            //        case .walkCourse:
-            //            WalkCourseView()
         case .walkCompletion(let distance, let elapsedTime, let stepCount, let snapshot):
             WalkCompletionView(
                 distance: distance,
@@ -38,9 +31,6 @@ struct WalkCoordinator: View {
             )
         case .archive(let snapshot):
             ArchiveView(snapshot: snapshot)
-            
-            //        case .sharedWalkCourse:
-            //            SharedWalkCourseView()
         case .sharedWalkCompletion(let distance, let elapsedTime, let stepCount, let snapshot):
             SharedWalkCompletionView(
                 distance: distance,

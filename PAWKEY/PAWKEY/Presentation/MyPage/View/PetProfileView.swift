@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PetProfileView: View {
-    @EnvironmentObject var router: Coordinator<MyPageScreen>
+    @EnvironmentObject var router: Coordinator<MyPageScene>
     @EnvironmentObject var tabBarState: TabBarState
     
     var body: some View {

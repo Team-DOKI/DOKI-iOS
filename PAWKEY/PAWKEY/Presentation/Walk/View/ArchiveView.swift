@@ -9,7 +9,7 @@ import SwiftUI
 import PhotosUI
 
 struct ArchiveView: View {
-    @EnvironmentObject var router: Coordinator<WalkScreen>
+    @EnvironmentObject var router: Coordinator<WalkScene>
     @EnvironmentObject var tabBarState: TabBarState
     
     @StateObject private var viewModel = ArchiveViewModel()

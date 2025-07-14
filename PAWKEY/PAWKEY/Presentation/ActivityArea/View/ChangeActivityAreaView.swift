@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ChangeActivityAreaView: View {
-    @EnvironmentObject var router: Coordinator<HomeScreen>
+    @EnvironmentObject var router: Coordinator<HomeScene>
     
     @ObservedObject var viewModel: ChangeActivityAreaViewModel
     

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SharedWalkCompletionView: View {
-    @EnvironmentObject var router: Coordinator<WalkScreen>
+    @EnvironmentObject var router: Coordinator<WalkScene>
     @EnvironmentObject var tabBarState: TabBarState
     
     let distance: Double

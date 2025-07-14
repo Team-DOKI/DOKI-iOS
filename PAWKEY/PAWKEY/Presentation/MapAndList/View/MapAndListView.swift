@@ -10,7 +10,7 @@ import CoreLocation
 import MapKit
 
 struct MapAndListView: View {
-    @EnvironmentObject var router: Coordinator<WalkScreen>
+    @EnvironmentObject var router: Coordinator<WalkScene>
     
     @StateObject private var viewModel = WalkCourseViewModel()
     @StateObject private var courseListViewModel = MapAndListViewModel()
