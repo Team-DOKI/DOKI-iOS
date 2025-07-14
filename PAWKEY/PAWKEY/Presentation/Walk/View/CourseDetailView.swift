@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CourseDetailView: View {
     @ObservedObject var viewModel: CourseDetailViewModel
-    @EnvironmentObject var tabBarstate: TabBarState
+    @EnvironmentObject var tabBarState: TabBarState
 //    @EnvironmentObject var router: Coordinator<HomeScreen>
     @EnvironmentObject var router: Coordinator<WalkScreen>
     
@@ -65,7 +65,7 @@ struct CourseDetailView: View {
         })
         .topNavigationView(left: {
             BackButton {
-                tabBarstate.isHidden = false
+                tabBarState.isHidden = false
                 router.pop()
             }
         }, center: {

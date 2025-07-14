@@ -9,12 +9,13 @@ import SwiftUI
 
 struct MyPageView: View {
     @EnvironmentObject var router: Coordinator<MyPageScreen>
+    @EnvironmentObject var tabBarState: TabBarState
     //@State var ownerName: String
     
     var body: some View {
         ScrollView(showsIndicators: false) {
             // 제목
-            VStack(spacing: 24) {
+            VStack(spacing: 16) {
                 HStack {
                     Text("마이페이지")
                         .font(.head_20_b)
@@ -22,35 +23,35 @@ struct MyPageView: View {
                         .padding(.leading, 16)
                     Spacer()
                 }
+                .padding(.bottom, 6)
                 
                 // 견주 프로필
                 HStack {
                     HStack {
-                        Text("김도기")
-                            .font(.head_18_sb)
-                            .foregroundColor(.pawkeyBlack)
-                        Text("님")
+                        Text("김도기 님")
                             .font(.head_18_sb)
                             .foregroundColor(.pawkeyBlack)
                         Text("견주")
                             .font(.caption_12_m)
                             .foregroundColor(.gray400)
                     }
+                    .padding(.leading, 16)
+                    .padding(.vertical, 24)
                     
                     Spacer()
                     
                     Button {
                         router.push(.userProfile)
+                        tabBarState.isHidden = true
                     } label: {
                         Image(.arrowRightGray)
                     }
-                    .padding(.vertical, 16)
+                    .padding(.vertical, 24)
+                    .padding(.trailing, 13)
                 }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 16)
                 .background(Color.pawkeyWhite1)
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .frame(width: 343, height: 79)
+                .padding(.horizontal, 16)
                 
                 // 반려견 프로필
                 VStack(spacing: 0) {
@@ -62,6 +63,7 @@ struct MyPageView: View {
                         Spacer()
                         Button {
                             router.push(.petProfile)
+                            tabBarState.isHidden = true
                         } label: {
                             Image(.arrowRightWhite)
                         }
@@ -91,10 +93,10 @@ struct MyPageView: View {
                             }
                             .padding(.top, 16)
                             
-                            HStack {
-                                Chip(title: "#조금느긋해요", isActive: false)
-                                Chip(title: "#오토바이소리", isActive: false)
-                                Chip(title: "#대형견", isActive: false)
+                            HStack(spacing: 8) {
+                                Chip(title: "#조금느긋해요", isActive: false, textColor: .gray400)
+                                Chip(title: "#오토바이소리", isActive: false, textColor: .gray400)
+                                Chip(title: "#대형견", isActive: false, textColor: .gray400)
                                 Spacer()
                             }
                             .padding(.top, 16)
@@ -130,7 +132,7 @@ struct MyPageView: View {
                 }
                 .background(Color.pawkeyWhite1)
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                .frame(width: 343, height: 255)
+                .padding(.horizontal, 16)
                 
                 
                 // 산책관리
@@ -161,8 +163,8 @@ struct MyPageView: View {
                     .onTapGesture {
                         router.push(.savedCourse)
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 16)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 20)
                     
                     Divider()
                         .padding(.horizontal, 16)
@@ -184,8 +186,8 @@ struct MyPageView: View {
                     .onTapGesture {
                         router.push(.myCourse)
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 16)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 20)
                     
                     Divider()
                         .padding(.horizontal, 16)
