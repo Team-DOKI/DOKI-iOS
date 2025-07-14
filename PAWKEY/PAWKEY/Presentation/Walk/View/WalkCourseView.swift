@@ -28,7 +28,6 @@ struct WalkCourseView: View {
                     region: $viewModel.region,
                     pathCoordinates: $viewModel.pathCoordinates,
                     shouldCenterOnUser: $viewModel.shouldCenterOnUser,
-                    snapshotImage: .constant(nil),
                     userTrackingMode: $userTrackingMode
                 )
                 .edgesIgnoringSafeArea(.all)
