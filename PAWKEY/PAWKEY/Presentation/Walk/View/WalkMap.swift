@@ -17,12 +17,8 @@ struct WalkMap: UIViewRepresentable {
     
     // 사용자 위치로 지도를 이동
     @Binding var shouldCenterOnUser: Bool
-    
-    // 스냅샷
-    @Binding var snapshotImage: UIImage?
-    
+
     @Binding var userTrackingMode: MKUserTrackingMode
-    
     
     // MKMapView 초기 설정
     func makeUIView(context: Context) -> MKMapView {
@@ -31,11 +27,10 @@ struct WalkMap: UIViewRepresentable {
         mapView.delegate = context.coordinator
         mapView.setRegion(region, animated: false)
         
-        mapView.userTrackingMode = .followWithHeading
         return mapView
     }
     
-    // 상태값이 바뀌면 여기서 MKMapView를 갱신
+    // 상태값이 바뀌면 MKMapView를 갱신
     func updateUIView(_ uiView: MKMapView, context: Context) {
         uiView.setUserTrackingMode(userTrackingMode, animated: true)
         
@@ -98,6 +93,5 @@ struct WalkMap: UIViewRepresentable {
             
             return nil
         }
-        
     }
 }
