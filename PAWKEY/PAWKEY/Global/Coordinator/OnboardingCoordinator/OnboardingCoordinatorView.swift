@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct OnboardingCoordinatorView: View {
-    @EnvironmentObject var router: Coordinator<OnboardingScene>
+    @EnvironmentObject var coordinator: Coordinator<OnboardingScene>
     
     var body: some View {
-        NavigationStack(path: $router.path) {
+        NavigationStack(path: $coordinator.path) {
             OnboardingView()
                 .navigationDestination(for: OnboardingScene.self) { scene in
                     scene.build()
