@@ -44,6 +44,7 @@ struct HomeView: View {
                         ReviewCard(type: .others, walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "외로운 산책", petName: "길냥이", postDate: "2025/01/02", buttonPressed: true, data: dummyData)
                             .onTapGesture {
                                 courseDetailViewModel.images = [.walkRoute, .profile, .profile2, .profile3]
+                                tabBarstate.isHidden = true
                                 router.push(.sharedCourseDetail(courseDetailViewModel))
                             }
                     }
