@@ -48,7 +48,7 @@ struct ActivityAreaMapView: View {
                             .padding(.top, 32)
                             .padding(.bottom, 18)
                             
-                            Text("기존에 산책하던 지역은 0000이에요.\n선택한 위치로 산책 지역을 변경하시겠어요?")
+                            Text("기존에 산책하던 지역은 \(viewModel.preRegionName)이에요.\n선택한 위치로 산책 지역을 변경하시겠어요?")
                                 .font(.body_14_m)
                                 .foregroundColor(.gray500)
                                 .padding(.top, 12)
@@ -62,7 +62,6 @@ struct ActivityAreaMapView: View {
                                     
                                     withAnimation {
                                         viewModel.isShowToast = true
-                                        mainTabViewModel.isHidden = true
                                     }
                                     
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
