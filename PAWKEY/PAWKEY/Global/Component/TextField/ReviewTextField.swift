@@ -47,8 +47,7 @@ struct ReviewTextField: View {
                 TextField(type.placeholder, text: $text)
                     .padding(.leading, 20)
                     .font(type.self.font)
-                    .frame(width: 343, height: type.height)
-                    .frame(maxWidth: .infinity, maxHeight: type.height)
+                    .frame(maxWidth: .infinity, minHeight: type.height, maxHeight: type.height)
                     .focused($isFocused)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
