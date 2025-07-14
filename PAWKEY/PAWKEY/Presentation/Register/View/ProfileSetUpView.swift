@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 struct ProfileSetUpView: View, KeyboardReadable {
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var tabBarState: MainTabViewModel
     @StateObject var viewModel = ProfileSetUpViewModel()
     
     @State private var isKeyboardVisible = false

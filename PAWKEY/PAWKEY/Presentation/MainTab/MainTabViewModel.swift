@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-final class TabBarState: ObservableObject {
+final class MainTabViewModel: ObservableObject {
     @Published var selectedTab: TabBarItem = .home
     @Published var isHidden: Bool = false
     @Published var isLogin: Bool = false

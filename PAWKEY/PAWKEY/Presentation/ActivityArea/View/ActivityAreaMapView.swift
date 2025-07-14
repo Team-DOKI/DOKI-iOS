@@ -10,7 +10,7 @@ import MapKit
 
 struct ActivityAreaMapView: View {
     @EnvironmentObject var router: Coordinator<HomeScene>
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var tabBarState: MainTabViewModel
     
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.5215, longitude: 127.0250),

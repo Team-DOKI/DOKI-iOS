@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MyPageView: View {
     @EnvironmentObject var router: Coordinator<MyPageScene>
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var tabBarState: MainTabViewModel
     //@State var ownerName: String
     
     var body: some View {

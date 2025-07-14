@@ -10,7 +10,7 @@ import PhotosUI
 
 struct ArchiveView: View {
     @EnvironmentObject var router: Coordinator<WalkScene>
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var tabBarState: MainTabViewModel
     
     @StateObject private var viewModel = ArchiveViewModel()
     

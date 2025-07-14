@@ -20,7 +20,7 @@ struct Review: Identifiable {
 struct MyCourseView: View {
     @EnvironmentObject var router: Coordinator<MyPageScene>
     
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var tabBarState: MainTabViewModel
     
     let tagList = ["이륜차 거의 없음", "배변 쓰레기통", "쉼터", "편의점", "동반 카페", "아스팔트/벽돌", "시끌벅적"]
     
