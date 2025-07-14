@@ -72,7 +72,7 @@ struct CourseDetailView: View {
                 router.pop()
             }
         }, center: {
-            Text("루트 상세 정보")
+            Text("루트 상세정보")
                 .font(.body_16_sb)
         })
         .overlay(alignment: .bottom) {
