@@ -8,16 +8,13 @@
 import SwiftUI
 
 struct LoginView: View {
-    @Binding var isLoggedIn: Bool
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
+    @EnvironmentObject var coordinator: Coordinator<OnboardingScene>
     
-    @State private var idText = ""
-    @State private var passwordText = ""
+    @StateObject var viewModel: LoginViewModel
     
-    @EnvironmentObject var tabBarState: MainTabViewModel
-    @EnvironmentObject var router: Coordinator<OnboardingScene>
-    
-    var isDisabled: Bool {
-        idText.isEmpty || passwordText.isEmpty
+    init(viewModel: LoginViewModel = LoginViewModel()) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
@@ -26,7 +23,7 @@ struct LoginView: View {
                 VStack(alignment: .leading) {
                     Text("아이디")
                         .font(.body_14_sb)
-                    PawkeyTextField(text: $idText, placeholder: "아이디")
+                    PawkeyTextField(text: $viewModel.idText, placeholder: "아이디")
                         .padding(.top, 10)
                 }
                 .padding(.top, 123)
@@ -34,17 +31,17 @@ struct LoginView: View {
                 VStack(alignment: .leading) {
                     Text("비밀번호")
                         .font(.body_14_sb)
-                    PawkeyTextField(text: $passwordText, placeholder: "사용하실 비밀번호를 입력해주세요.", type: .password)
+                    PawkeyTextField(text: $viewModel.passwordText, placeholder: "사용하실 비밀번호를 입력해주세요.", type: .password)
                         .padding(.top, 10)
                 }
                 .padding(.top, 37)
                 .padding(.bottom, 154)
                 
                 CTAButton(title: "신규 계정으로 회원가입", buttonStyle: .borderless) {
-                    router.push(.profileSetUp)
+                    coordinator.push(.profileSetUp)
                 }
-                CTAButton(title: "로그인", isDisabled: isDisabled, buttonStyle: .filled) {
-                    tabBarState.isLogin = true
+                CTAButton(title: "로그인", isDisabled: viewModel.isDisabled, buttonStyle: .filled) {
+                    mainTabViewModel.isLogin = true
                 }
                 .padding(.top, 12)
                 .padding(.bottom, 60)
