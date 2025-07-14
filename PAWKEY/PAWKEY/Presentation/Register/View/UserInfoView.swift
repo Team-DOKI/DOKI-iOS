@@ -15,8 +15,7 @@ struct UserInfoView: View {
             VStack(alignment: .leading, spacing: 0) {
                 
                 Spacer().frame(height: 20)
-                
-                // TODO: head24로 변경
+                                
                 Text("견주님에 대해 알려주세요.")
                     .font(.head_24_sb)
                     .foregroundStyle(.pawkeyBlack)
