@@ -18,25 +18,20 @@ struct Review: Identifiable {
 }
 
 struct MyCourseView: View {
-    @EnvironmentObject var router: Coordinator<MyPageScene>
+    @EnvironmentObject var coordinator: Coordinator<MyPageScene>
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
-    @EnvironmentObject var tabBarState: MainTabViewModel
+    @StateObject var viewModel: MyCourseViewModel
     
-    let tagList = ["이륜차 거의 없음", "배변 쓰레기통", "쉼터", "편의점", "동반 카페", "아스팔트/벽돌", "시끌벅적"]
-    
-    let myReviewList: [Review] = [
-        Review(walkRouteImg: "walkRoute", profileImg: "profile6", walkTitle: "아시는구나~", petName: "포키", postDate: "2025/01/02", buttonPressed: true),
-        Review(walkRouteImg: "walkRoute2", profileImg: "profile2", walkTitle: "신나는 산책", petName: "쮸비", postDate: "2025/03/04", buttonPressed: false),
-        Review(walkRouteImg: "walkRoute3", profileImg: "profile3", walkTitle: "더운 산책", petName: "수민이누나", postDate: "2025/05/06", buttonPressed: true),
-        Review(walkRouteImg: "walkRoute", profileImg: "profile4", walkTitle: "스꾸삐~", petName: "세민이", postDate: "2025/07/08", buttonPressed: false),
-        Review(walkRouteImg: "walkRoute2", profileImg: "profile5", walkTitle: "그냥 산책", petName: "치즈", postDate: "2025/09/10", buttonPressed: false)
-    ]
+    init(viewModel: MyCourseViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         VStack {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
-                    ForEach(myReviewList, id: \.id) { review in
+                    ForEach(viewModel.myReviewList, id: \.id) { review in
                         ReviewCard(
                             type: .mine,
                             walkRouteImg: review.walkRouteImg,
@@ -45,11 +40,11 @@ struct MyCourseView: View {
                             petName: review.petName,
                             postDate: review.postDate,
                             buttonPressed: review.buttonPressed,
-                            data: tagList
+                            data: viewModel.tagList
                         )
                         .onTapGesture {
-                            router.push(.courseDetail)
-                            tabBarState.isHidden = true
+                            coordinator.push(.courseDetail)
+                            mainTabViewModel.isHidden = true
                         }
                     }
                 }
@@ -61,8 +56,8 @@ struct MyCourseView: View {
         .background(Color.pawkeyWhite2)
         .topNavigationView(left: {
             BackButton {
-                router.pop()
-                tabBarState.isHidden = false
+                coordinator.pop()
+                mainTabViewModel.isHidden = false
             }
         }, center: {
             Text("내가 기록한 산책 루트")
