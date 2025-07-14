@@ -24,6 +24,7 @@ struct FilterBottomSheet: View {
                         .foregroundStyle(.green500)
                         .frame(maxWidth: .infinity, maxHeight: 30, alignment: .leading)
                         .padding(.leading, 16)
+                        .animation(nil)
                     CheckBoxGroup(
                         isExpanded: $viewModel.isExpandWalkingTime,
                         title: "산책 시간",
@@ -53,6 +54,7 @@ struct FilterBottomSheet: View {
                         .foregroundStyle(.green500)
                         .frame(maxWidth: .infinity, maxHeight: 30, alignment: .leading)
                         .padding(.leading, 16)
+                        .animation(nil)
                     
                     RadioGroup(
                         isExpanded: $viewModel.isExpandEnvironment,
