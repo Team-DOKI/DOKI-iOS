@@ -15,6 +15,7 @@ struct HomeView: View {
     @EnvironmentObject var tabBarstate: TabBarState
     @StateObject var viewModel = HomeViewModel()
     @StateObject var courseDetailViewModel = CourseDetailViewModel()
+    @State var isShowContextMenu = false
     
     var body: some View {
         ScrollView {
@@ -67,27 +68,45 @@ struct HomeView: View {
     
     private var contextMenu: some View {
         ZStack {
-            VStack(alignment: .trailing, spacing: 0){
+            VStack(alignment: .trailing, spacing: 0) {
                 topHeaderView
-                HStack(spacing: 6) {
-                    Image(.systemIcon)
-                    Text("내 지역 관리")
-                        .font(.body_16_sb)
-                        .foregroundStyle(.pawkeyBlack)
+
+                if isShowContextMenu {
+                    HStack(spacing: 6) {
+                        Image(.systemIcon)
+                        Text("내 지역 관리")
+                            .font(.body_16_sb)
+                            .foregroundStyle(.pawkeyBlack)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 20)
+                    .background(Color.white)
+                    .cornerRadius(8)
+                    .padding(.trailing, 16)
+                    .transition(.scale(scale: 0.9).combined(with: .opacity))
+                    .onTapGesture {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            viewModel.isShowMenu = false
+                        }
+                        router.push(.changeMyArea)
+                    }
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 20)
-                .background(.white)
-                .cornerRadius(8)
-                .padding(.trailing, 16)
-                .onTapGesture {
-                    viewModel.isShowMenu = false
-                    router.push(.changeMyArea)
-                }
+
                 Spacer()
             }
             .padding(.top, -topSafeAreaInset)
         }
+        .onAppear {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                isShowContextMenu = true
+            }
+        }
+        .onDisappear {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                isShowContextMenu = false
+            }
+        }
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isShowContextMenu)
     }
     
     private var topHeaderView: some View {
