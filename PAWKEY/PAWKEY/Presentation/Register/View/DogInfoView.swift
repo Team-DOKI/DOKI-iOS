@@ -21,7 +21,7 @@ struct DogInfoView: View {
                 Spacer().frame(height: 20)
                 
                 Text("견주님의 반려견이 궁금해요!")
-                    .font(.head_22_sb)
+                    .font(.head_24_sb)
                     .foregroundStyle(.pawkeyBlack)
                     .frame(alignment: .center)
                 Spacer().frame(height: 32)
@@ -77,9 +77,14 @@ struct DogInfoView: View {
                     Button {
                         viewModel.changeUserInfo(.neutered(!viewModel.userProfile.isNeutered))
                     } label: {
-                        Text("중성화했어요")
-                            .font(.body_14_r)
-                            .foregroundStyle(viewModel.userProfile.isNeutered ? .pawkeyBlack : .gray300)
+                        HStack(spacing: 4) {
+                            Image(viewModel.userProfile.isNeutered ? .circleCheckFill : .circleCheck)
+                            Text("중성화했어요")
+                                .font(viewModel.userProfile.isNeutered ? .body_14_sb : .body_14_r)
+                                .foregroundStyle(viewModel.userProfile.isNeutered ? .pawkeyBlack : .gray300)
+                            
+                            Spacer()
+                        }
                     }
                 }
                 
