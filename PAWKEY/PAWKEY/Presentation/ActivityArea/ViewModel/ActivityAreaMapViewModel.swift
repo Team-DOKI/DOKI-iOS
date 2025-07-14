@@ -8,19 +8,18 @@
 import MapKit
 import Moya
 
-
 class ActivityAreaMapViewModel: ObservableObject {
+    private let provider = MoyaProvider<ActivityAreaMapAPI>()
+    
     @Published var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.5215, longitude: 127.0250),
-        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        span: MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003)
     )
     @Published var activityAreas: [ActivityArea] = []
     @Published var preRegionName: String = ""
     @Published var regionName: String = ""
-    @Published var errorMessage: String?
-    @Published var isShowToast = false
     
-    private let provider = MoyaProvider<ActivityAreaMapAPI>()
+    @Published var isShowToast = false
     
     @MainActor
     func fetchActivityArea(regionId: Int) async {
@@ -28,7 +27,7 @@ class ActivityAreaMapViewModel: ObservableObject {
             let response: BaseDTO<RegionDTO> = try await provider.async.request(.fetchCoordinates(regionId: regionId))
             
             guard let data = response.data else {
-                errorMessage = "데이터 없음"
+               print("데이터 없음")
                 return
             }
             print("\(response.message): \(data.regionName) 조회, 기존 산책 지역: \(data.preRegionName)")
@@ -50,22 +49,23 @@ class ActivityAreaMapViewModel: ObservableObject {
                 region.center = first
             }
         } catch {
-            errorMessage = "에러 발생: \(error.localizedDescription)"
+            print("에러 발생: \(error.localizedDescription)")
         }
     }
     
+    @MainActor
     func updateUserRegion(regionId: Int) async {
         do {
             let response: BaseDTO<EmptyDTO> = try await provider.async.request(.updateUserRegion(regionId: regionId))
             
             print("\(response.message): 지역 변경 성공")
             
-            DispatchQueue.main.async {
-                self.isShowToast = true
-            }
+            
+            self.isShowToast = true
+            
             
         } catch {
-            errorMessage = "지역 변경 실패: \(error.localizedDescription)"
+            print("지역 변경 실패: \(error.localizedDescription)")
         }
     }
 }
