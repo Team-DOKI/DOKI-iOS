@@ -1,5 +1,5 @@
 //
-//  TabBarState.swift
+//  MainTabViewModel.swift
 //  PAWKEY
 //
 //  Created by 이세민 on 7/8/25.
