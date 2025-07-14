@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct WalkCoordinatorView: View {
-    @EnvironmentObject var router: Coordinator<WalkScene>
+    @EnvironmentObject var coordinator: Coordinator<WalkScene>
     
     var body: some View {
-        NavigationStack(path: $router.path) {
+        NavigationStack(path: $coordinator.path) {
             MapAndListView()
                 .navigationDestination(for: WalkScene.self) { scene in
                     scene.build()
