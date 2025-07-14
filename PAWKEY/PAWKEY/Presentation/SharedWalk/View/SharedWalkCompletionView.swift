@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct SharedWalkCompletionView: View {
-    @EnvironmentObject var router: Coordinator<WalkScreen>
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var coordinator: Coordinator<WalkScene>
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
-    let distance: Double
-    let elapsedTime: String
-    let stepCount: Int
-    let snapshot: UIImage?
+    @StateObject var viewModel: SharedWalkCompletionViewModel
+    
+    init(viewModel: SharedWalkCompletionViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         ZStack {
@@ -45,7 +46,7 @@ struct SharedWalkCompletionView: View {
                     .padding(.horizontal, 16)
                     .padding([.top, .bottom], 12)
                     
-                    if let snapshot = snapshot {
+                    if let snapshot = viewModel.snapshot {
                         Image(uiImage: snapshot)
                             .resizable()
                             .frame(height: 218)
@@ -65,7 +66,10 @@ struct SharedWalkCompletionView: View {
                     
                     Divider().background(.gray100)
                     
-                    StatBox(type: .borderless, distance: distance, elapsedTime: elapsedTime, stepCount: stepCount)
+                    StatBox(type: .borderless,
+                            distance: viewModel.distance,
+                            elapsedTime: viewModel.elapsedTime,
+                            stepCount: viewModel.stepCount)
                 }
                 .padding(.bottom, 8)
                 .background(.pawkeyWhite1)
@@ -78,14 +82,14 @@ struct SharedWalkCompletionView: View {
                     isDisabled: false,
                     buttonStyle: .filled
                 ) {
-                    router.push(.reviewWrite)
+                    coordinator.push(.reviewWrite)
                 }
                 .padding(.bottom, 26)
             }
             .padding(.horizontal, 16)
             .onAppear {
                 withAnimation {
-                    tabBarState.isHidden = true
+                    mainTabViewModel.isHidden = true
                 }
             }
             .topNavigationView(center: {

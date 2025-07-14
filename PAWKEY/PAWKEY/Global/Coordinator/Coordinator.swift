@@ -7,22 +7,31 @@
 
 import SwiftUI
 
-final class Coordinator<Screen: Hashable>: ObservableObject {
+protocol AppScene: Hashable {
+    associatedtype Scene: View
+    func build() -> Scene
+}
+
+protocol CoordinatorProtocol: ObservableObject {
+    associatedtype Scene: AppScene
+    func push(_ scene: Scene)
+    func pop()
+    func popToRoot()
+}
+
+final class Coordinator<Scene: AppScene>: CoordinatorProtocol {
     
     @Published var path = NavigationPath()
     
-    @MainActor
-    func push(_ screen: Screen) {
-        path.append(screen)
+    func push(_ scene: Scene) {
+        path.append(scene)
     }
-    
-    @MainActor
+        
     func pop() {
         path.removeLast()
     }
     
-    @MainActor
-    func reset() {
+    func popToRoot() {
         path.removeLast(path.count)
     }
 }

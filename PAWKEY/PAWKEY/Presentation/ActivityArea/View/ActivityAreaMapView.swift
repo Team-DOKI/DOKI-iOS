@@ -9,19 +9,21 @@ import SwiftUI
 import MapKit
 
 struct ActivityAreaMapView: View {
-    @EnvironmentObject var router: Coordinator<HomeScreen>
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var coordinator: Coordinator<HomeScene>
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
-    @StateObject private var viewModel = ActivityAreaMapViewModel()
+    @StateObject var viewModel: ActivityAreaMapViewModel
     
-    @State private var showToast = false
+    init(viewModel: ActivityAreaMapViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         ZStack(alignment: .bottom) {
             PolygonMapView(region: viewModel.region, polygons: viewModel.activityAreas.map { $0.coordinates })
                 .edgesIgnoringSafeArea(.all)
             
-            if showToast {
+            if viewModel.isShowToast {
                 ToastMessage(message: "지역을 강남구 \(viewModel.regionName)으로 변경했어요.")
                     .transition(.opacity)
                     .padding(.bottom, 246 + 22)
@@ -59,16 +61,17 @@ struct ActivityAreaMapView: View {
                                     await viewModel.updateUserRegion(regionId: 40)
                                     
                                     withAnimation {
-                                        showToast = true
+                                        viewModel.isShowToast = false
+                                        mainTabViewModel.isHidden = true
                                     }
                                     
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                         withAnimation {
-                                            showToast = false
+                                            mainTabViewModel.isHidden = false
                                         }
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                            tabBarState.isHidden = false
-                                            router.reset()
+                                            mainTabViewModel.isHidden = false
+                                            coordinator.popToRoot()
                                         }
                                     }
                                 }
@@ -88,7 +91,7 @@ struct ActivityAreaMapView: View {
         }
         .topNavigationView(left: {
             BackButton {
-                router.pop()
+                coordinator.pop()
             }
         }, center: {
             Text("내 동네 설정")
