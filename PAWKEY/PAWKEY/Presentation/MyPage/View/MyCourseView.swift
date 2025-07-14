@@ -62,6 +62,7 @@ struct MyCourseView: View {
         .topNavigationView(left: {
             BackButton {
                 router.pop()
+                tabBarState.isHidden = false
             }
         }, center: {
             Text("내가 기록한 산책 루트")

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PetProfileView: View {
     @EnvironmentObject var router: Coordinator<MyPageScreen>
+    @EnvironmentObject var tabBarState: TabBarState
     
     var body: some View {
         VStack(spacing: 8) {
@@ -117,6 +118,7 @@ struct PetProfileView: View {
         .topNavigationView {
             BackButton {
                 router.pop()
+                tabBarState.isHidden = false
             }
         } center: {
             Text("반려견 프로필")
