@@ -208,54 +208,7 @@ struct HomeView: View {
         .padding(16)
         .background(.pawkeyWhite1)
         .cornerRadius(12)
-    }
-    
-    private var recentWalkView: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("최근산책")
-                .font(.body_14_sb)
-                .foregroundStyle(.pawkeyWhite1)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 16)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(.green400)
-            
-            Image(.map)
-                .resizable()
-                .frame(maxWidth: .infinity, maxHeight: 168)
-                .background(.gray50)
-                .overlay(alignment: .bottomLeading) {
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Image(.locationFill)
-                            Text("강남구 역삼동")
-                                .font(.body_14_m)
-                                .foregroundStyle(.pawkeyWhite1)
-                        }
-                        HStack {
-                            Image(.clockWhite)
-                            Text("년도.월.일(요일) | 시작시간 - 종료 시간")
-                                .font(.body_14_m)
-                                .foregroundStyle(.pawkeyWhite1)
-                        }
-                    }
-                    .padding(.leading, 16)
-                    .padding(.bottom, 12)
-                }
-                .onTapGesture {                    
-                    router.push(.sharedCourseDetail(courseDetailViewModel))
-                    tabBarstate.isHidden = true
-                }
-            
-            HStack(spacing: 6) {
-                Chip(title: "산책 옵션 입력", isActive: true)
-                Chip(title: "산책 옵션 입력", isActive: true)
-            }
-            .padding(16)
-        }
-        .background(.pawkeyWhite2)
-        .cornerRadius(8)
-    }
+    }        
 }
 
 
