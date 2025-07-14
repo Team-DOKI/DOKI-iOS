@@ -103,7 +103,8 @@ struct ArchiveView: View {
                                 "야간 조명이 잘 되어있어요",
                                 "보도와 차도가 구분되어 있어요",
                                 "보도가 넓어서 산책하기 편했어요"
-                            ]
+                            ],
+                            selectedTags: $viewModel.safetyTags
                         )
                         
                         QuestionForm(
@@ -114,7 +115,8 @@ struct ArchiveView: View {
                                 "쉴 곳이 있어요",
                                 "편의점이 있어요",
                                 "반려견 동반 가능한 카페가 있어요"
-                            ]
+                            ],
+                            selectedTags: $viewModel.facilityTags
                         )
                     }
                 }
@@ -134,9 +136,8 @@ struct ArchiveView: View {
                         .foregroundStyle(.pawkeyBlack)
                         .padding(.bottom, 10)
                     
-                    ReviewTextField(type: .normal, text: $titleText)
-                    
-                    ReviewTextEditor(text: $reviewText)
+                    ReviewTextField(type: .normal, text: $viewModel.titleText)
+                    ReviewTextEditor(text: $viewModel.reviewText)
                 }
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -148,11 +149,11 @@ struct ArchiveView: View {
                     .padding(.vertical, 24)
                 
                 VStack(spacing: 13) {
-                    CTAButton(title: "산책 기록 공유하기", isDisabled: false, buttonStyle: .filled) {
+                    CTAButton(title: "산책 기록 공유하기", isDisabled: !viewModel.isButtonDisabled, buttonStyle: .filled) {
                         pushCourseDetail(isPrivate: false)
                     }
-                    
-                    CTAButton(title: "산책 기록 나만보기", isDisabled: false, buttonStyle: .text) {
+
+                    CTAButton(title: "산책 기록 나만보기", isDisabled: !viewModel.isButtonDisabled, buttonStyle: .text) {
                         pushCourseDetail(isPrivate: true)
                     }
                 }

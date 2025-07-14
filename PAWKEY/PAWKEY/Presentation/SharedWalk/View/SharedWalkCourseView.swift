@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct SharedWalkCourseView: View {
     @EnvironmentObject var router: Coordinator<WalkScreen>
@@ -16,6 +17,8 @@ struct SharedWalkCourseView: View {
     
     @State private var showStopConfirmation = false
     
+    @State private var userTrackingMode: MKUserTrackingMode = .none
+    
     let onComplete: (Double, String, Int, UIImage?) -> Void
     
     var body: some View {
@@ -24,6 +27,7 @@ struct SharedWalkCourseView: View {
                 SharedWalkMap(
                     region: $viewModel.region,
                     shouldCenterOnUser: $viewModel.shouldCenterOnUser,
+                    userTrackingMode: $userTrackingMode,
                     pathCoordinates: viewModel.examplePathCoordinates
                 )
                 .edgesIgnoringSafeArea(.all)
@@ -43,6 +47,7 @@ struct SharedWalkCourseView: View {
                 
                 if showStopConfirmation {
                     StopConfirmationView(
+                        description: "아직 설정된 산책 루트를 다 돌지 못했어요.",
                         onResume: {
                             showStopConfirmation = false
                             viewModel.setPaused(false)
@@ -62,7 +67,7 @@ struct SharedWalkCourseView: View {
                     Spacer()
                     
                     CTAButton(
-                        title: "종료하기",
+                        title: "산책 기록 중지",
                         isDisabled: false,
                         buttonStyle: .filled
                     ) {

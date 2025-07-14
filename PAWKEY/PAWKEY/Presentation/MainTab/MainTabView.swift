@@ -34,7 +34,11 @@ struct MainTabView: View {
                 Spacer()
                 
                 TabBar()
+                    .padding(.bottom, 12)
+                    .offset(y: tabBarState.isHidden ? 100 : 0)
+                    .animation(.easeInOut(duration: 0.3), value: tabBarState.isHidden)
             }
+            .ignoresSafeArea(.keyboard, edges: .bottom)
         }
     }
 }

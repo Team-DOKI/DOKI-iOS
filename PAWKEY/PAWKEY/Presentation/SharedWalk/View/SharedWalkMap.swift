@@ -11,6 +11,7 @@ import MapKit
 struct SharedWalkMap: UIViewRepresentable {
     @Binding var region: MKCoordinateRegion
     @Binding var shouldCenterOnUser: Bool
+    @Binding var userTrackingMode: MKUserTrackingMode
     var pathCoordinates: [CLLocationCoordinate2D]
     
     func makeUIView(context: Context) -> MKMapView {
@@ -18,10 +19,14 @@ struct SharedWalkMap: UIViewRepresentable {
         mapView.showsUserLocation = true
         mapView.delegate = context.coordinator
         mapView.setRegion(region, animated: false)
+        
+        mapView.userTrackingMode = .followWithHeading
         return mapView
     }
     
     func updateUIView(_ uiView: MKMapView, context: Context) {
+        uiView.setUserTrackingMode(userTrackingMode, animated: true)
+        
         if shouldCenterOnUser {
             uiView.setRegion(region, animated: true)
             DispatchQueue.main.async {

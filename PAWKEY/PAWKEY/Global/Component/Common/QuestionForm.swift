@@ -11,7 +11,7 @@ struct QuestionForm: View {
     let question: String
     let tags: [String]
     
-    @State private var selectedKeywords: Set<String> = []
+    @Binding var selectedTags: Set<String>
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -29,12 +29,12 @@ struct QuestionForm: View {
                 ReviewTagButton(
                     title: tag,
                     isSelected: Binding(
-                        get: { selectedKeywords.contains(tag) },
+                        get: { selectedTags.contains(tag) },
                         set: { newValue in
                             if newValue {
-                                selectedKeywords.insert(tag)
+                                selectedTags.insert(tag)
                             } else {
-                                selectedKeywords.remove(tag)
+                                selectedTags.remove(tag)
                             }
                         }
                     )
