@@ -18,7 +18,7 @@ struct HomeView: View {
     @State var isShowContextMenu = false
     
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             ZStack {
                 Color.pawkeyWhite2
                 
