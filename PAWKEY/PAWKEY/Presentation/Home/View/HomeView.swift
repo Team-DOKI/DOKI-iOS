@@ -9,15 +9,14 @@ import SwiftUI
 
 struct HomeView: View {
     let topSafeAreaInset = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
-    let dummyData = ["이륜차 거의 없음", "배변 쓰레기통", "쉼터", "편의점", "동반 카페", "아스팔트/벽돌", "시끌벅적"]
+    @EnvironmentObject var coordinator: Coordinator<HomeScene>
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
-    @EnvironmentObject var router: Coordinator<HomeScene>
-    @EnvironmentObject var tabBarstate: MainTabViewModel
+    @StateObject var viewModel: HomeViewModel
     
-    @StateObject var viewModel = HomeViewModel()
-    @StateObject var courseDetailViewModel = CourseDetailViewModel()
-    
-    @State var isShowContextMenu = false
+    init(viewModel: HomeViewModel = HomeViewModel()) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -43,11 +42,10 @@ struct HomeView: View {
                             .font(.head_18_sb)
                             .foregroundStyle(.pawkeyBlack)
                         
-                        ReviewCard(type: .others, walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "외로운 산책", petName: "길냥이", postDate: "2025/01/02", buttonPressed: true, data: dummyData)
+                        ReviewCard(type: .others, walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "외로운 산책", petName: "길냥이", postDate: "2025/01/02", buttonPressed: true, data: viewModel.dummyData)
                             .onTapGesture {
-                                courseDetailViewModel.images = [.walkRoute, .profile, .profile2, .profile3]
-                                tabBarstate.isHidden = true
-                                router.push(.sharedCourseDetail(courseDetailViewModel))
+                                mainTabViewModel.isHidden = true
+                                coordinator.push(.sharedCourseDetail(id: 0))
                             }
                     }
                     .padding(.horizontal, 16)
@@ -74,7 +72,7 @@ struct HomeView: View {
             VStack(alignment: .trailing, spacing: 0) {
                 topHeaderView
 
-                if isShowContextMenu {
+                if viewModel.isShowContextMenu {
                     HStack(spacing: 6) {
                         Image(.systemIcon)
                         Text("내 지역 관리")
@@ -91,7 +89,7 @@ struct HomeView: View {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                             viewModel.isShowMenu = false
                         }
-                        router.push(.changeMyArea)
+                        coordinator.push(.changeMyArea)
                     }
                 }
 
@@ -101,15 +99,15 @@ struct HomeView: View {
         }
         .onAppear {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                isShowContextMenu = true
+                viewModel.isShowContextMenu = true
             }
         }
         .onDisappear {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                isShowContextMenu = false
+                viewModel.isShowContextMenu = false
             }
         }
-        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isShowContextMenu)
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: viewModel.isShowContextMenu)
     }
     
     private var topHeaderView: some View {
@@ -195,7 +193,7 @@ struct HomeView: View {
     
     private var startWalkButton: some View {
         Button {
-            tabBarstate.selectedTab = .walk
+            mainTabViewModel.selectedTab = .walk
         } label: {
             HStack {
                 Text("산책 시작하기")
