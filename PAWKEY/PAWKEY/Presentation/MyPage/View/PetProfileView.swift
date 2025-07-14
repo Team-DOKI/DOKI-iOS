@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct PetProfileView: View {
-    @EnvironmentObject var router: Coordinator<MyPageScene>
-    @EnvironmentObject var tabBarState: MainTabViewModel
+    @EnvironmentObject var coordinator: Coordinator<MyPageScene>
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
+        
+    @StateObject var viewModel: PetProfileViewModel
+
+    init(viewModel: PetProfileViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         VStack(spacing: 8) {
@@ -117,8 +123,8 @@ struct PetProfileView: View {
         .navigationBarBackButtonHidden()
         .topNavigationView {
             BackButton {
-                router.pop()
-                tabBarState.isHidden = false
+                coordinator.pop()
+                mainTabViewModel.isHidden = false
             }
         } center: {
             Text("반려견 프로필")
