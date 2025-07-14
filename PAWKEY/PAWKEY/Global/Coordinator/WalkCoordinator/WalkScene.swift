@@ -23,23 +23,27 @@ enum WalkScene: AppScene {
         case .courseDetail(let viewModel):
             CourseDetailView(viewModel: viewModel)
         case .walkCompletion(let distance, let elapsedTime, let stepCount, let snapshot):
-            WalkCompletionView(
+            let viewModel = WalkCompletionViewModel(
                 distance: distance,
                 elapsedTime: elapsedTime,
                 stepCount: stepCount,
                 snapshot: snapshot
             )
+            WalkCompletionView(viewModel: viewModel)
         case .archive(let snapshot):
-            ArchiveView(snapshot: snapshot)
+            let viewModel = ArchiveViewModel()
+            ArchiveView(viewModel: viewModel)
         case .sharedWalkCompletion(let distance, let elapsedTime, let stepCount, let snapshot):
-            SharedWalkCompletionView(
+            let viewModel = SharedWalkCompletionViewModel(
                 distance: distance,
                 elapsedTime: elapsedTime,
                 stepCount: stepCount,
                 snapshot: snapshot
             )
+            SharedWalkCompletionView(viewModel: viewModel)
         case .reviewWrite:
-            ReviewWriteView()
+            let viewModel = ReviewWriteViewModel()
+            ReviewWriteView(viewModel: viewModel)
         }
     }
 }
