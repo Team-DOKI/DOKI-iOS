@@ -17,7 +17,7 @@ struct SharedWalkCourseView: View {
     
     @State private var showStopConfirmation = false
     
-    @State private var userTrackingMode: MKUserTrackingMode = .follow
+    @State private var userTrackingMode: MKUserTrackingMode = .none
     
     let onComplete: (Double, String, Int, UIImage?) -> Void
     
