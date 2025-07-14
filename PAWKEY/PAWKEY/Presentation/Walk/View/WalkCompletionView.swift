@@ -78,7 +78,7 @@ struct WalkCompletionView: View {
                     isDisabled: false,
                     buttonStyle: .filled
                 ) {
-                    router.push(.archive(snapshot: snapshot))
+                    router.push(.archive(snapshot: snapshot))                    
                 }
                 .padding(.bottom, 26)
             }
