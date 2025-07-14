@@ -10,7 +10,7 @@ import MapKit
 
 struct ActivityAreaMapView: View {
     @EnvironmentObject var router: Coordinator<HomeScene>
-    @EnvironmentObject var tabBarState: MainTabViewModel
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.5215, longitude: 127.0250),
@@ -67,7 +67,7 @@ struct ActivityAreaMapView: View {
                                         showToast = false
                                     }
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        tabBarState.isHidden = false
+                                        mainTabViewModel.isHidden = false
                                         router.popToRoot()
                                         
                                     }

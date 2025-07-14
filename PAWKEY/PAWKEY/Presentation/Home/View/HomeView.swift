@@ -13,8 +13,10 @@ struct HomeView: View {
     
     @EnvironmentObject var router: Coordinator<HomeScene>
     @EnvironmentObject var tabBarstate: MainTabViewModel
+    
     @StateObject var viewModel = HomeViewModel()
     @StateObject var courseDetailViewModel = CourseDetailViewModel()
+    
     @State var isShowContextMenu = false
     
     var body: some View {
