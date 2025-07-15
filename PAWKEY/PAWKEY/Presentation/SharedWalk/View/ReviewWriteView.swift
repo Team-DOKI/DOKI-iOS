@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ReviewWriteView: View {
+    @EnvironmentObject var coordinator: Coordinator<WalkScene>
     @StateObject private var viewModel: ReviewWriteViewModel
     
     @State private var isAlertPresented: Bool = false
@@ -126,11 +127,10 @@ struct ReviewWriteView: View {
                         buttonStyle: .filled
                     ) {
                         isAlertPresented = false
-                        // 또는 dismiss()
+                        coordinator.popToRoot()
                     }
                 ).padding(.horizontal, 19)
             }
         }
     }
 }
-
