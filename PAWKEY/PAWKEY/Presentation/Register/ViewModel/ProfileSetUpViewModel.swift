@@ -186,7 +186,6 @@ extension ProfileSetUpViewModel {
                 errorMessage = "에러 발생: 데이터를 찾을 수 없음"
                 return
             }
-            print(data)
         } catch {
             errorMessage = "에러 발생: \(error.localizedDescription)"
         }
