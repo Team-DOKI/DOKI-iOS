@@ -60,15 +60,22 @@ struct ArchiveView: View {
                 .padding([.vertical, .bottom], 12)
                 
                 VStack(alignment: .leading) {
-                    TimePlaceCell(type: .place("강남구 역삼동"))
+                    TimePlaceCell(type: .place(viewModel.location))
                         .padding(.bottom, 4)
                     
-                    TimePlaceCell(type: .time("2025.07.08(화) | 오후 11:28"))
+                    TimePlaceCell(type: .time(viewModel.time))
                         .padding(.bottom, 12)
                     
-                    Chip(title: "옵션")
-                        .padding(.top, 10)
-                        .padding(.bottom, 16)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach(viewModel.descriptionTags, id: \.self) { tag in
+                                Chip(title: tag)
+                            }
+                        }
+                    }
+                    .padding(.bottom, 16)
+                    .padding(.top, 10)
+                    
                 }
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -80,7 +87,7 @@ struct ArchiveView: View {
                     .padding(.bottom, 24)
                 
                 VStack(alignment: .leading) {
-                    Text("포비와의 산책 어땠나요?")
+                    Text("\(viewModel.petName)와의 산책 어땠나요?")
                         .font(.head_18_sb)
                         .foregroundStyle(.pawkeyBlack)
                         .padding(.bottom, 3)
@@ -148,7 +155,7 @@ struct ArchiveView: View {
                     CTAButton(title: "산책 기록 공유하기", isDisabled: !viewModel.isButtonDisabled, buttonStyle: .filled) {
                         pushCourseDetail(isPrivate: false)
                     }
-
+                    
                     CTAButton(title: "산책 기록 나만보기", isDisabled: !viewModel.isButtonDisabled, buttonStyle: .text) {
                         pushCourseDetail(isPrivate: true)
                     }
@@ -164,6 +171,10 @@ struct ArchiveView: View {
         .onAppear {
             withAnimation {
                 mainTabViewModel.isHidden = true
+            }
+            
+            Task {
+                await viewModel.fetchCourseInfo(routeId: 8)
             }
         }
         .onChange(of: viewModel.selectedItems) {
