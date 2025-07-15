@@ -100,15 +100,18 @@ struct ReviewCard: View {
             
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    FlexibleGrid(availableWidth: UIScreen.main.bounds.size.width - 64, data: isSpread ? data : Array(data[0..<3]), spacing: 8, alignment: .leading) {
+                    FlexibleGrid(availableWidth: UIScreen.main.bounds.size.width - 64, data: isSpread ? data : Array(data.prefix(3)), spacing: 8, alignment: .leading) {
                         Chip(title: $0, isActive: true)
                     }
-                    if !isSpread {
-                        Chip(title: "+\(data.count - 3)", isActive: false)
-                            .onTapGesture {
-                                isSpread = true
-                            }
+                    if data.count > 3 {
+                        if !isSpread {
+                            Chip(title: "+\(data.count - 3)", isActive: false)
+                                .onTapGesture {
+                                    isSpread = true
+                                }
+                        }
                     }
+                    
                     Spacer()
                 }
             }
