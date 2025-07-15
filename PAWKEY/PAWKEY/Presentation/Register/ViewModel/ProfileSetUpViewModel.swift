@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Moya
 
 struct UserProfile {
     var userName: String = ""
@@ -69,6 +70,8 @@ final class ProfileSetUpViewModel: ObservableObject {
         }
     }
     
+    private let provider = MoyaProvider<PetTraitsCategoryAPI>()
+    
     // 모델(임시)
     let genderList = ["남자", "여자"]
     let regionList = ["강남구"]
@@ -85,6 +88,9 @@ final class ProfileSetUpViewModel: ObservableObject {
     @Published var userProfile = UserProfile()
     @Published var currentStep: ProfileStep = .ownerInfo
     @Published var isKeyboardVisible = false
+    
+    @Published var petTraitsCategories: [PetTraitCategory] = []
+    @Published var errorMessage: String?
     
     var currentStepIndex: Int { currentStep.rawValue }
     var isButtonDisabled: Bool {
@@ -110,6 +116,8 @@ final class ProfileSetUpViewModel: ObservableObject {
             userProfile.societyLevel.isEmpty
         }
     }
+    
+    // MARK: - State Method
     
     func goToNextStep() {
         currentStep = ProfileStep(rawValue: currentStep.rawValue + 1) ?? .dogTendency
@@ -145,6 +153,22 @@ final class ProfileSetUpViewModel: ObservableObject {
             userProfile.dogBreed = dogBreed
         case .neutered(let neutered):
             userProfile.isNeutered = neutered
+        }
+    }
+    
+    // MARK: - API
+    @MainActor
+    func fetchPetTraitsCategories() async {
+        do {
+            let response: BaseDTO<PetTraitDTO> = try await provider.async.request(.fetchPetTraitsCategories)
+            
+            guard let data = response.data else {
+                return
+            }
+            
+            self.petTraitsCategories = data.petTraitCategoryList.map {$0.toEntity()}
+        } catch {
+            errorMessage = "에러 발생: \(error.localizedDescription)"
         }
     }
 }

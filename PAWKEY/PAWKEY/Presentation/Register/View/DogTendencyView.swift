@@ -51,5 +51,8 @@ struct DogTendencyView: View {
             }
             .padding(.horizontal, 16)
         }
+        .task {
+            await viewModel.fetchPetTraitsCategories()
+        }
     }
 }
