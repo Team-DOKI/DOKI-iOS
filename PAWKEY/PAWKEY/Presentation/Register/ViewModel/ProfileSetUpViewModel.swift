@@ -163,6 +163,7 @@ final class ProfileSetUpViewModel: ObservableObject {
             let response: BaseDTO<PetTraitDTO> = try await provider.async.request(.fetchPetTraitsCategories)
             
             guard let data = response.data else {
+                errorMessage = "에러 발생: 데이터를 찾을 수 없음"
                 return
             }
             
