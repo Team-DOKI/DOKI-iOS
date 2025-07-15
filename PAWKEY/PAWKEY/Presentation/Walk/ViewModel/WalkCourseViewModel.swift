@@ -304,7 +304,7 @@ extension WalkCourseViewModel {
         
         do {
             let response: BaseDTO<WalkCourseResponseDTO> = try await provider.async.request(
-                .postWalkCourse(userId: userId, body: body, image: imageData)
+                .postWalkCourse(body: body, image: imageData)
             )
             
             print("\(response.message)")

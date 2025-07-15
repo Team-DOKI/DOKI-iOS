@@ -56,7 +56,7 @@ class ActivityAreaMapViewModel: ObservableObject {
     @MainActor
     func updateUserRegion(regionId: Int) async {
         do {
-            try await provider.async.requestPlain(.updateUserRegion(regionId: regionId))
+            try await provider.async.requestPlain(.updateUserRegion)
             print("요청 처리 성공: 지역 변경 성공")
             
             self.isShowToast = true
