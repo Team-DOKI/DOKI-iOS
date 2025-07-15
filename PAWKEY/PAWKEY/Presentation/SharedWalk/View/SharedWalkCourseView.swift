@@ -100,7 +100,7 @@ struct SharedWalkCourseView: View {
             viewModel.startTracking()
             
             Task {
-                await viewModel.fetchSharedWalkCourses(routeId: 40)
+                await viewModel.fetchSharedWalkCourses(routeId: 55)
             }
         }
     }
