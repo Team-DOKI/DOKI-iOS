@@ -13,19 +13,6 @@ enum KnownDogAge: String, CaseIterable, Hashable {
     case unknown = "나이를 몰라요"
 }
 
-enum ProfileField {
-    case userName(String)
-    case userGender(String)
-    case userAge(String)
-    case region(Int)
-    case dogName(String)
-    case dogGender(String)
-    case KnownDogAge(KnownDogAge?)
-    case petTraits(categoryId: Int, optionId: Int)
-    case dogBreed(String)
-    case neutered(Bool)
-}
-
 final class ProfileSetUpViewModel: ObservableObject {
     
     enum ProfileStep: Int {
@@ -44,6 +31,19 @@ final class ProfileSetUpViewModel: ObservableObject {
         }
     }
     
+    enum ProfileField {
+        case userName(String)
+        case userGender(Gender)
+        case userAge(String)
+        case region(Int)
+        case dogName(String)
+        case dogGender(Gender)
+        case KnownDogAge(KnownDogAge?)
+        case petTraits(categoryId: Int, optionId: Int)
+        case dogBreed(String)
+        case neutered(Bool)
+    }
+    
     // 모델(임시)
     let genderList = ["남자", "여자"]
     let dogGenderList = ["남아", "여아"]
@@ -52,6 +52,13 @@ final class ProfileSetUpViewModel: ObservableObject {
     // View state
     @Published var currentStep: ProfileStep = .ownerInfo
     @Published var isKeyboardVisible = false
+    @Published var profileImage: [UIImage] = [] {
+        didSet {
+            if let image = profileImage.first {
+                userProfile.profileImage = image
+            }
+        }
+    }
     
     // User state
     @Published var userProfile = UserProfile()
@@ -69,7 +76,7 @@ final class ProfileSetUpViewModel: ObservableObject {
         switch currentStep {
         case .ownerInfo:
             return userProfile.name.isEmpty ||
-            userProfile.gender.isEmpty ||
+            userProfile.gender == .unknown ||
             userProfile.age.isEmpty
             
         case .activityArea:
@@ -77,7 +84,7 @@ final class ProfileSetUpViewModel: ObservableObject {
             
         case .dogInfo:
             return userProfile.dogName.isEmpty ||
-            userProfile.dogGender.isEmpty ||
+            userProfile.dogGender == .unknown ||
             userProfile.breed.isEmpty ||
             userProfile.knownDogAge == .none ||
             (userProfile.isKnownAge && userProfile.dogAge.isEmpty)
@@ -187,7 +194,7 @@ extension ProfileSetUpViewModel {
                 errorMessage = "에러 발생: 데이터를 찾을 수 없음"
                 return
             }
-                    
+            
         } catch {
             errorMessage = "에러 발생: \(error.localizedDescription)"
         }

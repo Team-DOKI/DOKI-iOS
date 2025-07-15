@@ -37,8 +37,30 @@ extension UserAPI: BaseTargetType {
     
     var task: Task {
         switch self {
-        case let .updateUserProfile(userProfile):            
-            return .requestJSONEncodable(userProfile.toDto())
+        case let .updateUserProfile(userProfile):
+            
+            var multipartData: [MultipartFormData] = []
+            
+            if let jsonData = try? JSONEncoder().encode(userProfile.toDto()) {
+                multipartData.append(MultipartFormData(
+                    provider: .data(jsonData),
+                    name: "data",
+                    mimeType: "application/json"
+                ))
+            }
+            
+            if let image = userProfile.profileImage {
+                multipartData.append(MultipartFormData(
+                    provider: .data(userProfile.profileImage?.pngData() ?? Data()),
+                    name: "pet_profile",
+                    fileName: "pet_profile1.jpg",
+                    mimeType: "multipart/form-data"
+                ))
+            }
+            print("=================")
+            print(userProfile.toDto())
+            print("=================")
+            return .uploadMultipart(multipartData)
         }
     }
 }
