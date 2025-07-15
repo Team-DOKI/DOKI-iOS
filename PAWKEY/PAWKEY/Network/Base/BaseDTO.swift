@@ -12,5 +12,3 @@ struct BaseDTO<T: Codable>: Codable {
     let message: String
     let data: T?
 }
-
-struct EmptyDTO: Codable {}
