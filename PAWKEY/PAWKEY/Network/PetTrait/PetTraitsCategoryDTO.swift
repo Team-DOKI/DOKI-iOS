@@ -27,15 +27,15 @@ extension PetTraitCategoryDTO {
         PetTraitCategory(
             categoryId: petTraitCategoryId,
             categoryName: petTraitCategoryName,
-            categoryOptions: petTraitCategoryOptions.toEntity()
+            categoryOptions: petTraitCategoryOptions.toEntity(categoryId: petTraitCategoryId)
         )
     }
 }
 
 extension Array where Element == PetTraitCategoryOptionDTO  {
-    func toEntity() -> [PetTraitCategoryOption] {
+    func toEntity(categoryId: Int) -> [PetTraitCategoryOption] {
         map {
-            PetTraitCategoryOption(
+            PetTraitCategoryOption(                
                 categoryOptionId: $0.petTraitCategoryOptionId,
                 categoryOptionText: $0.petTraitCategoryOptionText
             )

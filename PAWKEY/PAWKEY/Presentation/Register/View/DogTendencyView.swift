@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct DogTendencyView: View {    
+struct DogTendencyView: View {
     @ObservedObject var viewModel: ProfileSetUpViewModel
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
-      
+    
     var body: some View {
         GeometryReader { proxy in
             VStack(alignment: .leading) {
@@ -21,32 +21,24 @@ struct DogTendencyView: View {
                     .foregroundStyle(.pawkeyBlack)
                 
                 Spacer().frame(height: 42)
-            
                 
-                VStack(alignment:.leading) {
-                    Text("에너지 레벨")
+                ForEach(viewModel.petTraitsCategories, id: \.self.categoryId) { category in
+                    Text(category.categoryName)
                         .font(.body_14_sb)
+                    Spacer().frame(height: 8)
                     LazyVGrid(columns: columns) {
-                        ForEach(viewModel.energyLevel, id: \.self) {
-                            LocationButton($0, isSelected: $0 == viewModel.userProfile.energyLevel) { result in
-                                viewModel.changeUserInfo(.energyLevel(result))
+                        ForEach(category.categoryOptions, id: \.self.categoryOptionId) { option in
+                            LocationButton(
+                                option.categoryOptionText,
+                                isSelected: viewModel.userProfile.petTraits.isSelected(categoryId: category.categoryId, optionId: option.categoryOptionId)
+                            )
+                            .disabled(true)
+                            .onTapGesture {
+                                viewModel.changeUserInfo(.petTraits(categoryId: category.categoryId, optionId: option.categoryOptionId))
                             }
                         }
                     }
-                }
-                
-                Spacer().frame(height: 30)
-                
-                VStack(alignment:.leading) {
-                    Text("사회성 레벨")
-                        .font(.body_14_sb)
-                    LazyVGrid(columns: columns) {
-                        ForEach(viewModel.societyLevel, id: \.self) {
-                            LocationButton($0, isSelected: $0 == viewModel.userProfile.societyLevel) { result in
-                                viewModel.changeUserInfo(.societyLevel(result))
-                            }
-                        }
-                    }
+                    Spacer().frame(height: 30)
                 }
             }
             .padding(.horizontal, 16)
@@ -56,3 +48,5 @@ struct DogTendencyView: View {
         }
     }
 }
+
+
