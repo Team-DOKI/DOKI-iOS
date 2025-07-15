@@ -104,3 +104,42 @@ extension ArchiveViewModel {
         )
     }
 }
+
+extension ArchiveViewModel {
+    @MainActor
+    func uploadCourse(isPublic: Bool) async {
+        let selectedCategoryOptions = selectedOptions.map { categoryId, selectedTexts in
+            let optionIds = categories
+                .first(where: { $0.categoryId == categoryId })?
+                .categoryOptions
+                .filter { selectedTexts.contains($0.categoryOptionText) }
+                .map { $0.categoryOptionId } ?? []
+            
+            return SelectedCategoryOptions(categoryId: categoryId, selectedOptionIds: optionIds)
+        }
+        
+        let body = ArchivePostDTO(
+            title: titleText,
+            description: reviewText,
+            isPublic: isPublic,
+            selectedOptionsForCategories: selectedCategoryOptions,
+            routeId: 54
+        )
+        
+        let imageDatas = selectedImages.compactMap { $0.jpegData(compressionQuality: 0.8) }
+        
+        do {
+            let response: BaseDTO<ArchiveResponseDTO> = try await provider.async.request(
+                ArchiveAPI.postCourse(body: body, images: imageDatas)
+            )
+            
+            print("\(response.message)")
+            if let postId = response.data?.postId {
+                print("postId: \(postId)")
+            }
+            
+        } catch {
+            print("업로드 실패: \(error.localizedDescription)")
+        }
+    }
+}
