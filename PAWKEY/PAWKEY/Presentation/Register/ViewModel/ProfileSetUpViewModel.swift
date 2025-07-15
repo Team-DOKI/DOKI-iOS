@@ -8,25 +8,6 @@
 import SwiftUI
 import Moya
 
-struct UserProfile {
-    var userName: String = ""
-    var userGender: String = ""
-    var userAge: String = ""
-    var region: String = ""
-    var legalRegion: String = ""
-    var dogName: String = ""
-    var dogAge: String = ""
-    var dogGender: String = ""
-    var petTraits: [PetTraitCategory] = []
-    var knownDogAge: KnownDogAge?
-    var dogBreed: String = ""
-    var isNeutered = false
-    
-    var isKnownAge: Bool {
-        knownDogAge == .known
-    }
-}
-
 enum KnownDogAge: String, CaseIterable, Hashable {
     case known = "나이를 알아요"
     case unknown = "나이를 몰라요"
@@ -92,9 +73,9 @@ final class ProfileSetUpViewModel: ObservableObject {
     var isButtonDisabled: Bool {
         switch currentStep {
         case .ownerInfo:
-            return userProfile.userName.isEmpty ||
-            userProfile.userGender.isEmpty ||
-            userProfile.userAge.isEmpty
+            return userProfile.name.isEmpty ||
+            userProfile.gender.isEmpty ||
+            userProfile.age.isEmpty
             
         case .activityArea:
             return userProfile.region.isEmpty ||
@@ -125,11 +106,11 @@ final class ProfileSetUpViewModel: ObservableObject {
     func changeUserInfo(_ field: ProfileField) {
         switch field {
         case .userName(let name):
-            userProfile.userName = name
+            userProfile.name = name
         case .userGender(let gender):
-            userProfile.userGender = gender
+            userProfile.gender = gender
         case .userAge(let age):
-            userProfile.userAge = age
+            userProfile.age = age
         case .region(let region):
             userProfile.region = region
         case .legalRegion(let legal):

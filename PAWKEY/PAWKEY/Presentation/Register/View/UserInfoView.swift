@@ -25,7 +25,7 @@ struct UserInfoView: View {
                 VStack(alignment:.leading) {
                     Text("이름")
                         .font(.body_14_sb)
-                    PawkeyTextField(text: $viewModel.userProfile.userName,
+                    PawkeyTextField(text: $viewModel.userProfile.name,
                                 placeholder: "이름을 입력해주세요.")
                 }
                                 
@@ -36,7 +36,7 @@ struct UserInfoView: View {
                         .font(.body_14_sb)
                     HStack {
                         ForEach(viewModel.genderList, id: \.self) { gender in
-                            LocationButton(gender, isSelected: gender == viewModel.userProfile.userGender) { gender in
+                            LocationButton(gender, isSelected: gender == viewModel.userProfile.gender) { gender in
                                 viewModel.changeUserInfo(.userGender(gender))
                             }
                         }
@@ -48,7 +48,7 @@ struct UserInfoView: View {
                 VStack(alignment:.leading) {
                     Text("나이")
                         .font(.body_14_sb)
-                    PawkeyTextField(text: $viewModel.userProfile.userAge,
+                    PawkeyTextField(text: $viewModel.userProfile.age,
                                 placeholder: "나이를 입력해주세요.", type: .number)
                 }
                 
