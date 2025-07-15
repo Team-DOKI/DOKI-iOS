@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Lottie
 
 struct Alert: View {
     var title: String
@@ -14,33 +15,43 @@ struct Alert: View {
     
     var body: some View {
         VStack {
-            Image(systemName: "pawprint.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 90, height: 90)
-                .foregroundStyle(.green500)
-                .padding(.bottom, 32)
+            LottieView(name: "review_check")
+                .frame(width: 120, height: 120)
             
             Text(title)
                 .font(.head_18_sb)
                 .foregroundStyle(.pawkeyBlack)
                 .padding(.bottom, 6)
+
             
             Text(description)
                 .multilineTextAlignment(.center)
                 .font(.caption_12_r)
                 .foregroundStyle(.gray300)
-                .padding(.bottom, 32)
+                .padding(.bottom, 30)
             
             confirmButton
-                .padding(.horizontal, 20)
-                .padding(.vertical, 16)
                 .frame(height: 48)
         }
-        .padding(.horizontal, 32)
         .padding(.top, 36)
+        .padding(.horizontal, 32)
         .padding(.bottom, 28)
-        .background(Color.white)
+        .background(.pawkeyWhite1)
         .cornerRadius(14)
+    }
+}
+
+struct LottieView: UIViewRepresentable {
+    var name: String
+    var loopMode: LottieLoopMode = .loop
+    
+    func makeUIView(context: Context) -> LottieAnimationView {
+        let view = LottieAnimationView(name: name)
+        view.loopMode = loopMode
+        view.play()
+        return view
+    }
+    
+    func updateUIView(_ uiView: Lottie.LottieAnimationView, context: Context) {
     }
 }
