@@ -10,9 +10,11 @@ import MapKit
 import Combine
 import SwiftUI
 import CoreMotion
+import Moya
 
 final class SharedWalkCourseViewModel: ObservableObject {
     private let locationManager: LocationManager
+    private let provider = MoyaProvider<SharedWalkCourseAPI>()
     private let pedometer = CMPedometer()
     
     private var cancellables = Set<AnyCancellable>()
@@ -20,7 +22,6 @@ final class SharedWalkCourseViewModel: ObservableObject {
     private var startTime: Date?
     private var pauseTime: Date?
     private var accumulatedPauseTime: TimeInterval = 0
-    
     private var previousLocation: CLLocation?
     
     @Published var currentLocation: CLLocationCoordinate2D = .init(latitude: 0, longitude: 0)
@@ -29,29 +30,22 @@ final class SharedWalkCourseViewModel: ObservableObject {
         span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
     )
     
-    let examplePathCoordinates: [CLLocationCoordinate2D] = [
-        CLLocationCoordinate2D(latitude: 37.5887, longitude: 126.9346), // Swiss Grand Hotel 인근 :contentReference[oaicite:1]{index=1}
-        CLLocationCoordinate2D(latitude: 37.5883, longitude: 126.9335), // 언덕길 아래쪽 진입 지점
-        CLLocationCoordinate2D(latitude: 37.5878, longitude: 126.9325), // 골목길 중간
-        CLLocationCoordinate2D(latitude: 37.5873, longitude: 126.9315), // 언덕 꼭대기 부근
-        CLLocationCoordinate2D(latitude: 37.5868, longitude: 126.9305), // 다시 내려가는 길
-        CLLocationCoordinate2D(latitude: 37.5863, longitude: 126.9295), // 언덕길 하단 복귀 지점
-    ]
-    
-    
+    var examplePathCoordinates: [CLLocationCoordinate2D] = []
     @Published var isTracking: Bool = false
     @Published var shouldCenterOnUser: Bool = true
     @Published var shouldFollowUser: Bool = true
     @Published var isPaused: Bool = false
-    
     @Published var distance: Double = 0.0
     @Published var elapsedTime: String = "00:00"
     @Published var stepCount: Int = 0
     
     init(locationManager: LocationManager = .shared) {
         self.locationManager = locationManager
+        
         setupBindings()
     }
+    
+    // MARK: - 위치 Binding
     
     private func setupBindings() {
         locationManager.$currentLocation
@@ -76,6 +70,17 @@ final class SharedWalkCourseViewModel: ObservableObject {
             updateDistance(with: location)
         }
     }
+    
+    func requestPermission() {
+        locationManager.requestLocationPermission()
+    }
+    
+    func centerMapOnCurrentLocation() {
+        guard locationManager.currentLocation != nil else { return }
+        shouldCenterOnUser = true
+    }
+    
+    // MARK: - 트래킹 제어
     
     func startTracking() {
         isTracking = true
@@ -109,15 +114,6 @@ final class SharedWalkCourseViewModel: ObservableObject {
         }
     }
     
-    func requestPermission() {
-        locationManager.requestLocationPermission()
-    }
-    
-    func centerMapOnCurrentLocation() {
-        guard locationManager.currentLocation != nil else { return }
-        shouldCenterOnUser = true
-    }
-    
     func resetTrackingData() {
         distance = 0.0
         stepCount = 0
@@ -127,12 +123,15 @@ final class SharedWalkCourseViewModel: ObservableObject {
         pauseTime = nil
     }
     
+    // MARK: - 거리/시간/걸음수
+    
     private func updateDistance(with newLocation: CLLocation) {
         if let previous = previousLocation {
             distance += newLocation.distance(from: previous) / 1000.0
         }
         previousLocation = newLocation
     }
+    
     
     private func startPedometer() {
         guard CMPedometer.isStepCountingAvailable() else { return }
@@ -172,5 +171,49 @@ final class SharedWalkCourseViewModel: ObservableObject {
         let seconds = elapsedSeconds % 60
         
         elapsedTime = String(format: "%02d:%02d", minutes, seconds)
+    }
+}
+
+//MARK: - API
+
+extension SharedWalkCourseViewModel {
+    @MainActor
+    func fetchSharedWalkCourses(routeId: Int) async {
+        do {
+            let response: BaseDTO<SharedWalkCourseDTO> = try await provider.async.request(.fetchSharedWalkCourse(routeId: 55))
+            
+            guard let data = response.data?.geometryDto else {
+                print("geometryDto 없음")
+                return
+            }
+            
+            let coordinates = parseCoordinates(from: data)
+            
+            print("받은 좌표:")
+            let preview = coordinates.prefix(5).map { "(\($0.latitude), \($0.longitude))" }.joined(separator: ", ")
+            let suffix = coordinates.count > 5 ? ", ..." : ""
+            print("[\(preview)\(suffix)]")
+            
+            self.examplePathCoordinates = coordinates
+            
+            if let first = coordinates.first {
+                self.region = MKCoordinateRegion(
+                    center: first,
+                    span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+                )
+                self.shouldCenterOnUser = true
+            }
+        } catch {
+            print("공유 루트 조회 실패: \(error.localizedDescription)")
+        }
+    }
+    
+    private func parseCoordinates(from geometry: GeometryDto) -> [CLLocationCoordinate2D] {
+        return geometry.coordinates.compactMap { point in
+            guard point.count == 2 else { return nil }
+            let lon = point[0]
+            let lat = point[1]
+            return CLLocationCoordinate2D(latitude: lat, longitude: lon)
+        }
     }
 }
