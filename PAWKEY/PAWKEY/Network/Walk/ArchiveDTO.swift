@@ -34,3 +34,22 @@ struct CategoryOptions: Codable {
     let categoryOptionId: Int
     let categoryOptionText: String
 }
+
+// Request
+struct ArchivePostDTO: Codable {
+    let title: String
+    let description: String
+    let isPublic: Bool
+    let selectedOptionsForCategories: [SelectedCategoryOptions]
+    let routeId: Int
+}
+
+struct SelectedCategoryOptions: Codable {
+    let categoryId: Int
+    let selectedOptionIds: [Int]
+}
+
+// Response
+struct ArchiveResponseDTO: Codable {
+    let postId: Int
+}
