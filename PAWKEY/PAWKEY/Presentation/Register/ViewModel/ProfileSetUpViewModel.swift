@@ -56,14 +56,10 @@ final class ProfileSetUpViewModel: ObservableObject {
         
         var title: String {
             switch self {
-            case .ownerInfo:
-                "회원가입"
-            case .activityArea:
-                "회원가입"
-            case .dogInfo:
-                "반려견 등록하기"
-            case .dogTendency:
-                "반려견 등록하기"
+            case .ownerInfo: "회원가입"
+            case .activityArea: "회원가입"
+            case .dogInfo: "반려견 등록하기"
+            case .dogTendency: "반려견 등록하기"
             }
         }
     }
@@ -146,7 +142,7 @@ final class ProfileSetUpViewModel: ObservableObject {
                   let optionId = userProfile.petTraits[selectedCategoryId].categoryOptions.firstIndex(where: {$0.categoryOptionId == optionId}) else { return }
             
             userProfile.petTraits[selectedCategoryId].categoryOptions = petTraitsCategories[selectedCategoryId].categoryOptions
-            userProfile.petTraits[categoryId].categoryOptions[optionId].isSelected.toggle()
+            userProfile.petTraits[selectedCategoryId].categoryOptions[optionId].isSelected.toggle()
             
         case .dogBreed(let dogBreed):
             userProfile.dogBreed = dogBreed
