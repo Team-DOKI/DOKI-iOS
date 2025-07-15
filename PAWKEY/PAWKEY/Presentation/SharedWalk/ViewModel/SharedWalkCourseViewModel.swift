@@ -180,7 +180,7 @@ extension SharedWalkCourseViewModel {
     @MainActor
     func fetchSharedWalkCourses(routeId: Int) async {
         do {
-            let response: BaseDTO<SharedWalkCourseDTO> = try await provider.async.request(.fetchSharedWalkCourse(routeId: 40))
+            let response: BaseDTO<SharedWalkCourseDTO> = try await provider.async.request(.fetchSharedWalkCourse(routeId: 55))
             
             guard let data = response.data?.geometryDto else {
                 print("geometryDto 없음")
@@ -196,7 +196,13 @@ extension SharedWalkCourseViewModel {
             
             self.examplePathCoordinates = coordinates
             
-            
+            if let first = coordinates.first {
+                self.region = MKCoordinateRegion(
+                    center: first,
+                    span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+                )
+                self.shouldCenterOnUser = true
+            }
         } catch {
             print("공유 루트 조회 실패: \(error.localizedDescription)")
         }
