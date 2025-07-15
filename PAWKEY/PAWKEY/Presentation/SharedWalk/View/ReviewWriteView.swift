@@ -8,7 +8,12 @@
 import SwiftUI
 
 struct ReviewWriteView: View {
+    @EnvironmentObject var coordinator: Coordinator<WalkScene>
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
+    
     @StateObject private var viewModel: ReviewWriteViewModel
+    
+    @State private var isAlertPresented: Bool = false
     
     init(viewModel: ReviewWriteViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -105,7 +110,7 @@ struct ReviewWriteView: View {
                     isDisabled: !viewModel.isButtonDisabled,
                     buttonStyle: .filled
                 ) {
-                    
+                    isAlertPresented = true
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 30)
@@ -114,6 +119,21 @@ struct ReviewWriteView: View {
                 Text("산책 후기 작성")
                     .font(.body_16_sb)
             })
+            .contextMenu(isPresented: $isAlertPresented) {
+                Alert(
+                    title: "후기가 등록되었어요!",
+                    description: "덕분에 PAWKEY가 보호자님을 더 잘 알게 됐어요.\n이 정보로 다음엔 더 완벽한 경로를 추천해 드릴게요.",
+                    confirmButton: CTAButton(
+                        title: "확인",
+                        isDisabled: false,
+                        buttonStyle: .filled
+                    ) {
+                        isAlertPresented = false
+                        coordinator.popToRoot()
+                        mainTabViewModel.isHidden = false
+                    }
+                ).padding(.horizontal, 19)
+            }
         }
     }
 }
