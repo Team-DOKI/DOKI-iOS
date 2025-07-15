@@ -149,8 +149,7 @@ final class ProfileSetUpViewModel: ObservableObject {
             guard let categoryId = userProfile.petTraits.firstIndex(where: {$0.categoryId == categoryId}),
                   let optionId = userProfile.petTraits[categoryId].categoryOptions.firstIndex(where: {$0.categoryOptionId == optionId}) else { return }
             userProfile.petTraits[categoryId].categoryOptions[optionId].isSelected.toggle()
-            
-            print(userProfile.petTraits)
+                        
         case .dogBreed(let dogBreed):
             userProfile.dogBreed = dogBreed
         case .neutered(let neutered):
