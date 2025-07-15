@@ -159,7 +159,7 @@ struct ArchiveView: View {
             }
             
             Task {
-                await viewModel.fetchCourseInfo(routeId: 8)
+                await viewModel.fetchCourseInfo(routeId: 54)
                 await viewModel.fetchCourseCategories()
             }
         }
@@ -171,15 +171,19 @@ struct ArchiveView: View {
     }
     
     private func pushCourseDetail(isPrivate: Bool) {
-        let courseDetailVM = CourseDetailViewModel()
-        var imagesToSend = viewModel.selectedImages
-        
-        if let snapshot = viewModel.snapshot {
-            imagesToSend.insert(snapshot, at: 0)
+        Task {
+            await viewModel.uploadCourse(isPublic: !isPrivate)
+
+            let courseDetailVM = CourseDetailViewModel()
+            var imagesToSend = viewModel.selectedImages
+            
+            if let snapshot = viewModel.snapshot {
+                imagesToSend.insert(snapshot, at: 0)
+            }
+            
+            courseDetailVM.images = imagesToSend
+            courseDetailVM.isPrivate = isPrivate
+            coordinator.push(.courseDetail(courseDetailVM))
         }
-        
-        courseDetailVM.images = imagesToSend
-        courseDetailVM.isPrivate = isPrivate
-        coordinator.push(.courseDetail(courseDetailVM))
     }
 }
