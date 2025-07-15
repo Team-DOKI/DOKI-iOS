@@ -12,15 +12,13 @@ struct WalkCourseView: View {
     @EnvironmentObject var coordinator: Coordinator<WalkScene>
     
     @StateObject var viewModel: WalkCourseViewModel
-    
     @Binding var showWalkCourseView: Bool
     
     @State private var showStopConfirmation = false
-    
     @State private var userTrackingMode: MKUserTrackingMode = .follow
-    
+
     let onComplete: (Double, String, Int, UIImage?) -> Void
-    
+
     var body: some View {
         ZStack {
             ZStack {
@@ -37,14 +35,19 @@ struct WalkCourseView: View {
                         .edgesIgnoringSafeArea(.all)
                 }
             }
-            
+
             VStack {
-                StatBox(type: .bordered, distance: viewModel.distance, elapsedTime: viewModel.elapsedTime, stepCount: viewModel.stepCount)
-                    .padding(.top, 24)
-                    .padding(.horizontal, 16)
-                
+                StatBox(
+                    type: .bordered,
+                    distance: viewModel.distance,
+                    elapsedTime: viewModel.elapsedTime,
+                    stepCount: viewModel.stepCount
+                )
+                .padding(.top, 24)
+                .padding(.horizontal, 16)
+
                 Spacer()
-                
+
                 if showStopConfirmation {
                     StopConfirmationView(
                         description: "산책을 정말 종료하시겠어요?",
@@ -53,8 +56,17 @@ struct WalkCourseView: View {
                             viewModel.setPaused(false)
                         },
                         onStop: {
-                            viewModel.stopTracking()
-                            viewModel.captureMapSnapshot { snapshot in
+                            Task {
+                                viewModel.stopTracking()
+                                
+                                let snapshot = await withCheckedContinuation { continuation in
+                                    viewModel.captureMapSnapshot { image in
+                                        continuation.resume(returning: image)
+                                    }
+                                }
+
+                                let routeId = await viewModel.postWalkCourse(userId: 1234, snapshotImage: snapshot)
+                            
                                 showWalkCourseView = false
                                 onComplete(
                                     viewModel.distance,
@@ -67,7 +79,6 @@ struct WalkCourseView: View {
                     )
                 } else {
                     Spacer()
-                    
                     CTAButton(
                         title: "종료하기",
                         isDisabled: false,
@@ -80,7 +91,7 @@ struct WalkCourseView: View {
                     .padding(.bottom, 26)
                 }
             }
-            
+
             if !showStopConfirmation {
                 VStack {
                     Spacer()
