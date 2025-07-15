@@ -8,7 +8,7 @@
 import SwiftUI
 
 final class SavedCourseViewModel: ObservableObject {
-    let tagList = ["이륜차 거의 없음", "배변 쓰레기통", "쉼터", "편의점", "동반 카페", "아스팔트/벽돌", "시끌벅적"]
+    let tagList = ["이륜차 거의 없음", "배변 쓰레기통"]
     let otherReviewList: [Review] = [
         Review(walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "외로운 산책", petName: "길냥이", postDate: "2025/01/02", buttonPressed: true),
         Review(walkRouteImg: "walkRoute2", profileImg: "profile2", walkTitle: "신나는 산책", petName: "쮸비", postDate: "2025/03/04", buttonPressed: true),
