@@ -8,24 +8,6 @@
 import SwiftUI
 import Moya
 
-struct UserProfile {
-    var userName: String = ""
-    var userGender: String = ""
-    var userAge: String = ""
-    var regionId: Int = 0
-    var dogName: String = ""
-    var dogAge: String = ""
-    var dogGender: String = ""
-    var petTraits: [PetTraitCategory] = []
-    var knownDogAge: KnownDogAge?
-    var dogBreed: String = ""
-    var isNeutered = false
-    
-    var isKnownAge: Bool {
-        knownDogAge == .known
-    }
-}
-
 enum KnownDogAge: String, CaseIterable, Hashable {
     case known = "나이를 알아요"
     case unknown = "나이를 몰라요"
@@ -124,7 +106,7 @@ extension ProfileSetUpViewModel {
         case .userGender(let gender):
             userProfile.gender = gender
         case .userAge(let age):
-            userProfile.userAge = age
+            userProfile.age = age
         case .region(let regionId):
             userProfile.regionId = regionId
         case .dogName(let name):
