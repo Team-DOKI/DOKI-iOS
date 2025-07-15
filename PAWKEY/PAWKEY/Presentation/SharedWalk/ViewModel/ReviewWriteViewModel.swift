@@ -14,7 +14,6 @@ class ReviewWriteViewModel: ObservableObject {
     @Published var categories: [CategoryList] = []
     @Published var selectedOptions: [Int: Set<String>] = [:]
     
-    
     var isButtonDisabled: Bool {
         selectedOptions.values.allSatisfy { !$0.isEmpty }
     }
@@ -23,17 +22,45 @@ class ReviewWriteViewModel: ObservableObject {
     func fetchCourseCategories() async {
         do {
             let response: BaseDTO<CategoryDTO> = try await provider.async.request(ReviewWriteAPI.fetchCourseCategories)
-            
             if let data = response.data {
                 self.categories = data.categoryList
                 for category in data.categoryList {
                     selectedOptions[category.categoryId] = []
                 }
-                
                 print("\(response.message)")
             }
         } catch {
             print("카테고리 불러오기 실패: \(error)")
+        }
+    }
+    
+    @MainActor
+    func postReview(routeId: Int) async {
+        let selectedReviewCategories: [ReviewCategory] = categories.compactMap { category in
+            guard let selectedTexts = selectedOptions[category.categoryId], !selectedTexts.isEmpty else {
+                return nil
+            }
+            
+            let optionIds = category.categoryOptions
+                .filter { selectedTexts.contains($0.categoryOptionText) }
+                .map { $0.categoryOptionId }
+            
+            return ReviewCategory(
+                reviewCategoryId: category.categoryId,
+                selectedReviewOptionIds: optionIds
+            )
+        }
+        
+        let body = ReviewWriteDTO(
+            routeId: routeId,
+            selectedReviewCategory: selectedReviewCategories
+        )
+        
+        do {
+            try await provider.async.requestPlain(ReviewWriteAPI.postReview(body: body))
+            print("리뷰 업로드 성공")
+        } catch {
+            print("리뷰 업로드 실패: \(error.localizedDescription)")
         }
     }
     
