@@ -8,44 +8,10 @@
 import SwiftUI
 import Moya
 
-struct UserProfile {
-    var userName: String = ""
-    var userGender: String = ""
-    var userAge: String = ""
-    var regionId: Int = 0
-    var dogName: String = ""
-    var dogAge: String = ""
-    var dogGender: String = ""
-    var petTraits: [PetTraitCategory] = []
-    var knownDogAge: KnownDogAge?
-    var dogBreed: String = ""
-    var isNeutered = false
-    
-    var isKnownAge: Bool {
-        knownDogAge == .known
-    }
-}
 
-enum KnownDogAge: String, CaseIterable, Hashable {
-    case known = "나이를 알아요"
-    case unknown = "나이를 몰라요"
-}
-
-enum ProfileField {
-    case userName(String)
-    case userGender(String)
-    case userAge(String)
-    case region(Int)
-    case dogName(String)
-    case dogGender(String)
-    case KnownDogAge(KnownDogAge?)
-    case petTraits(categoryId: Int, optionId: Int)
-    case dogBreed(String)
-    case neutered(Bool)
-}
 
 final class ProfileSetUpViewModel: ObservableObject {
-    
+        
     enum ProfileStep: Int {
         case ownerInfo = 1
         case activityArea
@@ -62,23 +28,38 @@ final class ProfileSetUpViewModel: ObservableObject {
         }
     }
     
-    // 모델(임시)
-    let genderList = ["남자", "여자"]
-    let dogGenderList = ["남아", "여아"]
-    let knownDogAgeList = ["나이를 알아요", "나이를 몰라요"]
+    // User action
+    enum ProfileField {
+        case userName(String)
+        case userAge(String)
+        case region(Int)
+        case dogName(String)
+        case userGender(Gender)
+        case dogGender(Gender)
+        case KnownDogAge(KnownDogAge?)
+        case petTraits(categoryId: Int, optionId: Int)
+        case dogBreed(String)
+        case neutered(Bool)
+    }
     
     // View state
-    @Published var currentStep: ProfileStep = .ownerInfo
     @Published var isKeyboardVisible = false
-    
-    // User state
-    @Published var userProfile = UserProfile()
+    @Published var currentStep: ProfileStep = .ownerInfo
     @Published var petTraitsCategories: [PetTraitCategory] = []
     @Published var regions: [RegionUnit] = []
+    @Published var profileImage: [UIImage] = [] {
+        didSet {
+            if let image = profileImage.first {
+                userProfile.profileImage = image
+            }
+        }
+    }
+        
+    // User state
+    @Published var userProfile = UserProfile()
     @Published var selectedRegiondId: Int?
-    
     @Published var errorMessage: String?
-    
+        
     var selectedLegalRegions: [Area]? {
         regions.first(where: {$0.gu.id == selectedRegiondId })?.dong
     }
@@ -86,17 +67,17 @@ final class ProfileSetUpViewModel: ObservableObject {
     var isButtonDisabled: Bool {
         switch currentStep {
         case .ownerInfo:
-            return userProfile.userName.isEmpty ||
-            userProfile.userGender.isEmpty ||
-            userProfile.userAge.isEmpty
+            return userProfile.name.isEmpty ||
+            userProfile.gender == .unknown ||
+            userProfile.age.isEmpty
             
         case .activityArea:
             return userProfile.regionId == 0
             
         case .dogInfo:
             return userProfile.dogName.isEmpty ||
-            userProfile.dogGender.isEmpty ||
-            userProfile.dogBreed.isEmpty ||
+            userProfile.dogGender == .unknown ||
+            userProfile.breed.isEmpty ||
             userProfile.knownDogAge == .none ||
             (userProfile.isKnownAge && userProfile.dogAge.isEmpty)
         case .dogTendency:
@@ -120,11 +101,11 @@ extension ProfileSetUpViewModel {
     func changeUserInfo(_ field: ProfileField) {
         switch field {
         case .userName(let name):
-            userProfile.userName = name
+            userProfile.name = name
         case .userGender(let gender):
-            userProfile.userGender = gender
+            userProfile.gender = gender
         case .userAge(let age):
-            userProfile.userAge = age
+            userProfile.age = age
         case .region(let regionId):
             userProfile.regionId = regionId
         case .dogName(let name):
@@ -141,7 +122,7 @@ extension ProfileSetUpViewModel {
             userProfile.petTraits[selectedCategoryId].categoryOptions = petTraitsCategories[selectedCategoryId].categoryOptions
             userProfile.petTraits[selectedCategoryId].categoryOptions[optionId].isSelected.toggle()
         case .dogBreed(let dogBreed):
-            userProfile.dogBreed = dogBreed
+            userProfile.breed = dogBreed
         case .neutered(let neutered):
             userProfile.isNeutered = neutered
         }
@@ -189,6 +170,23 @@ extension ProfileSetUpViewModel {
             
             self.regions = data.districtDtos.toEntity()
             
+        } catch {
+            errorMessage = "에러 발생: \(error.localizedDescription)"
+        }
+    }
+    
+    @MainActor
+    func updateUserProfile() async {
+        let provider = MoyaProvider<UserAPI>(plugins: [MoyaLoggingPlugin()])
+        
+        do {
+            let response: BaseDTO<PetTraitDTO> = try await provider.async.request(.updateUserProfile(userProfile))
+            
+            guard let data = response.data else {
+                errorMessage = "에러 발생: 데이터를 찾을 수 없음"
+                return
+            }
+            print(data)
         } catch {
             errorMessage = "에러 발생: \(error.localizedDescription)"
         }
