@@ -15,7 +15,7 @@ struct UserInfoView: View {
             VStack(alignment: .leading, spacing: 0) {
                 
                 Spacer().frame(height: 20)
-                                
+                
                 Text("견주님에 대해 알려주세요.")
                     .font(.head_24_sb)
                     .foregroundStyle(.pawkeyBlack)
@@ -26,19 +26,21 @@ struct UserInfoView: View {
                     Text("이름")
                         .font(.body_14_sb)
                     PawkeyTextField(text: $viewModel.userProfile.name,
-                                placeholder: "이름을 입력해주세요.")
+                                    placeholder: "이름을 입력해주세요.")
                 }
-                                
+                
                 Spacer().frame(height: 30)
                 
                 VStack(alignment:.leading) {
                     Text("성별")
                         .font(.body_14_sb)
                     HStack {
-                        ForEach(viewModel.genderList, id: \.self) { gender in
-                            LocationButton(gender, isSelected: gender == viewModel.userProfile.gender) { gender in
-                                viewModel.changeUserInfo(.userGender(gender))
-                            }
+                        ForEach(Gender.allCases.dropFirst(), id: \.self) { gender in
+                            LocationButton(gender.userGenderText, isSelected: gender == viewModel.userProfile.gender)
+                                .disabled(true)
+                                .onTapGesture {
+                                    viewModel.changeUserInfo(.userGender(gender))
+                                }
                         }
                     }
                 }
@@ -48,13 +50,16 @@ struct UserInfoView: View {
                 VStack(alignment:.leading) {
                     Text("나이")
                         .font(.body_14_sb)
-                    PawkeyTextField(text: $viewModel.userProfile.age,
-                                placeholder: "나이를 입력해주세요.", type: .number)
+                    PawkeyTextField(
+                        text: $viewModel.userProfile.age,
+                        placeholder: "나이를 입력해주세요.",
+                        type: .number
+                    )
                 }
                 
                 Spacer()
-            }          
-            .padding(.horizontal, 16)        
+            }
+            .padding(.horizontal, 16)
         }
     }
 }

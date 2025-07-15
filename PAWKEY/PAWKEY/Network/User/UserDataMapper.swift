@@ -6,25 +6,28 @@
 //
 
 // UserProfile
+
+import Foundation
+
 extension UserProfile {
     func toDto() -> UserProfileDTO {
         UserProfileDTO(
             loginId: "dltnals",
-            password: "12334",
+            password: "123342343434324",
             name: name,
-            gender: gender,
+            gender: gender.rawValue,
             age: Int(age) ?? 0,
-            regionId: Int(regionId) ?? 0,
+            regionId: regionId,
             pet: PetProfileDTO(
                 name: dogName,
-                gender: gender,
+                gender: gender.rawValue,
                 age: Int(age) ?? 0,
                 isAgeKnown: isKnownAge,
                 isNeutered: isNeutered,
                 breed: breed,
-                petTraits: [
-                    .init(traitCategoryId: 0, traitOptionId: 1)                    
-                ]
+                petTraits: petTraits.map {
+                    PetTraitsDTO(traitCategoryId: $0.categoryId, traitOptionId: $0.categoryOptions.first(where: { $0.isSelected})?.categoryOptionId ?? 0)  
+                }
             )
         )
     }

@@ -11,7 +11,6 @@ import PhotosUI
 struct DogInfoView: View {
     @ObservedObject var viewModel: ProfileSetUpViewModel
     
-    @State var profileImage: [UIImage] = []
     @State var selectedItems: [PhotosPickerItem] = []
     
     var body: some View {
@@ -30,8 +29,7 @@ struct DogInfoView: View {
                     PhotosPicker(selection: $selectedItems,
                                  maxSelectionCount: 1,
                                  matching: .images) {
-                        
-                        if let profileImage = profileImage.last {
+                        if let profileImage = viewModel.profileImage.last {
                             Image(uiImage: profileImage)
                                 .resizable()
                                 .frame(width: 108, height: 108)
@@ -66,11 +64,13 @@ struct DogInfoView: View {
                     Text("성별")
                         .font(.body_14_sb)
                     HStack {
-                        ForEach(viewModel.dogGenderList, id: \.self) { dogGender in
+                        ForEach(Gender.allCases.dropFirst(), id: \.self) { dogGender in
                             let isSelected = dogGender == viewModel.userProfile.dogGender
-                            LocationButton(dogGender, isSelected: isSelected) { selectedGender in
-                                viewModel.changeUserInfo(.dogGender(selectedGender))
-                            }
+                            LocationButton(dogGender.rawValue, isSelected: isSelected)
+                                .disabled(true)
+                                .onTapGesture {
+                                    viewModel.changeUserInfo(.dogGender(dogGender))
+                                }
                         }
                     }
                     
@@ -93,7 +93,7 @@ struct DogInfoView: View {
                 VStack(alignment: .leading) {
                     Text("견종")
                         .font(.body_14_sb)
-                    PawkeyTextField(text: $viewModel.userProfile.breed)                    
+                    PawkeyTextField(text: $viewModel.userProfile.breed)
                 }
                 
                 Spacer().frame(height: 30)
@@ -125,9 +125,9 @@ struct DogInfoView: View {
                 switch result {
                 case .success(let data):
                     if let data = data, let newImage = UIImage(data: data) {
-                        if !profileImage.contains(where: { $0.pngData() == newImage.pngData() }) {
+                        if !viewModel.profileImage.contains(where: { $0.pngData() == newImage.pngData() }) {
                             DispatchQueue.main.async {
-                                profileImage.append(newImage)
+                                viewModel.profileImage.append(newImage)
                             }
                         }
                     }
