@@ -16,7 +16,7 @@ struct ArchiveView: View {
     
     init(viewModel: ArchiveViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
-    }        
+    }
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -60,15 +60,22 @@ struct ArchiveView: View {
                 .padding([.vertical, .bottom], 12)
                 
                 VStack(alignment: .leading) {
-                    TimePlaceCell(type: .place("강남구 역삼동"))
+                    TimePlaceCell(type: .place(viewModel.location))
                         .padding(.bottom, 4)
                     
-                    TimePlaceCell(type: .time("2025.07.08(화) | 오후 11:28"))
+                    TimePlaceCell(type: .time(viewModel.time))
                         .padding(.bottom, 12)
                     
-                    Chip(title: "옵션")
-                        .padding(.top, 10)
-                        .padding(.bottom, 16)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach(viewModel.descriptionTags, id: \.self) { tag in
+                                Chip(title: tag)
+                            }
+                        }
+                    }
+                    .padding(.bottom, 16)
+                    .padding(.top, 10)
+                    
                 }
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -80,7 +87,7 @@ struct ArchiveView: View {
                     .padding(.bottom, 24)
                 
                 VStack(alignment: .leading) {
-                    Text("포비와의 산책 어땠나요?")
+                    Text("\(viewModel.petName)와의 산책 어땠나요?")
                         .font(.head_18_sb)
                         .foregroundStyle(.pawkeyBlack)
                         .padding(.bottom, 3)
@@ -91,30 +98,15 @@ struct ArchiveView: View {
                         .padding(.bottom, 23)
                     
                     VStack(alignment: .leading, spacing: 32) {
-                        QuestionForm(
-                            question: "🚸 산책 중 안전 요소는 어땠나요?",
-                            tags: [
-                                "킥보드나 자전거가 거의 없어요",
-                                "차량이 거의 다니지 않아요",
-                                "야간 조명이 잘 되어있어요",
-                                "보도와 차도가 구분되어 있어요",
-                                "보도가 넓어서 산책하기 편했어요"
-                            ],
-                            selectedTags: $viewModel.safetyTags
-                        )
-                        
-                        QuestionForm(
-                            question: "🧺 산책 중 어떤 편의 시설이 있었나요?",
-                            tags: [
-                                "배변 봉투 쓰레기통이 있어요",
-                                "애견 산책로가 있어요",
-                                "쉴 곳이 있어요",
-                                "편의점이 있어요",
-                                "반려견 동반 가능한 카페가 있어요"
-                            ],
-                            selectedTags: $viewModel.facilityTags
-                        )
+                        ForEach(viewModel.categories, id: \.categoryId) { category in
+                            QuestionForm(
+                                question: category.categoryName,
+                                tags: viewModel.categoryOptionTexts(category.categoryId),
+                                selectedTags: viewModel.selectedOptionsBinding(category.categoryId)
+                            )
+                        }
                     }
+                    
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 16)
@@ -148,7 +140,7 @@ struct ArchiveView: View {
                     CTAButton(title: "산책 기록 공유하기", isDisabled: !viewModel.isButtonDisabled, buttonStyle: .filled) {
                         pushCourseDetail(isPrivate: false)
                     }
-
+                    
                     CTAButton(title: "산책 기록 나만보기", isDisabled: !viewModel.isButtonDisabled, buttonStyle: .text) {
                         pushCourseDetail(isPrivate: true)
                     }
@@ -165,6 +157,11 @@ struct ArchiveView: View {
             withAnimation {
                 mainTabViewModel.isHidden = true
             }
+            
+            Task {
+                await viewModel.fetchCourseInfo(routeId: 54)
+                await viewModel.fetchCourseCategories()
+            }
         }
         .onChange(of: viewModel.selectedItems) {
             Task {
@@ -174,15 +171,19 @@ struct ArchiveView: View {
     }
     
     private func pushCourseDetail(isPrivate: Bool) {
-        let courseDetailVM = CourseDetailViewModel()
-        var imagesToSend = viewModel.selectedImages
-        
-        if let snapshot = viewModel.snapshot {
-            imagesToSend.insert(snapshot, at: 0)
+        Task {
+            await viewModel.uploadCourse(isPublic: !isPrivate)
+
+            let courseDetailVM = CourseDetailViewModel()
+            var imagesToSend = viewModel.selectedImages
+            
+            if let snapshot = viewModel.snapshot {
+                imagesToSend.insert(snapshot, at: 0)
+            }
+            
+            courseDetailVM.images = imagesToSend
+            courseDetailVM.isPrivate = isPrivate
+            coordinator.push(.courseDetail(courseDetailVM))
         }
-        
-        courseDetailVM.images = imagesToSend
-        courseDetailVM.isPrivate = isPrivate
-        coordinator.push(.courseDetail(courseDetailVM))
     }
 }

@@ -11,7 +11,7 @@ import Moya
 
 enum ActivityAreaMapAPI {
     case fetchCoordinates(regionId: Int)
-    case updateUserRegion(regionId: Int)
+    case updateUserRegion
 }
 
 extension ActivityAreaMapAPI: BaseTargetType {
@@ -44,9 +44,9 @@ extension ActivityAreaMapAPI: BaseTargetType {
         switch self {
         case .fetchCoordinates:
             return .requestPlain
-        case .updateUserRegion(let regionId):
+        case .updateUserRegion:
             return .requestParameters(
-                parameters: ["regionId": regionId],
+                parameters: ["regionId": 40],
                 encoding: JSONEncoding.default
             )
         }
