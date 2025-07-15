@@ -9,13 +9,13 @@ import Foundation
 import Moya
 
 enum WalkCourseAPI {
-    case postWalkCourse(userId: Int, body: WalkCourseRequestDTO, image: Data?)
+    case postWalkCourse(body: WalkCourseRequestDTO, image: Data?)
 }
 
 extension WalkCourseAPI: BaseTargetType {
     var headerType: HeaderType {
         switch self {
-        case let .postWalkCourse(userId, _, _):
+        case let .postWalkCourse(_, _):
             return .userHeader(userId: 2)
         }
     }
@@ -36,7 +36,7 @@ extension WalkCourseAPI: BaseTargetType {
     
     var task: Task {
         switch self {
-        case let .postWalkCourse(_, body, image):
+        case let .postWalkCourse(body, image):
             var multipartData: [MultipartFormData] = []
             
             if let jsonData = try? JSONEncoder().encode(body) {
@@ -52,7 +52,7 @@ extension WalkCourseAPI: BaseTargetType {
                     provider: .data(image),
                     name: "trackingImage",
                     fileName: "snapshot.jpg",
-                    mimeType: "image/jpeg"
+                    mimeType: "multipart-form-data"
                 ))
             }
             
