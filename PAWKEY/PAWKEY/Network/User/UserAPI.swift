@@ -57,9 +57,6 @@ extension UserAPI: BaseTargetType {
                     mimeType: "multipart/form-data"
                 ))
             }
-            print("=================")
-            print(userProfile.toDto())
-            print("=================")
             return .uploadMultipart(multipartData)
         }
     }
