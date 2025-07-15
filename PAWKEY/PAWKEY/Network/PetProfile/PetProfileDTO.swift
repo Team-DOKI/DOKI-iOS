@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PetProfileDTO: Codable {
+struct MyPetProfileDTO: Codable {
     let code, message: String
     let petProfileList: [PetProfileDetailDTO]
     

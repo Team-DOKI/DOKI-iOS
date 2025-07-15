@@ -9,10 +9,9 @@ import SwiftUI
 import Combine
 
 struct ProfileSetUpView: View, KeyboardReadable {
-    @EnvironmentObject var tabBarState: TabBarState
-    @StateObject var viewModel = ProfileSetUpViewModel()
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
-    @State private var isKeyboardVisible = false
+    @StateObject var viewModel: ProfileSetUpViewModel
     
     var body: some View {
         ZStack {
@@ -22,7 +21,6 @@ struct ProfileSetUpView: View, KeyboardReadable {
                         width: proxy.size.width,
                         step: viewModel.currentStepIndex
                     )
-                    
                     Spacer()
                     
                     // 서브뷰
@@ -39,13 +37,20 @@ struct ProfileSetUpView: View, KeyboardReadable {
                         }
                     }
                     
-                    if !isKeyboardVisible {
+                    if !viewModel.isKeyboardVisible {
                         CTAButton(
                             title: viewModel.currentStep == .dogTendency ? "등록하기" : "다음으로",
                             isDisabled: viewModel.isButtonDisabled
                         ) {
                             if viewModel.currentStep == .dogTendency {
-                                tabBarState.isLogin = true
+                                Task {
+                                    do {
+                                        await viewModel.updateUserProfile()
+                                        mainTabViewModel.isLogin = true
+                                    } catch {
+                                        
+                                    }
+                                }
                             } else {
                                 viewModel.goToNextStep()
                             }
@@ -55,8 +60,8 @@ struct ProfileSetUpView: View, KeyboardReadable {
                     }
                 }
                 .safeAreaInset(edge: .bottom) {
-                    Color.clear.frame(height: isKeyboardVisible ? 20 : 0)
-                }                
+                    Color.clear.frame(height: viewModel.isKeyboardVisible ? 20 : 0)
+                }
                 .topNavigationView(left: {
                     VStack {
                         if viewModel.currentStepIndex > 1 {
@@ -70,7 +75,7 @@ struct ProfileSetUpView: View, KeyboardReadable {
                         .font(.body_16_sb)
                 })
                 .onReceive(keyboardPublisher) { newIsKeyboardVisible in
-                    isKeyboardVisible = newIsKeyboardVisible
+                    viewModel.isKeyboardVisible = newIsKeyboardVisible
                 }
                 .onTapGesture {
                     UIApplication.shared.hideKeyboard()

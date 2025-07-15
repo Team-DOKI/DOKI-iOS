@@ -23,4 +23,6 @@ final class HomeViewModel: ObservableObject {
         Day(day: "토", dayNumber: 19),
         Day(day: "일", dayNumber: 20),
     ]
+    @Published var isShowContextMenu = false
+    @Published var dummyData = ["이륜차 거의 없음", "배변 쓰레기통", "쉼터", "편의점", "동반 카페", "아스팔트/벽돌", "시끌벅적"]
 }

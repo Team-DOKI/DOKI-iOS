@@ -27,29 +27,32 @@ struct ActivityAreaView: View {
                     Text("지역구")
                         .font(.body_14_sb)
                     FlexibleGrid(availableWidth: proxy.size.width - 32,
-                                     data: viewModel.regionList,
-                                     spacing: 14,
-                                     alignment: .leading, content: {
-                        LocationButton($0, type: .small, isSelected: $0 == viewModel.userProfile.region) { region in
-                            viewModel.changeUserInfo(.region(region))
-                        }
+                                 data: viewModel.regions.map { $0.gu },
+                                 spacing: 14,
+                                 alignment: .leading, content: { region in
+                        LocationButton(region.name, type: .small, isSelected: region.id == viewModel.selectedRegiondId)
+                            .disabled(true)
+                            .onTapGesture {
+                                viewModel.selecteRegion(region.id)
+                            }
                     })
                     .clipped()
                 }
                 
                 Spacer().frame(height: 42)
-                
-                if !viewModel.userProfile.region.isEmpty {
+                if let selectedLegalRegions = viewModel.selectedLegalRegions {
                     VStack(alignment: .leading) {
                         Text("법정동")
                             .font(.body_14_sb)
                         FlexibleGrid(availableWidth: proxy.size.width - 32,
-                                         data: viewModel.legalRegionList,
-                                         spacing: 14,
-                                         alignment: .leading, content: {
-                            LocationButton($0, type: .small, isSelected: $0 == viewModel.userProfile.legalRegion) { legalRegion in
-                                viewModel.changeUserInfo(.legalRegion(legalRegion))
-                            }
+                                     data: selectedLegalRegions,
+                                     spacing: 14,
+                                     alignment: .leading, content: { legalRegion in
+                            LocationButton(legalRegion.name, type: .small, isSelected: viewModel.userProfile.regionId == legalRegion.id)
+                                .disabled(true)
+                                .onTapGesture {
+                                    viewModel.changeUserInfo(.region(legalRegion.id))
+                                }
                         })
                         .padding(.trailing, 72)
                     }
@@ -58,6 +61,9 @@ struct ActivityAreaView: View {
                 Spacer()
             }
             .padding(.horizontal, 16)
+        }
+        .task {
+            await viewModel.fetchRegions()
         }
     }
 }

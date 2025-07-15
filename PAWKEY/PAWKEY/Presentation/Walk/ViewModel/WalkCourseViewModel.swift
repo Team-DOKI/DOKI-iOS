@@ -7,12 +7,14 @@
 
 import Foundation
 import MapKit
-import Combine
 import SwiftUI
+import Combine
 import CoreMotion
+import Moya
 
 final class WalkCourseViewModel: ObservableObject {
     private let locationManager: LocationManager
+    private let provider = MoyaProvider<WalkCourseAPI>()
     private let pedometer = CMPedometer()
     
     private var cancellables = Set<AnyCancellable>()
@@ -20,20 +22,18 @@ final class WalkCourseViewModel: ObservableObject {
     private var startTime: Date?
     private var pauseTime: Date?
     private var accumulatedPauseTime: TimeInterval = 0
-    
     private var previousLocation: CLLocation?
     
     @Published var currentLocation: CLLocationCoordinate2D = .init(latitude: 0, longitude: 0)
-    @Published var region = MKCoordinateRegion( // 지도 영역
+    @Published var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780),
         span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
     )
-    @Published var pathCoordinates: [CLLocationCoordinate2D] = [] // 이동 경로 좌표
+    @Published var pathCoordinates: [CLLocationCoordinate2D] = []
     @Published var isTracking: Bool = false
     @Published var shouldCenterOnUser: Bool = true
     @Published var shouldFollowUser: Bool = true
     @Published var isPaused: Bool = false
-    
     @Published var distance: Double = 0.0
     @Published var elapsedTime: String = "00:00"
     @Published var stepCount: Int = 0
@@ -43,6 +43,8 @@ final class WalkCourseViewModel: ObservableObject {
         
         setupBindings()
     }
+    
+    // MARK: - 위치 Binding
     
     // 위치 변경 이벤트 구독 설정
     private func setupBindings() {
@@ -59,11 +61,11 @@ final class WalkCourseViewModel: ObservableObject {
         
         // 지도 영역 이동
         if shouldFollowUser {
-                region = MKCoordinateRegion(
-                    center: coordinate,
-                    span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
-                )
-            }
+            region = MKCoordinateRegion(
+                center: coordinate,
+                span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+            )
+        }
         
         // 기록 중 & 일시정지 아님이면 경로 추가, 거리 갱신
         if isTracking && !isPaused {
@@ -71,6 +73,17 @@ final class WalkCourseViewModel: ObservableObject {
             updateDistance(with: location)
         }
     }
+    
+    func requestPermission() {
+        locationManager.requestLocationPermission()
+    }
+    
+    func centerMapOnCurrentLocation() {
+        guard locationManager.currentLocation != nil else { return }
+        shouldCenterOnUser = true
+    }
+    
+    // MARK: - 트래킹 제어
     
     func startTracking() {
         isTracking = true
@@ -104,15 +117,6 @@ final class WalkCourseViewModel: ObservableObject {
         }
     }
     
-    func requestPermission() {
-        locationManager.requestLocationPermission()
-    }
-    
-    func centerMapOnCurrentLocation() {
-        guard locationManager.currentLocation != nil else { return }
-        shouldCenterOnUser = true
-    }
-    
     func resetTrackingData() {
         pathCoordinates = []
         distance = 0.0
@@ -122,6 +126,8 @@ final class WalkCourseViewModel: ObservableObject {
         accumulatedPauseTime = 0
         pauseTime = nil
     }
+    
+    // MARK: - 거리/시간/걸음수
     
     // 두 위치 간 거리 계산해서 누적
     private func updateDistance(with newLocation: CLLocation) {
@@ -174,6 +180,8 @@ final class WalkCourseViewModel: ObservableObject {
     }
 }
 
+//MARK: - 스냅샷
+
 extension WalkCourseViewModel {
     // 현재 경로를 기반으로 지도의 이미지 스냅샷 생성
     func captureMapSnapshot(completion: @escaping (UIImage?) -> Void) {
@@ -182,8 +190,6 @@ extension WalkCourseViewModel {
             return
         }
         
-        // 경로의 위도, 경도 min/max 계산
-        // 경로가 보이도록 영역 설정
         let lats = pathCoordinates.map { $0.latitude }
         let lons = pathCoordinates.map { $0.longitude }
         
@@ -198,7 +204,6 @@ extension WalkCourseViewModel {
         let centerLat = (minLat + maxLat) / 2
         let centerLon = (minLon + maxLon) / 2
         
-        // 영역 계산 + 최소값 보장
         var latSpan = maxLat - minLat
         var lonSpan = maxLon - minLon
         
@@ -206,17 +211,14 @@ extension WalkCourseViewModel {
         latSpan = max(latSpan, minSpan)
         lonSpan = max(lonSpan, minSpan)
         
-        // 패딩
         let paddingFactor = 1.3
         latSpan *= paddingFactor
         lonSpan *= paddingFactor
         
-        // 스냅샷 이미지 사이즈 계산
         let contentWidth = (UIScreen.main.bounds.width - 32) * UIScreen.main.scale
         let imageWidth: CGFloat = contentWidth
         let imageHeight: CGFloat = 156 * UIScreen.main.scale
         
-        // 이미지 비율과 영역 비율 맞추기
         let imageAspect = imageWidth / imageHeight
         let spanAspect = lonSpan / latSpan
         
@@ -226,7 +228,6 @@ extension WalkCourseViewModel {
             lonSpan = latSpan * imageAspect
         }
         
-        // 최종 영역 설정
         let region = MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon),
             span: MKCoordinateSpan(latitudeDelta: latSpan, longitudeDelta: lonSpan)
@@ -238,7 +239,6 @@ extension WalkCourseViewModel {
         options.size = CGSize(width: imageWidth, height: imageHeight)
         options.scale = UIScreen.main.scale
         
-        // 스냅샷 생성 시작
         let snapshotter = MKMapSnapshotter(options: options)
         snapshotter.start { snapshot, error in
             guard let snapshot = snapshot else {
@@ -269,6 +269,60 @@ extension WalkCourseViewModel {
             let finalImage = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
             completion(finalImage)
+        }
+    }
+}
+
+//MARK: - API
+
+extension WalkCourseViewModel {
+    func postWalkCourse(userId: Int, snapshotImage: UIImage?) async -> Int? {
+        let coords = pathCoordinates.map {
+            WalkCoordinateDTO(longitude: $0.longitude, latitude: $0.latitude)
+        }
+        
+        guard let startTime = startTime else {
+            return nil
+        }
+        
+        let endTime = Date()
+        let duration = Int(endTime.timeIntervalSince(startTime) - accumulatedPauseTime)
+        
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        
+        let body = WalkCourseRequestDTO(
+            coordinates: coords,
+            distance: Int(distance * 1000),
+            duration: duration,
+            startedAt: formatter.string(from: startTime),
+            endedAt: formatter.string(from: endTime),
+            stepCount: 100
+        )
+        
+        let imageData = snapshotImage?.jpegData(compressionQuality: 0.8)
+        
+        do {
+            let response: BaseDTO<WalkCourseResponseDTO> = try await provider.async.request(
+                .postWalkCourse(userId: userId, body: body, image: imageData)
+            )
+            
+            print("\(response.message)")
+            print("""
+        거리: \(distance)
+        시간: \(duration)
+        걸음 수: \(stepCount)
+        """)
+            
+            if let routeId = response.data?.routeId {
+                print("routeId: \(routeId)")
+                return routeId
+            } else {
+                return nil
+            }
+        } catch {
+            print("산책 루트 등록 실패: \(error.localizedDescription)")
+            return nil
         }
     }
 }
