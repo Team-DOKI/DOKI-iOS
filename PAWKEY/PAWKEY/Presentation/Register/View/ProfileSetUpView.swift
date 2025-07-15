@@ -44,7 +44,12 @@ struct ProfileSetUpView: View, KeyboardReadable {
                         ) {
                             if viewModel.currentStep == .dogTendency {
                                 Task {
-                                    await viewModel.updateUserProfile()
+                                    do {
+                                        await viewModel.updateUserProfile()
+                                        mainTabViewModel.isLogin = true
+                                    } catch {
+                                        
+                                    }
                                 }
                             } else {
                                 viewModel.goToNextStep()
