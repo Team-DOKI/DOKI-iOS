@@ -20,3 +20,17 @@ struct Route: Codable {
     let descriptionTags: [String]
 }
 
+struct CategoryDTO: Codable {
+    let categoryList: [CategoryList]
+}
+
+struct CategoryList: Codable {
+    let categoryId: Int
+    let categoryName: String
+    let categoryOptions: [CategoryOptions]
+}
+
+struct CategoryOptions: Codable {
+    let categoryOptionId: Int
+    let categoryOptionText: String
+}
