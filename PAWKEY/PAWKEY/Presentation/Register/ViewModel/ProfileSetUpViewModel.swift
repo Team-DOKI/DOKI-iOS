@@ -142,14 +142,12 @@ final class ProfileSetUpViewModel: ObservableObject {
             userProfile.knownDogAge = knownDogAge
         case .petTraits(let categoryId, let optionId):
             // 선택한 카테고리 초기화
-            guard let selectedCategoryId = userProfile.petTraits.firstIndex(where: {$0.categoryId == categoryId }) else { return }
-            userProfile.petTraits[selectedCategoryId].categoryOptions = petTraitsCategories[selectedCategoryId].categoryOptions
+            guard let selectedCategoryId = userProfile.petTraits.firstIndex(where: {$0.categoryId == categoryId }),
+                  let optionId = userProfile.petTraits[selectedCategoryId].categoryOptions.firstIndex(where: {$0.categoryOptionId == optionId}) else { return }
             
-            // 선택한 카테고리 체크
-            guard let categoryId = userProfile.petTraits.firstIndex(where: {$0.categoryId == categoryId}),
-                  let optionId = userProfile.petTraits[categoryId].categoryOptions.firstIndex(where: {$0.categoryOptionId == optionId}) else { return }
+            userProfile.petTraits[selectedCategoryId].categoryOptions = petTraitsCategories[selectedCategoryId].categoryOptions
             userProfile.petTraits[categoryId].categoryOptions[optionId].isSelected.toggle()
-                        
+            
         case .dogBreed(let dogBreed):
             userProfile.dogBreed = dogBreed
         case .neutered(let neutered):
