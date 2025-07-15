@@ -24,6 +24,7 @@ struct DogInfoView: View {
                     .foregroundStyle(.pawkeyBlack)
                     .frame(alignment: .center)
                 Spacer().frame(height: 32)
+                
                 HStack {
                     Spacer()
                     PhotosPicker(selection: $selectedItems,
@@ -66,7 +67,7 @@ struct DogInfoView: View {
                     HStack {
                         ForEach(Gender.allCases.dropFirst(), id: \.self) { dogGender in
                             let isSelected = dogGender == viewModel.userProfile.dogGender
-                            LocationButton(dogGender.rawValue, isSelected: isSelected)
+                            LocationButton(dogGender.petGenderText, isSelected: isSelected)
                                 .disabled(true)
                                 .onTapGesture {
                                     viewModel.changeUserInfo(.dogGender(dogGender))

@@ -8,13 +8,10 @@
 import SwiftUI
 import Moya
 
-enum KnownDogAge: String, CaseIterable, Hashable {
-    case known = "나이를 알아요"
-    case unknown = "나이를 몰라요"
-}
+
 
 final class ProfileSetUpViewModel: ObservableObject {
-    
+        
     enum ProfileStep: Int {
         case ownerInfo = 1
         case activityArea
@@ -31,12 +28,13 @@ final class ProfileSetUpViewModel: ObservableObject {
         }
     }
     
+    // User action
     enum ProfileField {
         case userName(String)
-        case userGender(Gender)
         case userAge(String)
         case region(Int)
         case dogName(String)
+        case userGender(Gender)
         case dogGender(Gender)
         case KnownDogAge(KnownDogAge?)
         case petTraits(categoryId: Int, optionId: Int)
@@ -44,14 +42,11 @@ final class ProfileSetUpViewModel: ObservableObject {
         case neutered(Bool)
     }
     
-    // 모델(임시)
-    let genderList = ["남자", "여자"]
-    let dogGenderList = ["남아", "여아"]
-    let knownDogAgeList = ["나이를 알아요", "나이를 몰라요"]
-    
     // View state
-    @Published var currentStep: ProfileStep = .ownerInfo
     @Published var isKeyboardVisible = false
+    @Published var currentStep: ProfileStep = .ownerInfo
+    @Published var petTraitsCategories: [PetTraitCategory] = []
+    @Published var regions: [RegionUnit] = []
     @Published var profileImage: [UIImage] = [] {
         didSet {
             if let image = profileImage.first {
@@ -59,15 +54,12 @@ final class ProfileSetUpViewModel: ObservableObject {
             }
         }
     }
-    
+        
     // User state
     @Published var userProfile = UserProfile()
-    @Published var petTraitsCategories: [PetTraitCategory] = []
-    @Published var regions: [RegionUnit] = []
     @Published var selectedRegiondId: Int?
-    
     @Published var errorMessage: String?
-    
+        
     var selectedLegalRegions: [Area]? {
         regions.first(where: {$0.gu.id == selectedRegiondId })?.dong
     }
