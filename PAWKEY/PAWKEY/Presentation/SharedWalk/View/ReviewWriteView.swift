@@ -94,7 +94,10 @@ struct ReviewWriteView: View {
                     isDisabled: !viewModel.isButtonDisabled,
                     buttonStyle: .filled
                 ) {
-                    isAlertPresented = true
+                    Task {
+                        await viewModel.postReview(routeId: 40)
+                        isAlertPresented = true
+                    }
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 30)
