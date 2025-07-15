@@ -10,16 +10,18 @@ import PhotosUI
 import Moya
 
 class ArchiveViewModel: ObservableObject {
+    private let provider = MoyaProvider<ArchiveAPI>()
+    
     @Published var selectedItems: [PhotosPickerItem] = []
     @Published var selectedImages: [UIImage] = []
     
     @Published var location: String = ""
     @Published var time: String = ""
     @Published var petName: String = ""
-    
     @Published var descriptionTags: [String] = []
-    @Published var safetyTags: Set<String> = []
-    @Published var facilityTags: Set<String> = []
+    
+    @Published var categories: [CategoryList] = []
+    @Published var selectedOptions: [Int: Set<String>] = [:]
     
     @Published var titleText: String = ""
     @Published var reviewText: String = ""
@@ -29,11 +31,8 @@ class ArchiveViewModel: ObservableObject {
     var isButtonDisabled: Bool {
         !titleText.trimmingCharacters(in: .whitespaces).isEmpty &&
         !reviewText.trimmingCharacters(in: .whitespaces).isEmpty &&
-        !safetyTags.isEmpty &&
-        !facilityTags.isEmpty
+        selectedOptions.values.allSatisfy { !$0.isEmpty }
     }
-    
-    private let provider = MoyaProvider<ArchiveAPI>().async
     
     @MainActor
     func loadImagesFromPicker() async {
@@ -47,11 +46,13 @@ class ArchiveViewModel: ObservableObject {
         selectedImages.append(contentsOf: newImages)
         selectedItems = []
     }
-    
+}
+
+extension ArchiveViewModel {
     @MainActor
     func fetchCourseInfo(routeId: Int) async {
         do {
-            let response: BaseDTO<ArchiveInfoDTO> = try await provider.request(ArchiveAPI.fetchCourseInfo(routeId: routeId))
+            let response: BaseDTO<ArchiveInfoDTO> = try await provider.async.request(ArchiveAPI.fetchCourseInfo(routeId: routeId))
             if let data = response.data {
                 self.location = data.routeDto.locationDescription
                 self.time = data.routeDto.dateDescription
@@ -70,5 +71,36 @@ class ArchiveViewModel: ObservableObject {
         } catch {
             print("정보 불러오기 실패: \(error)")
         }
+    }
+    
+    @MainActor
+    func fetchCourseCategories() async {
+        do {
+            let response: BaseDTO<CategoryDTO> = try await provider.async.request(ArchiveAPI.fetchCourseCategories)
+            
+            if let data = response.data {
+                self.categories = data.categoryList
+                for category in data.categoryList {
+                    selectedOptions[category.categoryId] = []
+                }
+                
+                print("\(response.message)")
+            }
+        } catch {
+            print("카테고리 불러오기 실패: \(error)")
+        }
+    }
+}
+
+extension ArchiveViewModel {
+    func categoryOptionTexts(_ categoryId: Int) -> [String] {
+        categories.first(where: { $0.categoryId == categoryId })?.categoryOptions.map { $0.categoryOptionText } ?? []
+    }
+    
+    func selectedOptionsBinding(_ categoryId: Int) -> Binding<Set<String>> {
+        Binding(
+            get: { self.selectedOptions[categoryId] ?? [] },
+            set: { self.selectedOptions[categoryId] = $0 }
+        )
     }
 }
