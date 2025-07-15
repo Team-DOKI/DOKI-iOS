@@ -24,7 +24,7 @@ extension RegionAPI: BaseTargetType {
     var path: String {
         switch self {
         case .fetchRegions:
-            return "pets/traits/regions"
+            return "regions"
         }
     }
     
