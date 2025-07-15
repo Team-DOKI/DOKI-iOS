@@ -17,8 +17,7 @@ struct UserProfile {
     var dogName: String = ""
     var dogAge: String = ""
     var dogGender: String = ""
-    var energyLevel: String = ""
-    var societyLevel: String = ""
+    var petTraits: [PetTraitCategory] = []
     var knownDogAge: KnownDogAge?
     var dogBreed: String = ""
     var isNeutered = false
@@ -42,8 +41,7 @@ enum ProfileField {
     case dogName(String)
     case dogGender(String)
     case KnownDogAge(KnownDogAge?)
-    case energyLevel(String)
-    case societyLevel(String)
+    case petTraits(categoryId: Int, optionId: Int)
     case dogBreed(String)
     case neutered(Bool)
 }
@@ -82,8 +80,6 @@ final class ProfileSetUpViewModel: ObservableObject {
     ]
     let dogGenderList = ["남아", "여아"]
     let knownDogAgeList = ["나이를 알아요", "나이를 몰라요"]
-    let energyLevel = ["매우 차분해요", "조금 느긋해요", "활동적이에요", "아주 활발해요"]
-    let societyLevel = ["잘 어울려요", "천천히 친해져요", "낯을 가려요", "상관없어요"]
     
     @Published var userProfile = UserProfile()
     @Published var currentStep: ProfileStep = .ownerInfo
@@ -112,8 +108,7 @@ final class ProfileSetUpViewModel: ObservableObject {
             (userProfile.isKnownAge && userProfile.dogAge.isEmpty)
             
         case .dogTendency:
-            return userProfile.energyLevel.isEmpty ||
-            userProfile.societyLevel.isEmpty
+            return petTraitsCategories.count != userProfile.petTraits.flatMap { $0.categoryOptions }.filter {$0.isSelected}.count
         }
     }
     
@@ -145,10 +140,17 @@ final class ProfileSetUpViewModel: ObservableObject {
             userProfile.dogGender = gender
         case .KnownDogAge(let knownDogAge):
             userProfile.knownDogAge = knownDogAge
-        case .energyLevel(let energyLevel):
-            userProfile.energyLevel = energyLevel
-        case .societyLevel(let societyLevel):
-            userProfile.societyLevel = societyLevel
+        case .petTraits(let categoryId, let optionId):
+            // 선택한 카테고리 초기화
+            guard let selectedCategoryId = userProfile.petTraits.firstIndex(where: {$0.categoryId == categoryId }) else { return }
+            userProfile.petTraits[selectedCategoryId].categoryOptions = petTraitsCategories[selectedCategoryId].categoryOptions
+            
+            // 선택한 카테고리 체크
+            guard let categoryId = userProfile.petTraits.firstIndex(where: {$0.categoryId == categoryId}),
+                  let optionId = userProfile.petTraits[categoryId].categoryOptions.firstIndex(where: {$0.categoryOptionId == optionId}) else { return }
+            userProfile.petTraits[categoryId].categoryOptions[optionId].isSelected.toggle()
+            
+            print(userProfile.petTraits)
         case .dogBreed(let dogBreed):
             userProfile.dogBreed = dogBreed
         case .neutered(let neutered):
@@ -157,6 +159,7 @@ final class ProfileSetUpViewModel: ObservableObject {
     }
     
     // MARK: - API
+    
     @MainActor
     func fetchPetTraitsCategories() async {
         do {
@@ -167,6 +170,7 @@ final class ProfileSetUpViewModel: ObservableObject {
             }
             
             self.petTraitsCategories = data.petTraitCategoryList.map {$0.toEntity()}
+            self.userProfile.petTraits = data.petTraitCategoryList.map {$0.toEntity()}
         } catch {
             errorMessage = "에러 발생: \(error.localizedDescription)"
         }
