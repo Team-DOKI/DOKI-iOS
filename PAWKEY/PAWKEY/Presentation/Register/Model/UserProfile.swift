@@ -9,15 +9,15 @@ import UIKit
 
 struct UserProfile {
     var name: String = ""
-    var gender: Gender = .male
     var age: String = ""
     var regionId: Int = 0
     var legalRegion: String = ""
     var dogName: String = ""
     var dogAge: String = ""
-    var dogGender: Gender = .male
     var petTraits: [PetTraitCategory] = []
     var knownDogAge: KnownDogAge?
+    var gender: Gender = .unknown
+    var dogGender: Gender = .unknown
     var breed: String = ""
     var isNeutered = false
     var profileImage: UIImage?
