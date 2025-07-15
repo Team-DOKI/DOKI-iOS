@@ -21,7 +21,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				Network/Base/.gitkeep,
 			);
 			target = 76ECCDEC2E05AFCC0056CAF7 /* PAWKEY */;
 		};
