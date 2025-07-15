@@ -75,7 +75,7 @@ final class ProfileSetUpViewModel: ObservableObject {
     @Published var userProfile = UserProfile()
     @Published var petTraitsCategories: [PetTraitCategory] = []
     @Published var regions: [RegionUnit] = []
-    @Published var selectedRegiondId = 0
+    @Published var selectedRegiondId: Int?
     
     @Published var errorMessage: String?
     
