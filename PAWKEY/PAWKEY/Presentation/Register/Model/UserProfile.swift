@@ -9,7 +9,7 @@ struct UserProfile {
     var name: String = ""
     var gender: String = ""
     var age: String = ""
-    var regionId: String = ""
+    var regionId: Int = 0
     var legalRegion: String = ""
     var dogName: String = ""
     var dogAge: String = ""
