@@ -26,7 +26,7 @@ struct CategoryDTO: Codable {
 
 struct CategoryList: Codable {
     let categoryId: Int
-    let categoryName: String
+    let categoryDescription: String
     let categoryOptions: [CategoryOptions]
 }
 

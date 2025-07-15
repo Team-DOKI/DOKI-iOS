@@ -100,7 +100,7 @@ struct ArchiveView: View {
                     VStack(alignment: .leading, spacing: 32) {
                         ForEach(viewModel.categories, id: \.categoryId) { category in
                             QuestionForm(
-                                question: category.categoryName,
+                                question: category.categoryDescription,
                                 tags: viewModel.categoryOptionTexts(category.categoryId),
                                 selectedTags: viewModel.selectedOptionsBinding(category.categoryId)
                             )
