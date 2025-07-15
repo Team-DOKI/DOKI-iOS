@@ -23,6 +23,6 @@ struct WalkCourseRequestDTO: Codable {
 }
 
 // Response
-struct WalkCourseResponseDataDTO: Codable {
+struct WalkCourseResponseDTO: Codable {
     let routeId: Int
 }
