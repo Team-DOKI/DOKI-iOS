@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ReviewWriteView: View {
     @EnvironmentObject var coordinator: Coordinator<WalkScene>
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
+    
     @StateObject private var viewModel: ReviewWriteViewModel
     
     @State private var isAlertPresented: Bool = false
@@ -128,6 +130,7 @@ struct ReviewWriteView: View {
                     ) {
                         isAlertPresented = false
                         coordinator.popToRoot()
+                        mainTabViewModel.isHidden = false
                     }
                 ).padding(.horizontal, 19)
             }
