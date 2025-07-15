@@ -18,6 +18,8 @@ class ArchiveViewModel: ObservableObject {
     @Published var titleText: String = ""
     @Published var reviewText: String = ""
     
+    var snapshot: UIImage?
+    
     var isButtonDisabled: Bool {
         !titleText.trimmingCharacters(in: .whitespaces).isEmpty &&
         !reviewText.trimmingCharacters(in: .whitespaces).isEmpty &&

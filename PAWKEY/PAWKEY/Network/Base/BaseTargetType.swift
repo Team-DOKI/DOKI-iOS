@@ -33,7 +33,7 @@ extension BaseTargetType {
         case .userHeader(let userId):
             return [
                 "Content-Type": "application/json",
-                "X-USER-ID": String(userId)
+                "X-USER-ID": String(userId),
             ]
         }
     }

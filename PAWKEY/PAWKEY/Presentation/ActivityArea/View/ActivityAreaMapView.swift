@@ -9,19 +9,21 @@ import SwiftUI
 import MapKit
 
 struct ActivityAreaMapView: View {
-    @EnvironmentObject var router: Coordinator<HomeScreen>
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var coordinator: Coordinator<HomeScene>
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
-    @StateObject private var viewModel = ActivityAreaMapViewModel()
+    @StateObject var viewModel: ActivityAreaMapViewModel
     
-    @State private var showToast = false
+    init(viewModel: ActivityAreaMapViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         ZStack(alignment: .bottom) {
             PolygonMapView(region: viewModel.region, polygons: viewModel.activityAreas.map { $0.coordinates })
                 .edgesIgnoringSafeArea(.all)
             
-            if showToast {
+            if viewModel.isShowToast {
                 ToastMessage(message: "지역을 강남구 \(viewModel.regionName)으로 변경했어요.")
                     .transition(.opacity)
                     .padding(.bottom, 246 + 22)
@@ -46,7 +48,7 @@ struct ActivityAreaMapView: View {
                             .padding(.top, 32)
                             .padding(.bottom, 18)
                             
-                            Text("기존에 산책하던 지역은 0000이에요.\n선택한 위치로 산책 지역을 변경하시겠어요?")
+                            Text("기존에 산책하던 지역은 \(viewModel.preRegionName)이에요.\n선택한 위치로 산책 지역을 변경하시겠어요?")
                                 .font(.body_14_m)
                                 .foregroundColor(.gray500)
                                 .padding(.top, 12)
@@ -59,16 +61,16 @@ struct ActivityAreaMapView: View {
                                     await viewModel.updateUserRegion(regionId: 40)
                                     
                                     withAnimation {
-                                        showToast = true
+                                        viewModel.isShowToast = true
                                     }
                                     
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                         withAnimation {
-                                            showToast = false
+                                            viewModel.isShowToast = false
                                         }
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                            tabBarState.isHidden = false
-                                            router.reset()
+                                            mainTabViewModel.isHidden = false
+                                            coordinator.popToRoot()
                                         }
                                     }
                                 }
@@ -88,7 +90,7 @@ struct ActivityAreaMapView: View {
         }
         .topNavigationView(left: {
             BackButton {
-                router.pop()
+                coordinator.pop()
             }
         }, center: {
             Text("내 동네 설정")

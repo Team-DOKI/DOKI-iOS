@@ -1,0 +1,49 @@
+//
+//  WalkScene.swift
+//  PAWKEY
+//
+//  Created by 권석기 on 7/15/25.
+//
+
+import SwiftUI
+
+enum WalkScene: AppScene {
+    case courseList
+    case courseDetail(CourseDetailViewModel)
+    case walkCompletion(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?)
+    case archive(snapshot: UIImage?)
+    case sharedWalkCompletion(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?)
+    case reviewWrite
+    
+    @ViewBuilder
+    func build() -> some View {
+        switch self {
+        case .courseList:
+            MapAndListView()
+        case .courseDetail(let viewModel):
+            CourseDetailView(viewModel: viewModel)
+        case .walkCompletion(let distance, let elapsedTime, let stepCount, let snapshot):
+            let viewModel = WalkCompletionViewModel(
+                distance: distance,
+                elapsedTime: elapsedTime,
+                stepCount: stepCount,
+                snapshot: snapshot
+            )
+            WalkCompletionView(viewModel: viewModel)
+        case .archive(let snapshot):
+            let viewModel = ArchiveViewModel()
+            ArchiveView(viewModel: viewModel)
+        case .sharedWalkCompletion(let distance, let elapsedTime, let stepCount, let snapshot):
+            let viewModel = SharedWalkCompletionViewModel(
+                distance: distance,
+                elapsedTime: elapsedTime,
+                stepCount: stepCount,
+                snapshot: snapshot
+            )
+            SharedWalkCompletionView(viewModel: viewModel)
+        case .reviewWrite:
+            let viewModel = ReviewWriteViewModel()
+            ReviewWriteView(viewModel: viewModel)
+        }
+    }
+}

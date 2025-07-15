@@ -10,9 +10,15 @@ import SwiftUI
 import Kingfisher
 
 struct MyPageView: View {
-    @EnvironmentObject var router: Coordinator<MyPageScreen>
-    @EnvironmentObject var tabBarState: TabBarState
+    @EnvironmentObject var coordinator: Coordinator<MyPageScene>
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     @StateObject private var petProfileViewModel = PetProfileViewModel()
+    
+    @StateObject var viewModel: MyPageViewModel
+    
+    init(viewModel: MyPageViewModel = MyPageViewModel()) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -43,8 +49,8 @@ struct MyPageView: View {
                     Spacer()
                     
                     Button {
-                        router.push(.userProfile)
-                        tabBarState.isHidden = true
+                        coordinator.push(.userProfile)
+                        mainTabViewModel.isHidden = true
                     } label: {
                         Image(.arrowRightGray)
                     }
@@ -66,8 +72,8 @@ struct MyPageView: View {
                                 .foregroundColor(.pawkeyWhite1)
                             Spacer()
                             Button {
-                                router.push(.petProfile)
-                                tabBarState.isHidden = true
+                                coordinator.push(.petProfile)
+                                mainTabViewModel.isHidden = true
                             } label: {
                                 Image(.arrowRightWhite)
                             }
@@ -169,7 +175,7 @@ struct MyPageView: View {
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        router.push(.savedCourse)
+                        coordinator.push(.savedCourse)
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 20)
@@ -192,7 +198,7 @@ struct MyPageView: View {
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        router.push(.myCourse)
+                        coordinator.push(.myCourse)
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 20)

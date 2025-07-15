@@ -8,13 +8,12 @@
 import SwiftUI
 
 struct CourseDetailView: View {
-    @ObservedObject var viewModel: CourseDetailViewModel
-    //    @EnvironmentObject var router: Coordinator<HomeScreen>
-    @EnvironmentObject var tabBarState: TabBarState
-    @EnvironmentObject var router: Coordinator<WalkScreen>
-    
     @StateObject private var sharedWalkCourseViewModel = SharedWalkCourseViewModel()
-    @State private var showSharedWalkCourseView = false
+    
+    @ObservedObject var viewModel: CourseDetailViewModel
+    
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
+    @EnvironmentObject var coordinator: Coordinator<WalkScene>
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -68,8 +67,8 @@ struct CourseDetailView: View {
         })
         .topNavigationView(left: {
             BackButton {
-                tabBarState.isHidden = false
-                router.pop()
+                mainTabViewModel.isHidden = false
+                coordinator.pop()
             }
         }, center: {
             Text("루트 상세정보")
@@ -78,9 +77,9 @@ struct CourseDetailView: View {
         .overlay(alignment: .bottom) {
             submitButton
         }
-        .fullScreenCover(isPresented: $showSharedWalkCourseView) {
-            SharedWalkCourseView(viewModel: sharedWalkCourseViewModel, showSharedWalkCourseView: $showSharedWalkCourseView) { distance, elapsedTime, stepCount, snapshot in
-                router.push(.sharedWalkCompletion(
+        .fullScreenCover(isPresented: $viewModel.isShowSharedWalkCourseView) {
+            SharedWalkCourseView(viewModel: sharedWalkCourseViewModel, showSharedWalkCourseView: $viewModel.isShowSharedWalkCourseView) { distance, elapsedTime, stepCount, snapshot in
+                coordinator.push(.sharedWalkCompletion(
                     distance: distance,
                     elapsedTime: elapsedTime,
                     stepCount: stepCount,
@@ -223,7 +222,7 @@ extension CourseDetailView {
     
     private var submitButton: some View {
         Button(action: {
-            showSharedWalkCourseView = true
+            viewModel.isShowSharedWalkCourseView = true
         }) {
             Text("해당 루트로 산책하기")
                 .font(.body_16_sb)

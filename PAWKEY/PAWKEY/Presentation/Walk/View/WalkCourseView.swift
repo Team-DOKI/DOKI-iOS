@@ -9,18 +9,16 @@ import SwiftUI
 import MapKit
 
 struct WalkCourseView: View {
-    @EnvironmentObject var router: Coordinator<WalkScreen>
+    @EnvironmentObject var coordinator: Coordinator<WalkScene>
     
-    @ObservedObject var viewModel: WalkCourseViewModel
-    
+    @StateObject var viewModel: WalkCourseViewModel
     @Binding var showWalkCourseView: Bool
     
     @State private var showStopConfirmation = false
-    
     @State private var userTrackingMode: MKUserTrackingMode = .follow
-    
+
     let onComplete: (Double, String, Int, UIImage?) -> Void
-    
+
     var body: some View {
         ZStack {
             ZStack {
@@ -28,7 +26,6 @@ struct WalkCourseView: View {
                     region: $viewModel.region,
                     pathCoordinates: $viewModel.pathCoordinates,
                     shouldCenterOnUser: $viewModel.shouldCenterOnUser,
-                    snapshotImage: .constant(nil),
                     userTrackingMode: $userTrackingMode
                 )
                 .edgesIgnoringSafeArea(.all)
@@ -38,14 +35,19 @@ struct WalkCourseView: View {
                         .edgesIgnoringSafeArea(.all)
                 }
             }
-            
+
             VStack {
-                StatBox(type: .bordered, distance: viewModel.distance, elapsedTime: viewModel.elapsedTime, stepCount: viewModel.stepCount)
-                    .padding(.top, 24)
-                    .padding(.horizontal, 16)
-                
+                StatBox(
+                    type: .bordered,
+                    distance: viewModel.distance,
+                    elapsedTime: viewModel.elapsedTime,
+                    stepCount: viewModel.stepCount
+                )
+                .padding(.top, 24)
+                .padding(.horizontal, 16)
+
                 Spacer()
-                
+
                 if showStopConfirmation {
                     StopConfirmationView(
                         description: "산책을 정말 종료하시겠어요?",
@@ -54,8 +56,17 @@ struct WalkCourseView: View {
                             viewModel.setPaused(false)
                         },
                         onStop: {
-                            viewModel.stopTracking()
-                            viewModel.captureMapSnapshot { snapshot in
+                            Task {
+                                viewModel.stopTracking()
+                                
+                                let snapshot = await withCheckedContinuation { continuation in
+                                    viewModel.captureMapSnapshot { image in
+                                        continuation.resume(returning: image)
+                                    }
+                                }
+
+                                let routeId = await viewModel.postWalkCourse(userId: 1234, snapshotImage: snapshot)
+                            
                                 showWalkCourseView = false
                                 onComplete(
                                     viewModel.distance,
@@ -68,7 +79,6 @@ struct WalkCourseView: View {
                     )
                 } else {
                     Spacer()
-                    
                     CTAButton(
                         title: "종료하기",
                         isDisabled: false,
@@ -81,7 +91,7 @@ struct WalkCourseView: View {
                     .padding(.bottom, 26)
                 }
             }
-            
+
             if !showStopConfirmation {
                 VStack {
                     Spacer()
@@ -101,54 +111,6 @@ struct WalkCourseView: View {
         }
         .onAppear {
             viewModel.startTracking()
-        }
-    }
-}
-
-struct StopConfirmationView: View {
-    let description: String
-    let onResume: () -> Void
-    let onStop: () -> Void
-    
-    var body: some View {
-        VStack {
-            Spacer()
-            
-            Text("산책이 중단되었어요.")
-                .font(.head_24_b)
-                .foregroundColor(.pawkeyWhite1)
-                .padding(.bottom, 12)
-            
-            Text(description)
-                .font(.body_16_m)
-                .foregroundColor(.pawkeyWhite2)
-            
-            Spacer()
-            
-            HStack(spacing: 16) {
-                Button(action: onResume) {
-                    Text("계속 산책하기")
-                        .font(.body_16_sb)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(.pawkeyWhite1)
-                        .foregroundColor(.green500)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.green500, lineWidth: 1)
-                        )
-                        .cornerRadius(8)
-                }
-                
-                CTAButton(
-                    title: "산책 기록 중지",
-                    isDisabled: false,
-                    buttonStyle: .filled,
-                    action: onStop
-                )
-            }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 26)
         }
     }
 }

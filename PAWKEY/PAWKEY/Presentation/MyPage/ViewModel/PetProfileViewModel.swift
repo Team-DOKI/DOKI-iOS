@@ -19,7 +19,7 @@ class PetProfileViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 do {
-                    let dto = try JSONDecoder().decode(PetProfileDTO.self, from: response.data)
+                    let dto = try JSONDecoder().decode(MyPetProfileDTO.self, from: response.data)
 
                     if let firstDTO = dto.petProfileList.first {
                         self?.petProfile = PetProfile(dto: firstDTO)

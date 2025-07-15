@@ -8,28 +8,31 @@
 import MapKit
 import Moya
 
-@MainActor
-class ActivityAreaMapViewModel: ObservableObject {    
-    @Published var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.5215, longitude: 127.0250),
-        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-    )
-    @Published var activityAreas: [ActivityArea] = []
-    @Published var regionName: String = ""
-    @Published var errorMessage: String?
-    
+class ActivityAreaMapViewModel: ObservableObject {
     private let provider = MoyaProvider<ActivityAreaMapAPI>()
     
+    @Published var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 37.5215, longitude: 127.0250),
+        span: MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003)
+    )
+    @Published var activityAreas: [ActivityArea] = []
+    @Published var preRegionName: String = ""
+    @Published var regionName: String = ""
+    
+    @Published var isShowToast = false
+    
+    @MainActor
     func fetchActivityArea(regionId: Int) async {
         do {
             let response: BaseDTO<RegionDTO> = try await provider.async.request(.fetchCoordinates(regionId: regionId))
             
             guard let data = response.data else {
-                errorMessage = "데이터 없음"
+               print("데이터 없음")
                 return
             }
-            print("\(response.message): \(data.regionName)")
+            print("\(response.message): \(data.regionName) 조회, 기존 산책 지역: \(data.preRegionName)")
             
+            self.preRegionName = data.preRegionName.components(separatedBy: " ").last ?? data.preRegionName
             self.regionName = data.regionName.components(separatedBy: " ").last ?? data.regionName
             
             let coords = data.geometryDto.coordinates.map { polygon in
@@ -46,17 +49,19 @@ class ActivityAreaMapViewModel: ObservableObject {
                 region.center = first
             }
         } catch {
-            errorMessage = "에러 발생: \(error.localizedDescription)"
+            print("에러 발생: \(error.localizedDescription)")
         }
     }
     
+    @MainActor
     func updateUserRegion(regionId: Int) async {
         do {
-            let response: BaseDTO<EmptyDTO> = try await provider.async.request(.updateUserRegion(regionId: regionId))
+            try await provider.async.requestPlain(.updateUserRegion(regionId: regionId))
+            print("요청 처리 성공: 지역 변경 성공")
             
-            print(response.message)
+            self.isShowToast = true
         } catch {
-            errorMessage = "지역 변경 실패: \(error.localizedDescription)"
+            print("지역 변경 실패: \(error.localizedDescription)")
         }
     }
 }

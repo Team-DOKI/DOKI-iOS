@@ -10,10 +10,10 @@ import CoreLocation
 import MapKit
 
 struct MapAndListView: View {
-    @EnvironmentObject var router: Coordinator<WalkScreen>
+    @EnvironmentObject var coordinator: Coordinator<WalkScene>
     
     @StateObject private var viewModel = WalkCourseViewModel()
-    @StateObject private var courseListViewModel = MapAndListViewModel()
+    @StateObject private var mapAndListViewModel = MapAndListViewModel()
     
     @State private var selectedMode: Int = 0
     @State private var showWalkCourseView = false
@@ -48,7 +48,6 @@ struct MapAndListView: View {
                     WalkMap(region: $viewModel.region,
                             pathCoordinates: $viewModel.pathCoordinates,
                             shouldCenterOnUser: $shouldCenterOnUser,
-                            snapshotImage: .constant(nil),
                             userTrackingMode: $userTrackingMode)
                     .edgesIgnoringSafeArea(.bottom)
                     .overlay(
@@ -100,7 +99,7 @@ struct MapAndListView: View {
                 VStack {
                     HStack {
                         Button {
-                            courseListViewModel.isShowSheet = true
+                            mapAndListViewModel.isShowSheet = true
                         } label: {
                             Circle()
                                 .frame(width: 36, height: 36)
@@ -112,7 +111,7 @@ struct MapAndListView: View {
                                 .overlay(Image(.settingGray))
                         }
                         Spacer()
-                        if courseListViewModel.selectedOptions.isEmpty {
+                        if mapAndListViewModel.selectedOptions.isEmpty {
                             HStack {
                                 FilterChip(title: "")
                                 Spacer()
@@ -120,7 +119,7 @@ struct MapAndListView: View {
                         } else {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack {
-                                    ForEach(courseListViewModel.selectedOptions, id: \.self.id) {
+                                    ForEach(mapAndListViewModel.selectedOptions, id: \.self.id) {
                                         FilterChip(title: $0.title)
                                     }
                                 }
@@ -156,7 +155,7 @@ struct MapAndListView: View {
         }
         .fullScreenCover(isPresented: $showWalkCourseView) {
             WalkCourseView(viewModel: viewModel, showWalkCourseView: $showWalkCourseView) { distance, elapsedTime, stepCount, snapshot in
-                router.push(.walkCompletion(
+                coordinator.push(.walkCompletion(
                     distance: distance,
                     elapsedTime: elapsedTime,
                     stepCount: stepCount,
@@ -165,8 +164,8 @@ struct MapAndListView: View {
                 viewModel.resetTrackingData()
             }
         }
-        .sheet(isPresented: $courseListViewModel.isShowSheet) {
-            FilterBottomSheet(viewModel: courseListViewModel)
+        .sheet(isPresented: $mapAndListViewModel.isShowSheet) {
+            FilterBottomSheet(viewModel: mapAndListViewModel)
                 .presentationDragIndicator(.visible)
                 .presentationDetents([.fraction(0.9)])
         }
