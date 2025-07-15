@@ -48,7 +48,6 @@ struct MapAndListView: View {
                     WalkMap(region: $viewModel.region,
                             pathCoordinates: $viewModel.pathCoordinates,
                             shouldCenterOnUser: $shouldCenterOnUser,
-                            snapshotImage: .constant(nil),
                             userTrackingMode: $userTrackingMode)
                     .edgesIgnoringSafeArea(.bottom)
                     .overlay(

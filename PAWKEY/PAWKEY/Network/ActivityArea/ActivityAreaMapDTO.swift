@@ -8,6 +8,7 @@
 import Foundation
 
 struct RegionDTO: Codable {
+    let preRegionName: String
     let regionName: String
     let geometryDto: GeometryDTO
 }
