@@ -43,7 +43,9 @@ struct ProfileSetUpView: View, KeyboardReadable {
                             isDisabled: viewModel.isButtonDisabled
                         ) {
                             if viewModel.currentStep == .dogTendency {
-                                mainTabViewModel.isLogin = true
+                                Task {
+                                    await viewModel.updateUserProfile()
+                                }
                             } else {
                                 viewModel.goToNextStep()
                             }
