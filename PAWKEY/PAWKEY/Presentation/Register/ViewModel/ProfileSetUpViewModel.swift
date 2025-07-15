@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Moya
 
 struct UserProfile {
     var userName: String = ""
@@ -16,8 +17,7 @@ struct UserProfile {
     var dogName: String = ""
     var dogAge: String = ""
     var dogGender: String = ""
-    var energyLevel: String = ""
-    var societyLevel: String = ""
+    var petTraits: [PetTraitCategory] = []
     var knownDogAge: KnownDogAge?
     var dogBreed: String = ""
     var isNeutered = false
@@ -41,8 +41,7 @@ enum ProfileField {
     case dogName(String)
     case dogGender(String)
     case KnownDogAge(KnownDogAge?)
-    case energyLevel(String)
-    case societyLevel(String)
+    case petTraits(categoryId: Int, optionId: Int)
     case dogBreed(String)
     case neutered(Bool)
 }
@@ -69,6 +68,8 @@ final class ProfileSetUpViewModel: ObservableObject {
         }
     }
     
+    private let provider = MoyaProvider<PetTraitsCategoryAPI>()
+    
     // 모델(임시)
     let genderList = ["남자", "여자"]
     let regionList = ["강남구"]
@@ -79,12 +80,13 @@ final class ProfileSetUpViewModel: ObservableObject {
     ]
     let dogGenderList = ["남아", "여아"]
     let knownDogAgeList = ["나이를 알아요", "나이를 몰라요"]
-    let energyLevel = ["매우 차분해요", "조금 느긋해요", "활동적이에요", "아주 활발해요"]
-    let societyLevel = ["잘 어울려요", "천천히 친해져요", "낯을 가려요", "상관없어요"]
     
     @Published var userProfile = UserProfile()
     @Published var currentStep: ProfileStep = .ownerInfo
     @Published var isKeyboardVisible = false
+    
+    @Published var petTraitsCategories: [PetTraitCategory] = []
+    @Published var errorMessage: String?
     
     var currentStepIndex: Int { currentStep.rawValue }
     var isButtonDisabled: Bool {
@@ -106,10 +108,11 @@ final class ProfileSetUpViewModel: ObservableObject {
             (userProfile.isKnownAge && userProfile.dogAge.isEmpty)
             
         case .dogTendency:
-            return userProfile.energyLevel.isEmpty ||
-            userProfile.societyLevel.isEmpty
+            return petTraitsCategories.count != userProfile.petTraits.flatMap { $0.categoryOptions }.filter {$0.isSelected}.count
         }
     }
+    
+    // MARK: - State Method
     
     func goToNextStep() {
         currentStep = ProfileStep(rawValue: currentStep.rawValue + 1) ?? .dogTendency
@@ -137,14 +140,37 @@ final class ProfileSetUpViewModel: ObservableObject {
             userProfile.dogGender = gender
         case .KnownDogAge(let knownDogAge):
             userProfile.knownDogAge = knownDogAge
-        case .energyLevel(let energyLevel):
-            userProfile.energyLevel = energyLevel
-        case .societyLevel(let societyLevel):
-            userProfile.societyLevel = societyLevel
+        case .petTraits(let categoryId, let optionId):
+            // 선택한 카테고리 초기화
+            guard let selectedCategoryId = userProfile.petTraits.firstIndex(where: {$0.categoryId == categoryId }),
+                  let optionId = userProfile.petTraits[selectedCategoryId].categoryOptions.firstIndex(where: {$0.categoryOptionId == optionId}) else { return }
+            
+            userProfile.petTraits[selectedCategoryId].categoryOptions = petTraitsCategories[selectedCategoryId].categoryOptions
+            userProfile.petTraits[categoryId].categoryOptions[optionId].isSelected.toggle()
+            
         case .dogBreed(let dogBreed):
             userProfile.dogBreed = dogBreed
         case .neutered(let neutered):
             userProfile.isNeutered = neutered
+        }
+    }
+    
+    // MARK: - API
+    
+    @MainActor
+    func fetchPetTraitsCategories() async {
+        do {
+            let response: BaseDTO<PetTraitDTO> = try await provider.async.request(.fetchPetTraitsCategories)
+            
+            guard let data = response.data else {
+                errorMessage = "에러 발생: 데이터를 찾을 수 없음"
+                return
+            }
+            
+            self.petTraitsCategories = data.petTraitCategoryList.map {$0.toEntity()}
+            self.userProfile.petTraits = data.petTraitCategoryList.map {$0.toEntity()}
+        } catch {
+            errorMessage = "에러 발생: \(error.localizedDescription)"
         }
     }
 }
