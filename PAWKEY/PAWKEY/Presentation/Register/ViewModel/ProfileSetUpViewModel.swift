@@ -78,13 +78,13 @@ final class ProfileSetUpViewModel: ObservableObject {
             userProfile.age.isEmpty
             
         case .activityArea:
-            return userProfile.region.isEmpty ||
+            return userProfile.regionId.isEmpty ||
             userProfile.legalRegion.isEmpty
             
         case .dogInfo:
             return userProfile.dogName.isEmpty ||
             userProfile.dogGender.isEmpty ||
-            userProfile.dogBreed.isEmpty ||
+            userProfile.breed.isEmpty ||
             userProfile.knownDogAge == .none ||
             (userProfile.isKnownAge && userProfile.dogAge.isEmpty)
             
@@ -112,7 +112,7 @@ final class ProfileSetUpViewModel: ObservableObject {
         case .userAge(let age):
             userProfile.age = age
         case .region(let region):
-            userProfile.region = region
+            userProfile.regionId = region
         case .legalRegion(let legal):
             userProfile.legalRegion = legal
         case .dogName(let name):
@@ -127,10 +127,10 @@ final class ProfileSetUpViewModel: ObservableObject {
                   let optionId = userProfile.petTraits[selectedCategoryId].categoryOptions.firstIndex(where: {$0.categoryOptionId == optionId}) else { return }
             
             userProfile.petTraits[selectedCategoryId].categoryOptions = petTraitsCategories[selectedCategoryId].categoryOptions
-            userProfile.petTraits[categoryId].categoryOptions[optionId].isSelected.toggle()
+            userProfile.petTraits[selectedCategoryId].categoryOptions[optionId].isSelected.toggle()
             
         case .dogBreed(let dogBreed):
-            userProfile.dogBreed = dogBreed
+            userProfile.breed = dogBreed
         case .neutered(let neutered):
             userProfile.isNeutered = neutered
         }
@@ -150,6 +150,23 @@ final class ProfileSetUpViewModel: ObservableObject {
             
             self.petTraitsCategories = data.petTraitCategoryList.map {$0.toEntity()}
             self.userProfile.petTraits = data.petTraitCategoryList.map {$0.toEntity()}
+        } catch {
+            errorMessage = "에러 발생: \(error.localizedDescription)"
+        }
+    }
+    
+    @MainActor
+    func updateUserProfile() async {
+        let provider = MoyaProvider<UserAPI>(plugins: [MoyaLoggingPlugin()])
+        
+        do {
+            let response: BaseDTO<PetTraitDTO> = try await provider.async.request(.updateUserProfile(userProfile))
+            
+            guard let data = response.data else {
+                errorMessage = "에러 발생: 데이터를 찾을 수 없음"
+                return
+            }
+                    
         } catch {
             errorMessage = "에러 발생: \(error.localizedDescription)"
         }

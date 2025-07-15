@@ -9,15 +9,14 @@ struct UserProfile {
     var name: String = ""
     var gender: String = ""
     var age: String = ""
-    var region: String = ""
-    
+    var regionId: String = ""
     var legalRegion: String = ""
     var dogName: String = ""
     var dogAge: String = ""
     var dogGender: String = ""
     var petTraits: [PetTraitCategory] = []
     var knownDogAge: KnownDogAge?
-    var dogBreed: String = ""
+    var breed: String = ""
     var isNeutered = false
     
     var isKnownAge: Bool {

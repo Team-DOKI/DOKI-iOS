@@ -93,7 +93,7 @@ struct DogInfoView: View {
                 VStack(alignment: .leading) {
                     Text("견종")
                         .font(.body_14_sb)
-                    PawkeyTextField(text: $viewModel.userProfile.dogBreed)                    
+                    PawkeyTextField(text: $viewModel.userProfile.breed)                    
                 }
                 
                 Spacer().frame(height: 30)

@@ -37,8 +37,8 @@ extension UserAPI: BaseTargetType {
     
     var task: Task {
         switch self {
-        case .updateUserProfile:
-            return .requestPlain
+        case let .updateUserProfile(userProfile):            
+            return .requestJSONEncodable(userProfile.toDto())
         }
     }
 }

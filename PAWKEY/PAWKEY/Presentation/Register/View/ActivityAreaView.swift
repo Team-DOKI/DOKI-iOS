@@ -30,7 +30,7 @@ struct ActivityAreaView: View {
                                      data: viewModel.regionList,
                                      spacing: 14,
                                      alignment: .leading, content: {
-                        LocationButton($0, type: .small, isSelected: $0 == viewModel.userProfile.region) { region in
+                        LocationButton($0, type: .small, isSelected: $0 == viewModel.userProfile.regionId) { region in
                             viewModel.changeUserInfo(.region(region))
                         }
                     })
@@ -39,7 +39,7 @@ struct ActivityAreaView: View {
                 
                 Spacer().frame(height: 42)
                 
-                if !viewModel.userProfile.region.isEmpty {
+                if !viewModel.userProfile.regionId.isEmpty {
                     VStack(alignment: .leading) {
                         Text("법정동")
                             .font(.body_14_sb)
