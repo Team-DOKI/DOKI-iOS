@@ -12,11 +12,13 @@ final class WalkCompletionViewModel: ObservableObject {
     let elapsedTime: String
     let stepCount: Int
     let snapshot: UIImage?
+    let routeId: Int
     
-    init(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?) {
+    init(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?, routeId: Int) {
         self.distance = distance
         self.elapsedTime = elapsedTime
         self.stepCount = stepCount
         self.snapshot = snapshot
+        self.routeId = routeId
     }
 }
