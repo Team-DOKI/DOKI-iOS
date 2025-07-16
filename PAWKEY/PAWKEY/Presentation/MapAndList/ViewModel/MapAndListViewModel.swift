@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import Moya
+
 final class MapAndListViewModel: ObservableObject {
     
     enum WalkRouteOption {
@@ -16,6 +18,8 @@ final class MapAndListViewModel: ObservableObject {
         case environment(index: Int)
         case mood(index: Int)
     }
+    
+    @Published var posts: [WalkPost] = []
     
     @Published var isShowSheet = false
     @Published var isExpandWalkingTime = false
@@ -112,5 +116,24 @@ final class MapAndListViewModel: ObservableObject {
         var newList = list
         newList[index].isSelected.toggle()
         return newList
+    }
+}
+
+
+extension MapAndListViewModel {
+    @MainActor
+    func fetchPosts() async {
+        let provider = MoyaProvider<WalkPostAPI>(plugins: [MoyaLoggingPlugin()])
+        
+        do {
+            let response: BaseDTO<PostDataDTO> = try await provider.async.request(.fetchPosts)
+            
+            guard let data = response.data else {
+                return
+            }
+            self.posts = data.posts.toEntity()
+        } catch {
+            print("에러 발생: \(error.localizedDescription)")
+        }
     }
 }

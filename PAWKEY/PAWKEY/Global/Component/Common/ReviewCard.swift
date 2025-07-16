@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import Kingfisher
+
 struct ReviewCard: View {
     
     enum CardType {
@@ -39,8 +41,9 @@ struct ReviewCard: View {
         
         VStack(spacing: 0) {
             ZStack(alignment: .bottom) {
-                Image(walkRouteImg)
+                KFImage(URL(string: walkRouteImg))
                     .resizable()
+                    .frame(minHeight: 240, maxHeight: 240)
                     .aspectRatio(contentMode: .fit)
                     .overlay(
                         // 그라데이션 오버레이
@@ -54,7 +57,7 @@ struct ReviewCard: View {
                 // 상단 프로필
                 HStack {
                     // 반려견 사진
-                    Image(profileImg)
+                    KFImage(URL(string: profileImg))
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 43, height: 43)
