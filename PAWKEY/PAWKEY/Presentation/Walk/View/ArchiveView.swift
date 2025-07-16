@@ -14,6 +14,8 @@ struct ArchiveView: View {
     
     @StateObject var viewModel: ArchiveViewModel
     
+    let categoryEmojis = ["😌", "🐶", "🚸", "🧺", "🌿"]
+    
     init(viewModel: ArchiveViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -98,9 +100,10 @@ struct ArchiveView: View {
                         .padding(.bottom, 23)
                     
                     VStack(alignment: .leading, spacing: 32) {
-                        ForEach(viewModel.categories, id: \.categoryId) { category in
+                        ForEach(Array(viewModel.categories.enumerated()), id: \.element.categoryId) { index, category in
+                            let emoji = index < categoryEmojis.count ? categoryEmojis[index] : ""
                             QuestionForm(
-                                question: category.categoryDescription,
+                                question: "\(emoji) \(category.categoryDescription)",
                                 tags: viewModel.categoryOptionTexts(category.categoryId),
                                 selectedTags: viewModel.selectedOptionsBinding(category.categoryId)
                             )
@@ -173,7 +176,7 @@ struct ArchiveView: View {
     private func pushCourseDetail(isPrivate: Bool) {
         Task {
             await viewModel.uploadCourse(isPublic: !isPrivate)
-
+            
             var imagesToSend = viewModel.selectedImages
             
             if let snapshot = viewModel.snapshot {
