@@ -21,7 +21,8 @@ enum MyPageScene: AppScene {
         case .myPage:
             MyPageView()
         case .userProfile:
-            UserProfileView()
+            let viewModel = UserProfileViewModel()
+            UserProfileView(viewModel: viewModel)
         case .petProfile:
             let viewModel = PetProfileViewModel()
             PetProfileView(viewModel: viewModel)
