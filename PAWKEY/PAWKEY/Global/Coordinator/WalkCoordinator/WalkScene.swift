@@ -10,8 +10,8 @@ import SwiftUI
 enum WalkScene: AppScene {
     case courseList
     case courseDetail(postId: Int)
-    case walkCompletion(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?)
-    case archive(snapshot: UIImage?)
+    case walkCompletion(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?, routeId: Int)
+    case archive(routeId: Int)
     case sharedWalkCompletion(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?)
     case reviewWrite
     
@@ -20,20 +20,25 @@ enum WalkScene: AppScene {
         switch self {
         case .courseList:
             MapAndListView()
+            
         case .courseDetail(let postId):
             let viewModel = CourseDetailViewModel(postId: postId)
             CourseDetailView(viewModel: viewModel)
-        case .walkCompletion(let distance, let elapsedTime, let stepCount, let snapshot):
+            
+        case .walkCompletion(let distance, let elapsedTime, let stepCount, let snapshot, let routeId):
             let viewModel = WalkCompletionViewModel(
                 distance: distance,
                 elapsedTime: elapsedTime,
                 stepCount: stepCount,
-                snapshot: snapshot
+                snapshot: snapshot,
+                routeId: routeId
             )
             WalkCompletionView(viewModel: viewModel)
-        case .archive(let snapshot):
-            let viewModel = ArchiveViewModel()
+            
+        case .archive(let routeId):
+            let viewModel = ArchiveViewModel(routeId: routeId)
             ArchiveView(viewModel: viewModel)
+            
         case .sharedWalkCompletion(let distance, let elapsedTime, let stepCount, let snapshot):
             let viewModel = SharedWalkCompletionViewModel(
                 distance: distance,
@@ -42,6 +47,7 @@ enum WalkScene: AppScene {
                 snapshot: snapshot
             )
             SharedWalkCompletionView(viewModel: viewModel)
+            
         case .reviewWrite:
             let viewModel = ReviewWriteViewModel()
             ReviewWriteView(viewModel: viewModel)
