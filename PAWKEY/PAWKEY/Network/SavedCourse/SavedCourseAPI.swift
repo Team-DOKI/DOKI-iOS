@@ -19,7 +19,7 @@ extension SavedCourseAPI: BaseTargetType {
     var headerType: HeaderType {
         switch self {
         case .getSavedCourse:
-            return .userHeader(userId: 4)
+            return .userHeader(userId: 2)
         }
     }
     

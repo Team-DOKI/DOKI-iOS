@@ -21,4 +21,5 @@ struct MyCourseDTO: Codable {
     let routeId: Int
     let writer: WriterDTO
     let descriptionTags: [String]
+    let isPublic: Bool
 }
