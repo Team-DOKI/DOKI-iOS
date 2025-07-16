@@ -13,6 +13,8 @@ final class MapAndListViewModel: ObservableObject {
     
     private let provider = MoyaProvider<FilterAPI>(plugins: [MoyaLoggingPlugin()])
     
+    @Published var posts: [WalkPost] = []
+    
     @Published var isShowSheet = false
     @Published var filterItem = FilterList()
     @Published var filterItemList = FilterList()
@@ -132,6 +134,25 @@ extension MapAndListViewModel {
             filterItem.categoryList = Array(categoryList.dropFirst(2))
         } catch {
             print(error.localizedDescription)
+        }
+    }
+}
+
+
+extension MapAndListViewModel {
+    @MainActor
+    func fetchPosts() async {
+        let provider = MoyaProvider<WalkPostAPI>(plugins: [MoyaLoggingPlugin()])
+        
+        do {
+            let response: BaseDTO<PostDataDTO> = try await provider.async.request(.fetchPosts)
+            
+            guard let data = response.data else {
+                return
+            }
+            self.posts = data.posts.toEntity()
+        } catch {
+            print("에러 발생: \(error.localizedDescription)")
         }
     }
 }
