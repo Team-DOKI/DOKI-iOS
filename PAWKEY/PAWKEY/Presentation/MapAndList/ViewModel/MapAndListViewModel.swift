@@ -11,40 +11,96 @@ import Moya
 
 final class MapAndListViewModel: ObservableObject {
     
-    enum WalkRouteOption {
-        case walkingTime(index: Int)
-        case safety(index: Int)
-        case convenience(index: Int)
-        case environment(index: Int)
-        case mood(index: Int)
-    }
+    private let provider = MoyaProvider<FilterAPI>(plugins: [MoyaLoggingPlugin()])
     
     @Published var isShowSheet = false
+    @Published var filterItem = FilterList()
     @Published var filterItemList = FilterList()
-    @Published var expandedGroup: [Int: Bool] = [:]
+    @Published var singleItemexpandedGroup: [Int: Bool] = [:] {
+        didSet {
+            print(singleItemexpandedGroup)
+        }
+    }
+    @Published var mutipleItemexpandedGroup: [Int: Bool] = [:]
+    @Published var addedFilterItem: [SelecteItem] = []
     @Published var selectedFilterItem: [SelecteItem] = []
     
     func resetAllOptions() {
-     
-    }
-    
-    private func selecteSingleOption(at index: Int, from list: [CheckItem]) -> [CheckItem] {
-        var newList = list
+        singleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
+        mutipleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
         
-        if let firstIndex = list.firstIndex(where: {$0.isSelected}) {
-            newList[firstIndex].isSelected = false
-            newList[index].isSelected = true            
-        } else {
-            newList[index].isSelected = true
+        filterItemList.selecteList = filterItemList.selecteList.map { group in
+            var g = group
+            g.options = g.options.map {
+                SelecteItem(selectOptionId: $0.selectOptionId, selectText: $0.selectText, isSelected: false)
+            }
+            return g
         }
         
-        return newList
+        filterItemList.categoryList = filterItemList.categoryList.map { group in
+            var g = group
+            g.options = g.options.map {
+                SelecteItem(selectOptionId: $0.selectOptionId, selectText: $0.selectText, isSelected: false)
+            }
+            return g
+        }
+
+        addedFilterItem = []
+        selectedFilterItem = []
     }
     
-    private func selecteMultipleOption(at index: Int, from list: [CheckItem]) -> [CheckItem] {
-        var newList = list
-        newList[index].isSelected.toggle()
-        return newList
+    func selectSingleItem(_ selected: SelecteItem) {
+        guard let groupIndex = filterItemList.selecteList.firstIndex(where: {
+            $0.options.contains(where: { $0.selectOptionId == selected.selectOptionId })
+        }) else { return }
+        
+        var group = filterItemList.selecteList[groupIndex]
+        group.options = group.options.map {
+            SelecteItem(
+                selectOptionId: $0.selectOptionId,
+                selectText: $0.selectText,
+                isSelected: $0.selectOptionId == selected.selectOptionId
+            )
+        }
+
+        filterItemList.selecteList[groupIndex] = group
+        
+        addedFilterItem.removeAll {
+            group.options.map(\.selectOptionId).contains($0.selectOptionId)
+        }
+        addedFilterItem.append(selected)
+    }
+
+    
+    func selectMultipleItem(_ selected: SelecteItem) {
+        guard let groupIndex = filterItemList.categoryList.firstIndex(where: {
+            $0.options.contains(where: { $0.selectOptionId == selected.selectOptionId })
+        }) else { return }
+
+        var group = filterItemList.categoryList[groupIndex]
+        group.options = group.options.map {
+            if $0.selectOptionId == selected.selectOptionId {
+                return SelecteItem(
+                    selectOptionId: $0.selectOptionId,
+                    selectText: $0.selectText,
+                    isSelected: !$0.isSelected
+                )
+            }
+            return $0
+        }
+
+        filterItemList.categoryList[groupIndex] = group
+
+        if let index = addedFilterItem.firstIndex(where: { $0.selectOptionId == selected.selectOptionId }) {
+            addedFilterItem.remove(at: index)
+        } else {
+            addedFilterItem.append(selected)
+        }
+    }
+    
+    func saveFilterOption() {
+        selectedFilterItem = addedFilterItem
+        isShowSheet = false
     }
 }
 
@@ -54,7 +110,7 @@ extension MapAndListViewModel {
     
     @MainActor
     func fetchFilterOptions() async {
-        let provider = MoyaProvider<FilterAPI>(plugins: [MoyaLoggingPlugin()])
+        
         do {
             let response: BaseDTO<FilterDTO> = try await provider.async.request(.fetchFilterOptions)
             
@@ -66,7 +122,9 @@ extension MapAndListViewModel {
             let categoryList = data.categoryList.toEntity()
             
             filterItemList.selecteList = selectList + Array(categoryList.prefix(2))
-            filterItemList.categoryList = Array(categoryList.dropFirst(2))
+            filterItemList.categoryList = Array(categoryList.dropFirst(2))            
+            filterItem.selecteList = selectList + Array(categoryList.prefix(2))
+            filterItem.categoryList = Array(categoryList.dropFirst(2))
         } catch {
             print(error.localizedDescription)
         }

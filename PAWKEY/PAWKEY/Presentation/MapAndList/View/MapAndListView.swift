@@ -110,7 +110,22 @@ struct MapAndListView: View {
                                 }
                                 .overlay(Image(.settingGray))
                         }
-                        Spacer()                     
+                        Spacer()
+                        if mapAndListViewModel.selectedFilterItem.isEmpty {
+                            HStack {
+                                FilterChip(title: "")
+                                Spacer()
+                            }
+                        } else {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack {
+                                    ForEach(mapAndListViewModel.selectedFilterItem, id: \.self) {
+                                        FilterChip(title: $0.selectText)
+                                    }
+                                }
+                                .padding(.vertical, 1)
+                            }
+                        }
                     }
                     .padding(.horizontal, 16)
                     
@@ -138,6 +153,9 @@ struct MapAndListView: View {
         }
         .onAppear {
             viewModel.requestPermission()
+        }
+        .task {
+            await mapAndListViewModel.fetchFilterOptions()
         }
         .fullScreenCover(isPresented: $showWalkCourseView) {
             WalkCourseView(viewModel: viewModel, showWalkCourseView: $showWalkCourseView) { distance, elapsedTime, stepCount, snapshot in

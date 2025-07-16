@@ -8,8 +8,6 @@
 import SwiftUI
 import Moya
 
-
-
 final class ProfileSetUpViewModel: ObservableObject {
         
     enum ProfileStep: Int {
