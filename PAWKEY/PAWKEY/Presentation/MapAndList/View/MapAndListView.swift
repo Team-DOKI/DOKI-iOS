@@ -155,28 +155,29 @@ extension MapAndListView {
                 }
             }
             .padding(.horizontal, 16)
-            
-            // 여기부터 리스트
-            ScrollView(showsIndicators: false) {
-                Spacer().frame(height: 34)
-                VStack {
-                    ForEach(mapAndListViewModel.posts, id: \.self) { post in
-                        ReviewCard(
-                            type: .others,
-                            walkRouteImg: post.representativeImageUrl,
-                            profileImg: post.writer.petProfileImageUrl,
-                            walkTitle: post.title,
-                            petName: post.writer.petName,
-                            postDate: post.createdAt,
-                            buttonPressed: post.isLike,
-                            data: post.descriptionTags
-                        )
+            if mapAndListViewModel.posts.isEmpty {
+                Color.pawkeyWhite2
+            } else {
+                ScrollView(showsIndicators: false) {
+                    Spacer().frame(height: 34)
+                    VStack {
+                        ForEach(mapAndListViewModel.posts, id: \.self) { post in
+                            ReviewCard(
+                                type: .others,
+                                walkRouteImg: post.representativeImageUrl,
+                                profileImg: post.writer.petProfileImageUrl,
+                                walkTitle: post.title,
+                                petName: post.writer.petName,
+                                postDate: post.createdAt,
+                                buttonPressed: post.isLike,
+                                data: post.descriptionTags
+                            )
+                        }
                     }
+                    .padding(.horizontal, 16)
                 }
-                .padding(.horizontal, 16)
+                .background(.pawkeyWhite2)
             }
-            .background(.pawkeyWhite2)
-            
         }
         .padding(.top, 10)
         .task {

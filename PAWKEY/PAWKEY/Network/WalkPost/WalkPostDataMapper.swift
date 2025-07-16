@@ -5,13 +5,14 @@
 //  Created by 권석기 on 7/16/25.
 //
 
+import Foundation
 
 extension Array where Element == PostDTO {
     func toEntity() -> [WalkPost] {
         map {
             WalkPost(
                 postId: $0.postId,
-                createdAt: $0.createdAt,
+                createdAt: $0.createdAt.toFormattedDateString() ?? "",
                 isLike: $0.isLike,
                 title: $0.title,
                 routeId: $0.routeId,
@@ -32,4 +33,3 @@ extension WriterDTO {
         )
     }
 }
-
