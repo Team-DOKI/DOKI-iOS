@@ -18,6 +18,8 @@ class CourseDetailViewModel: ObservableObject, Hashable {
         hasher.combine(id)
     }
     
+    let provider = MoyaProvider<WalkPostAPI>(plugins: [MoyaLoggingPlugin()])
+    
     let postId: Int
     let id = UUID()
     
@@ -27,6 +29,8 @@ class CourseDetailViewModel: ObservableObject, Hashable {
     @Published var isShowPhotoPreview = false
     @Published var isShowContextMenu = false
     @Published var isShowSharedWalkCourseView = false
+    @Published var topReviews: [CategoryTop] = []
+    @Published var reviewCount: Int = 0
     
     @Published var post: Post?
     
@@ -36,8 +40,6 @@ class CourseDetailViewModel: ObservableObject, Hashable {
     
     @MainActor
     func fetchCoruseDetail() async {
-        let provider = MoyaProvider<WalkPostAPI>(plugins: [MoyaLoggingPlugin()])
-        
         do {
             let response: BaseDTO<PostResponseDTO> = try await provider.async.request(.fetchPostDetail(postId: postId))
             
@@ -45,6 +47,25 @@ class CourseDetailViewModel: ObservableObject, Hashable {
                 return
             }
             self.post = data.toEntity()
+        } catch {
+            print("에러 발생: \(error.localizedDescription)")
+        }
+    }
+    
+    @MainActor
+    func fetchReviewsTop() async {
+        guard let routeId = post?.routeId else { return }
+        do {
+            let response: BaseDTO<WalkPostReviewDTO> = try await provider.async.request(.fetchReviewsTop(routeId: routeId))
+            
+            guard let data = response.data else {
+                return
+            }
+            topReviews = data.toEntity().categoryTop3
+            
+            self.reviewCount = data.toEntity().totalReviewCount
+            
+            print(reviewCount)
         } catch {
             print("에러 발생: \(error.localizedDescription)")
         }
