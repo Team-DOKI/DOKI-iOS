@@ -36,6 +36,12 @@ class ArchiveViewModel: ObservableObject {
         selectedOptions.values.allSatisfy { !$0.isEmpty }
     }
     
+    let routeId: Int
+    
+    init(routeId: Int) {
+        self.routeId = routeId
+    }
+    
     @MainActor
     func loadImagesFromPicker() async {
         var newImages: [UIImage] = []
@@ -125,7 +131,7 @@ extension ArchiveViewModel {
             description: reviewText,
             isPublic: isPublic,
             selectedOptionsForCategories: selectedCategoryOptions,
-            routeId: 54
+            routeId: routeId
         )
         
         let imageDatas = selectedImages.compactMap { $0.jpegData(compressionQuality: 0.8) }
@@ -136,7 +142,6 @@ extension ArchiveViewModel {
             )
             
             print("\(response.message)")
-            
             
             guard let postId = response.data?.postId else  {
                 return

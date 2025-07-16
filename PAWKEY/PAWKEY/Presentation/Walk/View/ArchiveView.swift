@@ -159,7 +159,7 @@ struct ArchiveView: View {
             }
             
             Task {
-                await viewModel.fetchCourseInfo(routeId: 54)
+                await viewModel.fetchCourseInfo(routeId: viewModel.routeId)
                 await viewModel.fetchCourseCategories()
             }
         }
