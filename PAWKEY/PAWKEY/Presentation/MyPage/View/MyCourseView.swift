@@ -31,16 +31,16 @@ struct MyCourseView: View {
         VStack {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
-                    ForEach(viewModel.myReviewList, id: \.id) { review in
+                    ForEach(viewModel.myCourses, id: \.id) { review in
                         ReviewCard(
                             type: .mine,
-                            walkRouteImg: review.walkRouteImg,
-                            profileImg: review.profileImg,
-                            walkTitle: review.walkTitle,
+                            walkRouteImg: review.imageUrl,
+                            profileImg: review.petImageUrl,
+                            walkTitle: review.title,
                             petName: review.petName,
-                            postDate: review.postDate,
-                            buttonPressed: review.buttonPressed,
-                            data: viewModel.tagList
+                            postDate: review.createdAt,
+                            buttonPressed: review.isLiked,
+                            data: review.tags
                         )
                         .onTapGesture {
                             coordinator.push(.courseDetail)
@@ -63,6 +63,11 @@ struct MyCourseView: View {
             Text("내가 기록한 산책 루트")
                 .font(.body_16_sb)
         })
+        .onAppear() {
+            Task {
+                await viewModel.fetchMyCourses()
+            }
+        }
         .ignoresSafeArea(edges: .bottom)
         
     }
