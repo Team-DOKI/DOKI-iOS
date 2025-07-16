@@ -33,3 +33,28 @@ extension WriterDTO {
         )
     }
 }
+
+// Review data mapping
+
+extension WalkPostReviewDTO {
+    func toEntity() -> WalkPostSummary {
+        return WalkPostSummary(
+            postId: postId,
+            totalReviewCount: totalReviewCount,
+            categoryTop3: categoryTop3.map { $0.toEntity() }
+        )
+    }
+}
+
+extension CategoryTopDTO {
+    func toEntity() -> CategoryTop {
+        return CategoryTop(
+            categoryId: categoryId,
+            categoryName: categoryName,
+            categoryOptionId: categoryOptionId,
+            optionText: optionText,
+            rank: rank,
+            percentage: percentage
+        )
+    }
+}
