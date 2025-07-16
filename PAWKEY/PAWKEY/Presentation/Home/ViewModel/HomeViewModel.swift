@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Moya
 
 struct Day: Hashable {
     let day: String
@@ -25,4 +26,25 @@ final class HomeViewModel: ObservableObject {
     ]
     @Published var isShowContextMenu = false
     @Published var dummyData = ["이륜차 거의 없음", "배변 쓰레기통", "쉼터", "편의점", "동반 카페", "아스팔트/벽돌", "시끌벅적"]
+    
+    @Published var myRegion: String = ""
+    
+    @MainActor
+    func fetchMyRegion() async {
+        let provider = MoyaProvider<MyRegionAPI>()
+        
+        do {
+            let response: BaseDTO<MyRegionDTO> = try await provider.async.request(.fetchMyRegion)
+            
+            guard let data = response.data else {
+                return
+            }
+            
+            self.myRegion = data.fullRegionName
+            
+            print(myRegion)
+        } catch {
+            print("Error fetching regions: \(error.localizedDescription)")
+        }
+    }
 }

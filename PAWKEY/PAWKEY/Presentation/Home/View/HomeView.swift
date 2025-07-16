@@ -65,6 +65,11 @@ struct HomeView: View {
         .contextMenu(isPresented: $viewModel.isShowMenu) {
             contextMenu
         }
+        .onAppear {
+            Task {
+                await viewModel.fetchMyRegion()
+            }
+        }
     }
     
     private var contextMenu: some View {
@@ -129,7 +134,7 @@ struct HomeView: View {
                 } label: {
                     HStack {
                         Image(.location)
-                        Text("강남구 역삼동")
+                        Text("\(viewModel.myRegion)")
                             .font(.body_14_sb)
                             .foregroundStyle(.pawkeyWhite1)
                         Image(.arrowDownWhite)
