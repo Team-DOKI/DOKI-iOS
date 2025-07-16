@@ -154,6 +154,7 @@ extension MapAndListView {
                                 FilterChip(title: $0.selectText)
                             }
                         }
+                        .padding(.vertical, 1)
                     }
                 }
             }
@@ -187,7 +188,9 @@ extension MapAndListView {
         }
         .padding(.top, 10)
         .task {
-            await mapAndListViewModel.fetchPosts()
+            if !mapAndListViewModel.isSearchRequested {
+                await mapAndListViewModel.fetchPosts()
+            }
         }
     }
 }

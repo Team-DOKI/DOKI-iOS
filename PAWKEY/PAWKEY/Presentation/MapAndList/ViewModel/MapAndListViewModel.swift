@@ -22,6 +22,8 @@ final class MapAndListViewModel: ObservableObject {
     @Published var addedFilterItem: [SelecteItem] = []
     @Published var selectedFilterItem: [SelecteItem] = []
     
+    @Published var isSearchRequested = false
+    
     func resetAllOptions() {
         singleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
         mutipleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
@@ -99,9 +101,9 @@ final class MapAndListViewModel: ObservableObject {
         self.selectedFilterItem = addedFilterItem
         self.isShowSheet = false
         
-        let selectedFilterRequest =  filterItemList.selecteList.dropFirst().filter { !($0.options.filter { $0.isSelected }.isEmpty) }
+        let selectedFilterRequest =  filterItemList.selecteList.filter { !($0.options.filter { $0.isSelected }.isEmpty) }
             .map { SelectedOption(categoryId: $0.selectId, optionsIds: $0.options.filter { $0.isSelected }.map { $0.selectOptionId })}
-        let categoryFilterRequest = filterItemList.categoryList.dropFirst().filter { !($0.options.filter { $0.isSelected }.isEmpty) }
+        let categoryFilterRequest = filterItemList.categoryList.filter { !($0.options.filter { $0.isSelected }.isEmpty) }
             .map { SelectedOption(categoryId: $0.selectId, optionsIds: $0.options.filter { $0.isSelected }.map { $0.selectOptionId })}
         let filterRequest = FilterRequest(durationStart: "", durationEnd: "", selectedOptions: selectedFilterRequest + categoryFilterRequest)
         
@@ -109,13 +111,23 @@ final class MapAndListViewModel: ObservableObject {
     }
     
     func onTapSingleItemGroup(selectId: Int) {
-        singleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
-        singleItemexpandedGroup.updateValue(true, forKey: selectId)
+        if singleItemexpandedGroup[selectId] == true {
+            singleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
+            singleItemexpandedGroup.updateValue(false, forKey: selectId)
+        } else {
+            singleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
+            singleItemexpandedGroup.updateValue(true, forKey: selectId)
+        }
     }
     
     func onTapMutipleItemGroup(selectId: Int) {
-        mutipleItemexpandedGroup = mutipleItemexpandedGroup.mapValues { _ in false }
-        mutipleItemexpandedGroup.updateValue(true, forKey: selectId)
+        if mutipleItemexpandedGroup[selectId] == true {
+            mutipleItemexpandedGroup = mutipleItemexpandedGroup.mapValues { _ in false }
+            mutipleItemexpandedGroup.updateValue(false, forKey: selectId)
+        } else {
+            mutipleItemexpandedGroup = mutipleItemexpandedGroup.mapValues { _ in false }
+            mutipleItemexpandedGroup.updateValue(true, forKey: selectId)
+        }
     }
 }
 
@@ -136,10 +148,11 @@ extension MapAndListViewModel {
         } catch {
             print("에러 발생: \(error.localizedDescription)")
         }
+        isSearchRequested = true
     }
     
     @MainActor
-    func fetchFilteredPosts(_ filterRequest: FilterRequest) async {
+    func fetchFilteredPosts(_ filterRequest: FilterRequest) async {        
         let provider = MoyaProvider<WalkPostAPI>(plugins: [MoyaLoggingPlugin()])
         do {
             let response: BaseDTO<PostDataDTO> = try await provider.async.request(.fetchPosts(filterRequest))
@@ -152,6 +165,7 @@ extension MapAndListViewModel {
         } catch {
             print(error.localizedDescription)
         }
+        isSearchRequested = true
     }
     
     @MainActor
