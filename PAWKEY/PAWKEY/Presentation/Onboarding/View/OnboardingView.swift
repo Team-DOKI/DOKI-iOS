@@ -17,7 +17,7 @@ struct OnboardingView: View {
         OnboardingPage(
             imageName: "onboarding1",
             title: "우리 강아지를 위한 산책,\nPAWKEY와 함께해요!",
-            highlight: "PAWKEY"
+            subtitle: " "
         ),
         OnboardingPage(
             imageName: "onboarding2",
@@ -26,11 +26,13 @@ struct OnboardingView: View {
         ),
         OnboardingPage(
             imageName: "onboarding3",
-            title: "매일매일 새로운 루트로!\n우리 강아지와 나만의 산책."
+            title: "매일매일 새로운 루트로!\n우리 강아지와 나만의 산책.",
+            subtitle: " "
         ),
         OnboardingPage(
             imageName: "onboarding4",
-            title: "산책을 기록하고 공유하고\n수집해보세요."
+            title: "산책을 기록하고 공유하고\n수집해보세요.",
+            subtitle: " "
         )
     ]
     
@@ -55,25 +57,30 @@ struct OnboardingView: View {
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                         
                         VStack(alignment: .leading, spacing: 8) {
-                            if let highlight = pages[selection].highlight {
-                                let parts = pages[selection].title.components(separatedBy: highlight)
-                                (
-                                    Text(parts.first ?? "") +
-                                    Text(highlight).foregroundStyle(.green500) +
-                                    Text(parts.count > 1 ? parts[1] : "")
-                                )
-                                .font(.head_24_b)
-                            } else {
-                                Text(pages[selection].title)
+                            let title = pages[selection].title
+                                let keyword = "PAWKEY"
+                                
+                                if title.contains(keyword) {
+                                    let parts = title.components(separatedBy: keyword)
+                                    
+                                    (
+                                        Text(parts.first ?? "")
+                                            .foregroundStyle(.pawkeyBlack) +
+                                        Text(keyword)
+                                            .foregroundColor(.green500) +
+                                        Text(parts.count > 1 ? parts[1] : "")
+                                            .foregroundColor(.pawkeyBlack)
+                                    )
                                     .font(.head_24_b)
-                                    .foregroundStyle(.green500)
-                            }
+                                } else {
+                                    Text(title)
+                                        .font(.head_24_b)
+                                        .foregroundColor(.primary)
+                                }
                             
-                            if let subtitle = pages[selection].subtitle {
-                                Text(subtitle)
-                                    .font(.body_16_m)
-                                    .foregroundColor(.gray400)
-                            }
+                            Text(pages[selection].subtitle)
+                                .font(.body_16_m)
+                                .foregroundColor(.gray400)
                         }
                         .padding(.horizontal, 24)
                         .padding(.top, 42)
@@ -123,12 +130,12 @@ struct OnboardingView: View {
             }
         }
         .contentShape(Rectangle())
-//        .gesture(
-//            DragGesture(minimumDistance: 0)
-//                .onEnded { value in
-//                    addPawPrint(at: value.location)
-//                }
-//        )
+        //        .gesture(
+        //            DragGesture(minimumDistance: 0)
+        //                .onEnded { value in
+        //                    addPawPrint(at: value.location)
+        //                }
+        //        )
         .animation(.easeInOut(duration: 0.5), value: pawPrints)
     }
     
