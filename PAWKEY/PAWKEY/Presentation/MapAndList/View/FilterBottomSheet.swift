@@ -36,8 +36,10 @@ struct FilterBottomSheet: View {
                             ),
                             title: selectedList.selectName,
                             items: selectedList.options
-                        ) { selected in
+                        ) { selected in                            
                             viewModel.selectSingleItem(selected)
+                        } onTapGroup: {
+                            viewModel.onTapSingleItemGroup(selectId: selectedList.selectId)
                         }
                     }
                     
@@ -49,7 +51,7 @@ struct FilterBottomSheet: View {
                         .padding(.leading, 16)
                         .animation(nil)
                     
-                    ForEach(viewModel.filterItemList.categoryList   , id: \.self) { selectedList in
+                    ForEach(viewModel.filterItemList.categoryList ,id: \.self) { selectedList in
                         CheckBoxGroup(
                             isExpanded: Binding(
                                 get: { viewModel.mutipleItemexpandedGroup[selectedList.selectId] ?? false },
@@ -59,6 +61,8 @@ struct FilterBottomSheet: View {
                             items: selectedList.options
                         ) { selected in
                             viewModel.selectMultipleItem(selected)
+                        } onTap: {
+                            viewModel.onTapMutipleItemGroup(selectId: selectedList.selectId)
                         }
                     }
                 }

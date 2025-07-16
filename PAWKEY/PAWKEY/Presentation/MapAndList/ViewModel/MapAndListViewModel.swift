@@ -16,11 +16,7 @@ final class MapAndListViewModel: ObservableObject {
     @Published var isShowSheet = false
     @Published var filterItem = FilterList()
     @Published var filterItemList = FilterList()
-    @Published var singleItemexpandedGroup: [Int: Bool] = [:] {
-        didSet {
-            print(singleItemexpandedGroup)
-        }
-    }
+    @Published var singleItemexpandedGroup: [Int: Bool] = [:]
     @Published var mutipleItemexpandedGroup: [Int: Bool] = [:]
     @Published var addedFilterItem: [SelecteItem] = []
     @Published var selectedFilterItem: [SelecteItem] = []
@@ -70,7 +66,6 @@ final class MapAndListViewModel: ObservableObject {
         }
         addedFilterItem.append(selected)
     }
-
     
     func selectMultipleItem(_ selected: SelecteItem) {
         guard let groupIndex = filterItemList.categoryList.firstIndex(where: {
@@ -101,6 +96,16 @@ final class MapAndListViewModel: ObservableObject {
     func saveFilterOption() {
         selectedFilterItem = addedFilterItem
         isShowSheet = false
+    }
+    
+    func onTapSingleItemGroup(selectId: Int) {
+        singleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
+        singleItemexpandedGroup.updateValue(true, forKey: selectId)
+    }
+    
+    func onTapMutipleItemGroup(selectId: Int) {
+        mutipleItemexpandedGroup = mutipleItemexpandedGroup.mapValues { _ in false }
+        mutipleItemexpandedGroup.updateValue(true, forKey: selectId)
     }
 }
 
