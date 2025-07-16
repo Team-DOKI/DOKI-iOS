@@ -190,7 +190,7 @@ extension CourseDetailView {
                     .foregroundStyle(.pawkeyBlack)
                 HStack(spacing: 4) {
                     Image(.editIconGray)
-                    Text("후기 숫자")
+                    Text("\(viewModel.reviewCount)")
                         .font(.caption_12_m)
                         .foregroundStyle(.gray200)
                 }
