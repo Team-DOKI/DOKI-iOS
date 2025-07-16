@@ -24,8 +24,8 @@ enum HomeScene: AppScene {
         case .acvitiyAreaMap:
             let viewModel = ActivityAreaMapViewModel()
             ActivityAreaMapView(viewModel: viewModel)
-        case .sharedCourseDetail(_):
-            let viewModel = CourseDetailViewModel()
+        case let .sharedCourseDetail(id):
+            let viewModel = CourseDetailViewModel(postId: id)
             CourseDetailView(viewModel: viewModel)
         }
     }
