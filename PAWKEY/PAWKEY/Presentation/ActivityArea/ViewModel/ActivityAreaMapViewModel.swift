@@ -21,13 +21,19 @@ class ActivityAreaMapViewModel: ObservableObject {
     
     @Published var isShowToast = false
     
+    let regionId: Int
+    
+    init(regionId: Int) {
+        self.regionId = regionId
+    }
+    
     @MainActor
     func fetchActivityArea(regionId: Int) async {
         do {
             let response: BaseDTO<RegionDTO> = try await provider.async.request(.fetchCoordinates(regionId: regionId))
             
             guard let data = response.data else {
-               print("데이터 없음")
+                print("데이터 없음")
                 return
             }
             print("\(response.message): \(data.regionName) 조회, 기존 산책 지역: \(data.preRegionName)")
@@ -56,7 +62,7 @@ class ActivityAreaMapViewModel: ObservableObject {
     @MainActor
     func updateUserRegion(regionId: Int) async {
         do {
-            try await provider.async.requestPlain(.updateUserRegion)
+            try await provider.async.requestPlain(.updateUserRegion(regionId: regionId))
             print("요청 처리 성공: 지역 변경 성공")
             
             self.isShowToast = true
