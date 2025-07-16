@@ -10,13 +10,11 @@ import Foundation
 struct OnboardingPage {
     let imageName: String
     let title: String
-    let subtitle: String?
-    let highlight: String?
+    let subtitle: String
     
-    init(imageName: String, title: String, subtitle: String? = nil, highlight: String? = nil) {
+    init(imageName: String, title: String, subtitle: String) {
         self.imageName = imageName
         self.title = title
         self.subtitle = subtitle
-        self.highlight = highlight
     }
 }
