@@ -38,6 +38,10 @@ final class WalkCourseViewModel: ObservableObject {
     @Published var elapsedTime: String = "00:00"
     @Published var stepCount: Int = 0
     
+    @Published var selectedMode: MapAndListTab = .map
+    @Published var showWalkCourseView = false
+    @Published var userTrackingMode: MKUserTrackingMode = .none    
+    
     init(locationManager: LocationManager = .shared) {
         self.locationManager = locationManager
         

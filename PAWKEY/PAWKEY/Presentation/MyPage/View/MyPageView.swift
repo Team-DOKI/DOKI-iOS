@@ -12,9 +12,11 @@ import Kingfisher
 struct MyPageView: View {
     @EnvironmentObject var coordinator: Coordinator<MyPageScene>
     @EnvironmentObject var mainTabViewModel: MainTabViewModel
+
     @StateObject private var petProfileViewModel = PetProfileViewModel()
-    
+    @StateObject private var userProfileViewModel = UserProfileViewModel()
     @StateObject var viewModel: MyPageViewModel
+
     
     init(viewModel: MyPageViewModel = MyPageViewModel()) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -36,9 +38,11 @@ struct MyPageView: View {
                 // 견주 프로필
                 HStack {
                     HStack {
-                        Text("김도기 님")
-                            .font(.head_18_sb)
-                            .foregroundColor(.pawkeyBlack)
+                        if let user = userProfileViewModel.userProfile {
+                            Text( user.name + " 님")
+                                .font(.head_18_sb)
+                                .foregroundColor(.pawkeyBlack)
+                        }
                         Text("견주")
                             .font(.caption_12_m)
                             .foregroundColor(.gray400)
@@ -216,6 +220,9 @@ struct MyPageView: View {
         .background(Color.pawkeyWhite2)
         .onAppear {
             petProfileViewModel.fetchPetProfile()
+            Task {
+                await userProfileViewModel.fetchUserProfile()
+            }
         }
     }
 }

@@ -12,8 +12,9 @@ struct CheckBoxGroup: View {
     
     let title: String
     
-    var items: [CheckItem]
-    var action: ((Int) -> Void)?
+    var items: [SelecteItem]
+    var action: ((SelecteItem) -> Void)?
+    var onTap: (() -> ())?
     
     var body: some View {
         VStack(alignment: .leading) {                      
@@ -35,13 +36,14 @@ struct CheckBoxGroup: View {
             .background(.white)
             .onTapGesture {
                 isExpanded.toggle()
+                onTap?()
             }
             if isExpanded {
                 VStack {
                     ForEach(Array(items.enumerated()), id: \.offset) { offset, item in
-                        CheckBoxCell(title: item.title, isSelected: item.isSelected)
+                        CheckBoxCell(title: item.selectText, isSelected: item.isSelected)
                             .onTapGesture {
-                                action?(offset)
+                                action?(item)
                             }
                     }
                 }
