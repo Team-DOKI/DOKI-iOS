@@ -43,7 +43,7 @@ struct Alert: View {
 
 struct LottieView: UIViewRepresentable {
     var name: String
-    var loopMode: LottieLoopMode = .loop
+    var loopMode: LottieLoopMode = .playOnce
     
     func makeUIView(context: Context) -> LottieAnimationView {
         let view = LottieAnimationView(name: name)
