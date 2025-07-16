@@ -52,12 +52,13 @@ struct MapAndListView: View {
             await mapAndListViewModel.fetchFilterOptions()
         }
         .fullScreenCover(isPresented: $walkCourseViewModel.showWalkCourseView) {
-            WalkCourseView(viewModel: walkCourseViewModel, showWalkCourseView: $walkCourseViewModel.showWalkCourseView) { distance, elapsedTime, stepCount, snapshot in
+            WalkCourseView(viewModel: walkCourseViewModel, showWalkCourseView: $walkCourseViewModel.showWalkCourseView) { distance, elapsedTime, stepCount, snapshot, routeId in
                 coordinator.push(.walkCompletion(
                     distance: distance,
                     elapsedTime: elapsedTime,
                     stepCount: stepCount,
-                    snapshot: snapshot
+                    snapshot: snapshot,
+                    routeId: walkCourseViewModel.routeId
                 ))
                 walkCourseViewModel.resetTrackingData()
             }
