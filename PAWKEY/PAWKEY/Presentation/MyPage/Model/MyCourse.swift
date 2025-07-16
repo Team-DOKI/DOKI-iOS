@@ -10,26 +10,26 @@ import Foundation
 struct MyCourse: Identifiable, Hashable {
     let id: Int
     let createdAt: String
-    let isLiked: Bool
     let title: String
     let imageUrl: String
     let routeId: Int
     let petName: String
     let petImageUrl: String
     let tags: [String]
+    let isPublic: Bool
 }
 
 extension MyCourse {
     init(dto: MyCourseDTO) {
         self.id = dto.postId
         self.createdAt = Self.formatDateWithISO8601(dto.createdAt)
-        self.isLiked = dto.isLike
         self.title = dto.title
         self.imageUrl = dto.representativeImageUrl
         self.routeId = dto.routeId
         self.petName = dto.writer.petName
         self.petImageUrl = dto.writer.petProfileImageUrl
         self.tags = dto.descriptionTags
+        self.isPublic = dto.isPublic
     }
     
     static func formatDateWithISO8601(_ dateString: String) -> String {
