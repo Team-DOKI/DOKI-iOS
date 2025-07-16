@@ -175,6 +175,9 @@ extension MapAndListView {
                                 buttonPressed: post.isLike,
                                 data: post.descriptionTags
                             )
+                            .onTapGesture {
+                                coordinator.push(.courseDetail(postId: post.postId))
+                            }
                         }
                     }
                     .padding(.horizontal, 16)
