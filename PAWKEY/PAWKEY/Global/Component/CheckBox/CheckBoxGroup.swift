@@ -14,6 +14,7 @@ struct CheckBoxGroup: View {
     
     var items: [SelecteItem]
     var action: ((SelecteItem) -> Void)?
+    var onTap: (() -> ())?
     
     var body: some View {
         VStack(alignment: .leading) {                      
@@ -35,6 +36,7 @@ struct CheckBoxGroup: View {
             .background(.white)
             .onTapGesture {
                 isExpanded.toggle()
+                onTap?()
             }
             if isExpanded {
                 VStack {

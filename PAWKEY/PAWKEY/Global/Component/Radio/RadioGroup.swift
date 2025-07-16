@@ -14,6 +14,7 @@ struct RadioGroup: View {
     
     var items: [SelecteItem]
     var action: ((SelecteItem) -> Void)?
+    var onTapGroup: (() -> ())?
     
     var body: some View {
         VStack {
@@ -34,6 +35,7 @@ struct RadioGroup: View {
             .padding(.horizontal, 16)
             .onTapGesture {
                 isExpanded.toggle()
+                onTapGroup?()
             }
             if isExpanded {
                 VStack {
