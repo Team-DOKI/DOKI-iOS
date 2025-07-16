@@ -43,7 +43,7 @@ struct MyCourseView: View {
                             data: review.tags
                         )
                         .onTapGesture {
-                            coordinator.push(.courseDetail)
+//                            coordinator.push(.courseDetail(postId: review.id))
                             mainTabViewModel.isHidden = true
                         }
                     }
