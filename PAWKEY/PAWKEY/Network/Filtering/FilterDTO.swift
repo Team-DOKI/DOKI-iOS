@@ -5,29 +5,35 @@
 //  Created by 권석기 on 7/16/25.
 //
 
-struct FilterDTO {
+import Foundation
+
+struct FilterDTO: Codable {
     let selectList: [SelectListDTO]
     let categoryList: [CategoryListDTO]
 }
 
-struct SelectListDTO {
+struct SelectListDTO: Codable {
     let selectId: Int
     let selectName: String
-    let options: [SelecteItemDTO]
+    let options: [SelectItemDTO]
 }
 
-struct SelecteItemDTO {
+struct SelectItemDTO: Codable {
     let selectOptionId: Int
     let selectText: String
 }
 
-struct CategoryListDTO {
+struct CategoryListDTO: Codable {
     let categoryId: Int
     let categoryName: String
-    let options: [SelecteItemDTO]
+    let categoryDescription: String
+    let options: [CategoryItemDTO]
 }
 
-struct CategoryItemDTO {
+struct CategoryItemDTO: Codable {
     let categoryOptionId: Int
     let optionText: String
 }
+
+
+
