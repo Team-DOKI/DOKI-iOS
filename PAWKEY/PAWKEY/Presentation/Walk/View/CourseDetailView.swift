@@ -14,6 +14,7 @@ struct CourseDetailView: View {
     
     @EnvironmentObject var mainTabViewModel: MainTabViewModel
     @EnvironmentObject var coordinator: Coordinator<WalkScene>
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -68,7 +69,7 @@ struct CourseDetailView: View {
         .topNavigationView(left: {
             BackButton {
                 mainTabViewModel.isHidden = false
-                coordinator.pop()
+                dismiss()
             }
         }, center: {
             Text("루트 상세정보")
