@@ -110,21 +110,7 @@ struct MapAndListView: View {
                                 }
                                 .overlay(Image(.settingGray))
                         }
-                        Spacer()
-                        if mapAndListViewModel.selectedOptions.isEmpty {
-                            HStack {
-                                FilterChip(title: "")
-                                Spacer()
-                            }
-                        } else {
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack {
-                                    ForEach(mapAndListViewModel.selectedOptions, id: \.self.id) {
-                                        FilterChip(title: $0.title)
-                                    }
-                                }
-                            }
-                        }
+                        Spacer()                     
                     }
                     .padding(.horizontal, 16)
                     
