@@ -10,7 +10,7 @@ import Foundation
 import Moya
 
 enum FilterAPI {
-    case fetchFilterOptions
+    case fetchFilterOptions(FilterRequest)
 }
 
 extension FilterAPI: BaseTargetType {
