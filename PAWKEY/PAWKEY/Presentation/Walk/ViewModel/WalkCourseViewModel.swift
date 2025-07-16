@@ -40,7 +40,8 @@ final class WalkCourseViewModel: ObservableObject {
     
     @Published var selectedMode: MapAndListTab = .map
     @Published var showWalkCourseView = false
-    @Published var userTrackingMode: MKUserTrackingMode = .none    
+    @Published var userTrackingMode: MKUserTrackingMode = .none
+    @Published var routeId: Int = 0
     
     init(locationManager: LocationManager = .shared) {
         self.locationManager = locationManager
@@ -280,13 +281,13 @@ extension WalkCourseViewModel {
 //MARK: - API
 
 extension WalkCourseViewModel {
-    func postWalkCourse(userId: Int, snapshotImage: UIImage?) async -> Int? {
+    func postWalkCourse(snapshotImage: UIImage?) async {
         let coords = pathCoordinates.map {
             WalkCoordinateDTO(longitude: $0.longitude, latitude: $0.latitude)
         }
         
         guard let startTime = startTime else {
-            return nil
+            return
         }
         
         let endTime = Date()
@@ -318,15 +319,15 @@ extension WalkCourseViewModel {
         걸음 수: \(stepCount)
         """)
             
-            if let routeId = response.data?.routeId {
-                print("routeId: \(routeId)")
-                return routeId
-            } else {
-                return nil
+            guard let routeId = response.data?.routeId else {
+                return
             }
+            self.routeId = routeId
+            
+            print("routeId: \(routeId)")
+            
         } catch {
             print("산책 루트 등록 실패: \(error.localizedDescription)")
-            return nil
         }
     }
 }

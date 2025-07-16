@@ -17,7 +17,7 @@ struct WalkCourseView: View {
     @State private var showStopConfirmation = false
     @State private var userTrackingMode: MKUserTrackingMode = .follow
 
-    let onComplete: (Double, String, Int, UIImage?) -> Void
+    let onComplete: (Double, String, Int, UIImage?, Int) -> Void
 
     var body: some View {
         ZStack {
@@ -64,15 +64,15 @@ struct WalkCourseView: View {
                                         continuation.resume(returning: image)
                                     }
                                 }
+                                await viewModel.postWalkCourse(snapshotImage: snapshot)
 
-                                let routeId = await viewModel.postWalkCourse(userId: 1234, snapshotImage: snapshot)
-                            
                                 showWalkCourseView = false
                                 onComplete(
                                     viewModel.distance,
                                     viewModel.elapsedTime,
                                     viewModel.stepCount,
-                                    snapshot
+                                    snapshot,
+                                    viewModel.routeId
                                 )
                             }
                         }
