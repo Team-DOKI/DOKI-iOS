@@ -7,110 +7,131 @@
 
 import SwiftUI
 
+import Moya
+
 final class MapAndListViewModel: ObservableObject {
     
-    enum WalkRouteOption {
-        case walkingTime(index: Int)
-        case safety(index: Int)
-        case convenience(index: Int)
-        case environment(index: Int)
-        case mood(index: Int)
-    }
+    private let provider = MoyaProvider<FilterAPI>(plugins: [MoyaLoggingPlugin()])
     
     @Published var isShowSheet = false
-    @Published var isExpandWalkingTime = false
-    @Published var isExpandSafety = false
-    @Published var isExpandConvenience = false
-    @Published var isExpandEnvironment = false
-    @Published var isExpandMood = false
-    
-    @Published var walkingTimeList: [CheckItem] = [
-        .init(title: "20분 이내", isSelected: false),
-        .init(title: "21~40분", isSelected: false),
-        .init(title: "41~60분", isSelected: false),
-        .init(title: "1시간 넘게", isSelected: false),
-    ]
-    
-    @Published var safetyList: [CheckItem] = [
-        .init(title: "킥보드/자전거 거의 없음", isSelected: false),
-        .init(title: "차량 거의 없음", isSelected: false),
-        .init(title: "야간에도 밝음", isSelected: false),
-        .init(title: "보도/차도 구분됨", isSelected: false),
-        .init(title: "넓은 보도", isSelected: false),
-    ]
-    
-    @Published var convenienceList: [CheckItem] = [
-        .init(title: "배변 봉투 쓰레기통", isSelected: false),
-        .init(title: "벤치", isSelected: false),
-        .init(title: "편의점", isSelected: false),
-        .init(title: "반려견 동반 카페", isSelected: false),
-    ]
-    
-    @Published var environmentList: [CheckItem] = [
-        .init(title: "풀 많은 길 위주", isSelected: false),
-        .init(title: "흙길 위주", isSelected: false),
-        .init(title: "아스팔트/벽돌길 위주", isSelected: false),
-        .init(title: "뛰어놀 공간", isSelected: false),
-    ]
-    
-    @Published var moodList: [CheckItem] = [
-        .init(title: "조용한 분위기", isSelected: false),
-        .init(title: "적당한 유동인구", isSelected: false),
-        .init(title: "유동 인구 많음", isSelected: false),
-    ]
-    
-    var selectedOptions: [CheckItem] {
-        return walkingTimeList.filter { $0.isSelected } +
-        safetyList.filter { $0.isSelected } +
-        convenienceList.filter { $0.isSelected } +
-        environmentList.filter { $0.isSelected } +
-        moodList.filter { $0.isSelected }
-    }
-    
-    func selectWalkRouteOption(_ option: WalkRouteOption) {
-        switch option {
-        case .walkingTime(let index):
-            walkingTimeList = selecteMultipleOption(at: index, from: walkingTimeList)
-        case .safety(let index):
-            safetyList = selecteMultipleOption(at: index, from: safetyList)
-        case .convenience(let index):
-            convenienceList = selecteMultipleOption(at: index, from: convenienceList)
-        case .environment(let index):
-            environmentList = selecteSingleOption(at: index, from: environmentList)
-        case .mood(let index):
-            moodList = selecteSingleOption(at: index, from: moodList)
-        }
-    }
+    @Published var filterItem = FilterList()
+    @Published var filterItemList = FilterList()
+    @Published var singleItemexpandedGroup: [Int: Bool] = [:]
+    @Published var mutipleItemexpandedGroup: [Int: Bool] = [:]
+    @Published var addedFilterItem: [SelecteItem] = []
+    @Published var selectedFilterItem: [SelecteItem] = []
     
     func resetAllOptions() {
-        walkingTimeList = walkingTimeList.map { .init(title: $0.title, isSelected: false)}
-        safetyList = safetyList.map { .init(title: $0.title, isSelected: false)}
-        convenienceList = convenienceList.map { .init(title: $0.title, isSelected: false)}
-        environmentList = environmentList.map { .init(title: $0.title, isSelected: false)}
-        moodList = moodList.map { .init(title: $0.title, isSelected: false)}
-        isExpandWalkingTime = false
-        isExpandSafety = false
-        isExpandConvenience = false
-        isExpandEnvironment = false
-        isExpandMood = false
-    }
-    
-    private func selecteSingleOption(at index: Int, from list: [CheckItem]) -> [CheckItem] {
-        var newList = list
+        singleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
+        mutipleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
         
-        if let firstIndex = list.firstIndex(where: {$0.isSelected}) {
-            newList[firstIndex].isSelected = false
-            newList[index].isSelected = true            
-        } else {
-            newList[index].isSelected = true
+        filterItemList.selecteList = filterItemList.selecteList.map { group in
+            var g = group
+            g.options = g.options.map {
+                SelecteItem(selectOptionId: $0.selectOptionId, selectText: $0.selectText, isSelected: false)
+            }
+            return g
         }
         
-        return newList
+        filterItemList.categoryList = filterItemList.categoryList.map { group in
+            var g = group
+            g.options = g.options.map {
+                SelecteItem(selectOptionId: $0.selectOptionId, selectText: $0.selectText, isSelected: false)
+            }
+            return g
+        }
+
+        addedFilterItem = []
+        selectedFilterItem = []
     }
     
-    private func selecteMultipleOption(at index: Int, from list: [CheckItem]) -> [CheckItem] {
-        var newList = list
-        newList[index].isSelected.toggle()
-        return newList
+    func selectSingleItem(_ selected: SelecteItem) {
+        guard let groupIndex = filterItemList.selecteList.firstIndex(where: {
+            $0.options.contains(where: { $0.selectOptionId == selected.selectOptionId })
+        }) else { return }
+        
+        var group = filterItemList.selecteList[groupIndex]
+        group.options = group.options.map {
+            SelecteItem(
+                selectOptionId: $0.selectOptionId,
+                selectText: $0.selectText,
+                isSelected: $0.selectOptionId == selected.selectOptionId
+            )
+        }
+
+        filterItemList.selecteList[groupIndex] = group
+        
+        addedFilterItem.removeAll {
+            group.options.map(\.selectOptionId).contains($0.selectOptionId)
+        }
+        addedFilterItem.append(selected)
+    }
+    
+    func selectMultipleItem(_ selected: SelecteItem) {
+        guard let groupIndex = filterItemList.categoryList.firstIndex(where: {
+            $0.options.contains(where: { $0.selectOptionId == selected.selectOptionId })
+        }) else { return }
+
+        var group = filterItemList.categoryList[groupIndex]
+        group.options = group.options.map {
+            if $0.selectOptionId == selected.selectOptionId {
+                return SelecteItem(
+                    selectOptionId: $0.selectOptionId,
+                    selectText: $0.selectText,
+                    isSelected: !$0.isSelected
+                )
+            }
+            return $0
+        }
+
+        filterItemList.categoryList[groupIndex] = group
+
+        if let index = addedFilterItem.firstIndex(where: { $0.selectOptionId == selected.selectOptionId }) {
+            addedFilterItem.remove(at: index)
+        } else {
+            addedFilterItem.append(selected)
+        }
+    }
+    
+    func saveFilterOption() {
+        selectedFilterItem = addedFilterItem
+        isShowSheet = false
+    }
+    
+    func onTapSingleItemGroup(selectId: Int) {
+        singleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
+        singleItemexpandedGroup.updateValue(true, forKey: selectId)
+    }
+    
+    func onTapMutipleItemGroup(selectId: Int) {
+        mutipleItemexpandedGroup = mutipleItemexpandedGroup.mapValues { _ in false }
+        mutipleItemexpandedGroup.updateValue(true, forKey: selectId)
+    }
+}
+
+// MARK: - API
+
+extension MapAndListViewModel {
+    
+    @MainActor
+    func fetchFilterOptions() async {
+        
+        do {
+            let response: BaseDTO<FilterDTO> = try await provider.async.request(.fetchFilterOptions)
+            
+            guard let data = response.data else {
+                return
+            }
+            
+            let selectList = data.selectList.toEntity()
+            let categoryList = data.categoryList.toEntity()
+            
+            filterItemList.selecteList = selectList + Array(categoryList.prefix(2))
+            filterItemList.categoryList = Array(categoryList.dropFirst(2))            
+            filterItem.selecteList = selectList + Array(categoryList.prefix(2))
+            filterItem.categoryList = Array(categoryList.dropFirst(2))
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 }

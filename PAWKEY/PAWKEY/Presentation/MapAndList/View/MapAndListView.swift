@@ -111,7 +111,7 @@ struct MapAndListView: View {
                                 .overlay(Image(.settingGray))
                         }
                         Spacer()
-                        if mapAndListViewModel.selectedOptions.isEmpty {
+                        if mapAndListViewModel.selectedFilterItem.isEmpty {
                             HStack {
                                 FilterChip(title: "")
                                 Spacer()
@@ -119,10 +119,11 @@ struct MapAndListView: View {
                         } else {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack {
-                                    ForEach(mapAndListViewModel.selectedOptions, id: \.self.id) {
-                                        FilterChip(title: $0.title)
+                                    ForEach(mapAndListViewModel.selectedFilterItem, id: \.self) {
+                                        FilterChip(title: $0.selectText)
                                     }
                                 }
+                                .padding(.vertical, 1)
                             }
                         }
                     }
@@ -153,6 +154,9 @@ struct MapAndListView: View {
         .onAppear {
             viewModel.requestPermission()
         }
+        .task {
+            await mapAndListViewModel.fetchFilterOptions()
+        }
         .fullScreenCover(isPresented: $showWalkCourseView) {
             WalkCourseView(viewModel: viewModel, showWalkCourseView: $showWalkCourseView) { distance, elapsedTime, stepCount, snapshot in
                 coordinator.push(.walkCompletion(
@@ -180,11 +184,10 @@ struct TabButton: View {
     
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 4) {
+            VStack(spacing: 10) {
                 Text(title)
                     .font(.head_22_b)
                     .foregroundColor(isSelected ? .pawkeyBlack : .gray200)
-                    .padding(10)
                 
                 if isSelected {
                     Rectangle()
