@@ -35,7 +35,7 @@ struct SavedCourseView: View {
                             data: course.tags
                         )
                         .onTapGesture {
-                            coordinator.push(.courseDetail)
+                            coordinator.push(.courseDetail(postId: course.id))
                             mainTabViewModel.isHidden = true
                         }
                     }
