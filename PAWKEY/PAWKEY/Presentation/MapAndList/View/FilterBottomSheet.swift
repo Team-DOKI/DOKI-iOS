@@ -31,13 +31,13 @@ struct FilterBottomSheet: View {
                     ForEach(viewModel.filterItemList.selecteList, id: \.self) { selectedList in
                         RadioGroup(
                             isExpanded: Binding(
-                                get: { viewModel.expandedGroup[selectedList.selectId] ?? false },
-                                set: { viewModel.expandedGroup[selectedList.selectId] = $0 }
+                                get: { viewModel.singleItemexpandedGroup[selectedList.selectId] ?? false },
+                                set: { viewModel.singleItemexpandedGroup[selectedList.selectId] = $0 }
                             ),
                             title: selectedList.selectName,
                             items: selectedList.options
-                        ) { selectedItem in
-                            print(selectedItem)
+                        ) { selected in
+                            viewModel.selectSingleItem(selected)
                         }
                     }
                     
@@ -52,13 +52,13 @@ struct FilterBottomSheet: View {
                     ForEach(viewModel.filterItemList.categoryList   , id: \.self) { selectedList in
                         CheckBoxGroup(
                             isExpanded: Binding(
-                                get: { viewModel.expandedGroup[selectedList.selectId] ?? false },
-                                set: { viewModel.expandedGroup[selectedList.selectId] = $0 }
+                                get: { viewModel.mutipleItemexpandedGroup[selectedList.selectId] ?? false },
+                                set: { viewModel.mutipleItemexpandedGroup[selectedList.selectId] = $0 }
                             ),
                             title: selectedList.selectName,
                             items: selectedList.options
-                        ) { selectedItem in
-                            print(selectedItem)
+                        ) { selected in
+                            viewModel.selectMultipleItem(selected)
                         }
                     }
                 }
@@ -66,7 +66,7 @@ struct FilterBottomSheet: View {
         }
         HStack {
             CTAButton(title: "옵션 적용하기") {
-                viewModel.isShowSheet = false
+                viewModel.saveFilterOption()
             }
             Button {
                 viewModel.resetAllOptions()
@@ -82,8 +82,5 @@ struct FilterBottomSheet: View {
             )
         }
         .padding(.horizontal, 16)
-        .task {
-            await viewModel.fetchFilterOptions()
-        }
     }
 }
