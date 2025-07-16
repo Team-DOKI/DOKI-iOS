@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import Kingfisher
+
 struct SavedCourseView: View {
     @EnvironmentObject var coordinator: Coordinator<MyPageScene>
     @EnvironmentObject var mainTabViewModel: MainTabViewModel
@@ -21,16 +23,16 @@ struct SavedCourseView: View {
         VStack {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
-                    ForEach(viewModel.otherReviewList, id : \.id) { review in
+                    ForEach(viewModel.savedCourses) { course in
                         ReviewCard(
                             type: .others,
-                            walkRouteImg: review.walkRouteImg,
-                            profileImg: review.profileImg,
-                            walkTitle: review.walkTitle,
-                            petName: review.petName,
-                            postDate: review.postDate,
-                            buttonPressed: review.buttonPressed,
-                            data: viewModel.tagList
+                            walkRouteImg: course.imageUrl,
+                            profileImg: course.petImageUrl,
+                            walkTitle: course.title,
+                            petName: course.petName,
+                            postDate: course.createdAt,
+                            buttonPressed: course.isLiked,
+                            data: course.tags
                         )
                         .onTapGesture {
                             coordinator.push(.courseDetail)
@@ -52,6 +54,11 @@ struct SavedCourseView: View {
             Text("저장한 산책 루트")
                 .font(.body_16_sb)
         })
+        .onAppear() {
+            Task {
+                await viewModel.fetchSavedCourses()
+            }
+        }
         .ignoresSafeArea(edges: .bottom)
         
     }
