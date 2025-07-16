@@ -9,7 +9,7 @@ import SwiftUI
 
 enum WalkScene: AppScene {
     case courseList
-    case courseDetail(CourseDetailViewModel)
+    case courseDetail(postId: Int)
     case walkCompletion(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?)
     case archive(snapshot: UIImage?)
     case sharedWalkCompletion(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?)
@@ -20,7 +20,8 @@ enum WalkScene: AppScene {
         switch self {
         case .courseList:
             MapAndListView()
-        case .courseDetail(let viewModel):
+        case .courseDetail(let postId):
+            let viewModel = CourseDetailViewModel(postId: postId)
             CourseDetailView(viewModel: viewModel)
         case .walkCompletion(let distance, let elapsedTime, let stepCount, let snapshot):
             let viewModel = WalkCompletionViewModel(

@@ -11,12 +11,15 @@ import Moya
 
 enum WalkPostAPI {
     case fetchPosts
+    case fetchPostDetail(postId: Int)
 }
 
 extension WalkPostAPI: BaseTargetType {
     var headerType: HeaderType {
         switch self {
         case .fetchPosts:
+            return .userHeader(userId: 2)
+        default:
             return .userHeader(userId: 2)
         }
     }
@@ -25,6 +28,8 @@ extension WalkPostAPI: BaseTargetType {
         switch self {
         case .fetchPosts:
             return "posts/filter"
+        case let .fetchPostDetail(postId):
+            return "posts/\(postId)"
         }
     }
     
@@ -32,6 +37,8 @@ extension WalkPostAPI: BaseTargetType {
         switch self {
         case .fetchPosts:
             return .post
+        case .fetchPostDetail(_):
+            return .get
         }
     }
     
@@ -49,6 +56,8 @@ extension WalkPostAPI: BaseTargetType {
                 ]
             )
             return .requestJSONEncodable(dummy)
+        case .fetchPostDetail(_):
+            return .requestPlain
         }
     }
 }

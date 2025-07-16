@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import Moya
+
 class CourseDetailViewModel: ObservableObject, Hashable {
     static func == (lhs: CourseDetailViewModel, rhs: CourseDetailViewModel) -> Bool {
         lhs.id == rhs.id
@@ -16,6 +18,7 @@ class CourseDetailViewModel: ObservableObject, Hashable {
         hasher.combine(id)
     }
     
+    let postId: Int
     let id = UUID()
     
     @Published var images: [UIImage] = []
@@ -24,4 +27,26 @@ class CourseDetailViewModel: ObservableObject, Hashable {
     @Published var isShowPhotoPreview = false
     @Published var isShowContextMenu = false
     @Published var isShowSharedWalkCourseView = false
+    
+    @Published var post: Post?
+    
+    init(postId: Int) {
+        self.postId = postId
+    }
+    
+    @MainActor
+    func fetchCoruseDetail() async {
+        let provider = MoyaProvider<WalkPostAPI>(plugins: [MoyaLoggingPlugin()])
+        
+        do {
+            let response: BaseDTO<PostResponseDTO> = try await provider.async.request(.fetchPostDetail(postId: postId))
+            
+            guard let data = response.data else {
+                return
+            }
+            self.post = data.toEntity()
+        } catch {
+            print("에러 발생: \(error.localizedDescription)")
+        }
+    }
 }

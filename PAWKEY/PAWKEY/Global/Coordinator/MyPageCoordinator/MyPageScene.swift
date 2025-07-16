@@ -13,7 +13,7 @@ enum MyPageScene: AppScene {
     case petProfile
     case savedCourse
     case myCourse
-    case courseDetail
+    case courseDetail(postId: Int)
     
     @ViewBuilder
     func build() -> some View {
@@ -32,8 +32,8 @@ enum MyPageScene: AppScene {
         case .myCourse:
             let viewModel = MyCourseViewModel()
             MyCourseView(viewModel: viewModel)
-        case .courseDetail:
-            CourseDetailView(viewModel: CourseDetailViewModel())
+        case let .courseDetail(postId):
+            CourseDetailView(viewModel: CourseDetailViewModel(postId: postId))
         }
     }
 }
