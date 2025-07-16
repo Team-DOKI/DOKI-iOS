@@ -80,7 +80,9 @@ struct WalkCompletionView: View {
                     isDisabled: false,
                     buttonStyle: .filled
                 ) {
-                    coordinator.push(.archive(snapshot: viewModel.snapshot))
+                    coordinator.push(
+                        .archive(routeId: viewModel.routeId)
+                    )
                 }
                 .padding(.bottom, 26)
             }
