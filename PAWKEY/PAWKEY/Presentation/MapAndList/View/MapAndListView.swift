@@ -48,6 +48,9 @@ struct MapAndListView: View {
         .onAppear {
             walkCourseViewModel.requestPermission()
         }
+        .task {
+            await mapAndListViewModel.fetchFilterOptions()
+        }
         .fullScreenCover(isPresented: $walkCourseViewModel.showWalkCourseView) {
             WalkCourseView(viewModel: walkCourseViewModel, showWalkCourseView: $walkCourseViewModel.showWalkCourseView) { distance, elapsedTime, stepCount, snapshot in
                 coordinator.push(.walkCompletion(
@@ -139,7 +142,7 @@ extension MapAndListView {
                         .overlay(Image(.settingGray))
                 }
                 Spacer()
-                if mapAndListViewModel.selectedOptions.isEmpty {
+                if mapAndListViewModel.selectedFilterItem.isEmpty {
                     HStack {
                         FilterChip(title: "")
                         Spacer()
@@ -147,8 +150,8 @@ extension MapAndListView {
                 } else {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
-                            ForEach(mapAndListViewModel.selectedOptions, id: \.self.id) {
-                                FilterChip(title: $0.title)
+                            ForEach(mapAndListViewModel.selectedFilterItem, id: \.self) {
+                                FilterChip(title: $0.selectText)
                             }
                         }
                     }

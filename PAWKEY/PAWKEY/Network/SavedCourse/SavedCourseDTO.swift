@@ -22,8 +22,8 @@ struct SavedCourseDTO: Codable {
     let descriptionTags: [String]
 }
 
-struct WriterDTO: Codable {
-    let userId: Int
-    let petName: String
-    let petProfileImageUrl: String
-}
+//struct WriterDTO: Codable {
+//    let userId: Int
+//    let petName: String
+//    let petProfileImageUrl: String
+//}
