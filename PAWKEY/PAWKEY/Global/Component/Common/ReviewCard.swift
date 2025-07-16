@@ -43,7 +43,8 @@ struct ReviewCard: View {
             ZStack(alignment: .bottom) {
                 KFImage(URL(string: walkRouteImg))
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .frame(minHeight: 240, maxHeight: 240)
+                    .aspectRatio(contentMode: .fill)
                     .overlay(
                         // 그라데이션 오버레이
                         LinearGradient(
