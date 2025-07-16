@@ -70,7 +70,9 @@ struct FilterBottomSheet: View {
         }
         HStack {
             CTAButton(title: "옵션 적용하기") {
-                viewModel.saveFilterOption()
+                Task {
+                    await viewModel.saveFilterOption()
+                }
             }
             Button {
                 viewModel.resetAllOptions()
