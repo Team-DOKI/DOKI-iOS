@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import Kingfisher
+
 struct CourseDetailView: View {
     @StateObject private var sharedWalkCourseViewModel = SharedWalkCourseViewModel()
     
@@ -40,6 +42,9 @@ struct CourseDetailView: View {
                     .padding(.horizontal, 16)
                 divider
                 Spacer().frame(height: 116)
+            }
+            .task {
+                await viewModel.fetchCoruseDetail()
             }
         }
         .ignoresSafeArea(.all, edges: .bottom)
@@ -89,36 +94,30 @@ struct CourseDetailView: View {
                 sharedWalkCourseViewModel.resetTrackingData()
             }
         }
+        .task {
+            await viewModel.fetchCoruseDetail()
+        }
     }
 }
 
 extension CourseDetailView {
     private var walkCourseImageView: some View {
-        Group {
-            if let snapshot = viewModel.images.first {
-                Image(uiImage: snapshot)
-                    .resizable()
-                //                    .scaledToFit()
-                    .frame(height: 250)
-                    .frame(maxWidth: .infinity)
-                    .clipped()
-            } else {
-                Rectangle()
-                    .fill(Color.pawkeyWhite2)
-                    .frame(height: 250)
-                    .frame(maxWidth: .infinity)
-            }
-        }
+            KFImage(URL(string: viewModel.post?.routeImageUrl ?? ""))
+                .resizable()
+                .frame(minHeight: 250, maxHeight: 250)
+                .frame(maxWidth: .infinity)
+                .aspectRatio(contentMode: .fit)
+                .clipped()
     }
     
     private var titleView: some View {
         VStack(spacing: 0) {
             HStack(spacing: 10) {
-                Text("제목 제목 제목")
+                Text(viewModel.post?.title ?? "")
                     .font(.head_20_sb)
                     .foregroundColor(.pawkeyBlack)
                 Spacer()
-                if viewModel.isPrivate {
+                if (viewModel.post?.isLiked ?? false) {
                     Image(.heartIconFill)
                 } else {
                     Image(.heartIconGray)
@@ -129,11 +128,13 @@ extension CourseDetailView {
     
     private var dogProfileView: some View {
         HStack(spacing: 10) {
-            Circle()
-                .fill(Color.green)
-                .frame(width: 43, height: 43)
-            
-            Text("강아지 이름")
+            KFImage(URL(string: viewModel.post?.author.petProfileImage ?? ""))
+                .resizable()
+                .frame(maxWidth: 43, maxHeight: 43)
+                .aspectRatio(contentMode: .fit)
+                .clipShape(Circle())
+                            
+            Text(viewModel.post?.author.petName ?? "")
                 .font(.body_16_sb)
                 .foregroundColor(.pawkeyBlack)
         }
@@ -161,10 +162,7 @@ extension CourseDetailView {
                 .padding(.bottom, 12)
             }
             
-            Text("""
-                 후기 글 본문 후기 글 본문 후기 글 본문ㅇ
-                 후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ
-                """)
+            Text(viewModel.post?.content ?? "")
             .font(.body_14_r)
             .foregroundStyle(.pawkeyBlack)
             .padding(.bottom, 12)
@@ -209,15 +207,17 @@ extension CourseDetailView {
     
     private var locationDateInfoView: some View {
         VStack(alignment: .leading) {
-            TimePlaceCell(type: .place("강남구 역삼동"))
+            TimePlaceCell(type: .place(viewModel.post?.region ?? ""))
                 .padding(.bottom, 4)
             
-            TimePlaceCell(type: .time("2025.07.08(화) | 오후 11:28"))
+            TimePlaceCell(type: .time(viewModel.post?.createdDate ?? ""))
                 .padding(.bottom, 12)
-            
-            Chip(title: "옵션")
-                .padding(.top, 10)
-                .padding(.bottom, 12)
+
+            FlexibleGrid(availableWidth: UIScreen.main.bounds.width - 32,
+                         data: viewModel.post?.tags ?? [],
+                         spacing: 8, alignment: .leading) {
+                            Chip(title: $0)
+            }
         }
     }
     
