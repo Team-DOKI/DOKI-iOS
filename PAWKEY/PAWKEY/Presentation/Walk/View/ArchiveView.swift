@@ -171,6 +171,9 @@ struct ArchiveView: View {
                 await viewModel.loadImagesFromPicker()
             }
         }
+        .onTapGesture {
+            UIApplication.shared.hideKeyboard()
+        }
     }
     
     private func pushCourseDetail(isPrivate: Bool) {
