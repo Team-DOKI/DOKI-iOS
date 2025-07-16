@@ -14,10 +14,6 @@ struct ActivityAreaMapView: View {
     
     @StateObject var viewModel: ActivityAreaMapViewModel
     
-    init(viewModel: ActivityAreaMapViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
-    }
-    
     var body: some View {
         ZStack(alignment: .bottom) {
             PolygonMapView(region: viewModel.region, polygons: viewModel.activityAreas.map { $0.coordinates })
@@ -58,7 +54,7 @@ struct ActivityAreaMapView: View {
                             
                             CTAButton(title: "지역 변경하기") {
                                 Task {
-                                    await viewModel.updateUserRegion(regionId: 40)
+                                    await viewModel.updateUserRegion(regionId: viewModel.regionId)
                                     
                                     withAnimation {
                                         viewModel.isShowToast = true
@@ -98,7 +94,7 @@ struct ActivityAreaMapView: View {
         })
         .onAppear {
             Task {
-                await viewModel.fetchActivityArea(regionId: 40)
+                await viewModel.fetchActivityArea(regionId: viewModel.regionId)
             }
         }
     }
