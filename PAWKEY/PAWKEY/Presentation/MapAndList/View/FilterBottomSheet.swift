@@ -12,43 +12,15 @@ struct FilterBottomSheet: View {
     
     var body: some View {
         VStack {
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading) {
                     Spacer().frame(height: 28)
                     Text("산책 경로 옵션")
                         .font(.head_20_b)
                         .padding(.leading, 16)
-                    Spacer().frame(height: 36)
-                    Text("복수 선택 옵션")
-                        .font(.caption_12_sb)
-                        .foregroundStyle(.green500)
-                        .frame(maxWidth: .infinity, maxHeight: 30, alignment: .leading)
-                        .padding(.leading, 16)
-                        .animation(nil)
-                    CheckBoxGroup(
-                        isExpanded: $viewModel.isExpandWalkingTime,
-                        title: "산책 시간",
-                        items: viewModel.walkingTimeList
-                    ) { itemIndex in
-                        viewModel.selectWalkRouteOption(.walkingTime(index: itemIndex))
-                    }
-                    CheckBoxGroup(
-                        isExpanded: $viewModel.isExpandSafety,
-                        title: "안전",
-                        items: viewModel.safetyList
-                    ) { itemIndex in
-                        viewModel.selectWalkRouteOption(.safety(index: itemIndex))
-                    }
-                    
-                    CheckBoxGroup(
-                        isExpanded: $viewModel.isExpandConvenience,
-                        title: "편리성 관련",
-                        items: viewModel.convenienceList
-                    ) { itemIndex in
-                        viewModel.selectWalkRouteOption(.convenience(index: itemIndex))
-                    }
                     
                     Spacer().frame(height: 36)
+                    
                     Text("단일 선택 옵션")
                         .font(.caption_12_sb)
                         .foregroundStyle(.green500)
@@ -56,41 +28,62 @@ struct FilterBottomSheet: View {
                         .padding(.leading, 16)
                         .animation(nil)
                     
-                    RadioGroup(
-                        isExpanded: $viewModel.isExpandEnvironment,
-                        title: "환경 관련",
-                        items: viewModel.environmentList
-                    ) { itemIndex in
-                        viewModel.selectWalkRouteOption(.environment(index: itemIndex))
+                    ForEach(viewModel.filterItemList.selecteList, id: \.self) { selectedList in
+                        RadioGroup(
+                            isExpanded: Binding(
+                                get: { viewModel.expandedGroup[selectedList.selectId] ?? false },
+                                set: { viewModel.expandedGroup[selectedList.selectId] = $0 }
+                            ),
+                            title: selectedList.selectName,
+                            items: selectedList.options
+                        ) { selectedItem in
+                            print(selectedItem)
+                        }
                     }
                     
-                    RadioGroup(
-                        isExpanded: $viewModel.isExpandMood,
-                        title: "분위기",
-                        items: viewModel.moodList
-                    ) { itemIndex in
-                        viewModel.selectWalkRouteOption(.mood(index: itemIndex))
+                    Spacer().frame(height: 36)
+                    Text("복수 선택 옵션")
+                        .font(.caption_12_sb)
+                        .foregroundStyle(.green500)
+                        .frame(maxWidth: .infinity, maxHeight: 30, alignment: .leading)
+                        .padding(.leading, 16)
+                        .animation(nil)
+                    
+                    ForEach(viewModel.filterItemList.categoryList   , id: \.self) { selectedList in
+                        CheckBoxGroup(
+                            isExpanded: Binding(
+                                get: { viewModel.expandedGroup[selectedList.selectId] ?? false },
+                                set: { viewModel.expandedGroup[selectedList.selectId] = $0 }
+                            ),
+                            title: selectedList.selectName,
+                            items: selectedList.options
+                        ) { selectedItem in
+                            print(selectedItem)
+                        }
                     }
                 }
             }
-            HStack {
-                CTAButton(title: "옵션 적용하기") {
-                    viewModel.isShowSheet = false
-                }
-                Button {
-                    viewModel.resetAllOptions()
-                } label: {
-                    VStack {
-                        Image(.rotateIcon)
-                    }
-                    .frame(maxWidth: 56, minHeight: 56)
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(.gray50)
-                )
+        }
+        HStack {
+            CTAButton(title: "옵션 적용하기") {
+                viewModel.isShowSheet = false
             }
-            .padding(.horizontal, 16)
+            Button {
+                viewModel.resetAllOptions()
+            } label: {
+                VStack {
+                    Image(.rotateIcon)
+                }
+                .frame(maxWidth: 56, minHeight: 56)
+            }
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(.gray50)
+            )
+        }
+        .padding(.horizontal, 16)
+        .task {
+            await viewModel.fetchFilterOptions()
         }
     }
 }
