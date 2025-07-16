@@ -8,8 +8,6 @@
 import SwiftUI
 import Moya
 
-
-
 final class ProfileSetUpViewModel: ObservableObject {
         
     enum ProfileStep: Int {
@@ -180,13 +178,12 @@ extension ProfileSetUpViewModel {
         let provider = MoyaProvider<UserAPI>(plugins: [MoyaLoggingPlugin()])
         
         do {
-            let response: BaseDTO<PetTraitDTO> = try await provider.async.request(.updateUserProfile(userProfile))
+            let response: BaseDTO<PostDataDTO> = try await provider.async.request(.updateUserProfile(userProfile))
             
             guard let data = response.data else {
                 errorMessage = "에러 발생: 데이터를 찾을 수 없음"
                 return
             }
-            print(data)
         } catch {
             errorMessage = "에러 발생: \(error.localizedDescription)"
         }

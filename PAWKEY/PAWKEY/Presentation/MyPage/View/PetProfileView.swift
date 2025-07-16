@@ -58,18 +58,10 @@ struct PetProfileView: View {
                         Text("성별")
                             .font(.body_14_m)
                             .padding(.leading, 16)
-                        if(pet.gender == "M") {
-                            Text("남아")
+                        Text(Gender.init(rawValue: pet.gender)?.petGenderText ?? "성별 오류")
                             .font(.head_18_sb)
                             .foregroundStyle(Color.green500)
                             .padding(.leading, 16)
-                        }
-                        else {
-                            Text("여아")
-                            .font(.head_18_sb)
-                            .foregroundStyle(Color.green500)
-                            .padding(.leading, 16)
-                        }
                     }
                     
                     // 중성화
