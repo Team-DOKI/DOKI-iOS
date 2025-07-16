@@ -30,6 +30,7 @@ class CourseDetailViewModel: ObservableObject, Hashable {
     @Published var isShowContextMenu = false
     @Published var isShowSharedWalkCourseView = false
     @Published var topReviews: [CategoryTop] = []
+    @Published var reviewCount: Int = 0
     
     @Published var post: Post?
     
@@ -39,8 +40,6 @@ class CourseDetailViewModel: ObservableObject, Hashable {
     
     @MainActor
     func fetchCoruseDetail() async {
-       
-        
         do {
             let response: BaseDTO<PostResponseDTO> = try await provider.async.request(.fetchPostDetail(postId: postId))
             
@@ -63,6 +62,10 @@ class CourseDetailViewModel: ObservableObject, Hashable {
                 return
             }
             topReviews = data.toEntity().categoryTop3
+            
+            self.reviewCount = data.toEntity().totalReviewCount
+            
+            print(reviewCount)
         } catch {
             print("에러 발생: \(error.localizedDescription)")
         }
