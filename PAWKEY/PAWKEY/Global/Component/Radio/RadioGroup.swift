@@ -12,8 +12,8 @@ struct RadioGroup: View {
     
     let title: String
     
-    var items: [CheckItem]
-    var action: ((Int) -> Void)?
+    var items: [SelecteItem]
+    var action: ((SelecteItem) -> Void)?
     
     var body: some View {
         VStack {
@@ -22,7 +22,7 @@ struct RadioGroup: View {
                     .font(.body_16_sb)
                 Spacer()
                 if let selectedItem = items.filter({$0.isSelected}).first {
-                    Text(selectedItem.title)
+                    Text(selectedItem.selectText)
                         .font(.caption_12_sb)
                         .foregroundStyle(.green)
                 }
@@ -31,24 +31,24 @@ struct RadioGroup: View {
             }
             .background(.white)
             .frame(height: 64)
+            .padding(.horizontal, 16)
             .onTapGesture {
                 isExpanded.toggle()
             }
             if isExpanded {
                 VStack {
                     ForEach(Array(items.enumerated()), id: \.offset) { offset, item in
-                        RadioCell(checkOption: item)
+                        RadioCell(checkOption: .init(title: item.selectText, isSelected: item.isSelected))
                             .onTapGesture {
-                                action?(offset)
+                                action?(item)
                             }
                     }
                 }
+                .padding(.horizontal, 16)
             }
             Divider()
                 .animation(nil)
         }
         .animation(isExpanded ? .easeInOut(duration: 0.2) : nil)
-        .padding(.horizontal, 16)
-        
     }
 }
