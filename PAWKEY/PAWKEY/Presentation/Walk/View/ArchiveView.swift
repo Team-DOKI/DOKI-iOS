@@ -174,16 +174,13 @@ struct ArchiveView: View {
         Task {
             await viewModel.uploadCourse(isPublic: !isPrivate)
 
-//            let courseDetailVM = CourseDetailViewModel(postId: 0)
             var imagesToSend = viewModel.selectedImages
             
             if let snapshot = viewModel.snapshot {
                 imagesToSend.insert(snapshot, at: 0)
             }
             
-//            courseDetailVM.images = imagesToSend
-//            courseDetailVM.isPrivate = isPrivate
-            coordinator.push(.courseDetail(postId: 0))
+            coordinator.push(.courseDetail(postId: viewModel.postId))
         }
     }
 }
