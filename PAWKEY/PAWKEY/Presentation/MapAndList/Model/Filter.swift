@@ -8,11 +8,11 @@
 import Foundation
 
 struct FilterList {
-    var selecteList: [SelecteList] = []
-    var categoryList: [SelecteList] = []
+    var selecteList: [SelectList] = []
+    var categoryList: [SelectList] = []
 }
 
-struct SelecteList: Hashable {
+struct SelectList: Hashable {
     let selectId: Int
     let selectName: String
     var options: [SelecteItem]
