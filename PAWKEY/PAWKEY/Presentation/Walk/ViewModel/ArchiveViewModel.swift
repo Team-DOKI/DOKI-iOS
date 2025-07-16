@@ -26,6 +26,8 @@ class ArchiveViewModel: ObservableObject {
     @Published var titleText: String = ""
     @Published var reviewText: String = ""
     
+    @Published var postId: Int = 0
+    
     var snapshot: UIImage?
     
     var isButtonDisabled: Bool {
@@ -134,9 +136,14 @@ extension ArchiveViewModel {
             )
             
             print("\(response.message)")
-            if let postId = response.data?.postId {
-                print("postId: \(postId)")
+            
+            
+            guard let postId = response.data?.postId else  {
+                return
             }
+            self.postId = postId
+            
+            print("postId: \(postId)")
             
         } catch {
             print("업로드 실패: \(error.localizedDescription)")
