@@ -21,29 +21,34 @@ struct SavedCourseView: View {
     
     var body: some View {
         VStack {
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 16) {
-                    ForEach(viewModel.savedCourses) { course in
-                        ReviewCard(
-                            type: .others,
-                            walkRouteImg: course.imageUrl,
-                            profileImg: course.petImageUrl,
-                            walkTitle: course.title,
-                            petName: course.petName,
-                            postDate: course.createdAt,
-                            buttonPressed: course.isLiked,
-                            data: course.tags
-                        )
-                        .onTapGesture {
-                            coordinator.push(.courseDetail(postId: course.id))
-                            mainTabViewModel.isHidden = true
+            if viewModel.savedCourses.isEmpty {
+                Color.pawkeyWhite2
+            }
+            else {
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 16) {
+                        ForEach(viewModel.savedCourses) { course in
+                            ReviewCard(
+                                type: .others,
+                                walkRouteImg: course.imageUrl,
+                                profileImg: course.petImageUrl,
+                                walkTitle: course.title,
+                                petName: course.petName,
+                                postDate: course.createdAt,
+                                buttonPressed: course.isLiked,
+                                data: course.tags
+                            )
+                            .onTapGesture {
+                                coordinator.push(.courseDetail(postId: course.id))
+                                mainTabViewModel.isHidden = true
+                            }
                         }
                     }
+                    .padding(.top, 12)
+                    .padding(.bottom, 108)
                 }
-                .padding(.top, 12)
-                .padding(.bottom, 108)
+                .padding(.horizontal, 16)
             }
-            .padding(.horizontal, 16)
         }
         .background(Color.pawkeyWhite2)
         .topNavigationView(left: {
