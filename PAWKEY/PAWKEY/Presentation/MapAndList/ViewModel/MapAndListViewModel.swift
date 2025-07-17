@@ -17,6 +17,10 @@ final class MapAndListViewModel: ObservableObject {
     
     @Published var isShowSheet = false
     @Published var filterItemList = FilterList()
+    @Published var sortOptionFilterItem: [SelecteItem] = [
+        SelecteItem(selectOptionId: 0, selectText: "최신순"),
+        SelecteItem(selectOptionId: 1, selectText: "인기순"),
+    ]
     @Published var singleItemexpandedGroup: [Int: Bool] = [:]
     @Published var mutipleItemexpandedGroup: [Int: Bool] = [:]
     @Published var addedFilterItem: [SelecteItem] = []
@@ -95,6 +99,12 @@ final class MapAndListViewModel: ObservableObject {
             addedFilterItem.remove(at: index)
         } else {
             addedFilterItem.append(selected)
+        }
+    }
+    
+    func selectSortItem(_ selectId: Int) {
+        if let index = sortOptionFilterItem.firstIndex(where: {$0.selectOptionId == selectId }) {
+            sortOptionFilterItem[index].isSelected.toggle()
         }
     }
     

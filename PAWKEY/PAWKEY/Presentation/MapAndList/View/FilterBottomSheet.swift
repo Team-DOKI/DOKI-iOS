@@ -21,6 +21,25 @@ struct FilterBottomSheet: View {
                     
                     Spacer().frame(height: 36)
                     
+                    Text("정렬 옵션")
+                        .font(.caption_12_sb)
+                        .foregroundStyle(.green500)
+                        .frame(maxWidth: .infinity, maxHeight: 30, alignment: .leading)
+                        .padding(.leading, 16)
+                        .animation(nil)
+                    
+                    VStack(spacing: 0) {
+                        ForEach(viewModel.sortOptionFilterItem, id: \.self) { selected in
+                            CheckBoxCell(title: selected.selectText, isSelected: selected.isSelected)
+                                .onTapGesture { _ in
+                                    viewModel.selectSortItem(selected.selectOptionId)
+                                }
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    
+                    Spacer().frame(height: 36)
+                    
                     Text("단일 선택 옵션")
                         .font(.caption_12_sb)
                         .foregroundStyle(.green500)
