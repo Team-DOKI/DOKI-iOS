@@ -41,9 +41,6 @@ struct FilterBottomSheet: View {
                         } onTapGroup: {
                             viewModel.onTapSingleItemGroup(selectId: selectedList.selectId)
                         }
-                        .onAppear {
-                            viewModel.singleItemexpandedGroup[selectedList.selectId] = false
-                        }
                     }
                     
                     Spacer().frame(height: 36)
