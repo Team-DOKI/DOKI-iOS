@@ -10,8 +10,9 @@ import Foundation
 import Moya
 
 enum WalkPostAPI {
-    case fetchPosts
+    case fetchPosts(FilterRequest)
     case fetchPostDetail(postId: Int)
+    case fetchReviewsTop(routeId: Int)
 }
 
 extension WalkPostAPI: BaseTargetType {
@@ -30,6 +31,8 @@ extension WalkPostAPI: BaseTargetType {
             return "posts/filter"
         case let .fetchPostDetail(postId):
             return "posts/\(postId)"
+        case let .fetchReviewsTop(routeId):
+            return "posts/\(routeId)/reviews/top"
         }
     }
     
@@ -39,24 +42,18 @@ extension WalkPostAPI: BaseTargetType {
             return .post
         case .fetchPostDetail(_):
             return .get
+        case .fetchReviewsTop(_):
+            return .get
         }
     }
     
     var task: Task {
         switch self {
-        case .fetchPosts:
-            let dummy = FilterRequest(
-                durationStart: nil,
-                durationEnd: nil,
-                selectedOptions: [
-                    .init(
-                        categoryId: nil,
-                        optionsIds: nil
-                    )
-                ]
-            )
-            return .requestJSONEncodable(dummy)
+        case let .fetchPosts(filterRequest):
+            return .requestJSONEncodable(filterRequest)
         case .fetchPostDetail(_):
+            return .requestPlain
+        case .fetchReviewsTop(_):
             return .requestPlain
         }
     }

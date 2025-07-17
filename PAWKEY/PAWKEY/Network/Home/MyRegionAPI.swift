@@ -1,43 +1,44 @@
 //
-//  FilterAPI.swift
+//  MyRegionAPI.swift
 //  PAWKEY
 //
-//  Created by 권석기 on 7/16/25.
+//  Created by 이세민 on 7/17/25.
 //
 
 import Foundation
 
 import Moya
 
-enum FilterAPI {
-    case fetchFilterOptions(FilterRequest)
+enum MyRegionAPI {
+    case fetchMyRegion
 }
 
-extension FilterAPI: BaseTargetType {
+extension MyRegionAPI: BaseTargetType {
+    
     var headerType: HeaderType {
         switch self {
-        case .fetchFilterOptions:
+        case .fetchMyRegion:
             return .userHeader(userId: 2)
         }
     }
     
     var path: String {
         switch self {
-        case .fetchFilterOptions:
-            return "posts/filter"
+        case .fetchMyRegion:
+            return "regions/current"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .fetchFilterOptions:
+        case .fetchMyRegion:
             return .get
         }
     }
     
     var task: Task {
         switch self {
-        case .fetchFilterOptions:
+        case .fetchMyRegion:
             return .requestPlain
         }
     }

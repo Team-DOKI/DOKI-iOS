@@ -10,7 +10,7 @@ import Foundation
 struct FilterRequest: Codable {
     var durationStart: String?
     var durationEnd: String?
-    var selectedOptions: [SelectedOption]
+    var selectedOptions: [SelectedOption] = []
 }
 
 struct SelectedOption: Codable {

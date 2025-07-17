@@ -32,7 +32,7 @@ struct FilterBottomSheet: View {
                         RadioGroup(
                             isExpanded: Binding(
                                 get: { viewModel.singleItemexpandedGroup[selectedList.selectId] ?? false },
-                                set: { viewModel.singleItemexpandedGroup[selectedList.selectId] = $0 }
+                                set: { /*viewModel.singleItemexpandedGroup[selectedList.selectId] = $0*/ _ in}
                             ),
                             title: selectedList.selectName,
                             items: selectedList.options
@@ -40,6 +40,9 @@ struct FilterBottomSheet: View {
                             viewModel.selectSingleItem(selected)
                         } onTapGroup: {
                             viewModel.onTapSingleItemGroup(selectId: selectedList.selectId)
+                        }
+                        .onAppear {
+                            viewModel.singleItemexpandedGroup[selectedList.selectId] = false
                         }
                     }
                     
@@ -55,7 +58,7 @@ struct FilterBottomSheet: View {
                         CheckBoxGroup(
                             isExpanded: Binding(
                                 get: { viewModel.mutipleItemexpandedGroup[selectedList.selectId] ?? false },
-                                set: { viewModel.mutipleItemexpandedGroup[selectedList.selectId] = $0 }
+                                set: { /*viewModel.mutipleItemexpandedGroup[selectedList.selectId] = $0 */ _ in }
                             ),
                             title: selectedList.selectName,
                             items: selectedList.options
@@ -70,7 +73,9 @@ struct FilterBottomSheet: View {
         }
         HStack {
             CTAButton(title: "옵션 적용하기") {
-                viewModel.saveFilterOption()
+                Task {
+                    await viewModel.saveFilterOption()
+                }
             }
             Button {
                 viewModel.resetAllOptions()

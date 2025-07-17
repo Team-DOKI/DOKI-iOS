@@ -96,6 +96,7 @@ struct CourseDetailView: View {
         }
         .task {
             await viewModel.fetchCoruseDetail()
+            await viewModel.fetchReviewsTop()
         }
     }
 }
@@ -208,7 +209,7 @@ extension CourseDetailView {
                     .foregroundStyle(.pawkeyBlack)
                 HStack(spacing: 4) {
                     Image(.editIconGray)
-                    Text("후기 숫자")
+                    Text("\(viewModel.reviewCount)")
                         .font(.caption_12_m)
                         .foregroundStyle(.gray200)
                 }
@@ -216,9 +217,9 @@ extension CourseDetailView {
             .padding(.vertical, 16)
             
             VStack {
-                ReviewRatingBar(title: "후기", rating: 0.6, rank: 1)
-                ReviewRatingBar(title: "후기", rating: 0.3, rank: 2)
-                ReviewRatingBar(title: "후기", rating: 0.2, rank: 3)
+                ForEach(viewModel.topReviews, id: \.self) {
+                    ReviewRatingBar(title: $0.optionText, rating: $0.ratio, rank: $0.rank)
+                }
             }
             .padding(.bottom, 24)
         }

@@ -16,12 +16,15 @@ final class MapAndListViewModel: ObservableObject {
     @Published var posts: [WalkPost] = []
     
     @Published var isShowSheet = false
-    @Published var filterItem = FilterList()
     @Published var filterItemList = FilterList()
     @Published var singleItemexpandedGroup: [Int: Bool] = [:]
     @Published var mutipleItemexpandedGroup: [Int: Bool] = [:]
     @Published var addedFilterItem: [SelecteItem] = []
     @Published var selectedFilterItem: [SelecteItem] = []
+    
+    @Published var isSearchRequested = false
+    
+    @Published var myRegion: String = ""
     
     func resetAllOptions() {
         singleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
@@ -42,7 +45,7 @@ final class MapAndListViewModel: ObservableObject {
             }
             return g
         }
-
+        
         addedFilterItem = []
         selectedFilterItem = []
     }
@@ -60,7 +63,7 @@ final class MapAndListViewModel: ObservableObject {
                 isSelected: $0.selectOptionId == selected.selectOptionId
             )
         }
-
+        
         filterItemList.selecteList[groupIndex] = group
         
         addedFilterItem.removeAll {
@@ -73,7 +76,7 @@ final class MapAndListViewModel: ObservableObject {
         guard let groupIndex = filterItemList.categoryList.firstIndex(where: {
             $0.options.contains(where: { $0.selectOptionId == selected.selectOptionId })
         }) else { return }
-
+        
         var group = filterItemList.categoryList[groupIndex]
         group.options = group.options.map {
             if $0.selectOptionId == selected.selectOptionId {
@@ -85,9 +88,9 @@ final class MapAndListViewModel: ObservableObject {
             }
             return $0
         }
-
+        
         filterItemList.categoryList[groupIndex] = group
-
+        
         if let index = addedFilterItem.firstIndex(where: { $0.selectOptionId == selected.selectOptionId }) {
             addedFilterItem.remove(at: index)
         } else {
@@ -95,31 +98,82 @@ final class MapAndListViewModel: ObservableObject {
         }
     }
     
-    func saveFilterOption() {
-        selectedFilterItem = addedFilterItem
-        isShowSheet = false
+    @MainActor
+    func saveFilterOption() async {
+        self.selectedFilterItem = addedFilterItem
+        self.isShowSheet = false
+        
+        let selectedFilterRequest =  filterItemList.selecteList.filter { !($0.options.filter { $0.isSelected }.isEmpty) }
+            .map { SelectedOption(categoryId: $0.selectId, optionsIds: $0.options.filter { $0.isSelected }.map { $0.selectOptionId })}
+        let categoryFilterRequest = filterItemList.categoryList.filter { !($0.options.filter { $0.isSelected }.isEmpty) }
+            .map { SelectedOption(categoryId: $0.selectId, optionsIds: $0.options.filter { $0.isSelected }.map { $0.selectOptionId })}
+        let filterRequest = FilterRequest(durationStart: "", durationEnd: "", selectedOptions: selectedFilterRequest + categoryFilterRequest)
+        
+        await fetchFilteredPosts(filterRequest)
     }
     
     func onTapSingleItemGroup(selectId: Int) {
-        singleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
-        singleItemexpandedGroup.updateValue(true, forKey: selectId)
+        if singleItemexpandedGroup[selectId] == true {
+            singleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
+            singleItemexpandedGroup.updateValue(false, forKey: selectId)
+        } else {
+            singleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
+            singleItemexpandedGroup.updateValue(true, forKey: selectId)
+        }
     }
     
     func onTapMutipleItemGroup(selectId: Int) {
-        mutipleItemexpandedGroup = mutipleItemexpandedGroup.mapValues { _ in false }
-        mutipleItemexpandedGroup.updateValue(true, forKey: selectId)
+        if mutipleItemexpandedGroup[selectId] == true {
+            mutipleItemexpandedGroup = mutipleItemexpandedGroup.mapValues { _ in false }
+            mutipleItemexpandedGroup.updateValue(false, forKey: selectId)
+        } else {
+            mutipleItemexpandedGroup = mutipleItemexpandedGroup.mapValues { _ in false }
+            mutipleItemexpandedGroup.updateValue(true, forKey: selectId)
+        }
     }
 }
 
 // MARK: - API
 
 extension MapAndListViewModel {
+    @MainActor
+    func fetchPosts() async {
+        let provider = MoyaProvider<WalkPostAPI>(plugins: [MoyaLoggingPlugin()])
+        
+        do {
+            let response: BaseDTO<PostDataDTO> = try await provider.async.request(.fetchPosts(.init()))
+            
+            guard let data = response.data else {
+                return
+            }
+            self.posts = data.posts.toEntity()
+        } catch {
+            print("에러 발생: \(error.localizedDescription)")
+        }
+        isSearchRequested = true
+    }
+    
+    @MainActor
+    func fetchFilteredPosts(_ filterRequest: FilterRequest) async {
+        let provider = MoyaProvider<WalkPostAPI>(plugins: [MoyaLoggingPlugin()])
+        do {
+            let response: BaseDTO<PostDataDTO> = try await provider.async.request(.fetchPosts(filterRequest))
+            
+            guard let data = response.data else {
+                return
+            }
+            
+            self.posts = data.posts.toEntity()
+        } catch {
+            print(error.localizedDescription)
+        }
+        isSearchRequested = true
+    }
     
     @MainActor
     func fetchFilterOptions() async {
-        
         do {
-            let response: BaseDTO<FilterDTO> = try await provider.async.request(.fetchFilterOptions)
+            let response: BaseDTO<FilterDTO> = try await provider.async.request(.fetchFilterOptions(.init()))
             
             guard let data = response.data else {
                 return
@@ -129,30 +183,28 @@ extension MapAndListViewModel {
             let categoryList = data.categoryList.toEntity()
             
             filterItemList.selecteList = selectList + Array(categoryList.prefix(2))
-            filterItemList.categoryList = Array(categoryList.dropFirst(2))            
-            filterItem.selecteList = selectList + Array(categoryList.prefix(2))
-            filterItem.categoryList = Array(categoryList.dropFirst(2))
+            filterItemList.categoryList = Array(categoryList.dropFirst(2))
         } catch {
             print(error.localizedDescription)
         }
     }
-}
-
-
-extension MapAndListViewModel {
+    
     @MainActor
-    func fetchPosts() async {
-        let provider = MoyaProvider<WalkPostAPI>(plugins: [MoyaLoggingPlugin()])
+    func fetchMyRegion() async {
+        let provider = MoyaProvider<MyRegionAPI>()
         
         do {
-            let response: BaseDTO<PostDataDTO> = try await provider.async.request(.fetchPosts)
+            let response: BaseDTO<MyRegionDTO> = try await provider.async.request(.fetchMyRegion)
             
             guard let data = response.data else {
                 return
             }
-            self.posts = data.posts.toEntity()
+            
+            self.myRegion = data.fullRegionName
+            
+            print(myRegion)
         } catch {
-            print("에러 발생: \(error.localizedDescription)")
+            print("Error fetching regions: \(error.localizedDescription)")
         }
     }
 }
