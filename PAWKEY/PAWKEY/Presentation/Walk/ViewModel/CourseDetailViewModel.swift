@@ -25,7 +25,7 @@ class CourseDetailViewModel: ObservableObject, Hashable {
     
     @Published var images: [UIImage] = []
     @Published var isPrivate: Bool = false
-    @Published var selectedImage: UIImage?
+    @Published var selectedImageUrl: String?
     @Published var isShowPhotoPreview = false
     @Published var isShowContextMenu = false
     @Published var isShowSharedWalkCourseView = false
@@ -46,7 +46,7 @@ class CourseDetailViewModel: ObservableObject, Hashable {
             guard let data = response.data else {
                 return
             }
-            self.post = data.toEntity()
+            self.post = data.toEntity()            
         } catch {
             print("에러 발생: \(error.localizedDescription)")
         }
