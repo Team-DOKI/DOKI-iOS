@@ -15,6 +15,8 @@ struct ReviewWriteView: View {
     
     @State private var isAlertPresented: Bool = false
     
+    let categoryEmojis = ["😌", "🐶", "🚸", "🧺", "🌿"]
+    
     init(viewModel: ReviewWriteViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -70,9 +72,10 @@ struct ReviewWriteView: View {
                         .padding(.bottom, 23)
                     
                     VStack(alignment: .leading, spacing: 32) {
-                        ForEach(viewModel.categories, id: \.categoryId) { category in
+                        ForEach(Array(viewModel.categories.enumerated()), id: \.element.categoryId) { index, category in
+                            let emoji = index < categoryEmojis.count ? categoryEmojis[index] : ""
                             QuestionForm(
-                                question: category.categoryDescription,
+                                question: "\(emoji) \(category.categoryDescription)",
                                 tags: viewModel.categoryOptionTexts(category.categoryId),
                                 selectedTags: viewModel.selectedOptionsBinding(category.categoryId)
                             )
