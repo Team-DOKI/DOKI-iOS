@@ -89,7 +89,7 @@ struct ReviewCard: View {
                         
                     } label: {
                         if type == .mine {
-                            buttonPressed ? Image(.eyeSlashFill) : type.iconName
+                            buttonPressed ? type.iconName : Image(.eyeSlashFill)
                         }
                         else {
                             buttonPressed ? Image(.heartIconFill) : type.iconName

@@ -118,10 +118,29 @@ extension CourseDetailView {
                     .font(.head_20_sb)
                     .foregroundColor(.pawkeyBlack)
                 Spacer()
-                if (viewModel.post?.isLiked ?? false) {
-                    Image(.heartIconFill)
-                } else {
-                    Image(.heartIconGray)
+                if (viewModel.post?.author.id == 2) {
+                    if (viewModel.post?.isLiked ?? false) {
+                        Image(.eyeFill)
+                    } else {
+                        Image(.eyeSlashFill)
+                    }
+                }
+                else {
+                    if (viewModel.post?.isLiked ?? false) {
+                        Image(.heartIconFill)
+                            .onTapGesture {
+                                Task {
+                                    await viewModel.unLikePost()
+                                }
+                            }
+                    } else {
+                        Image(.heartIconGray)
+                            .onTapGesture {
+                                Task {
+                                    await viewModel.likePost()
+                                }
+                            }
+                    }
                 }
             }
         }
