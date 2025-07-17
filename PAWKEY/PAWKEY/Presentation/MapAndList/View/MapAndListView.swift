@@ -129,70 +129,78 @@ extension MapAndListView {
     }
     
     private var courseListView: some View {
-        VStack {
-            HStack {
-                Button {
-                    mapAndListViewModel.isShowSheet = true
-                } label: {
-                    Circle()
-                        .frame(width: 36, height: 36)
-                        .foregroundStyle(.pawkeyWhite1)
-                        .overlay {
-                            Circle()
-                                .stroke(Color.gray100, lineWidth: 1)
-                        }
-                        .overlay(Image(.settingGray))
-                }
-                Spacer()
-                if mapAndListViewModel.selectedFilterItem.isEmpty {
-                    HStack {
-                        FilterChip(title: "")
-                        Spacer()
+        ZStack {
+            Color.pawkeyWhite2.ignoresSafeArea()
+            VStack {
+                HStack {
+                    Button {
+                        mapAndListViewModel.isShowSheet = true
+                    } label: {
+                        Circle()
+                            .frame(width: 36, height: 36)
+                            .foregroundStyle(.pawkeyWhite1)
+                            .overlay {
+                                Circle()
+                                    .stroke(Color.gray100, lineWidth: 1)
+                            }
+                            .overlay(Image(.settingGray))
                     }
-                } else {
-                    ScrollView(.horizontal, showsIndicators: false) {
+                    Spacer()
+                    if mapAndListViewModel.selectedFilterItem.isEmpty {
                         HStack {
-                            ForEach(mapAndListViewModel.selectedFilterItem, id: \.self) {
-                                FilterChip(title: $0.selectText)
-                            }
+                            FilterChip(title: "")
+                            Spacer()
                         }
-                        .padding(.vertical, 1)
-                    }
-                }
-            }
-            .padding(.horizontal, 16)
-            if mapAndListViewModel.posts.isEmpty {
-                Color.pawkeyWhite2
-            } else {
-                ScrollView(showsIndicators: false) {
-                    Spacer().frame(height: 34)
-                    VStack {
-                        ForEach(mapAndListViewModel.posts, id: \.self) { post in
-                            ReviewCard(
-                                type: .others,
-                                walkRouteImg: post.representativeImageUrl,
-                                profileImg: post.writer.petProfileImageUrl,
-                                walkTitle: post.title,
-                                petName: post.writer.petName,
-                                postDate: post.createdAt,
-                                buttonPressed: post.isLike,
-                                data: post.descriptionTags
-                            )
-                            .onTapGesture {
-                                coordinator.push(.courseDetail(postId: post.postId))
-                                mainTabViewModel.isHidden = true
+                    } else {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack {
+                                ForEach(mapAndListViewModel.selectedFilterItem, id: \.self) {
+                                    FilterChip(title: $0.selectText)
+                                }
                             }
+                            .padding(.vertical, 1)
                         }
                     }
-                    .padding(.horizontal, 16)
                 }
-                .background(.pawkeyWhite2)
+                .padding(.vertical, 10)
+                .padding(.horizontal, 16)
+                .background(.pawkeyWhite1)
+                
+                if mapAndListViewModel.posts.isEmpty {
+                    Color.pawkeyWhite2
+                        .ignoresSafeArea(edges: .bottom)
+                } else {
+                    ScrollView(showsIndicators: false) {
+                        Spacer().frame(height: 12)
+                        VStack {
+                            ForEach(mapAndListViewModel.posts, id: \.self) { post in
+                                ReviewCard(
+                                    type: .others,
+                                    walkRouteImg: post.representativeImageUrl,
+                                    profileImg: post.writer.petProfileImageUrl,
+                                    walkTitle: post.title,
+                                    petName: post.writer.petName,
+                                    postDate: post.createdAt,
+                                    buttonPressed: post.isLike,
+                                    data: post.descriptionTags
+                                )
+                                .onTapGesture {
+                                    coordinator.push(.courseDetail(postId: post.postId))
+                                    mainTabViewModel.isHidden = true
+                                }
+                            }
+                        }
+                        .padding(.horizontal, 16)
+                    }
+                    .background(.pawkeyWhite2)
+                    .ignoresSafeArea(edges: .bottom)
+                    .padding(.bottom, 70)
+                }
             }
-        }
-        .padding(.top, 10)
-        .task {
-            if !mapAndListViewModel.isSearchRequested {
-                await mapAndListViewModel.fetchPosts()
+            .task {
+                if !mapAndListViewModel.isSearchRequested {
+                    await mapAndListViewModel.fetchPosts()
+                }
             }
         }
     }
