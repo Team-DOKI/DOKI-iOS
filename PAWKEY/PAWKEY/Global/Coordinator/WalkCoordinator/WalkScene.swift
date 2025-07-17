@@ -23,8 +23,7 @@ enum WalkScene: AppScene {
             
         case .courseDetail(let postId):
             let viewModel = CourseDetailViewModel(postId: postId)
-            CourseDetailView(viewModel: viewModel)
-            
+            CourseDetailWrapperView(viewModel: viewModel)            
         case .walkCompletion(let distance, let elapsedTime, let stepCount, let snapshot, let routeId):
             let viewModel = WalkCompletionViewModel(
                 distance: distance,

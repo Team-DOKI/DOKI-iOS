@@ -18,6 +18,8 @@ struct CourseDetailView: View {
     @EnvironmentObject var coordinator: Coordinator<WalkScene>
     @Environment(\.dismiss) private var dismiss
     
+    var backButtonTapped: (() -> ())?
+    
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 0) {
@@ -73,16 +75,18 @@ struct CourseDetailView: View {
         })
         .topNavigationView(left: {
             BackButton {
-                mainTabViewModel.isHidden = false
-                dismiss()
+                if backButtonTapped == nil {
+                    dismiss()
+                    mainTabViewModel.isHidden = false
+                } else {
+                    backButtonTapped?()
+                }
             }
         }, center: {
             Text("루트 상세정보")
                 .font(.body_16_sb)
         })
-        .overlay(alignment: .bottom) {
-            submitButton
-        }
+        
         .fullScreenCover(isPresented: $viewModel.isShowSharedWalkCourseView) {
             SharedWalkCourseView(viewModel: sharedWalkCourseViewModel, showSharedWalkCourseView: $viewModel.isShowSharedWalkCourseView) { distance, elapsedTime, stepCount, snapshot in
                 coordinator.push(.sharedWalkCompletion(
@@ -103,12 +107,12 @@ struct CourseDetailView: View {
 
 extension CourseDetailView {
     private var walkCourseImageView: some View {
-            KFImage(URL(string: viewModel.post?.routeImageUrl ?? ""))
-                .resizable()
-                .frame(minHeight: 250, maxHeight: 250)
-                .frame(maxWidth: .infinity)
-                .aspectRatio(contentMode: .fit)
-                .clipped()
+        KFImage(URL(string: viewModel.post?.routeImageUrl ?? ""))
+            .resizable()
+            .frame(minHeight: 250, maxHeight: 250)
+            .frame(maxWidth: .infinity)
+            .aspectRatio(contentMode: .fit)
+            .clipped()
     }
     
     private var titleView: some View {
@@ -134,7 +138,7 @@ extension CourseDetailView {
                 .frame(maxWidth: 43, maxHeight: 43)
                 .aspectRatio(contentMode: .fit)
                 .clipShape(Circle())
-                            
+            
             Text(viewModel.post?.author.petName ?? "")
                 .font(.body_16_sb)
                 .foregroundColor(.pawkeyBlack)
@@ -164,9 +168,9 @@ extension CourseDetailView {
             }
             
             Text(viewModel.post?.content ?? "")
-            .font(.body_14_r)
-            .foregroundStyle(.pawkeyBlack)
-            .padding(.bottom, 12)
+                .font(.body_14_r)
+                .foregroundStyle(.pawkeyBlack)
+                .padding(.bottom, 12)
             
             Text("본인 위치에서의 거리")
                 .font(.caption_12_sb)
@@ -213,25 +217,13 @@ extension CourseDetailView {
             
             TimePlaceCell(type: .time(viewModel.post?.createdDate ?? ""))
                 .padding(.bottom, 12)
-
+            
             FlexibleGrid(availableWidth: UIScreen.main.bounds.width - 32,
                          data: viewModel.post?.tags ?? [],
                          spacing: 8, alignment: .leading) {
-                            Chip(title: $0)
+                Chip(title: $0)
             }
         }
-    }
-    
-    private var submitButton: some View {
-        Button(action: {
-            viewModel.isShowSharedWalkCourseView = true
-        }) {
-            Text("해당 루트로 산책하기")
-                .font(.body_16_sb)
-                .foregroundStyle(.pawkeyWhite1)
-                .frame(maxWidth: .infinity, minHeight: 56)
-        }
-        .background(.green500)
     }
     
     private var roundedView: some View {
