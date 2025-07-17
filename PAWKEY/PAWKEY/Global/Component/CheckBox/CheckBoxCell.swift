@@ -15,7 +15,7 @@ struct CheckBoxCell: View {
         HStack {
             Text(title)
                 .font(isSelected ? .body_14_r : .body_14_sb)
-                .foregroundStyle(isSelected ? .green : .black)
+                .foregroundStyle(isSelected ? .green500 : .black)
             Spacer()
             Image(isSelected ? .rectCheckFill : .rectCheck)
         }
