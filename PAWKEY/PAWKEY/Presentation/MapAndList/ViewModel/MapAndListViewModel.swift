@@ -24,6 +24,8 @@ final class MapAndListViewModel: ObservableObject {
     
     @Published var isSearchRequested = false
     
+    @Published var myRegion: String = ""
+    
     func resetAllOptions() {
         singleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
         mutipleItemexpandedGroup = singleItemexpandedGroup.mapValues { _ in false }
@@ -152,7 +154,7 @@ extension MapAndListViewModel {
     }
     
     @MainActor
-    func fetchFilteredPosts(_ filterRequest: FilterRequest) async {        
+    func fetchFilteredPosts(_ filterRequest: FilterRequest) async {
         let provider = MoyaProvider<WalkPostAPI>(plugins: [MoyaLoggingPlugin()])
         do {
             let response: BaseDTO<PostDataDTO> = try await provider.async.request(.fetchPosts(filterRequest))
@@ -184,6 +186,25 @@ extension MapAndListViewModel {
             filterItemList.categoryList = Array(categoryList.dropFirst(2))
         } catch {
             print(error.localizedDescription)
+        }
+    }
+    
+    @MainActor
+    func fetchMyRegion() async {
+        let provider = MoyaProvider<MyRegionAPI>()
+        
+        do {
+            let response: BaseDTO<MyRegionDTO> = try await provider.async.request(.fetchMyRegion)
+            
+            guard let data = response.data else {
+                return
+            }
+            
+            self.myRegion = data.fullRegionName
+            
+            print(myRegion)
+        } catch {
+            print("Error fetching regions: \(error.localizedDescription)")
         }
     }
 }

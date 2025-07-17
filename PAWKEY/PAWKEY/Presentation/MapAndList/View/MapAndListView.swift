@@ -48,6 +48,10 @@ struct MapAndListView: View {
         }
         .onAppear {
             walkCourseViewModel.requestPermission()
+            
+            Task {
+                await mapAndListViewModel.fetchMyRegion()
+            }
         }
         .task {
             await mapAndListViewModel.fetchFilterOptions()
@@ -115,7 +119,7 @@ extension MapAndListView {
                     alignment: .bottom
                 )
                 
-                Text("서대문구 홍은동")
+                Text("\(mapAndListViewModel.myRegion)")
                     .font(.body_16_sb)
                     .foregroundColor(.green500)
                     .padding(.vertical, 8)
