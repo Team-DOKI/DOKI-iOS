@@ -177,6 +177,22 @@ extension MapAndListView {
                     ScrollView(showsIndicators: false) {
                         Spacer().frame(height: 12)
                         VStack {
+//                            ForEach(mapAndListViewModel.posts, id: \.self) { post in
+//                                ReviewCard(
+//                                    type: .others,
+//                                    walkRouteImg: post.representativeImageUrl,
+//                                    profileImg: post.writer.petProfileImageUrl,
+//                                    walkTitle: post.title,
+//                                    petName: post.writer.petName,
+//                                    postDate: post.createdAt,
+//                                    buttonPressed: post.isLike,
+//                                    data: post.descriptionTags
+//                                )
+//                                .onTapGesture {
+//                                    coordinator.push(.courseDetail(postId: post.postId))
+//                                    mainTabViewModel.isHidden = true
+//                                }
+//                            }
                             ForEach(mapAndListViewModel.posts, id: \.self) { post in
                                 ReviewCard(
                                     type: .others,
@@ -186,6 +202,13 @@ extension MapAndListView {
                                     petName: post.writer.petName,
                                     postDate: post.createdAt,
                                     buttonPressed: post.isLike,
+                                    isSpread: false,
+                                    onLikeButtonTapped: { postId in
+                                        Task {
+                                            await mapAndListViewModel.toggleLike(for: postId)
+                                        }
+                                    },
+                                    postId: post.postId,
                                     data: post.descriptionTags
                                 )
                                 .onTapGesture {
