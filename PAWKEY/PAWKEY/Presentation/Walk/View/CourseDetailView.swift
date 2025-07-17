@@ -88,7 +88,7 @@ struct CourseDetailView: View {
         })
         
         .fullScreenCover(isPresented: $viewModel.isShowSharedWalkCourseView) {
-            SharedWalkCourseView(viewModel: sharedWalkCourseViewModel, showSharedWalkCourseView: $viewModel.isShowSharedWalkCourseView) { distance, elapsedTime, stepCount, snapshot in
+            SharedWalkCourseView(viewModel: sharedWalkCourseViewModel, showSharedWalkCourseView: $viewModel.isShowSharedWalkCourseView, routeId: viewModel.post?.routeId ?? 0) { distance, elapsedTime, stepCount, snapshot in
                 coordinator.push(.sharedWalkCompletion(
                     distance: distance,
                     elapsedTime: elapsedTime,
