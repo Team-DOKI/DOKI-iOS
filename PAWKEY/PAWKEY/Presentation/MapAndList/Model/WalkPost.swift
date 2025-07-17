@@ -16,6 +16,8 @@ struct WalkPost: Hashable {
     let representativeImageUrl: String
     let writer: PostWriter
     let descriptionTags: [String]
+    let isMine: Bool
+    let isPublic: Bool
 }
 
 struct PostWriter: Hashable {
