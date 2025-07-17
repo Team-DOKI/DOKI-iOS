@@ -32,7 +32,7 @@ struct ReviewCard: View {
     @State var walkTitle: String
     @State var petName: String
     @State var postDate: String
-    @State var buttonPressed: Bool = false
+    @State var buttonPressed: Bool = true
     @State var isSpread = false
     
     let onLikeButtonTapped: ((Int) -> Void)?

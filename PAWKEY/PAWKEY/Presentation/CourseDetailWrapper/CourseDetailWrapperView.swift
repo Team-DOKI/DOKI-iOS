@@ -13,14 +13,16 @@ struct CourseDetailWrapperView: View {
     @ObservedObject var viewModel: CourseDetailViewModel
     
     var body: some View {
-        VStack (spacing: 0) {
+        VStack(spacing: 0) {
             CourseDetailView(viewModel: viewModel) {
                 coordinator.popToRoot()
                 mainTabViewModel.isHidden = false
             }
             .overlay(alignment: .bottom) {
+            
+                if let post = viewModel.post, post.author.id != 2 {
                     Button(action: {
-                        coordinator.popToRoot()
+                        viewModel.isShowSharedWalkCourseView = true
                     }) {
                         Text("해당 루트로 산책하기")
                             .font(.body_16_sb)
@@ -28,9 +30,12 @@ struct CourseDetailWrapperView: View {
                             .frame(maxWidth: .infinity, minHeight: 56)
                     }
                     .background(.green500)
-            }.onAppear {
+                }
+            }
+            .onAppear {
                 mainTabViewModel.isHidden = true
             }
         }
     }
 }
+

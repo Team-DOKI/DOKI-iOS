@@ -303,7 +303,7 @@ extension WalkCourseViewModel {
             duration: duration,
             startedAt: formatter.string(from: startTime),
             endedAt: formatter.string(from: endTime),
-            stepCount: 100
+            stepCount: stepCount
         )
         
         let imageData = snapshotImage?.jpegData(compressionQuality: 0.8)

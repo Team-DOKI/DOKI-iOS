@@ -19,7 +19,10 @@ struct SharedWalkCourseView: View {
     
     @State private var userTrackingMode: MKUserTrackingMode = .none
     
+    let routeId: Int
+    
     let onComplete: (Double, String, Int, UIImage?) -> Void
+        
     
     var body: some View {
         ZStack {
@@ -100,7 +103,7 @@ struct SharedWalkCourseView: View {
             viewModel.startTracking()
             
             Task {
-                await viewModel.fetchSharedWalkCourses(routeId: 55)
+                await viewModel.fetchSharedWalkCourses(routeId: routeId)
             }
         }
     }
