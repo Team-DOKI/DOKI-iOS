@@ -9,7 +9,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     @EnvironmentObject var coordinator: Coordinator<OnboardingScene>
-    
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     @State private var selection = 0
     @State private var pawPrints: [PawPrint] = []
     
@@ -85,6 +85,10 @@ struct OnboardingView: View {
                         .padding(.horizontal, 24)
                         .padding(.top, 42)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .onTapGesture {
+                            // TODO: 개발시에만 사용(삭제 예정)
+                            mainTabViewModel.isLogin = true
+                        }
                     }
                     
                     HStack(spacing: 8) {

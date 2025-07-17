@@ -26,7 +26,6 @@ struct SelectItemDTO: Codable {
 struct CategoryListDTO: Codable {
     let categoryId: Int
     let categoryName: String
-    let categoryDescription: String
     let options: [CategoryItemDTO]
 }
 
