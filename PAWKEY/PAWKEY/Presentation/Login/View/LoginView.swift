@@ -41,7 +41,8 @@ struct LoginView: View {
                     coordinator.push(.profileSetUp)
                 }
                 CTAButton(title: "로그인", isDisabled: viewModel.isDisabled, buttonStyle: .filled) {
-                    mainTabViewModel.isLogin = true
+//                    mainTabViewModel.isLogin = true
+                    coordinator.push(.profileSetUp)
                 }
                 .padding(.top, 12)
                 .padding(.bottom, 60)

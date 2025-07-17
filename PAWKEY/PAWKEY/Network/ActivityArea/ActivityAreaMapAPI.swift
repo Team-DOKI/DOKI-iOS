@@ -11,7 +11,7 @@ import Moya
 
 enum ActivityAreaMapAPI {
     case fetchCoordinates(regionId: Int)
-    case updateUserRegion
+    case updateUserRegion(regionId: Int)
 }
 
 extension ActivityAreaMapAPI: BaseTargetType {
@@ -21,7 +21,7 @@ extension ActivityAreaMapAPI: BaseTargetType {
             return .userHeader(userId: 2)
         }
     }
-    
+
     var path: String {
         switch self {
         case .fetchCoordinates(let regionId):
@@ -30,7 +30,7 @@ extension ActivityAreaMapAPI: BaseTargetType {
             return "users/me/regions"
         }
     }
-    
+
     var method: Moya.Method {
         switch self {
         case .fetchCoordinates:
@@ -39,14 +39,14 @@ extension ActivityAreaMapAPI: BaseTargetType {
             return .patch
         }
     }
-    
+
     var task: Task {
         switch self {
         case .fetchCoordinates:
             return .requestPlain
-        case .updateUserRegion:
+        case .updateUserRegion(let regionId):
             return .requestParameters(
-                parameters: ["regionId": 40],
+                parameters: ["regionId": regionId],
                 encoding: JSONEncoding.default
             )
         }

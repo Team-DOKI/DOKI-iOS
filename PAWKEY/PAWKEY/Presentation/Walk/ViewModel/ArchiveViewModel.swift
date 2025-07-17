@@ -26,12 +26,20 @@ class ArchiveViewModel: ObservableObject {
     @Published var titleText: String = ""
     @Published var reviewText: String = ""
     
+    @Published var postId: Int = 0
+    
     var snapshot: UIImage?
     
     var isButtonDisabled: Bool {
         !titleText.trimmingCharacters(in: .whitespaces).isEmpty &&
         !reviewText.trimmingCharacters(in: .whitespaces).isEmpty &&
         selectedOptions.values.allSatisfy { !$0.isEmpty }
+    }
+    
+    let routeId: Int
+    
+    init(routeId: Int) {
+        self.routeId = routeId
     }
     
     @MainActor
@@ -123,7 +131,7 @@ extension ArchiveViewModel {
             description: reviewText,
             isPublic: isPublic,
             selectedOptionsForCategories: selectedCategoryOptions,
-            routeId: 54
+            routeId: routeId
         )
         
         let imageDatas = selectedImages.compactMap { $0.jpegData(compressionQuality: 0.8) }
@@ -134,9 +142,13 @@ extension ArchiveViewModel {
             )
             
             print("\(response.message)")
-            if let postId = response.data?.postId {
-                print("postId: \(postId)")
+            
+            guard let postId = response.data?.postId else  {
+                return
             }
+            self.postId = postId
+            
+            print("postId: \(postId)")
             
         } catch {
             print("업로드 실패: \(error.localizedDescription)")

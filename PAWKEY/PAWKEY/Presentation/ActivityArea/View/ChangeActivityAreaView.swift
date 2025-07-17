@@ -24,13 +24,14 @@ struct ChangeActivityAreaView: View {
                     Text("지역구")
                         .font(.body_14_sb)
                     FlexibleGrid(availableWidth: proxy.size.width - 32,
-                                 data: viewModel.regionList,
+                                 data: viewModel.guList,
                                  spacing: 14,
                                  alignment: .leading, content: {
                         LocationButton($0, type: .small, isSelected: $0 == viewModel.userProfile.region) { region in
                             viewModel.changeUserInfo(.region(region))
                         }
                     })
+                    
                     .clipped()
                 }
                 .padding(.top, 28)
@@ -42,13 +43,14 @@ struct ChangeActivityAreaView: View {
                         Text("법정동")
                             .font(.body_14_sb)
                         FlexibleGrid(availableWidth: proxy.size.width - 32,
-                                     data: viewModel.legalRegionList,
+                                     data: viewModel.dongList,
                                      spacing: 14,
                                      alignment: .leading, content: {
-                            LocationButton($0, type: .small, isSelected: $0 == viewModel.userProfile.legalRegion) { legalRegion in
-                                viewModel.changeUserInfo(.legalRegion(legalRegion))
+                            LocationButton($0, type: .small, isSelected: $0 == viewModel.userProfile.legalRegion) { dong in
+                                viewModel.changeUserInfo(.legalRegion(dong))
                             }
                         })
+                        
                         .padding(.trailing, 72)
                     }
                 }
@@ -59,7 +61,9 @@ struct ChangeActivityAreaView: View {
                     title: "다음으로",
                     isDisabled: viewModel.userProfile.region.isEmpty || viewModel.userProfile.legalRegion.isEmpty
                 ) {
-                    coordinator.push(.acvitiyAreaMap)                    
+                    if let selectedId = viewModel.selectedRegionId {
+                        coordinator.push(.acvitiyAreaMap(regionId: selectedId))
+                    }
                 }
                 .padding(.bottom, 29)
             }
@@ -76,6 +80,10 @@ struct ChangeActivityAreaView: View {
         .onAppear {
             withAnimation {
                 mainTabViewModel.isHidden = true
+            }
+            
+            Task {
+                await viewModel.fetchRegions()
             }
         }
     }

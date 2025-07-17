@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Moya
 
 struct UserAreaProfile {
     var region: String = ""
@@ -19,21 +20,55 @@ enum AreaProfileField {
 
 final class ChangeActivityAreaViewModel: ObservableObject {
     @Published var userProfile = UserAreaProfile()
+    @Published var regions: [RegionUnit] = []
     
-    let regionList = ["강남구"]
-    let legalRegionList = [
-        "개포동", "논현동", "대치동", "도곡동", "삼성동",
-        "세곡동", "수서동", "신사동", "압구정동", "역삼동",
-        "율현동", "자곡동", "청담동", "일원동"
-    ]
+    @Published var selectedRegionId: Int?
+    
+    var guList: [String] {
+        regions.map { $0.gu.name }
+    }
+    
+    var dongList: [String] {
+        guard let selectedGu = regions.first(where: { $0.gu.name == userProfile.region }) else { return [] }
+        return selectedGu.dong.map { $0.name }
+    }
     
     func changeUserInfo(_ field: AreaProfileField) {
         switch field {
         case .region(let region):
             userProfile.region = region
             userProfile.legalRegion = ""
+            selectedRegionId = nil
+            
         case .legalRegion(let legalRegion):
             userProfile.legalRegion = legalRegion
+            selectedRegionId = findSelectedDongId()
+        }
+    }
+    
+    private func findSelectedDongId() -> Int? {
+        guard let selectedGu = regions.first(where: { $0.gu.name == userProfile.region }) else {
+            return nil
+        }
+        return selectedGu.dong.first(where: { $0.name == userProfile.legalRegion })?.id
+    }
+    
+    @MainActor
+    func fetchRegions() async {
+        let provider = MoyaProvider<RegionAPI>()
+        
+        do {
+            let response: BaseDTO<DistrictDTO> = try await provider.async.request(.fetchRegions)
+            
+            guard let data = response.data else {
+                return
+            }
+            
+            self.regions = data.districtDtos.toEntity()
+            
+            print(regions)
+        } catch {
+            print("Error fetching regions: \(error.localizedDescription)")
         }
     }
 }
