@@ -173,7 +173,7 @@ extension MapAndListViewModel {
     @MainActor
     func fetchFilterOptions() async {
         do {
-            let response: BaseDTO<FilterDTO> = try await provider.async.request(.fetchFilterOptions(.init()))
+            let response: BaseDTO<FilterDTO> = try await provider.async.request(.fetchFilterOptions)
             
             guard let data = response.data else {
                 return
