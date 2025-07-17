@@ -11,6 +11,7 @@ import MapKit
 
 struct MapAndListView: View {
     @EnvironmentObject var coordinator: Coordinator<WalkScene>
+    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
     @StateObject private var walkCourseViewModel = WalkCourseViewModel()
     @StateObject private var mapAndListViewModel = MapAndListViewModel()
@@ -179,6 +180,7 @@ extension MapAndListView {
                             )
                             .onTapGesture {
                                 coordinator.push(.courseDetail(postId: post.postId))
+                                mainTabViewModel.isHidden = true
                             }
                         }
                     }
