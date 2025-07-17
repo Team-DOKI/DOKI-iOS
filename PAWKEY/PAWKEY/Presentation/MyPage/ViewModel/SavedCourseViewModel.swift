@@ -9,7 +9,6 @@ import Foundation
 
 import Moya
 
-
 final class SavedCourseViewModel: ObservableObject {
     @Published var savedCourses: [SavedCourse] = []
 
@@ -46,8 +45,10 @@ final class SavedCourseViewModel: ObservableObject {
             
             do {
                 if savedCourses[index].isLiked {
+                    savedCourses[index].isLiked = false
                     let response: BaseDTO<PostResponseDTO> = try await provider.async.request(.postLike(postId: postId))
                 } else {
+                    savedCourses[index].isLiked = true
                     let response: BaseDTO<PostResponseDTO> = try await provider.async.request(.deleteLike(postId: postId))
                 }
             } catch {
@@ -55,4 +56,5 @@ final class SavedCourseViewModel: ObservableObject {
                 print("에러 발생: \(error.localizedDescription)")
             }
         }
+
 }
