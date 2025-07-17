@@ -48,7 +48,7 @@ struct FilterBottomSheet: View {
                         .animation(nil)
                     
                     ForEach(viewModel.filterItemList.selecteList, id: \.self) { selectedList in
-                        RadioGroup(
+                        CheckBoxGroup(
                             isExpanded: Binding(
                                 get: { viewModel.singleItemexpandedGroup[selectedList.selectId] ?? false },
                                 set: { /*viewModel.singleItemexpandedGroup[selectedList.selectId] = $0*/ _ in}
@@ -57,7 +57,7 @@ struct FilterBottomSheet: View {
                             items: selectedList.options
                         ) { selected in                            
                             viewModel.selectSingleItem(selected)
-                        } onTapGroup: {
+                        } onTap: {
                             viewModel.onTapSingleItemGroup(selectId: selectedList.selectId)
                         }
                     }
