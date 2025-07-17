@@ -13,7 +13,7 @@ struct RadioCell: View {
         HStack {
             Text(checkOption.title)
                 .font(checkOption.isSelected ? .body_14_r : .body_14_sb)
-                .foregroundStyle(checkOption.isSelected ? .green : .black)
+                .foregroundStyle(checkOption.isSelected ? .green500 : .black)
             Spacer()
             Image(checkOption.isSelected ? .radioButtonAct : .radioButtonDeact)
         }

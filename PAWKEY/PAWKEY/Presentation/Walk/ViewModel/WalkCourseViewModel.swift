@@ -281,6 +281,7 @@ extension WalkCourseViewModel {
 //MARK: - API
 
 extension WalkCourseViewModel {
+    @MainActor
     func postWalkCourse(snapshotImage: UIImage?) async {
         let coords = pathCoordinates.map {
             WalkCoordinateDTO(longitude: $0.longitude, latitude: $0.latitude)
