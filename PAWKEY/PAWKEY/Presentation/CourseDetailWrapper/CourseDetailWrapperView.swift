@@ -22,7 +22,7 @@ struct CourseDetailWrapperView: View {
             
                 if let post = viewModel.post, post.author.id != 2 {
                     Button(action: {
-                        
+                        viewModel.isShowSharedWalkCourseView = true
                     }) {
                         Text("해당 루트로 산책하기")
                             .font(.body_16_sb)
