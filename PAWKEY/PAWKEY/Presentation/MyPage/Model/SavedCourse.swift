@@ -10,7 +10,7 @@ import Foundation
 struct SavedCourse: Identifiable, Hashable {
     let id: Int
     let createdAt: String
-    let isLiked: Bool
+    var isLiked: Bool
     let title: String
     let imageUrl: String
     let routeId: Int
