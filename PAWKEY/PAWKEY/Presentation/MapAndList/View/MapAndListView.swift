@@ -177,15 +177,15 @@ extension MapAndListView {
                     ScrollView(showsIndicators: false) {
                         Spacer().frame(height: 12)
                         VStack {
-                            ForEach(mapAndListViewModel.posts, id: \.self) { post in
+                            ForEach(mapAndListViewModel.posts.filter { $0.isPublic }, id: \.self) { post in
                                 ReviewCard(
-                                    type: .others,
+                                    type: post.isMine ? .mine : .others,
                                     walkRouteImg: post.representativeImageUrl,
                                     profileImg: post.writer.petProfileImageUrl,
                                     walkTitle: post.title,
                                     petName: post.writer.petName,
                                     postDate: post.createdAt,
-                                    buttonPressed: post.isLike,
+                                    buttonPressed: post.isMine ? post.isPublic : post.isLike,
                                     data: post.descriptionTags
                                 )
                                 .onTapGesture {

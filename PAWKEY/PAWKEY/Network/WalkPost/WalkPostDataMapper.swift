@@ -18,7 +18,9 @@ extension Array where Element == PostDTO {
                 routeId: $0.routeId,
                 representativeImageUrl: $0.representativeImageUrl,
                 writer: $0.writer.toEntity(),
-                descriptionTags: $0.descriptionTags
+                descriptionTags: $0.descriptionTags,
+                isMine: $0.isMine,
+                isPublic: $0.isPublic
             )
         }
     }

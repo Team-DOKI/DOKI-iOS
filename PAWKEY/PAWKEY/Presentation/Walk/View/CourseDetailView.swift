@@ -122,30 +122,43 @@ extension CourseDetailView {
                     .font(.head_20_sb)
                     .foregroundColor(.pawkeyBlack)
                 Spacer()
-                if (viewModel.post?.author.id == 2) {
-                    if (viewModel.post?.isLiked ?? false) {
-                        Image(.eyeFill)
+                
+                if let post = viewModel.post {
+                    if post.author.id == 2 {
+                        Image(viewModel.isPrivate ? .eyeSlashFill : .eyeFill)
                     } else {
-                        Image(.eyeSlashFill)
+                        // 내가 작성한 게시물이 아닌 경우
+                        Image(post.isLiked ? .heartIconFill : .heartIconGray)
                     }
                 }
-                else {
-                    if (viewModel.post?.isLiked ?? false) {
-                        Image(.heartIconFill)
-                            .onTapGesture {
-                                Task {
-                                    await viewModel.unLikePost()
-                                }
-                            }
-                    } else {
-                        Image(.heartIconGray)
-                            .onTapGesture {
-                                Task {
-                                    await viewModel.likePost()
-                                }
-                            }
-                    }
-                }
+                
+              
+//                if (viewModel.post?.author.id == 2) {
+//                    if (viewModel.post?.isLiked ?? false) {
+//                        Image(.eyeFill)
+//                    } else {
+//                        Image(.eyeSlashFill)
+//                    }
+//                }
+//                else {
+//                    if (viewModel.post?.isLiked ?? false) {
+//                        Image(.heartIconFill)
+//                            .onTapGesture {
+//                                Task {
+//                                    await viewModel.unLikePost()
+//                                }
+//                            }
+//                    } else {
+//                        Image(.heartIconGray)
+//                            .onTapGesture {
+//                                Task {
+//                                    await viewModel.likePost()
+//                                }
+//                            }
+//                    }
+//                }
+                
+                //
             }
         }
     }

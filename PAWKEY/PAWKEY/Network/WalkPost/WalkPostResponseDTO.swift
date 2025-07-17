@@ -20,6 +20,8 @@ struct PostDTO: Codable {
     let representativeImageUrl: String
     let writer: WriterDTO
     let descriptionTags: [String]
+    let isMine: Bool
+    let isPublic: Bool
 }
 
 struct WriterDTO: Codable {
