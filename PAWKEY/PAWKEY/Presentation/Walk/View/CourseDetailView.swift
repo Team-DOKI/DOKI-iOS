@@ -61,10 +61,10 @@ struct CourseDetailView: View {
                     }
                     
                 }
-                if let image = viewModel.selectedImage {
+                if let imageUrl = viewModel.selectedImageUrl {
                     ZStack {
                         Color.black
-                        Image(uiImage: image)
+                      KFImage(URL(string: imageUrl))
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                     }
@@ -88,7 +88,7 @@ struct CourseDetailView: View {
         })
         
         .fullScreenCover(isPresented: $viewModel.isShowSharedWalkCourseView) {
-            SharedWalkCourseView(viewModel: sharedWalkCourseViewModel, showSharedWalkCourseView: $viewModel.isShowSharedWalkCourseView) { distance, elapsedTime, stepCount, snapshot in
+            SharedWalkCourseView(viewModel: sharedWalkCourseViewModel, showSharedWalkCourseView: $viewModel.isShowSharedWalkCourseView, routeId: viewModel.post?.routeId ?? 0) { distance, elapsedTime, stepCount, snapshot in
                 coordinator.push(.sharedWalkCompletion(
                     distance: distance,
                     elapsedTime: elapsedTime,
@@ -122,6 +122,15 @@ extension CourseDetailView {
                     .font(.head_20_sb)
                     .foregroundColor(.pawkeyBlack)
                 Spacer()
+                
+//                if let post = viewModel.post {
+//                    if post.author.id == 2 {
+//                        Image(viewModel.isPrivate ? .eyeSlashFill : .eyeFill)
+//                    } else {
+//                        // 내가 작성한 게시물이 아닌 경우
+//                        Image(post.isLiked ? .heartIconFill : .heartIconGray)
+//                    }
+//                }
                 if (viewModel.post?.author.id == 2) {
                     if (viewModel.post?.isLiked ?? false) {
                         Image(.eyeFill)
@@ -146,6 +155,8 @@ extension CourseDetailView {
                             }
                     }
                 }
+                
+                
             }
         }
     }
@@ -166,25 +177,26 @@ extension CourseDetailView {
     
     private var reviewImageScrollView: some View {
         VStack(alignment: .leading) {
-            if viewModel.images.count > 1 {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 6) {
-                        ForEach(viewModel.images.dropFirst(), id: \.self) { image in
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 100, height: 100)
-                                .clipped()
-                                .cornerRadius(4)
-                                .onTapGesture {
-                                    viewModel.isShowPhotoPreview = true
-                                    viewModel.selectedImage = image
-                                }
+                        if let post = viewModel.post {
+                            ForEach(post.walkingImageUrls, id: \.self) { imageUrl in
+                                KFImage(URL(string: imageUrl))
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 100, height: 100)
+                                    .clipped()
+                                    .cornerRadius(4)
+                                    .onTapGesture {
+                                        viewModel.isShowPhotoPreview = true
+                                        viewModel.selectedImageUrl = imageUrl
+                                    }
+                            }
                         }
+                       
                     }
                 }
                 .padding(.bottom, 12)
-            }
             
             Text(viewModel.post?.content ?? "")
                 .font(.body_14_r)
@@ -221,6 +233,7 @@ extension CourseDetailView {
             .padding(.vertical, 16)
             
             VStack {
+                
                 ForEach(viewModel.topReviews, id: \.self) {
                     ReviewRatingBar(title: $0.optionText, rating: $0.ratio, rank: $0.rank)
                 }

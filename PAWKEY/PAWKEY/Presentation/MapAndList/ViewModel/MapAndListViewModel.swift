@@ -58,22 +58,27 @@ final class MapAndListViewModel: ObservableObject {
         guard let groupIndex = filterItemList.selecteList.firstIndex(where: {
             $0.options.contains(where: { $0.selectOptionId == selected.selectOptionId })
         }) else { return }
-        
+
         var group = filterItemList.selecteList[groupIndex]
+        let isAlreadySelected = group.options.first(where: { $0.selectOptionId == selected.selectOptionId })?.isSelected == true
+    
         group.options = group.options.map {
             SelecteItem(
                 selectOptionId: $0.selectOptionId,
                 selectText: $0.selectText,
-                isSelected: $0.selectOptionId == selected.selectOptionId
+                isSelected: isAlreadySelected ? false : ($0.selectOptionId == selected.selectOptionId)
             )
         }
-        
+
         filterItemList.selecteList[groupIndex] = group
-        
+
         addedFilterItem.removeAll {
             group.options.map(\.selectOptionId).contains($0.selectOptionId)
         }
-        addedFilterItem.append(selected)
+        if !isAlreadySelected {
+            addedFilterItem.append(selected)
+        }
+
     }
     
     func selectMultipleItem(_ selected: SelecteItem) {
