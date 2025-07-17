@@ -48,7 +48,7 @@ extension PostResponseDTO {
             ),
             tags: categoryTags.categoryOptionSummary,
             region: regionName,
-            createdDate: createdAt.toFormattedDateString() ?? createdAt,
+            createdDate: createdAt.toFormattedDateTimeString() ?? createdAt,
             routeImageUrl: routeMapImageUrl,
             walkingImageUrls: walkingImageUrls
         )
