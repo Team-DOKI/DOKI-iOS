@@ -23,28 +23,28 @@ struct SharedWalkCompletionView: View {
                 .ignoresSafeArea()
             
             VStack(alignment: .leading) {
-                Text("포비와 함께한 산책 루트에요.")
+                Text("산책 결과를 확인해보세요.")
                     .font(.head_18_sb)
                     .foregroundColor(.pawkeyBlack)
                     .padding(.top, 36)
                     .padding(.bottom, 16)
                 
                 VStack(alignment: .leading) {
-                    HStack(alignment: .center, spacing: 10) {
-                        Circle()
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(width: 43, height: 43)
-                        
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text("포비")
-                                .font(.body_16_sb)
-                            Text("2025.06.26 (금) | 오후 11:50")
-                                .font(.caption_12_r)
-                                .foregroundColor(.gray300)
-                        }
-                    }
-                    .padding(.horizontal, 16)
-                    .padding([.top, .bottom], 12)
+                    //                    HStack(alignment: .center, spacing: 10) {
+                    //                        Circle()
+                    //                            .fill(Color.gray.opacity(0.3))
+                    //                            .frame(width: 43, height: 43)
+                    //
+                    //                        VStack(alignment: .leading, spacing: 6) {
+                    //                            Text("포비")
+                    //                                .font(.body_16_sb)
+                    //                            Text("2025.06.26 (금) | 오후 11:50")
+                    //                                .font(.caption_12_r)
+                    //                                .foregroundColor(.gray300)
+                    //                        }
+                    //                    }
+                    //                    .padding(.horizontal, 16)
+                    //                    .padding([.top, .bottom], 12)
                     
                     if let snapshot = viewModel.snapshot {
                         Image(uiImage: snapshot)
@@ -53,7 +53,7 @@ struct SharedWalkCompletionView: View {
                             .frame(maxWidth: .infinity)
                             .cornerRadius(8)
                             .padding(.horizontal, 8)
-                            .padding(.bottom, 16)
+                            .padding(.vertical, 16)
                     } else {
                         Rectangle()
                             .fill(Color.gray.opacity(0.2))
@@ -61,7 +61,7 @@ struct SharedWalkCompletionView: View {
                             .frame(height: 218)
                             .cornerRadius(8)
                             .padding(.horizontal, 8)
-                            .padding(.bottom, 16)
+                            .padding(.vertical, 16)
                     }
                     
                     Divider().background(.gray100)
