@@ -24,38 +24,38 @@ struct ReviewWriteView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack {
-                VStack(alignment: .leading) {
-                    Text("제목")
-                        .font(.head_20_sb)
-                        .foregroundStyle(.green500)
-                        .padding(.vertical, 12)
-                    
-                    HStack(alignment: .center, spacing: 10) {
-                        Circle()
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(width: 43, height: 43)
-                        
-                        Text("포비")
-                            .font(.body_16_sb)
-                        
-                    }
-                    .padding(.vertical, 12)
-                    
-                    TimePlaceCell(type: .place("강남구 역삼동"))
-                        .padding(.bottom, 4)
-                    
-                    TimePlaceCell(type: .time("2025.07.08(화) | 오후 11:28"))
-                        .padding(.bottom, 12)
-                    
-                    Chip(title: "옵션")
-                        .padding(.top, 10)
-                        .padding(.bottom, 16)
-                }
-                .padding(.horizontal, 16)
-                .frame(maxWidth: .infinity, alignment: .leading)
+//                VStack(alignment: .leading) {
+//                    Text("제목")
+//                        .font(.head_20_sb)
+//                        .foregroundStyle(.green500)
+//                        .padding(.vertical, 12)
+//                    
+//                    HStack(alignment: .center, spacing: 10) {
+//                        Circle()
+//                            .fill(Color.gray.opacity(0.3))
+//                            .frame(width: 43, height: 43)
+//                        
+//                        Text("포비")
+//                            .font(.body_16_sb)
+//                        
+//                    }
+//                    .padding(.vertical, 12)
+//                    
+//                    TimePlaceCell(type: .place("강남구 역삼동"))
+//                        .padding(.bottom, 4)
+//                    
+//                    TimePlaceCell(type: .time("2025.07.08(화) | 오후 11:28"))
+//                        .padding(.bottom, 12)
+//                    
+//                    Chip(title: "옵션")
+//                        .padding(.top, 10)
+//                        .padding(.bottom, 16)
+//                }
+//                .padding(.horizontal, 16)
+//                .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Rectangle()
-                    .fill(Color.pawkeyWhite2)
+                    .fill(Color.pawkeyWhite1)
                     .frame(height: 10)
                     .frame(maxWidth: .infinity)
                     .padding(.bottom, 24)
