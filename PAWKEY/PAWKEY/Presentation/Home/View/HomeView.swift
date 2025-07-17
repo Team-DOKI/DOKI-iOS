@@ -45,7 +45,7 @@ struct HomeView: View {
                         ReviewCard(type: .others, walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "외로운 산책", petName: "길냥이", postDate: "2025/01/02", buttonPressed: true, data: viewModel.dummyData)
                             .onTapGesture {
                                 mainTabViewModel.isHidden = true
-                                coordinator.push(.sharedCourseDetail(id: 0))
+                                coordinator.push(.sharedCourseDetail(id:44))
                             }
                     }
                     .padding(.horizontal, 16)
@@ -69,6 +69,7 @@ struct HomeView: View {
             Task {
                 await viewModel.fetchMyRegion()
             }
+            mainTabViewModel.isHidden = false
         }
     }
     
