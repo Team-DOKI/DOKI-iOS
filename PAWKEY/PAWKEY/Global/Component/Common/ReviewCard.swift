@@ -35,6 +35,9 @@ struct ReviewCard: View {
     @State var buttonPressed: Bool = true
     @State var isSpread = false
     
+    let onLikeButtonTapped: ((Int) -> Void)?
+    let postId: Int
+    
     let data: [String]
     
     var body: some View {
@@ -86,7 +89,7 @@ struct ReviewCard: View {
                     Spacer()
                     
                     Button {
-                        
+                        onLikeButtonTapped?(postId)
                     } label: {
                         if type == .mine {
                             buttonPressed ? type.iconName : Image(.eyeSlashFill)

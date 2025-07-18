@@ -186,6 +186,13 @@ extension MapAndListView {
                                     petName: post.writer.petName,
                                     postDate: post.createdAt,
                                     buttonPressed: post.isMine ? post.isPublic : post.isLike,
+                                    isSpread: false,
+                                    onLikeButtonTapped: { postId in
+                                        Task {
+                                            await mapAndListViewModel.toggleLike(for: postId)
+                                        }
+                                    },
+                                    postId: post.postId,
                                     data: post.descriptionTags
                                 )
                                 .onTapGesture {
