@@ -36,6 +36,13 @@ struct SavedCourseView: View {
                                 petName: course.petName,
                                 postDate: course.createdAt,
                                 buttonPressed: course.isLiked,
+                                isSpread: false,
+                                onLikeButtonTapped: { postId in
+                                    Task {
+                                        await viewModel.toggleLike(for: postId)
+                                    }
+                                },
+                                postId: course.id,
                                 data: course.tags
                             )
                             .onTapGesture {

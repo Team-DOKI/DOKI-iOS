@@ -124,14 +124,6 @@ extension CourseDetailView {
                     .foregroundColor(.pawkeyBlack)
                 Spacer()
                 
-                //                if let post = viewModel.post {
-                //                    if post.author.id == 2 {
-                //                        Image(viewModel.isPrivate ? .eyeSlashFill : .eyeFill)
-                //                    } else {
-                //                        // 내가 작성한 게시물이 아닌 경우
-                //                        Image(post.isLiked ? .heartIconFill : .heartIconGray)
-                //                    }
-                //                }
                 if (viewModel.post?.author.id == 2) {
                     if (viewModel.post?.isLiked ?? false) {
                         Image(.eyeFill)
