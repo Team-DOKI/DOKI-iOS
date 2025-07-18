@@ -21,7 +21,7 @@ struct SharedWalkCourseView: View {
     
     let routeId: Int
     
-    let onComplete: (Double, String, Int, UIImage?) -> Void
+    let onComplete: (Double, String, Int, Int) -> Void
         
     
     var body: some View {
@@ -62,7 +62,7 @@ struct SharedWalkCourseView: View {
                                 viewModel.distance,
                                 viewModel.elapsedTime,
                                 viewModel.stepCount,
-                                nil
+                                routeId
                             )
                         }
                     )

@@ -98,7 +98,7 @@ struct ReviewWriteView: View {
                     buttonStyle: .filled
                 ) {
                     Task {
-                        await viewModel.postReview(routeId: 40)
+                        await viewModel.postReview(routeId: viewModel.routeId)
                         isAlertPresented = true
                     }
                 }
