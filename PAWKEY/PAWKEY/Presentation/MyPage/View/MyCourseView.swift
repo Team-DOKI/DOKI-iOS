@@ -44,6 +44,9 @@ struct MyCourseView: View {
                                 petName: review.petName,
                                 postDate: review.createdAt,
                                 buttonPressed: review.isPublic,
+                                isSpread: false,
+                                onLikeButtonTapped: nil,
+                                postId: review.id,
                                 data: review.tags
                             )
                             .onTapGesture {

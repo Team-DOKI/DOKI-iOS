@@ -9,7 +9,6 @@ import Foundation
 
 import Moya
 
-
 final class SavedCourseViewModel: ObservableObject {
     @Published var savedCourses: [SavedCourse] = []
 
@@ -31,4 +30,31 @@ final class SavedCourseViewModel: ObservableObject {
             print("저장된 산책 코스 불러오기 실패: \(error.localizedDescription)")
         }
     }
+    
+    @MainActor
+        func toggleLike(for postId: Int) async {
+            guard let index = savedCourses.firstIndex(where: { $0.id == postId }) else {
+                print("해당 postId를 가진 코스를 찾을 수 없습니다: \(postId)")
+                return
+            }
+            
+            let originalState = savedCourses[index].isLiked
+            savedCourses[index].isLiked.toggle() 
+            
+            let provider = MoyaProvider<LikePostAPI>(plugins: [MoyaLoggingPlugin()])
+            
+            do {
+                if savedCourses[index].isLiked {
+                    savedCourses[index].isLiked = false
+                    let response: BaseDTO<PostResponseDTO> = try await provider.async.request(.postLike(postId: postId))
+                } else {
+                    savedCourses[index].isLiked = true
+                    let response: BaseDTO<PostResponseDTO> = try await provider.async.request(.deleteLike(postId: postId))
+                }
+            } catch {
+                savedCourses[index].isLiked = originalState
+                print("에러 발생: \(error.localizedDescription)")
+            }
+        }
+
 }

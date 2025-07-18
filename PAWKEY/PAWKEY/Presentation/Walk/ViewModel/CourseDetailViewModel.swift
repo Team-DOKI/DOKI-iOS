@@ -70,23 +70,30 @@ class CourseDetailViewModel: ObservableObject, Hashable {
             print("에러 발생: \(error.localizedDescription)")
         }
     }
+    
+    @MainActor
     func likePost() async {
+        post?.isLiked = true
+        
         let provider = MoyaProvider<LikePostAPI>(plugins: [MoyaLoggingPlugin()])
         
         do {
             let response: BaseDTO<PostResponseDTO> = try await provider.async.request(.postLike(postId: postId))
         } catch {
+            post?.isLiked = false
             print("에러 발생: \(error.localizedDescription)")
         }
     }
     
-    
+    @MainActor
     func unLikePost() async {
+        post?.isLiked = false
+        
         let provider = MoyaProvider<LikePostAPI>(plugins: [MoyaLoggingPlugin()])
         do {
-        
             let response: BaseDTO<PostResponseDTO> = try await provider.async.request(.deleteLike(postId: postId))
         } catch {
+            post?.isLiked = true
             print("에러 발생: \(error.localizedDescription)")
         }
     }
