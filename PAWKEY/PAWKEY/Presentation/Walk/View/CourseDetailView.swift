@@ -93,7 +93,8 @@ struct CourseDetailView: View {
                     distance: distance,
                     elapsedTime: elapsedTime,
                     stepCount: stepCount,
-                    routeId: viewModel.post?.routeId ?? 0
+                    routeId: viewModel.post?.routeId ?? 0,
+                    routeImageUrl: viewModel.post?.routeImageUrl
                 ))
                 sharedWalkCourseViewModel.resetTrackingData()
             }
