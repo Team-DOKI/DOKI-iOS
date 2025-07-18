@@ -12,8 +12,8 @@ enum WalkScene: AppScene {
     case courseDetail(postId: Int)
     case walkCompletion(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?, routeId: Int)
     case archive(routeId: Int)
-    case sharedWalkCompletion(distance: Double, elapsedTime: String, stepCount: Int, snapshot: UIImage?)
-    case reviewWrite
+    case sharedWalkCompletion(distance: Double, elapsedTime: String, stepCount: Int, routeId: Int)
+    case reviewWrite(routeId: Int)
     
     @ViewBuilder
     func build() -> some View {
@@ -38,17 +38,17 @@ enum WalkScene: AppScene {
             let viewModel = ArchiveViewModel(routeId: routeId)
             ArchiveView(viewModel: viewModel)
             
-        case .sharedWalkCompletion(let distance, let elapsedTime, let stepCount, let snapshot):
+        case .sharedWalkCompletion(let distance, let elapsedTime, let stepCount, let routeId):
             let viewModel = SharedWalkCompletionViewModel(
                 distance: distance,
                 elapsedTime: elapsedTime,
                 stepCount: stepCount,
-                snapshot: snapshot
+                routeId: routeId
             )
             SharedWalkCompletionView(viewModel: viewModel)
             
-        case .reviewWrite:
-            let viewModel = ReviewWriteViewModel()
+        case .reviewWrite(let routeId):
+            let viewModel = ReviewWriteViewModel(routeId: routeId)
             ReviewWriteView(viewModel: viewModel)
         }
     }

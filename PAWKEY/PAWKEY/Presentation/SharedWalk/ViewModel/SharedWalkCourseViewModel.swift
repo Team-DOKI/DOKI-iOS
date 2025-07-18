@@ -180,7 +180,7 @@ extension SharedWalkCourseViewModel {
     @MainActor
     func fetchSharedWalkCourses(routeId: Int) async {
         do {
-            let response: BaseDTO<SharedWalkCourseDTO> = try await provider.async.request(.fetchSharedWalkCourse(routeId: 55))
+            let response: BaseDTO<SharedWalkCourseDTO> = try await provider.async.request(.fetchSharedWalkCourse(routeId: routeId))
             
             guard let data = response.data?.geometryDto else {
                 print("geometryDto 없음")
