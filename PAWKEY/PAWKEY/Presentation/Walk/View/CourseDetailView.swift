@@ -233,18 +233,21 @@ extension CourseDetailView {
             }
             .padding(.vertical, 16)
             
-            if viewModel.reviewCount == 0 {
-                if viewModel.isPrivate == true {
-                    Text("공개로 설정해보세요!")
-                        .font(.head_18_sb)
-                        .foregroundStyle(.gray300)
-                        .padding(.vertical, 24)
-                } else {
-                    Text("아직 후기가 없어요.")
-                        .font(.head_18_sb)
-                        .foregroundStyle(.gray300)
-                        .padding(.vertical, 24)
+            if viewModel.reviewCount != 0 {
+                VStack {
+                    if viewModel.isPrivate == true {
+                        Text("공개로 설정해보세요!")
+                            .font(.head_18_sb)
+                            .foregroundStyle(.gray300)
+                    } else {
+                        Text("아직 후기가 없어요.")
+                            .font(.head_18_sb)
+                            .foregroundStyle(.gray300)
+                    }
                 }
+                .frame(maxWidth: .infinity)
+                .multilineTextAlignment(.center)
+                .padding(.vertical, 24)
             } else {
                 VStack {
                     ForEach(viewModel.topReviews, id: \.self) {
@@ -253,6 +256,7 @@ extension CourseDetailView {
                 }
                 .padding(.bottom, 24)
             }
+
         }
     }
     
