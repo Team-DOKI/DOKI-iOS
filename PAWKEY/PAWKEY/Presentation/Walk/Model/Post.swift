@@ -12,7 +12,7 @@ struct Post {
     let routeId: Int
     let title: String
     let content: String
-    let isLiked: Bool
+    var isLiked: Bool
     let author: Author
     let tags: [String]
     let region: String

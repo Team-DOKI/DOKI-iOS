@@ -222,4 +222,61 @@ extension MapAndListViewModel {
             print("Error fetching regions: \(error.localizedDescription)")
         }
     }
+    
+    @MainActor
+    func toggleLike(for postId: Int) async {
+        guard let index = posts.firstIndex(where: { $0.postId == postId }) else {
+            print("해당 postId를 가진 게시물을 찾을 수 없습니다: \(postId)")
+            return
+        }
+        
+        let originalState = posts[index].isLike
+        posts[index].isLike.toggle()
+        
+        let provider = MoyaProvider<LikePostAPI>(plugins: [MoyaLoggingPlugin()])
+        
+        do {
+            if posts[index].isLike {
+                let response: BaseDTO<PostResponseDTO> = try await provider.async.request(.postLike(postId: postId))
+            } else {
+                let response: BaseDTO<PostResponseDTO> = try await provider.async.request(.deleteLike(postId: postId))
+            }
+        } catch {
+            posts[index].isLike = originalState
+            print("에러 발생: \(error.localizedDescription)")
+        }
+    }
+    
+    @MainActor
+    func likePost(postId: Int) async {
+        guard let index = posts.firstIndex(where: { $0.postId == postId }) else { return }
+        
+        posts[index].isLike = true
+        
+        let provider = MoyaProvider<LikePostAPI>(plugins: [MoyaLoggingPlugin()])
+        
+        do {
+            let response: BaseDTO<PostResponseDTO> = try await provider.async.request(.postLike(postId: postId))
+        } catch {
+            posts[index].isLike = false
+            print("에러 발생: \(error.localizedDescription)")
+        }
+    }
+
+    @MainActor
+    func unLikePost(postId: Int) async {
+        guard let index = posts.firstIndex(where: { $0.postId == postId }) else { return }
+        
+        posts[index].isLike = false
+        
+        let provider = MoyaProvider<LikePostAPI>(plugins: [MoyaLoggingPlugin()])
+        
+        do {
+            let response: BaseDTO<PostResponseDTO> = try await provider.async.request(.deleteLike(postId: postId))
+        } catch {
+            posts[index].isLike = true
+            print("에러 발생: \(error.localizedDescription)")
+        }
+    }
+
 }

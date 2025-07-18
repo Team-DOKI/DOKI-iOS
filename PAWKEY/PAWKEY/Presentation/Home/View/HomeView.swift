@@ -42,7 +42,19 @@ struct HomeView: View {
                             .font(.head_18_sb)
                             .foregroundStyle(.pawkeyBlack)
                         
-                        ReviewCard(type: .others, walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "외로운 산책", petName: "길냥이", postDate: "2025/01/02", buttonPressed: true, data: viewModel.dummyData)
+                        ReviewCard(
+                            type: .others,
+                            walkRouteImg: "walkRoute",
+                            profileImg: "profile",
+                            walkTitle: "외로운 산책",
+                            petName: "길냥이",
+                            postDate: "2025/01/02",
+                            buttonPressed: true,
+                            isSpread: false,
+                            onLikeButtonTapped: nil,
+                            postId: 12,
+                            data: viewModel.dummyData
+                        )
                             .onTapGesture {
                                 mainTabViewModel.isHidden = true
                                 coordinator.push(.sharedCourseDetail(id:44))

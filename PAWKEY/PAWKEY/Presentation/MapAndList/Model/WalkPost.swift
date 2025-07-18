@@ -10,7 +10,7 @@ import Foundation
 struct WalkPost: Hashable {
     let postId: Int
     let createdAt: String
-    let isLike: Bool
+    var isLike: Bool
     let title: String
     let routeId: Int
     let representativeImageUrl: String
