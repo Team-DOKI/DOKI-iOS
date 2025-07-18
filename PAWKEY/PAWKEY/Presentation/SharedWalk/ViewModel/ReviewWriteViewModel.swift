@@ -18,6 +18,12 @@ class ReviewWriteViewModel: ObservableObject {
         selectedOptions.values.allSatisfy { !$0.isEmpty }
     }
     
+    let routeId: Int
+    
+    init(routeId: Int) {
+        self.routeId = routeId
+    }
+    
     @MainActor
     func fetchCourseCategories() async {
         do {
@@ -58,7 +64,7 @@ class ReviewWriteViewModel: ObservableObject {
         
         do {
             try await provider.async.requestPlain(ReviewWriteAPI.postReview(body: body))
-            print("리뷰 업로드 성공")
+            print(/*"리뷰 업로드 성공"*/ body.routeId)
         } catch {
             print("리뷰 업로드 실패: \(error.localizedDescription)")
         }
