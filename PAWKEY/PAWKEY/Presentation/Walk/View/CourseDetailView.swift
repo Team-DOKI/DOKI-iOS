@@ -64,7 +64,7 @@ struct CourseDetailView: View {
                 if let imageUrl = viewModel.selectedImageUrl {
                     ZStack {
                         Color.black
-                      KFImage(URL(string: imageUrl))
+                        KFImage(URL(string: imageUrl))
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                     }
@@ -124,14 +124,14 @@ extension CourseDetailView {
                     .foregroundColor(.pawkeyBlack)
                 Spacer()
                 
-//                if let post = viewModel.post {
-//                    if post.author.id == 2 {
-//                        Image(viewModel.isPrivate ? .eyeSlashFill : .eyeFill)
-//                    } else {
-//                        // 내가 작성한 게시물이 아닌 경우
-//                        Image(post.isLiked ? .heartIconFill : .heartIconGray)
-//                    }
-//                }
+                //                if let post = viewModel.post {
+                //                    if post.author.id == 2 {
+                //                        Image(viewModel.isPrivate ? .eyeSlashFill : .eyeFill)
+                //                    } else {
+                //                        // 내가 작성한 게시물이 아닌 경우
+                //                        Image(post.isLiked ? .heartIconFill : .heartIconGray)
+                //                    }
+                //                }
                 if (viewModel.post?.author.id == 2) {
                     if (viewModel.post?.isLiked ?? false) {
                         Image(.eyeFill)
@@ -178,26 +178,26 @@ extension CourseDetailView {
     
     private var reviewImageScrollView: some View {
         VStack(alignment: .leading) {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 6) {
-                        if let post = viewModel.post {
-                            ForEach(post.walkingImageUrls, id: \.self) { imageUrl in
-                                KFImage(URL(string: imageUrl))
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 100, height: 100)
-                                    .clipped()
-                                    .cornerRadius(4)
-                                    .onTapGesture {
-                                        viewModel.isShowPhotoPreview = true
-                                        viewModel.selectedImageUrl = imageUrl
-                                    }
-                            }
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    if let post = viewModel.post {
+                        ForEach(post.walkingImageUrls, id: \.self) { imageUrl in
+                            KFImage(URL(string: imageUrl))
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 100, height: 100)
+                                .clipped()
+                                .cornerRadius(4)
+                                .onTapGesture {
+                                    viewModel.isShowPhotoPreview = true
+                                    viewModel.selectedImageUrl = imageUrl
+                                }
                         }
-                       
                     }
+                    
                 }
-                .padding(.bottom, 12)
+            }
+            .padding(.bottom, 12)
             
             Text(viewModel.post?.content ?? "")
                 .font(.body_14_r)
@@ -233,13 +233,26 @@ extension CourseDetailView {
             }
             .padding(.vertical, 16)
             
-            VStack {
-                
-                ForEach(viewModel.topReviews, id: \.self) {
-                    ReviewRatingBar(title: $0.optionText, rating: $0.ratio, rank: $0.rank)
+            if viewModel.reviewCount == 0 {
+                if viewModel.isPrivate == true {
+                    Text("공개로 설정해보세요!")
+                        .font(.head_18_sb)
+                        .foregroundStyle(.gray300)
+                        .padding(.vertical, 24)
+                } else {
+                    Text("아직 후기가 없어요.")
+                        .font(.head_18_sb)
+                        .foregroundStyle(.gray300)
+                        .padding(.vertical, 24)
                 }
+            } else {
+                VStack {
+                    ForEach(viewModel.topReviews, id: \.self) {
+                        ReviewRatingBar(title: $0.optionText, rating: $0.ratio, rank: $0.rank)
+                    }
+                }
+                .padding(.bottom, 24)
             }
-            .padding(.bottom, 24)
         }
     }
     
