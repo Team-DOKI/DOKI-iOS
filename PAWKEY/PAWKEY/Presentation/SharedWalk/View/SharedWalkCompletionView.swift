@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct SharedWalkCompletionView: View {
     @EnvironmentObject var coordinator: Coordinator<WalkScene>
@@ -46,11 +47,12 @@ struct SharedWalkCompletionView: View {
                     //                    .padding(.horizontal, 16)
                     //                    .padding([.top, .bottom], 12)
                     
-                    if let snapshot = viewModel.snapshot {
-                        Image(uiImage: snapshot)
+                    if let imageUrl = viewModel.routeImageUrl, let url = URL(string: imageUrl) {
+                        KFImage(url)
                             .resizable()
                             .frame(height: 218)
                             .frame(maxWidth: .infinity)
+                            .clipped()
                             .cornerRadius(8)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 16)
@@ -82,7 +84,7 @@ struct SharedWalkCompletionView: View {
                     isDisabled: false,
                     buttonStyle: .filled
                 ) {
-                    coordinator.push(.reviewWrite)
+                    coordinator.push(.reviewWrite(routeId: viewModel.routeId))
                 }
                 .padding(.bottom, 26)
             }

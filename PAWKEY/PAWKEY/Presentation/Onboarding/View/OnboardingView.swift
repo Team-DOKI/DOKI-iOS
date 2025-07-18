@@ -75,7 +75,7 @@ struct OnboardingView: View {
                                 } else {
                                     Text(title)
                                         .font(.head_24_b)
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(.green500)
                                 }
                             
                             Text(pages[selection].subtitle)

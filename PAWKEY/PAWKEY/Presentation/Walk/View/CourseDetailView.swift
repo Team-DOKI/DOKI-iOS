@@ -64,7 +64,7 @@ struct CourseDetailView: View {
                 if let imageUrl = viewModel.selectedImageUrl {
                     ZStack {
                         Color.black
-                      KFImage(URL(string: imageUrl))
+                        KFImage(URL(string: imageUrl))
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                     }
@@ -93,7 +93,8 @@ struct CourseDetailView: View {
                     distance: distance,
                     elapsedTime: elapsedTime,
                     stepCount: stepCount,
-                    snapshot: snapshot
+                    routeId: viewModel.post?.routeId ?? 0,
+                    routeImageUrl: viewModel.post?.routeImageUrl
                 ))
                 sharedWalkCourseViewModel.resetTrackingData()
             }
@@ -169,26 +170,26 @@ extension CourseDetailView {
     
     private var reviewImageScrollView: some View {
         VStack(alignment: .leading) {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 6) {
-                        if let post = viewModel.post {
-                            ForEach(post.walkingImageUrls, id: \.self) { imageUrl in
-                                KFImage(URL(string: imageUrl))
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 100, height: 100)
-                                    .clipped()
-                                    .cornerRadius(4)
-                                    .onTapGesture {
-                                        viewModel.isShowPhotoPreview = true
-                                        viewModel.selectedImageUrl = imageUrl
-                                    }
-                            }
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    if let post = viewModel.post {
+                        ForEach(post.walkingImageUrls, id: \.self) { imageUrl in
+                            KFImage(URL(string: imageUrl))
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 100, height: 100)
+                                .clipped()
+                                .cornerRadius(4)
+                                .onTapGesture {
+                                    viewModel.isShowPhotoPreview = true
+                                    viewModel.selectedImageUrl = imageUrl
+                                }
                         }
-                       
                     }
+                    
                 }
-                .padding(.bottom, 12)
+            }
+            .padding(.bottom, 12)
             
             Text(viewModel.post?.content ?? "")
                 .font(.body_14_r)
@@ -224,13 +225,30 @@ extension CourseDetailView {
             }
             .padding(.vertical, 16)
             
-            VStack {
-                
-                ForEach(viewModel.topReviews, id: \.self) {
-                    ReviewRatingBar(title: $0.optionText, rating: $0.ratio, rank: $0.rank)
+            if viewModel.reviewCount != 0 {
+                VStack {
+                    if viewModel.isPrivate == true {
+                        Text("공개로 설정해보세요!")
+                            .font(.head_18_sb)
+                            .foregroundStyle(.gray300)
+                    } else {
+                        Text("아직 후기가 없어요.")
+                            .font(.head_18_sb)
+                            .foregroundStyle(.gray300)
+                    }
                 }
+                .frame(maxWidth: .infinity)
+                .multilineTextAlignment(.center)
+                .padding(.vertical, 24)
+            } else {
+                VStack {
+                    ForEach(viewModel.topReviews, id: \.self) {
+                        ReviewRatingBar(title: $0.optionText, rating: $0.ratio, rank: $0.rank)
+                    }
+                }
+                .padding(.bottom, 24)
             }
-            .padding(.bottom, 24)
+
         }
     }
     
