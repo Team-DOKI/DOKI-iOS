@@ -42,10 +42,10 @@ struct HomeView: View {
                             .font(.head_18_sb)
                             .foregroundStyle(.pawkeyBlack)
                         
-                        ReviewCard(type: .others, walkRouteImg: "walkRoute", profileImg: "profile", walkTitle: "외로운 산책", petName: "길냥이", postDate: "2025/01/02", buttonPressed: true, data: viewModel.dummyData)
+                        ReviewCard(type: .others, walkRouteImg: "https://pawkey-bucket.s3.ap-northeast-2.amazonaws.com/route/544409f6-6snapshot.jpg", profileImg: "https://pawkey-bucket.s3.ap-northeast-2.amazonaws.com/route/bed7debe-1image_1752512784196.jpg", walkTitle: "뽀삐와 함께한 산책", petName: "뽀삐", postDate: "2025/07/18", buttonPressed: true, data: viewModel.dummyData)
                             .onTapGesture {
                                 mainTabViewModel.isHidden = true
-                                coordinator.push(.sharedCourseDetail(id:44))
+                                coordinator.push(.sharedCourseDetail(id: 116))
                             }
                     }
                     .padding(.horizontal, 16)
