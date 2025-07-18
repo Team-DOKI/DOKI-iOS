@@ -27,22 +27,6 @@ struct SavedCourseView: View {
             else {
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 16) {
-//                        ForEach(viewModel.savedCourses) { course in
-//                            ReviewCard(
-//                                type: .others,
-//                                walkRouteImg: course.imageUrl,
-//                                profileImg: course.petImageUrl,
-//                                walkTitle: course.title,
-//                                petName: course.petName,
-//                                postDate: course.createdAt,
-//                                buttonPressed: course.isLiked,
-//                                data: course.tags
-//                            )
-//                            .onTapGesture {
-//                                coordinator.push(.courseDetail(postId: course.id))
-//                                mainTabViewModel.isHidden = true
-//                            }
-//                        }
                         ForEach(viewModel.savedCourses) { course in
                             ReviewCard(
                                 type: .others,
