@@ -44,20 +44,20 @@ struct HomeView: View {
                         
                         ReviewCard(
                             type: .others,
-                            walkRouteImg: "https://pawkey-bucket.s3.ap-northeast-2.amazonaws.com/route/544409f6-6snapshot.jpg",
-                            profileImg: "https://pawkey-bucket.s3.ap-northeast-2.amazonaws.com/route/bed7debe-1image_1752512784196.jpg",
-                            walkTitle: "뽀삐와 함께한 산책",
-                            petName: "뽀삐",
+                            walkRouteImg: "https://pawkey-bucket.s3.ap-northeast-2.amazonaws.com/route/f9b2cd4e-5snapshot.jpg",
+                            profileImg: "https://i.ibb.co/hFk7qwjT/image.jpg",
+                            walkTitle: "우리 집 강쥐는 산책 요정",
+                            petName: "로이",
                             postDate: "2025/07/18",
-                            buttonPressed: true,
+                            buttonPressed: false,
                             isSpread: false,
                             onLikeButtonTapped: nil,
-                            postId: 12,
+                            postId: 109,
                             data: viewModel.dummyData
                         )
                         .onTapGesture {
                             mainTabViewModel.isHidden = true
-                            coordinator.push(.sharedCourseDetail(id: 116))
+                            coordinator.push(.sharedCourseDetail(id: 109))
                         }
                     }
                     .padding(.horizontal, 16)
