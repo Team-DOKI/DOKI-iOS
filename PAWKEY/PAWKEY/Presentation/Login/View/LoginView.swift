@@ -37,9 +37,9 @@ struct LoginView: View {
                 .padding(.top, 37)
                 .padding(.bottom, 154)
                 
-                CTAButton(title: "신규 계정으로 회원가입", buttonStyle: .borderless) {
-                    coordinator.push(.profileSetUp)
-                }
+//                CTAButton(title: "신규 계정으로 회원가입", buttonStyle: .borderless) {
+//                    coordinator.push(.profileSetUp)
+//                }
                 CTAButton(title: "로그인", isDisabled: viewModel.isDisabled, buttonStyle: .filled) {
 //                    mainTabViewModel.isLogin = true
                     coordinator.push(.profileSetUp)
