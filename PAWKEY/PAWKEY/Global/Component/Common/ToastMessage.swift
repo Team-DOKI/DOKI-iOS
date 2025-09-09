@@ -12,11 +12,9 @@ struct ToastMessage: View {
     
     var body: some View {
         Text(message)
-            .font(.body_16_m)
-            .foregroundStyle(.pawkeyWhite1)
+            .font(.body_16_m)            
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
-            .background(.pawkeyBlack.opacity(0.6))
             .cornerRadius(10)
     }
 }
