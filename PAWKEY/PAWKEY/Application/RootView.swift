@@ -8,13 +8,9 @@
 import SwiftUI
 
 struct RootView: View {
-    @EnvironmentObject var mainTabViewModel: MainTabViewModel
+//    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
     var body: some View {
-        if mainTabViewModel.isLogin {
-            MainTabView()                
-        } else {
-            OnboardingCoordinatorView()
-        }
+        Text("RootView")
     }
 }
