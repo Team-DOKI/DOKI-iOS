@@ -11,6 +11,9 @@ struct RootView: View {
 //    @EnvironmentObject var mainTabViewModel: MainTabViewModel
     
     var body: some View {
-        Text("RootView")
+        HStack {
+            CheckBox(text: "남아", isChecked: true)
+            CheckBox(text: "여아", isChecked: false)
+        }
     }
 }
