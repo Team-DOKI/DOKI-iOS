@@ -8,9 +8,13 @@
 import SwiftUI
 
 struct RootView: View {
-//    @EnvironmentObject var mainTabViewModel: MainTabViewModel
-    
+    @State var isLoading = false
     var body: some View {
-        Text("RootView")
+        VStack {
+            MainButton(text: "Test", buttonState: isLoading ? .loading : .default) {
+                isLoading = true
+            }
+        }
+        .padding(.horizontal, 20)
     }
 }
