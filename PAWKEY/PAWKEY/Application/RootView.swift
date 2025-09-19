@@ -22,6 +22,8 @@ struct RootView: View {
                 CheckBox(text: "남아", isChecked: true)
                 CheckBox(text: "여아", isChecked: false)
             }
+            MainTextField(placeholder: "text", text: .constant(""))
+            SearchField(placeholder: "text", text: .constant(""))
             
             ScrollView {
                 ForEach(breeds.indices, id: \.self) { index in

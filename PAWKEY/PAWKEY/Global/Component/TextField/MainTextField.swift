@@ -23,7 +23,7 @@ struct MainTextField: View {
         .cornerRadius(8)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(fieldIsFocused ? .green : .gray, lineWidth: 1)
+                .stroke(fieldIsFocused ? .defaultPrimary : .default, lineWidth: 1)
         )
     }
 }
