@@ -12,7 +12,7 @@ struct PAWKEYApp: App {
     
     var body: some Scene {
         WindowGroup {
-            RootView()
+            RootView()                
         }
     }
 }
