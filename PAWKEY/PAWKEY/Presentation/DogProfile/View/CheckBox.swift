@@ -13,15 +13,15 @@ struct CheckBox: View {
     var action: (() -> Void)? = nil
     
     var borderColor: Color {
-        isChecked ? .green300 : .gray
+        isChecked ? .defaultPrimary : .defaultMiddle
     }
     
     var textColor: Color {
-        isChecked ? .white : .gray
+        isChecked ? .defaultBackground : .defaultMiddle
     }
     
     var backgroundColor: Color {
-        isChecked ? .green300 : .white
+        isChecked ? .defaultPrimary : .defaultBackground
     }
     
     var body: some View {

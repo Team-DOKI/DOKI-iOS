@@ -13,7 +13,7 @@ struct BreedItem: View {
     var action: (() -> Void)?
     
     var backgroundColor: Color {
-        isChecked ? .green300 : .white
+        isChecked ? .defaultPrimary : .defaultBackground
     }
     
     var textColor: Color {

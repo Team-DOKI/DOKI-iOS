@@ -16,18 +16,18 @@ struct MainButton: View {
         var backgroundColor: Color {
             switch self {
             case .default, .loading:
-                    .defaultPrimary
+                .defaultPrimary
             case .disabled:
-                    .defaultBackground
+                .defaultBackground
             }
         }
         
         var textColor: Color {
             switch self {
             case .default, .loading:
-                    .white
+                .defaultBackground
             case .disabled:
-                    .default
+                .defaultMiddle
             }
         }
         

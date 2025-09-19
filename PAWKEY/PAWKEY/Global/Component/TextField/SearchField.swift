@@ -16,8 +16,8 @@ struct SearchField: View {
             TextField(placeholder, text: $text)
                 .padding(.leading, 16)
                 .font(.pretendard(size: 14, weight: .medium))
-            Image(.search)
-                .padding(.trailing, 16)
+//            Image(.search)
+//                .padding(.trailing, 16)
         }
         .frame(maxWidth: .infinity, minHeight: 54)
         .cornerRadius(8)
