@@ -9,10 +9,14 @@ import SwiftUI
 
 @main
 struct PAWKEYApp: App {
+    @StateObject var appDIContainer = AppDIContainer()
+    @StateObject var authManager = AuthManager()
     
     var body: some Scene {
         WindowGroup {
             RootView()
+                .environmentObject(authManager)
+                .environmentObject(appDIContainer)
         }
     }
 }
