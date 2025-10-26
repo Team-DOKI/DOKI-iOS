@@ -14,9 +14,9 @@ struct RootView: View {
         Group {
             switch authManager.authStatus {
             case .loggedIn:
-                Text("로그인")
+                LoginView()
             case .loggedOut:
-                Text("로그아웃")
+                LoginView()
             case .loading:
                 Text("스플래쉬")
                     .onAppear {
