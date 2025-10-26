@@ -8,22 +8,27 @@
 import SwiftUI
 
 struct MainTabView: View {
+    @EnvironmentObject var appDIContainer: AppDIContainer
     
-    var body: some View {        
+    var body: some View {
         TabView {
-            HomeView()
+            HomeCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
                 .tabItem {
                     Text("홈")
                 }
             
-            WalkView()
+            WalkCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
                 .tabItem {
                     Text("산책")
                 }
             
-            RouteRecommendView()
+            RecommendCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
                 .tabItem {
                     Text("코스추천")
+                }
+            MyPageCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
+                .tabItem {
+                    Text("마이페이지")
                 }
         }
     }

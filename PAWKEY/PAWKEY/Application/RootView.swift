@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RootView: View {
     @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var appDIContainer: AppDIContainer
     
     var body: some View {
         Group {
@@ -16,7 +17,7 @@ struct RootView: View {
             case .loggedIn:
                 MainTabView()
             case .loggedOut:
-                LoginView()
+                LoginCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
             case .loading:
                 Text("스플래쉬")
                     .onAppear {

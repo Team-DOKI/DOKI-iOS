@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct HomeView: View {
+    @StateObject var viewModel: HomeViewModel
+    
     var body: some View {
-        Text("홈뷰")
+        Button {
+            viewModel.navigateToWalkRecord()
+        } label: {
+            Text("산책시작")
+        }
     }
-}
-
-#Preview {
-    HomeView()
 }

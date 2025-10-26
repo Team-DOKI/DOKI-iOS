@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct WalkView: View {
+    @StateObject var viewModel: WalkViewModel
+    
     var body: some View {
-        Text("산책하기")
+        Button {
+            viewModel.navigateToWalkRecord()
+        } label: {
+            Text("산책시작")
+        }
+
     }
 }
 
-#Preview {
-    WalkView()
-}

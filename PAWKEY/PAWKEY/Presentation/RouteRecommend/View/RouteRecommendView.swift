@@ -8,11 +8,20 @@
 import SwiftUI
 
 struct RouteRecommendView: View {
+    @ObservedObject var viewModel: RecommendViewModel
+    
     var body: some View {
-        Text("코스추천")
+        List(1..<100) { num in
+            Button {
+                viewModel.navigateToDetail(id: num)
+            } label: {
+                Text("id: \(num)")
+            }
+        }
+
     }
 }
 
-#Preview {
-    RouteRecommendView()
-}
+//#Preview {
+//    RouteRecommendView()
+//}
