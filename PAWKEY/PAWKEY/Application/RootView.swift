@@ -14,7 +14,7 @@ struct RootView: View {
         Group {
             switch authManager.authStatus {
             case .loggedIn:
-                LoginView()
+                MainTabView()
             case .loggedOut:
                 LoginView()
             case .loading:
