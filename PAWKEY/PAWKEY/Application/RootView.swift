@@ -24,7 +24,10 @@ struct RootView: View {
                         authManager.checkLogin()
                     }
             }
-        }        
+        }
+        .overlay {
+            OnboardingView()
+        }
     }
 }
 
