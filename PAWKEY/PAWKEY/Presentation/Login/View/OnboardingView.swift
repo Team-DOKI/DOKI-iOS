@@ -42,6 +42,7 @@ enum OnboardingStep: CaseIterable {
 
 struct OnboardingView: View {
     @State private var currentStep: OnboardingStep = .welcome
+    @Binding var isOnboarding: Bool
     
     var body: some View {
         VStack(spacing: 0) {
@@ -83,18 +84,19 @@ struct OnboardingView: View {
                         .frame(width: currentStep == step ? 16 : 8, height: 8)
                         .cornerRadius(8)
                         .foregroundStyle(currentStep == step ? .defaultPrimary : .defaultButton)
+                        .animation(.default, value: currentStep)
                 }
             }
             .padding(.bottom, 50)
             
             Spacer()
-            MainButton(text: "시작하기")
+            MainButton(text: "시작하기") {
+                isOnboarding = true
+            }
         }
         .padding(.horizontal, 16)
         .background(.white)
     }
 }
 
-#Preview {
-    OnboardingView()
-}
+

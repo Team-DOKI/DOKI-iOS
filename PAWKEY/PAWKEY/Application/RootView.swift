@@ -11,6 +11,8 @@ struct RootView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var appDIContainer: AppDIContainer
     
+    @AppStorage("isOnboarding") var isOnboardingCompleted: Bool = UserDefaults.standard.bool(forKey: "isOnboarding")
+
     var body: some View {
         Group {
             switch authManager.authStatus {
@@ -26,12 +28,10 @@ struct RootView: View {
             }
         }
         .overlay {
-            OnboardingView()
+            if !isOnboardingCompleted {
+                OnboardingView(isOnboarding: $isOnboardingCompleted)
+            }
         }
     }
 }
 
-struct Breed: Hashable {
-    let name: String
-    var isChecked: Bool = false
-}
