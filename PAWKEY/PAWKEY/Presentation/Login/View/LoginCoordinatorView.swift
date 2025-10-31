@@ -30,7 +30,8 @@ struct LoginCoordinatorView: View {
                 .navigationDestination(for: LoginRoute.self) { destination in
                     switch destination {
                     case .register:
-                        RegisterView()
+                        let viewModel = viewModelFactory.makeRegisterViewModel()
+                        RegisterView(viewModel: viewModel)
                     }
                 }
         }

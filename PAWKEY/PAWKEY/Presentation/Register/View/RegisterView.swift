@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RegisterView: View {
     @EnvironmentObject var authManager: AuthManager
+    @ObservedObject var viewModel: RegisterViewModel
     
     var body: some View {
         Button {
@@ -19,6 +20,3 @@ struct RegisterView: View {
     }
 }
 
-#Preview {
-    RegisterView()
-}
