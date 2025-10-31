@@ -24,8 +24,7 @@ struct RootView: View {
                         authManager.checkLogin()
                     }
             }
-        }
-        .padding()
+        }        
     }
 }
 
