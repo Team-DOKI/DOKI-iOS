@@ -11,8 +11,7 @@ struct ToastMessage: View {
     let message: String
     
     var body: some View {
-        Text(message)
-            .font(.body_16_m)            
+        Text(message)                 
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
             .cornerRadius(10)
