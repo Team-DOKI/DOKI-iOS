@@ -15,12 +15,14 @@ struct RegisterView: View {
         VStack {
             currentStepView
             Spacer()
-            MainButton(text: "다음", buttonState: viewModel.buttonDisabled ? .disabled : .default) {
-                viewModel.goToNextStep()
-            }
-            .padding(.horizontal, 16)
+            mainButton
         }
         .overlay(alignment: .top) { progressBar }
+        .overlay(alignment: .top, content: {
+            if viewModel.isShowMapView {
+                AreaMapView(viewModel: viewModel)
+            }
+        })
         .topNavigationView {
             BackButton { viewModel.goToPrevStep() }
         } center: {
@@ -39,7 +41,7 @@ extension RegisterView {
             case .dogProfile:
                 DogInfoView(viewModel: viewModel)
             case .activityArea:
-                ActivityAreaView()
+                ActivityAreaView(viewModel: viewModel)
             }
         }
     }
@@ -50,6 +52,17 @@ extension RegisterView {
             .progressViewStyle(.linear)
             .tint(.defaultPrimary)
             .animation(.easeInOut, value: viewModel.currentStep)
+    }
+    
+    private var mainButton: some View {
+        MainButton(text: viewModel.isLastStep ? "완료" : "다음", buttonState: viewModel.buttonDisabled ? .disabled : .default) {
+            if viewModel.isLastStep {
+                authManager.login()
+            } else {
+                viewModel.goToNextStep()
+            }
+        }
+        .padding(.horizontal, 16)
     }
 }
 
