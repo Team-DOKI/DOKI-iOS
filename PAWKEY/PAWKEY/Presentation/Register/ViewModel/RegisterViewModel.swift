@@ -22,6 +22,8 @@ class RegisterViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Published Properties
+    
     @Published var currentStep: UserInfoStep = .userProfile
     @Published var nickname = ""
     @Published var birthDay = ""
@@ -38,10 +40,23 @@ class RegisterViewModel: ObservableObject {
     @Published var selectedDongId: Int?
     @Published var regionDisplayName = ""
     @Published var regionList: [String] = []
-    @Published var breedList: [String] = []
+    @Published var breedList: [String] = [
+        "말티즈",
+        "포메라니안",
+        "푸들",
+        "시츄",
+        "치와와",
+        "골든 리트리버",
+        "래브라도 리트리버",
+        "시베리안 허스키",
+        "요크셔 테리어",
+        "보더콜리"
+    ]
     @Published var breedSearchText = ""
     @Published var areaSearchText = ""
     @Published var isShowMapView = false
+    
+    // MARK: - Computed Properties
     
     var next: UserInfoStep? { UserInfoStep(rawValue: currentStep.rawValue + 1) }
     var prev: UserInfoStep? { UserInfoStep(rawValue: currentStep.rawValue - 1) }
@@ -53,6 +68,8 @@ class RegisterViewModel: ObservableObject {
         }
     }
     
+    // MARK: - User Action
+    
     func goToNextStep() {
         if let next { currentStep = next }
     }
@@ -63,5 +80,21 @@ class RegisterViewModel: ObservableObject {
     
     func selecteGender(_ gender: Gender) {
         self.gender = gender
+    }
+    
+    func selectDogGender(_ gender: Gender) {
+        self.dogGender = gender
+    }
+    
+    func toggleIsNeutering() {
+        isNeutering.toggle()
+    }
+    
+    func toggleBreedSearchSheet() {
+        isShowBreedSearch.toggle()
+    }
+    
+    func selectBreed(_ breed: String) {
+        self.breed = breed
     }
 }

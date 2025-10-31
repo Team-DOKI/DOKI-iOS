@@ -37,7 +37,7 @@ extension RegisterView {
             case .userProfile:
                 UserInfoView(viewModel: viewModel)
             case .dogProfile:
-                DogInfoView()
+                DogInfoView(viewModel: viewModel)
             case .activityArea:
                 ActivityAreaView()
             }
