@@ -9,10 +9,47 @@ import SwiftUI
 
 struct WalkCourseCell: View {
     var body: some View {
-        Text("Hello, World!")
+        VStack(alignment: .leading, spacing: 0) {
+            Image("")
+                .resizable()
+                .frame(height: 212)
+                .background(.defaultButton)
+                .cornerRadius(8)
+                .overlay(alignment: .top) {
+                    HStack {
+                        AddressTag(text: "강남구 역삼동")
+                        Spacer()
+                        Image(.heartIcon)
+                    }
+                    .padding(8)
+                }
+            Text("오늘도 단지랑 룰루랄라")
+                .bodyBold()
+                .padding(.top, 8)
+            Text("현재거리로부터 2km")
+                .subDefault(color: .default)
+                .padding(.top, 4)
+            HStack {
+                HStack(spacing: 4) {
+                    Image(.calendarIcon)
+                    Text("20205/09/19")
+                        .small(color: .default)
+                }
+                HStack(spacing: 4) {
+                    Image(.clockIcon)
+                    Text("30min")
+                        .small(color: .default)
+                }
+            }
+            .padding(.top, 8)
+        }
     }
 }
 
 #Preview {
-    WalkCourseCell()
+    HStack {
+        WalkCourseCell()
+        WalkCourseCell()
+    }
+    .padding()
 }
