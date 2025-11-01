@@ -67,4 +67,9 @@ extension Text {
         self.font(.link)
             .foregroundStyle(color)
     }
+    
+    func bodyBold(color: Color = .contents) -> some View {
+        self.font(.bodyBold)
+        .foregroundStyle(color)
+    }
 }

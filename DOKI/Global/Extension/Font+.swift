@@ -50,4 +50,5 @@ extension Font {
     static let subActive = Font.pretendard(size: 12, weight: .semibold)
     static let small = Font.pretendard(size: 10, weight: .semibold)
     static let link = Font.pretendard(size: 12, weight: .regular)
+    static let bodyBold = Font.pretendard(size: 14, weight: .bold)
 }
