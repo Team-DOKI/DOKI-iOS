@@ -17,7 +17,7 @@ class AuthManager: ObservableObject {
     @Published var authStatus: AuthState = .loading
     
     func checkLogin() {
-        authStatus = .loggedOut
+        authStatus = .loggedIn
     }
     
     func login() {
