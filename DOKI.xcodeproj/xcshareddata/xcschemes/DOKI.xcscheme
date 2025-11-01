@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "76ECCDEC2E05AFCC0056CAF7"
-               BuildableName = "PAWKEY.app"
-               BlueprintName = "PAWKEY"
-               ReferencedContainer = "container:PAWKEY.xcodeproj">
+               BuildableName = "DOKI.app"
+               BlueprintName = "DOKI"
+               ReferencedContainer = "container:DOKI.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "76ECCDEC2E05AFCC0056CAF7"
-            BuildableName = "PAWKEY.app"
-            BlueprintName = "PAWKEY"
-            ReferencedContainer = "container:PAWKEY.xcodeproj">
+            BuildableName = "DOKI.app"
+            BlueprintName = "DOKI"
+            ReferencedContainer = "container:DOKI.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "76ECCDEC2E05AFCC0056CAF7"
-            BuildableName = "PAWKEY.app"
-            BlueprintName = "PAWKEY"
-            ReferencedContainer = "container:PAWKEY.xcodeproj">
+            BuildableName = "DOKI.app"
+            BlueprintName = "DOKI"
+            ReferencedContainer = "container:DOKI.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

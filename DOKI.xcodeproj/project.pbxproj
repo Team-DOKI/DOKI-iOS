@@ -13,26 +13,26 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		76ECCDED2E05AFCC0056CAF7 /* PAWKEY.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PAWKEY.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		76ECCDED2E05AFCC0056CAF7 /* DOKI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DOKI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		767E02172E15304100BFCADB /* Exceptions for "PAWKEY" folder in "PAWKEY" target */ = {
+		00232BF72EB4E32E00F26249 /* Exceptions for "DOKI" folder in "DOKI" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 76ECCDEC2E05AFCC0056CAF7 /* PAWKEY */;
+			target = 76ECCDEC2E05AFCC0056CAF7 /* DOKI */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		76ECCDEF2E05AFCC0056CAF7 /* PAWKEY */ = {
+		76ECCDEF2E05AFCC0056CAF7 /* DOKI */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				767E02172E15304100BFCADB /* Exceptions for "PAWKEY" folder in "PAWKEY" target */,
+				00232BF72EB4E32E00F26249 /* Exceptions for "DOKI" folder in "DOKI" target */,
 			);
-			path = PAWKEY;
+			path = DOKI;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -54,7 +54,7 @@
 		76ECCDE42E05AFCC0056CAF7 = {
 			isa = PBXGroup;
 			children = (
-				76ECCDEF2E05AFCC0056CAF7 /* PAWKEY */,
+				76ECCDEF2E05AFCC0056CAF7 /* DOKI */,
 				76ECCDEE2E05AFCC0056CAF7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -62,7 +62,7 @@
 		76ECCDEE2E05AFCC0056CAF7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				76ECCDED2E05AFCC0056CAF7 /* PAWKEY.app */,
+				76ECCDED2E05AFCC0056CAF7 /* DOKI.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,9 +70,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		76ECCDEC2E05AFCC0056CAF7 /* PAWKEY */ = {
+		76ECCDEC2E05AFCC0056CAF7 /* DOKI */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 76ECCDF82E05AFCC0056CAF7 /* Build configuration list for PBXNativeTarget "PAWKEY" */;
+			buildConfigurationList = 76ECCDF82E05AFCC0056CAF7 /* Build configuration list for PBXNativeTarget "DOKI" */;
 			buildPhases = (
 				76ECCDE92E05AFCC0056CAF7 /* Sources */,
 				76ECCDEA2E05AFCC0056CAF7 /* Frameworks */,
@@ -83,16 +83,16 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				76ECCDEF2E05AFCC0056CAF7 /* PAWKEY */,
+				76ECCDEF2E05AFCC0056CAF7 /* DOKI */,
 			);
-			name = PAWKEY;
+			name = DOKI;
 			packageProductDependencies = (
 				76ECCF2C2E05C4820056CAF7 /* Kingfisher */,
 				76ECCF2F2E05C4CC0056CAF7 /* Lottie */,
 				766B2E482E254BD600F3A668 /* Moya */,
 			);
 			productName = DoggyWalker;
-			productReference = 76ECCDED2E05AFCC0056CAF7 /* PAWKEY.app */;
+			productReference = 76ECCDED2E05AFCC0056CAF7 /* DOKI.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -110,7 +110,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 76ECCDE82E05AFCC0056CAF7 /* Build configuration list for PBXProject "PAWKEY" */;
+			buildConfigurationList = 76ECCDE82E05AFCC0056CAF7 /* Build configuration list for PBXProject "DOKI" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -129,7 +129,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				76ECCDEC2E05AFCC0056CAF7 /* PAWKEY */,
+				76ECCDEC2E05AFCC0056CAF7 /* DOKI */,
 			);
 		};
 /* End PBXProject section */
@@ -157,7 +157,7 @@
 /* Begin XCBuildConfiguration section */
 		76ECCDF62E05AFCC0056CAF7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 76ECCDEF2E05AFCC0056CAF7 /* PAWKEY */;
+			baseConfigurationReferenceAnchor = 76ECCDEF2E05AFCC0056CAF7 /* DOKI */;
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -223,7 +223,7 @@
 		};
 		76ECCDF72E05AFCC0056CAF7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 76ECCDEF2E05AFCC0056CAF7 /* PAWKEY */;
+			baseConfigurationReferenceAnchor = 76ECCDEF2E05AFCC0056CAF7 /* DOKI */;
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -290,7 +290,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PAWKEY/Info.plist;
+				INFOPLIST_FILE = DOKI/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "위치 권한 요청";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "위치 권한 요청";
 				INFOPLIST_KEY_NSMotionUsageDescription = "걸음 수 측정을 위해 모션 데이터를 사용합니다.";
@@ -323,7 +323,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PAWKEY/Info.plist;
+				INFOPLIST_FILE = DOKI/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "위치 권한 요청";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "위치 권한 요청";
 				INFOPLIST_KEY_NSMotionUsageDescription = "걸음 수 측정을 위해 모션 데이터를 사용합니다.";
@@ -349,7 +349,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		76ECCDE82E05AFCC0056CAF7 /* Build configuration list for PBXProject "PAWKEY" */ = {
+		76ECCDE82E05AFCC0056CAF7 /* Build configuration list for PBXProject "DOKI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				76ECCDF62E05AFCC0056CAF7 /* Debug */,
@@ -358,7 +358,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		76ECCDF82E05AFCC0056CAF7 /* Build configuration list for PBXNativeTarget "PAWKEY" */ = {
+		76ECCDF82E05AFCC0056CAF7 /* Build configuration list for PBXNativeTarget "DOKI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				76ECCDF92E05AFCC0056CAF7 /* Debug */,

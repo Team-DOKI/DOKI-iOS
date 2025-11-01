@@ -28,7 +28,7 @@ struct TopNavigationViewModifier<C, L, R>: ViewModifier where C: View, L: View, 
                     Spacer()
                     right?()
                 }
-                .frame(height: 60)
+                .frame(minHeight: 60, maxHeight: 60)
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 16)
                 .background(.white)
@@ -39,10 +39,11 @@ struct TopNavigationViewModifier<C, L, R>: ViewModifier where C: View, L: View, 
                     Spacer()
                 }
             }            
-            
+            Spacer()
             content
+            Spacer()
         }
-        .navigationBarHidden(true)        
+        .navigationBarHidden(true)    
     }
 }
 
