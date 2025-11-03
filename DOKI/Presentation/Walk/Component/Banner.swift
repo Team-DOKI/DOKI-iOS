@@ -17,7 +17,7 @@ struct Banner: View {
                 Image(imageName)
                     .resizable()
                     .frame(height: 141)
-                    .background(.defaultButton)
+                    .background(.default)
                     .tag(index)
             }
         }
