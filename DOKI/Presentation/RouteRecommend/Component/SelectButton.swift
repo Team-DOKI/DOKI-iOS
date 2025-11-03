@@ -17,17 +17,19 @@ struct SelectButton: View {
     var action: (()->())?
     
     var body: some View {
-        VStack {
-            Text(text)
-                .subDefault(color: isActive ? .defaultPrimary : .default)
-                .frame(maxWidth: .infinity, minHeight: 40)
-                .background(isActive ? .opacity5 : .defaultBackground)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(lineWidth: 1.0)
-                        .foregroundStyle(activeColor)
-                )
-        }
-        .padding(.vertical, 1)
+            Button {
+                action?()
+            } label: {
+                Text(text)
+                    .subDefault(color: isActive ? .defaultPrimary : .default)
+                    .frame(maxWidth: .infinity, minHeight: 40)
+                    .background(isActive ? .opacity5 : .defaultBackground)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(lineWidth: 1.0)
+                            .foregroundStyle(activeColor)
+                    )
+            }
+            .padding(1)
     }
 }

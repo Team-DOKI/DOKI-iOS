@@ -86,8 +86,10 @@ extension FilterSettingView {
             }
             ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 8) {
-                    ForEach(viewModel.safetyOption, id: \.self) { text in
-                        SelectButton(text: text, isActive: false)
+                    ForEach($viewModel.safetyOption, id: \.self) { $filterOption in
+                        SelectButton(text: filterOption.text, isActive: filterOption.isActive) {
+                            filterOption.isActive.toggle()
+                        }
                     }
                 }
             }
@@ -104,8 +106,10 @@ extension FilterSettingView {
             }
             ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 8) {
-                    ForEach(viewModel.conditionOption, id: \.self) { text in
-                        SelectButton(text: text, isActive: false)
+                    ForEach($viewModel.convenienceOption, id: \.self) { $filterOption in
+                        SelectButton(text: filterOption.text, isActive: filterOption.isActive) {
+                            filterOption.isActive.toggle()
+                        }
                     }
                 }
             }
@@ -122,8 +126,10 @@ extension FilterSettingView {
             }
             ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 8) {
-                    ForEach(viewModel.environmentOption, id: \.self) { text in
-                        SelectButton(text: text, isActive: false)
+                    ForEach($viewModel.environmentOption, id: \.self) { $filterOption in
+                        SelectButton(text: filterOption.text, isActive: filterOption.isActive) {
+                            filterOption.isActive.toggle()
+                        }
                     }
                 }
             }

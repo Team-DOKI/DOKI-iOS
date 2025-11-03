@@ -68,8 +68,3 @@ struct RouteRecommendView: View {
         }
     }
 }
-
-struct FilterTag: Hashable {
-    let text: String
-    let isActive: Bool
-}
