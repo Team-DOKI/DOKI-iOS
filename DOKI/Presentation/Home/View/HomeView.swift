@@ -15,7 +15,7 @@ struct HomeView: View {
     var body: some View {
         VStack {
             Text("item: \(item)")
-            SegmentedButton(items: ["text1", "text2", "text3"], selectedItem: $item)
+//            SegmentedButton(items: ["text1", "text2", "text3"], selectedItem: $item)
             Text("value: \(value)")
             RangeSlider(start: 10, end: 60, value: $value)
             HStack {

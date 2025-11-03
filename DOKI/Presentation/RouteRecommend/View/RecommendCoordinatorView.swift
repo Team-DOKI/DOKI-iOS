@@ -45,6 +45,15 @@ struct RecommendCoordinatorView: View {
                     recommendCoordinator.pop()
                 }
             }
+            filterSettingViewModel.navigationAction = { destination in
+                switch destination {
+                case .back:
+                    recommendCoordinator.pop()
+                case .saveOption(let selectedOption):
+                    recommendViewModel.selectedFilterOption = selectedOption
+                    recommendCoordinator.pop()
+                }
+            }
         }
     }
 }

@@ -10,18 +10,15 @@ import SwiftUI
 class RecommendViewModel: ObservableObject {
     private let coordinator: Coordinator<RecommendRoute>
     
-    @Published var filterTags: [FilteringOption] = [
-        FilteringOption(text: "산책 소요 시간", isActive: true),
+    @Published var selectedFilterOption: [FilteringOption] = []
+    @Published var dummyFilterOption: [FilteringOption] = [
+        FilteringOption(text: "산책소요시간", isActive: false),
         FilteringOption(text: "혼잡도", isActive: false),
         FilteringOption(text: "강아지 교류 빈도", isActive: false),
-        FilteringOption(text: "산책 소요 시간", isActive: true),
-        FilteringOption(text: "혼잡도", isActive: false),
-        FilteringOption(text: "강아지 교류 빈도", isActive: false),
-        FilteringOption(text: "산책 소요 시간", isActive: true),
-        FilteringOption(text: "혼잡도", isActive: false),
-        FilteringOption(text: "강아지 교류 빈도", isActive: false)
+        FilteringOption(text: "안전", isActive: false),
+        FilteringOption(text: "편의성", isActive: false),
+        FilteringOption(text: "환경", isActive: false),
     ]
-    
     
     init(coordinator: Coordinator<RecommendRoute>) {
         self.coordinator = coordinator

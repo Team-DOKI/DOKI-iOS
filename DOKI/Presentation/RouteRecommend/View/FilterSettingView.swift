@@ -27,11 +27,15 @@ struct FilterSettingView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 20)
             }
-            MainButton(text: "적용하기")
+            MainButton(text: "적용하기") {
+                viewModel.saveOption()
+            }
                 .padding(.horizontal, 16)
         }
         .topNavigationView(left: {
-            BackButton { }
+            BackButton {
+                viewModel.navigateToBack()
+            }
         }, center: {
             Text("필터링 선택")
                 .subtitle()
@@ -48,7 +52,11 @@ extension FilterSettingView {
                 Text("(분)").subDefault(color: .default)
                 Spacer()
             }
-            RangeSlider(start: 10, end: 60, value: $viewModel.walkTime)
+            RangeSlider(
+                start: 10,
+                end: 60,
+                value: $viewModel.walkTime
+            )
         }
     }
     
@@ -60,7 +68,10 @@ extension FilterSettingView {
                 Text("(단일 선택 가능)").subDefault(color: .default)
                 Spacer()
             }
-            SegmentedButton(items: viewModel.conditionOption, selectedItem: $viewModel.congestion)
+            SegmentedButton(
+                items: viewModel.congestionOption,
+                selectedItem: $viewModel.selectedCongestion
+            )
         }
     }
     
@@ -72,7 +83,10 @@ extension FilterSettingView {
                 Text("(단일 선택 가능)").subDefault(color: .default)
                 Spacer()
             }
-            SegmentedButton(items: viewModel.dogInteractionOption, selectedItem: $viewModel.dogInteraction)
+            SegmentedButton(
+                items: viewModel.dogInteractionOption,
+                selectedItem: $viewModel.selectedDogInteraction
+            )
         }
     }
     
