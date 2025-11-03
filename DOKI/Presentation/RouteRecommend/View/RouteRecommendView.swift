@@ -34,14 +34,20 @@ struct RouteRecommendView: View {
     
     private var filterSection: some View {
         HStack(spacing: 8) {
-            FilterButton(isActive: true) {
+            FilterButton(isActive: !viewModel.selectedFilterOption.isEmpty) {
                 viewModel.navigateToFilterSetting()
             }
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(viewModel.filterTags, id: \.self) { tag in
-                        FilteringTag(text: tag.text, isActive: tag.isActive)
+                    if viewModel.selectedFilterOption.isEmpty {
+                        ForEach(viewModel.dummyFilterOption, id: \.self) { tag in
+                            FilteringTag(text: tag.text, isActive: tag.isActive)
+                        }
+                    } else {
+                        ForEach(viewModel.selectedFilterOption, id: \.self) { tag in
+                            FilteringTag(text: tag.text, isActive: tag.isActive)
+                        }
                     }
                 }
             }
