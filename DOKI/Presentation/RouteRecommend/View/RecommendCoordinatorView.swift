@@ -16,12 +16,14 @@ struct RecommendCoordinatorView: View {
     @StateObject var recommendCoordinator: Coordinator<RecommendRoute>
     @StateObject var recommendViewModel: RecommendViewModel
     @StateObject var courseDetailViewModel: CourseDetailViewModel
+    @StateObject var filterSettingViewModel: FilterSettingViewModel
     
     init(recommendCoordinator: Coordinator<RecommendRoute> = Coordinator<RecommendRoute>(),
          viewModelFactory: AppDIContainer.ViewModelFactory) {
         self._recommendCoordinator = StateObject(wrappedValue: recommendCoordinator)
         self._recommendViewModel = StateObject(wrappedValue: viewModelFactory.makeRecommendViewModel(recommendCoordinator))
         self._courseDetailViewModel = StateObject(wrappedValue: viewModelFactory.makeCourseDetailViewModel())
+        self._filterSettingViewModel = StateObject(wrappedValue: viewModelFactory.makeFilterSettingViewModel())
     }
     
     var body: some View {
@@ -32,7 +34,7 @@ struct RecommendCoordinatorView: View {
                     case .courseDetail(let id):
                         CourseDetailView(viewModel: courseDetailViewModel)
                     case .filterSetting:
-                        FilterSettingView()
+                        FilterSettingView(viewModel: filterSettingViewModel)
                     }
                 }
         }

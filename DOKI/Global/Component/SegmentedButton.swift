@@ -36,6 +36,6 @@ struct SegmentedButton: View {
         }
         .background(.defaultButton)
         .clipShape(RoundedRectangle(cornerRadius: 8))
-        .frame(maxHeight: 40)
+        .frame(height: 40)
     }
 }

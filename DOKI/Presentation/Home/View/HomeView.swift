@@ -10,7 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @StateObject var viewModel: HomeViewModel
     @State var item = "text1"
-    @State var value:CGFloat = 0
+    @State var value:Int = 0
     
     var body: some View {
         VStack {
