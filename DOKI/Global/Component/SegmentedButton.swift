@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SegmentedButton: View {
-    let items: [String]
-    @Binding var selectedItem: String
+    let items: [FilteringOption]
+    @Binding var selectedItem: FilteringOption?
     @Namespace var namespace
     
     var body: some View {
@@ -22,7 +22,7 @@ struct SegmentedButton: View {
                             .matchedGeometryEffect(id: "background", in: namespace)
                     }
 
-                    Text(item)
+                    Text(item.text)
                         .subDefault(color: selectedItem == item ? .defaultBackground : .default)
                         .frame(maxWidth: .infinity, maxHeight: 40)
                 }
