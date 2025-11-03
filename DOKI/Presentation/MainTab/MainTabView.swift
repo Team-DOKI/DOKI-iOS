@@ -11,25 +11,27 @@ struct MainTabView: View {
     @EnvironmentObject var appDIContainer: AppDIContainer
     
     var body: some View {
-        TabView {
-            HomeCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
-                .tabItem {
-                    Text("홈")
-                }
-            
-            WalkCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
-                .tabItem {
-                    Text("산책")
-                }
-            
-            RecommendCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
-                .tabItem {
-                    Text("코스추천")
-                }
-            MyPageCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
-                .tabItem {
-                    Text("마이페이지")
-                }
+        NavigationStack {
+            TabView {
+                HomeCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
+                    .tabItem {
+                        Text("홈")
+                    }
+                
+                WalkCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
+                    .tabItem {
+                        Text("산책")
+                    }
+                
+                RecommendCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
+                    .tabItem {
+                        Text("코스추천")
+                    }
+                MyPageCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
+                    .tabItem {
+                        Text("마이페이지")
+                    }
+            }
         }
     }
 }

@@ -34,7 +34,9 @@ struct RouteRecommendView: View {
     
     private var filterSection: some View {
         HStack(spacing: 8) {
-            FilterButton(isActive: true)
+            FilterButton(isActive: true) {
+                viewModel.navigateToFilterSetting()
+            }
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {

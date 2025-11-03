@@ -9,7 +9,17 @@ import SwiftUI
 
 struct FilterSettingView: View {
     var body: some View {
-        Text("Hello, World!")
+        VStack {
+            
+        }
+        .topNavigationView(left: {
+            BackButton {
+                
+            }
+        }, center: {
+            Text("필터링 선택")
+                .subtitle()
+        })
     }
 }
 

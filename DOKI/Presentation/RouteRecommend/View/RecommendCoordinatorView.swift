@@ -9,6 +9,7 @@ import SwiftUI
 
 enum RecommendRoute: Route {
     case courseDetail(id: Int)
+    case filterSetting
 }
 
 struct RecommendCoordinatorView: View {
@@ -29,8 +30,9 @@ struct RecommendCoordinatorView: View {
                 .navigationDestination(for: RecommendRoute.self) { destination in
                     switch destination {
                     case .courseDetail(let id):
-                        courseDetailViewModel.setNumber(id: id)
-                        return CourseDetailView(viewModel: courseDetailViewModel)
+                        CourseDetailView(viewModel: courseDetailViewModel)
+                    case .filterSetting:
+                        FilterSettingView()
                     }
                 }
         }

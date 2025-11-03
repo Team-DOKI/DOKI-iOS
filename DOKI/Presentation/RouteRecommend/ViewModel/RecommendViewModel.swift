@@ -30,4 +30,8 @@ class RecommendViewModel: ObservableObject {
     func navigateToDetail(id: Int) {
         coordinator.push(.courseDetail(id: id))
     }
+    
+    func navigateToFilterSetting() {
+        coordinator.push(.filterSetting)
+    }
 }
