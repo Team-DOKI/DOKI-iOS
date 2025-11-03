@@ -21,10 +21,10 @@ struct FilterButton: View {
         } label: {
             Image(.filterIcon)
                 .renderingMode(.template)
-                .foregroundStyle(activeColor)
+                .foregroundStyle(isActive ? .defaultPrimary : .defaultMiddle)
         }
         .padding(5.74)
-        .background(isActive ? .opacity5 : .defaultButton)
+        .background(isActive ? .opacity5 : .defaultBackground)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
                 .stroke(lineWidth: 1.0)
