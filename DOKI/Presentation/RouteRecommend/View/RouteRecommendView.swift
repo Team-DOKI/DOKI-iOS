@@ -9,19 +9,63 @@ import SwiftUI
 
 struct RouteRecommendView: View {
     @ObservedObject var viewModel: RecommendViewModel
+    var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     
     var body: some View {
-        List(1..<100) { num in
-            Button {
-                viewModel.navigateToDetail(id: num)
-            } label: {
-                Text("id: \(num)")
+        VStack(spacing: 0) {
+            bannerSection
+            filterSection
+                .padding(.leading, 16)
+                .padding(.top, 16)
+            sortSection
+                .padding(.trailing, 16)
+                .padding(.vertical, 8)
+            courseGridSection
+        }
+        .topNavigationView(center: {
+            Text("산책 루트 추천")
+                .subtitle()
+        })
+    }
+    
+    private var bannerSection: some View {
+        Banner(imageName: ["", "", "", ""])
+    }
+    
+    private var filterSection: some View {
+        HStack(spacing: 8) {
+            FilterButton(isActive: !viewModel.selectedFilterOption.isEmpty) {
+                viewModel.navigateToFilterSetting()
+            }
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    let items = viewModel.selectedFilterOption.isEmpty ? viewModel.dummyFilterOption : viewModel.selectedFilterOption
+                    ForEach(items, id: \.self) { tag in
+                        FilteringTag(text: tag.text, isActive: tag.isActive)
+                    }
+                }
             }
         }
-
+    }
+    
+    private var sortSection: some View {
+        HStack {
+            Text("최신순")
+                .subDefault(color: .default)
+            Image(.chevronDown)
+        }
+        .frame(maxWidth: .infinity, alignment: .trailing)
+    }
+    
+    private var courseGridSection: some View {
+        ScrollView(showsIndicators: false) {
+            LazyVGrid(columns: columns, spacing: 16) {
+                ForEach(1...10, id: \.self) { _ in
+                    WalkCourseCell()
+                }
+            }
+            .padding(.horizontal, 16)
+        }
     }
 }
-
-//#Preview {
-//    RouteRecommendView()
-//}

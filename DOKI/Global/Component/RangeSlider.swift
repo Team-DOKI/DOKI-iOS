@@ -13,7 +13,7 @@ struct RangeSlider: View {
     
     let start: CGFloat
     let end: CGFloat
-    @Binding var value: CGFloat
+    @Binding var value: Int
     
     var body: some View {
         GeometryReader { geometry in
@@ -39,7 +39,7 @@ struct RangeSlider: View {
                         currentOffset = min(max(0, location.x), geometry.size.width)
                         initialOffset = currentOffset
                         let percentage = currentOffset / geometry.size.width
-                        value = start + (end - start) * percentage
+                        value = Int(start + (end - start) * percentage)
                     }
                 HStack {
                     Text("\(Int(start))")
@@ -61,7 +61,7 @@ struct RangeSlider: View {
                 let newOffset = initialOffset + gesture.translation.width
                 currentOffset = min(max(0, newOffset), geometry.size.width)
                 let percentage = currentOffset / geometry.size.width
-                value = start + (end - start) * percentage
+                value = Int(start + (end - start) * percentage)
             }
             .onEnded { _ in
                 initialOffset = currentOffset

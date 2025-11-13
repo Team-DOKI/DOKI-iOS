@@ -53,5 +53,9 @@ extension AppDIContainer {
         func makeRegisterViewModel() -> RegisterViewModel {
             return RegisterViewModel()
         }
+        
+        func makeFilterSettingViewModel() -> FilterSettingViewModel {
+            return FilterSettingViewModel()
+        }
     }
 }
