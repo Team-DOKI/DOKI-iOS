@@ -10,25 +10,19 @@ import SwiftUI
 struct FilterButton: View {
     let isActive: Bool
     
-    var activeColor: Color {
-        isActive ? .defaultPrimary : .defaultButton
-    }
-    var action: (()->())?
+    var action: () -> Void = {}
     
     var body: some View {
-        Button {
-            action?()
-        } label: {
+        Button(action: action) {
             Image(.filterIcon)
                 .renderingMode(.template)
                 .foregroundStyle(isActive ? .defaultPrimary : .defaultMiddle)
         }
-        .padding(5.74)
+        .padding(6)
         .background(isActive ? .opacity5 : .defaultBackground)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(lineWidth: 1.0)
-                .foregroundStyle(activeColor)
+                .stroke(isActive ? .defaultPrimary : .defaultButton, lineWidth: 1)
         )
     }
 }

@@ -11,9 +11,6 @@ struct SelectButton: View {
     let text: String
     let isActive: Bool
     
-    var activeColor: Color {
-        isActive ? .defaultPrimary : .defaultButton
-    }
     var action: (()->())?
     
     var body: some View {
@@ -26,8 +23,7 @@ struct SelectButton: View {
                     .background(isActive ? .opacity5 : .defaultBackground)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(lineWidth: 1.0)
-                            .foregroundStyle(activeColor)
+                            .stroke(isActive ? .defaultPrimary : .defaultButton, lineWidth: 1)
                     )
             }
             .padding(1)

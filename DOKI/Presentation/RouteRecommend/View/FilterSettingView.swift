@@ -30,7 +30,7 @@ struct FilterSettingView: View {
             MainButton(text: "적용하기") {
                 viewModel.saveOption()
             }
-                .padding(.horizontal, 16)
+            .padding(.horizontal, 16)
         }
         .topNavigationView(left: {
             BackButton {
@@ -47,11 +47,10 @@ extension FilterSettingView {
     // 소요 시간
     private var walkTimeSection: some View {
         VStack(spacing: 16) {
-            HStack {
-                Text("산책 소요 시간").subtitle()
-                Text("(분)").subDefault(color: .default)
-                Spacer()
-            }
+            SectionHeader(
+                title: "산책 소요 시간",
+                subtitle: "(분)"
+            )
             RangeSlider(
                 start: 10,
                 end: 60,
@@ -63,11 +62,10 @@ extension FilterSettingView {
     // 혼잡도
     private var congestionSection: some View {
         VStack(spacing: 16) {
-            HStack {
-                Text("혼잡도").subtitle()
-                Text("(단일 선택 가능)").subDefault(color: .default)
-                Spacer()
-            }
+            SectionHeader(
+                title: "혼잡도",
+                subtitle: "(단일 선택 가능)"
+            )
             SegmentedButton(
                 items: viewModel.congestionOption,
                 selectedItem: $viewModel.selectedCongestion
@@ -78,11 +76,10 @@ extension FilterSettingView {
     // 강아지 교류 빈도
     private var dogInteractionSection: some View {
         VStack(spacing: 16) {
-            HStack {
-                Text("강아지 교류 빈도").subtitle()
-                Text("(단일 선택 가능)").subDefault(color: .default)
-                Spacer()
-            }
+            SectionHeader(
+                title: "강아지 교류 빈도",
+                subtitle: "(단일 선택 가능)"
+            )
             SegmentedButton(
                 items: viewModel.dogInteractionOption,
                 selectedItem: $viewModel.selectedDogInteraction
@@ -92,61 +89,28 @@ extension FilterSettingView {
     
     // 안전
     private var safetySection: some View {
-        VStack(spacing: 8) {
-            HStack {
-                Text("안전").subtitle()
-                Text("(복수 선택 가능)").subDefault(color: .default)
-                Spacer()
-            }
-            ScrollView(showsIndicators: false) {
-                LazyVGrid(columns: columns, spacing: 8) {
-                    ForEach($viewModel.safetyOption, id: \.self) { $filterOption in
-                        SelectButton(text: filterOption.text, isActive: filterOption.isActive) {
-                            filterOption.isActive.toggle()
-                        }
-                    }
-                }
-            }
-        }
+        SelectableSection(
+            title: "안전",
+            subtitle: "(복수 선택 가능)",
+            items: $viewModel.safetyOption
+        )
     }
     
     // 편의성
     private var convenienceSection: some View {
-        VStack(spacing: 8) {
-            HStack {
-                Text("편의성").subtitle()
-                Text("(복수 선택 가능)").subDefault(color: .default)
-                Spacer()
-            }
-            ScrollView(showsIndicators: false) {
-                LazyVGrid(columns: columns, spacing: 8) {
-                    ForEach($viewModel.convenienceOption, id: \.self) { $filterOption in
-                        SelectButton(text: filterOption.text, isActive: filterOption.isActive) {
-                            filterOption.isActive.toggle()
-                        }
-                    }
-                }
-            }
-        }
+        SelectableSection(
+            title: "편의성",
+            subtitle: "(복수 선택 가능)",
+            items: $viewModel.convenienceOption
+        )
     }
     
     // 환경
     private var environmentSection: some View {
-        VStack(spacing: 8) {
-            HStack {
-                Text("환경").subtitle()
-                Text("(복수 선택 가능)").subDefault(color: .default)
-                Spacer()
-            }
-            ScrollView(showsIndicators: false) {
-                LazyVGrid(columns: columns, spacing: 8) {
-                    ForEach($viewModel.environmentOption, id: \.self) { $filterOption in
-                        SelectButton(text: filterOption.text, isActive: filterOption.isActive) {
-                            filterOption.isActive.toggle()
-                        }
-                    }
-                }
-            }
-        }
+        SelectableSection(
+            title: "환경",
+            subtitle: "(복수 선택 가능)",
+            items: $viewModel.environmentOption
+        )
     }
 }

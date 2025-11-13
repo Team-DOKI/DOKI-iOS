@@ -40,14 +40,9 @@ struct RouteRecommendView: View {
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    if viewModel.selectedFilterOption.isEmpty {
-                        ForEach(viewModel.dummyFilterOption, id: \.self) { tag in
-                            FilteringTag(text: tag.text, isActive: tag.isActive)
-                        }
-                    } else {
-                        ForEach(viewModel.selectedFilterOption, id: \.self) { tag in
-                            FilteringTag(text: tag.text, isActive: tag.isActive)
-                        }
+                    let items = viewModel.selectedFilterOption.isEmpty ? viewModel.dummyFilterOption : viewModel.selectedFilterOption
+                    ForEach(items, id: \.self) { tag in
+                        FilteringTag(text: tag.text, isActive: tag.isActive)
                     }
                 }
             }
