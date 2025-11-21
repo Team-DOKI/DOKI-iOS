@@ -28,6 +28,11 @@ extension Text {
             .foregroundStyle(color)
     }
     
+    func bodyBold(color: Color = .contents) -> some View {
+        self.font(.bodyBold)
+            .foregroundStyle(color)
+    }
+    
     func bodyDefault(color: Color = .contents) -> some View {
         self.font(.bodyDefault)
             .foregroundStyle(color)
@@ -43,18 +48,23 @@ extension Text {
             .foregroundStyle(color)
     }
     
+    func mainActive(color: Color = .contents) -> some View {
+        self.font(.mainActive)
+            .foregroundStyle(color)
+    }
+    
     func mainDefault(color: Color = .contents) -> some View {
         self.font(.mainDefault)
             .foregroundStyle(color)
     }
     
-    func subDefault(color: Color = .contents) -> some View {
-        self.font(.subDefault)
+    func subActive(color: Color = .contents) -> some View {
+        self.font(.subActive)
             .foregroundStyle(color)
     }
     
-    func subActive(color: Color = .contents) -> some View {
-        self.font(.subActive)
+    func subDefault(color: Color = .contents) -> some View {
+        self.font(.subDefault)
             .foregroundStyle(color)
     }
     
@@ -66,10 +76,5 @@ extension Text {
     func link(color: Color = .contents) -> some View {
         self.font(.link)
             .foregroundStyle(color)
-    }
-    
-    func bodyBold(color: Color = .contents) -> some View {
-        self.font(.bodyBold)
-        .foregroundStyle(color)
     }
 }

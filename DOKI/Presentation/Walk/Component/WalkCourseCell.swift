@@ -27,18 +27,18 @@ struct WalkCourseCell: View {
                 .bodyBold()
                 .padding(.top, 8)
             Text("현재거리로부터 2km")
-                .subDefault(color: .default)
+                .subDefault(color: .defaultMiddle)
                 .padding(.top, 4)
             HStack {
                 HStack(spacing: 4) {
                     Image(.calendarIcon)
                     Text("20205/09/19")
-                        .small(color: .default)
+                        .small(color: .defaultMiddle)
                 }
                 HStack(spacing: 4) {
                     Image(.clockIcon)
                     Text("30min")
-                        .small(color: .default)
+                        .small(color: .defaultMiddle)
                 }
             }
             .padding(.top, 8)

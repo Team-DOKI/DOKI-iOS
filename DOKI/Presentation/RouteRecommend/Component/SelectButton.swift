@@ -18,7 +18,7 @@ struct SelectButton: View {
                 action?()
             } label: {
                 Text(text)
-                    .subDefault(color: isActive ? .defaultPrimary : .default)
+                    .subDefault(color: isActive ? .defaultPrimary : .black)
                     .frame(maxWidth: .infinity, minHeight: 40)
                     .background(isActive ? .opacity5 : .defaultBackground)
                     .overlay(

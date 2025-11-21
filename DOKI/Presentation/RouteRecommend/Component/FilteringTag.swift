@@ -16,7 +16,7 @@ struct FilteringTag: View {
     var body: some View {
         VStack {
             Text(text)
-                .subDefault(color: isActive ? .defaultPrimary : .default)
+                .subDefault(color: isActive ? .defaultPrimary : .defaultMiddle)
                 .padding(.vertical, 9)
                 .padding(.horizontal, 10)
                 .background(isActive ? .opacity5 : .defaultBackground)

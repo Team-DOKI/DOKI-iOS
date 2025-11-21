@@ -43,10 +43,10 @@ struct RangeSlider: View {
                     }
                 HStack {
                     Text("\(Int(start))")
-                        .subDefault(color: .default)
+                        .subDefault(color: .defaultMiddle)
                     Spacer()
                     Text("\(Int(end))")
-                        .subDefault(color: .default)
+                        .subDefault(color: .defaultMiddle)
                 }
                 .padding(.top, 3)
             }

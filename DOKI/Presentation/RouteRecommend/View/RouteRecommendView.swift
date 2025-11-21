@@ -52,7 +52,7 @@ struct RouteRecommendView: View {
     private var sortSection: some View {
         HStack {
             Text("최신순")
-                .subDefault(color: .default)
+                .subDefault(color: .defaultMiddle)
             Image(.chevronDown)
         }
         .frame(maxWidth: .infinity, alignment: .trailing)

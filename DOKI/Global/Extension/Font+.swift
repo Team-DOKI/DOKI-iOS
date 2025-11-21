@@ -41,14 +41,20 @@ extension Font {
     static let header1 = Font.pretendard(size: 28, weight: .bold)
     static let header2 = Font.pretendard(size: 24, weight: .bold)
     static let header3 = Font.pretendard(size: 20, weight: .bold)
+    
     static let subtitle = Font.pretendard(size: 16, weight: .semibold)
+    
+    static let bodyBold = Font.pretendard(size: 14, weight: .bold)
     static let bodyDefault = Font.pretendard(size: 14, weight: .regular)
     static let bodyActive = Font.pretendard(size: 14, weight: .regular)
     static let bodySmall = Font.pretendard(size: 12, weight: .medium)
+    
+    static let mainActive = Font.pretendard(size: 18, weight: .semibold)
     static let mainDefault = Font.pretendard(size: 18, weight: .regular)
+    static let subActive = Font.pretendard(size: 12, weight: .medium)
     static let subDefault = Font.pretendard(size: 12, weight: .regular)
-    static let subActive = Font.pretendard(size: 12, weight: .semibold)
+    
     static let small = Font.pretendard(size: 10, weight: .semibold)
     static let link = Font.pretendard(size: 12, weight: .regular)
-    static let bodyBold = Font.pretendard(size: 14, weight: .bold)
+    
 }

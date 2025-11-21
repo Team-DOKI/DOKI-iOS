@@ -14,7 +14,7 @@ struct SectionHeader: View {
     var body: some View {
         HStack {
             Text(title).subtitle()
-            Text(subtitle).subDefault(color: .default)
+            Text(subtitle).subDefault(color: .defaultMiddle)
             Spacer()
         }
     }

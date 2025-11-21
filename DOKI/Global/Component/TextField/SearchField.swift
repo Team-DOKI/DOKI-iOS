@@ -23,7 +23,7 @@ struct SearchField: View {
         .cornerRadius(8)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(.default, lineWidth: 1)
+                .stroke(.defaultMiddle, lineWidth: 1)
         )
     }
 }

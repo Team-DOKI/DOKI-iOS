@@ -23,7 +23,7 @@ struct SegmentedButton: View {
                     }
 
                     Text(item.text)
-                        .subDefault(color: selectedItem == item ? .defaultBackground : .default)
+                        .subDefault(color: selectedItem == item ? .defaultBackground : .defaultMiddle)
                         .frame(maxWidth: .infinity, maxHeight: 40)
                 }
                 .contentShape(Rectangle())
