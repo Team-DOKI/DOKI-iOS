@@ -15,11 +15,12 @@ struct SelectableSection: View {
     @Binding var items: [FilteringOption]
     
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 16) {
             SectionHeader(
                 title: title,
                 subtitle: subtitle
             )
+            
             ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 8) {
                     ForEach($items, id: \.self) { $filterOption in

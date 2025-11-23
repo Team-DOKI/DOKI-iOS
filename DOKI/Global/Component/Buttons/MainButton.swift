@@ -7,37 +7,42 @@
 
 import SwiftUI
 
-struct MainButton: View {
-    enum MainButtonState {
-        case `default`
-        case disabled
-        case loading
-        
-        var backgroundColor: Color {
-            switch self {
-            case .default, .loading:
+enum MainButtonState {
+    case active1
+    case active2
+    case disabled
+    case loading
+    
+    var backgroundColor: Color {
+        switch self {
+        case .active1, .loading:
                 .defaultPrimary
-            case .disabled:
-                .defaultButton
-            }
-        }
-        
-        var textColor: Color {
-            switch self {
-            case .default, .loading:
+        case .active2:
                 .defaultBackground
-            case .disabled:
-                .defaultMiddle
-            }
-        }
-        
-        var isDisable: Bool {
-            self == .disabled || self == .loading
+        case .disabled:
+                .defaultButton
         }
     }
     
+    var textColor: Color {
+        switch self {
+        case .active1, .loading:
+                .defaultBackground
+        case .active2:
+                .defaultPrimary
+        case .disabled:
+                .defaultMiddle
+        }
+    }
+    
+    var isDisabled: Bool {
+        self == .disabled || self == .loading
+    }
+}
+
+struct MainButton: View {
     let text: String
-    var buttonState: MainButtonState = .default
+    var buttonState: MainButtonState = .active1
     var action: (() -> Void)? = nil
     
     var body: some View {
@@ -47,21 +52,30 @@ struct MainButton: View {
             ZStack {
                 if buttonState == .loading {
                     ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))                        
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
                 } else {
                     Text(text)
                         .foregroundStyle(buttonState.textColor)
-                        .font(.pretendard(size: 18, weight: .semibold))
+                        .font(.mainActive)
                 }
             }
             .frame(maxWidth: .infinity, minHeight: 56)
         }
         .background(buttonState.backgroundColor)
-        .disabled(buttonState.isDisable)
+        .overlay {
+            if buttonState == .active2 {
+                RoundedRectangle(cornerRadius: 8)
+                    .inset(by: 0.5)
+                    .stroke(Color.defaultPrimary, lineWidth: 1)
+            }
+        }
+        .disabled(buttonState.isDisabled)
         .cornerRadius(8)
     }
 }
 
 #Preview {
-    MainButton(text: "Test")
+    MainButton(text: "TEXT", buttonState: .active1)
+    MainButton(text: "TEXT", buttonState: .active2)
+    MainButton(text: "TEXT", buttonState: .disabled)
 }

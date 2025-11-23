@@ -19,13 +19,10 @@ struct MyPageCoordinatorView: View {
         self._myPageCoordinator = StateObject(wrappedValue: myPageCoordinator)
         self._myPageViewModel = StateObject(wrappedValue: viewModelFactory.makeMyPageViewModel())
     }
+    
     var body: some View {
         NavigationStack(path: $myPageCoordinator.path) {
             MyPageView(viewModel: myPageViewModel)
         }
     }
 }
-
-//#Preview {
-//    MyPageCoordinatorView()
-//}

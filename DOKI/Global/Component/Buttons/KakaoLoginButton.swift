@@ -15,7 +15,7 @@ struct KakaoLoginButton: View {
         Button {
             action()
         } label: {
-            Image(.kakaoLogin)
+            Image(.btnKakaologin)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .opacity(isLoading ? 0.6 : 1)
@@ -25,5 +25,5 @@ struct KakaoLoginButton: View {
 }
 
 #Preview {
-    KakaoLoginButton(action: {})
+    KakaoLoginButton {}
 }

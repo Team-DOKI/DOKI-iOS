@@ -9,6 +9,7 @@ import SwiftUI
 
 struct Banner: View {
     let imageName: [String]
+    
     @State private var currentStep = 0
     
     var body: some View {
@@ -24,7 +25,7 @@ struct Banner: View {
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
         .frame(height: 141)
         .overlay(alignment: .bottom) {
-            HStack {
+            HStack(spacing: 4) {
                 ForEach(Array(imageName.enumerated()), id: \.offset) { index, _ in
                     Rectangle()
                         .frame(width: currentStep == index ? 16 : 8, height: 8)
@@ -37,4 +38,3 @@ struct Banner: View {
         }
     }
 }
-

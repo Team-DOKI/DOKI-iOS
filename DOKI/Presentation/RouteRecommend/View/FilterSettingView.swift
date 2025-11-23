@@ -9,11 +9,13 @@ import SwiftUI
 
 struct FilterSettingView: View {
     @ObservedObject var viewModel: FilterSettingViewModel
+    
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Divider()
+            
             ScrollView {
                 VStack(spacing: 40) {
                     walkTimeSection
@@ -22,11 +24,12 @@ struct FilterSettingView: View {
                     safetySection
                     convenienceSection
                     environmentSection
-                    Spacer().frame(height: 40)
+                    Spacer().frame(height: 20)
                 }
                 .padding(.horizontal, 16)
-                .padding(.top, 20)
+                .padding(.top, 26)
             }
+            
             MainButton(text: "적용하기") {
                 viewModel.saveOption()
             }
@@ -51,6 +54,7 @@ extension FilterSettingView {
                 title: "산책 소요 시간",
                 subtitle: "(분)"
             )
+            
             RangeSlider(
                 start: 10,
                 end: 60,
@@ -66,6 +70,7 @@ extension FilterSettingView {
                 title: "혼잡도",
                 subtitle: "(단일 선택 가능)"
             )
+            
             SegmentedButton(
                 items: viewModel.congestionOption,
                 selectedItem: $viewModel.selectedCongestion
@@ -80,6 +85,7 @@ extension FilterSettingView {
                 title: "강아지 교류 빈도",
                 subtitle: "(단일 선택 가능)"
             )
+            
             SegmentedButton(
                 items: viewModel.dogInteractionOption,
                 selectedItem: $viewModel.selectedDogInteraction

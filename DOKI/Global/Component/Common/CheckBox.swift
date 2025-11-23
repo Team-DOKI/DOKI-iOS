@@ -13,7 +13,7 @@ struct CheckBox: View {
     var action: (() -> Void)? = nil
     
     var borderColor: Color {
-        isChecked ? .defaultPrimary : .defaultMiddle
+        isChecked ? .clear : .defaultMiddle
     }
     
     var textColor: Color {
@@ -30,7 +30,7 @@ struct CheckBox: View {
         } label: {
             VStack {
                 Text(text)
-                    .font(.pretendard(size: 14, weight: .regular))
+                    .font(.bodyDefault)
                     .foregroundStyle(textColor)
             }
             .frame(maxWidth: .infinity, minHeight: 54)
@@ -41,10 +41,10 @@ struct CheckBox: View {
                     .stroke(borderColor, lineWidth: 1)
             )
         }
-
+        
     }
 }
 
 #Preview {
-    CheckBox(text: "남아", isChecked: false)
+    CheckBox(text: "남아", isChecked: true)
 }

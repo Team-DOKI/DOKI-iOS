@@ -10,32 +10,29 @@ import SwiftUI
 struct WalkItem: Identifiable {
     let id = UUID()
     let name: String
-    var isOn: Bool
+    var isChecked: Bool
 }
 
 struct WalkView: View {
     @StateObject var viewModel: WalkViewModel
     
     @State private var items: [WalkItem] = [
-        WalkItem(name: "배변 봉투", isOn: true),
-        WalkItem(name: "리드줄", isOn: true),
-        WalkItem(name: "물", isOn: true),
-        WalkItem(name: "간식", isOn: true)
+        WalkItem(name: "배변 봉투", isChecked: false),
+        WalkItem(name: "리드줄", isChecked: true),
+        WalkItem(name: "물", isChecked: true),
+        WalkItem(name: "간식", isChecked: false)
     ]
     
     var body: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 12) {
-                Image("")
-                    .resizable()
-                    .frame(width: 80, height: 80)
-                    .background(.primaryGra1)
-                    .cornerRadius(16)
-                
+            HStack(spacing: 0) {
+                Image(.imgWalkdog)
+
                 VStack(alignment: .leading, spacing: 3) {
                     Text("숨이 얼어붙어요… 오늘은 나가지말아요")
                         .font(.bodyBold)
                         .foregroundColor(.defaultBackground)
+                    
                     Text("실외 금지! 실내 놀이로 대체")
                         .font(.subDefault)
                         .foregroundColor(.defaultBright)
@@ -60,20 +57,17 @@ struct WalkView: View {
                     ForEach($items) { $item in
                         HStack(spacing: 8) {
                             Button {
-                                item.isOn.toggle()
+                                item.isChecked.toggle()
                             } label: {
-                                Image(systemName: item.isOn ? "checkmark.square.fill" : "square")
-                                    .resizable()
-                                    .frame(width: 15, height: 15)
-                                    .foregroundColor(item.isOn ? .green : .gray)
+                                Image(item.isChecked ? .btnCheck : .btnUncheck)
                             }
                             
                             Text(item.name)
                                 .font(.subDefault)
-                                .foregroundColor(.defaultMiddle)
+                                .foregroundColor(item.isChecked ? .defaultBackground : .defaultMiddle)
                         }
                         .padding(8)
-                        .background(.defaultButton)
+                        .background(item.isChecked ? .defaultPrimary : .defaultButton)
                         .cornerRadius(8)
                     }
                 }
@@ -94,21 +88,8 @@ struct WalkView: View {
             .cornerRadius(16)
             .padding(16)
             
-            Button {
+            MainButton(text: "산책 기록 시작하기", buttonState: .active2) {
                 viewModel.navigateToWalkRecord()
-            } label: {
-                Text("산책 기록 시작하기")
-                    .foregroundColor(.defaultPrimary)
-                    .font(.mainActive)
-                    .frame(maxWidth: .infinity)
-                    .padding(19)
-                    .background(.white)
-                    .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .inset(by: 0.5)
-                            .stroke(.defaultPrimary, lineWidth: 1)
-                    )
             }
             .padding(.horizontal, 16)
             

@@ -46,7 +46,7 @@ extension Font {
     
     static let bodyBold = Font.pretendard(size: 14, weight: .semibold)
     static let bodyDefault = Font.pretendard(size: 14, weight: .regular)
-    static let bodyActive = Font.pretendard(size: 14, weight: .regular)
+    static let bodyActive = Font.pretendard(size: 14, weight: .medium)
     static let bodySmall = Font.pretendard(size: 12, weight: .medium)
     
     static let mainActive = Font.pretendard(size: 18, weight: .semibold)

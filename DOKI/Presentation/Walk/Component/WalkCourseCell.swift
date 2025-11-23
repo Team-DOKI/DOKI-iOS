@@ -16,27 +16,29 @@ struct WalkCourseCell: View {
                 .background(.defaultButton)
                 .cornerRadius(8)
                 .overlay(alignment: .top) {
-                    HStack {
+                    HStack(spacing: 0) {
                         AddressTag(text: "강남구 역삼동")
+                        
                         Spacer()
-                        Image(.heartIcon)
+                        
+                        Image(.btnRedheart)
                     }
                     .padding(8)
                 }
+            
             Text("오늘도 단지랑 룰루랄라")
                 .bodyBold()
                 .padding(.top, 8)
-            Text("현재거리로부터 2km")
-                .subDefault(color: .defaultMiddle)
-                .padding(.top, 4)
-            HStack {
+            
+            HStack(spacing: 16) {
                 HStack(spacing: 4) {
-                    Image(.calendarIcon)
-                    Text("20205/09/19")
+                    Image(.icCalendar)
+                    Text("2025/09/19")
                         .small(color: .defaultMiddle)
                 }
+                
                 HStack(spacing: 4) {
-                    Image(.clockIcon)
+                    Image(.icClock)
                     Text("30min")
                         .small(color: .defaultMiddle)
                 }

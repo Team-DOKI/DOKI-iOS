@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RouteRecommendView: View {
     @ObservedObject var viewModel: RecommendViewModel
+    
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     
     var body: some View {
@@ -18,8 +19,8 @@ struct RouteRecommendView: View {
                 .padding(.leading, 16)
                 .padding(.top, 16)
             sortSection
-                .padding(.trailing, 16)
-                .padding(.vertical, 8)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 14)
             courseGridSection
         }
         .topNavigationView(center: {
@@ -50,12 +51,22 @@ struct RouteRecommendView: View {
     }
     
     private var sortSection: some View {
-        HStack {
-            Text("최신순")
-                .subDefault(color: .defaultMiddle)
-            Image(.chevronDown)
+        HStack(spacing: 0) {
+            Text("000개의 루트")
+                .font(.bodySmall)
+                .foregroundStyle(.defaultDark)
+            
+            Spacer()
+            
+            HStack(spacing: 8) {
+                Text("인기순")
+                    .subDefault(color: .defaultDark)
+                
+                Image(.btnDown)
+                    .renderingMode(.template)
+                    .foregroundStyle(.defaultDark)
+            }
         }
-        .frame(maxWidth: .infinity, alignment: .trailing)
     }
     
     private var courseGridSection: some View {
@@ -69,3 +80,5 @@ struct RouteRecommendView: View {
         }
     }
 }
+
+

@@ -16,6 +16,5 @@ struct WalkResultView: View {
         } label: {
             Text("처음으로")
         }
-
     }
 }

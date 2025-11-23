@@ -15,7 +15,7 @@ struct AppleLoginButton: View {
         Button {
             action()
         } label: {
-            Image(.appleLogin)
+            Image(.btnApplelogin)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .opacity(isLoading ? 0.6 : 1)
@@ -25,7 +25,5 @@ struct AppleLoginButton: View {
 }
 
 #Preview {
-    AppleLoginButton {
-        
-    }
+    AppleLoginButton {}
 }

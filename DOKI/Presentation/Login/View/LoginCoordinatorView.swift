@@ -37,7 +37,3 @@ struct LoginCoordinatorView: View {
         }
     }
 }
-
-//#Preview {
-//    LoginCoordinatorView()
-//}

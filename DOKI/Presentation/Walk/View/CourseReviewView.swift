@@ -14,8 +14,7 @@ struct CourseReviewView: View {
         Button {
             viewModel.navigateToWalkResult()
         } label: {
-            Text("산책결과")
+            Text("산책 결과")
         }
-
     }
 }
