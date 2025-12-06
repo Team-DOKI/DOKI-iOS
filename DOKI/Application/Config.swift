@@ -11,6 +11,7 @@ enum Config {
     enum Keys {
         enum Plist {
             static let BASE_URL = "BASE_URL"
+            static let NAVER_CLIENT_ID = "NAVER_CLIENT_ID"
         }
     }
     
@@ -28,5 +29,12 @@ extension Config {
             fatalError("BASE_URL is not set in plist for this configuration")
         }
         return "https://" + key
+    }()
+    
+    static let naverClientID: String = {
+        guard let id = Config.infoDictionary[Keys.Plist.NAVER_CLIENT_ID] as? String else {
+            fatalError("NAVER_CLIENT_ID is not set in plist")
+        }
+        return id
     }()
 }
