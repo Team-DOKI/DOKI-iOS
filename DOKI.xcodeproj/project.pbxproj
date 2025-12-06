@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		766B2E492E254BD600F3A668 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 766B2E482E254BD600F3A668 /* Moya */; };
+		76C154E62EE46DDF00A8ED40 /* NMapsMap in Frameworks */ = {isa = PBXBuildFile; productRef = 76C154E52EE46DDF00A8ED40 /* NMapsMap */; };
 		76ECCF2D2E05C4820056CAF7 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 76ECCF2C2E05C4820056CAF7 /* Kingfisher */; };
 		76ECCF302E05C4CC0056CAF7 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 76ECCF2F2E05C4CC0056CAF7 /* Lottie */; };
 /* End PBXBuildFile section */
@@ -43,6 +44,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				76ECCF2D2E05C4820056CAF7 /* Kingfisher in Frameworks */,
+				76C154E62EE46DDF00A8ED40 /* NMapsMap in Frameworks */,
 				76ECCF302E05C4CC0056CAF7 /* Lottie in Frameworks */,
 				766B2E492E254BD600F3A668 /* Moya in Frameworks */,
 			);
@@ -90,6 +92,7 @@
 				76ECCF2C2E05C4820056CAF7 /* Kingfisher */,
 				76ECCF2F2E05C4CC0056CAF7 /* Lottie */,
 				766B2E482E254BD600F3A668 /* Moya */,
+				76C154E52EE46DDF00A8ED40 /* NMapsMap */,
 			);
 			productName = DoggyWalker;
 			productReference = 76ECCDED2E05AFCC0056CAF7 /* DOKI.app */;
@@ -123,6 +126,7 @@
 				76ECCF2B2E05C4820056CAF7 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				76ECCF2E2E05C4CC0056CAF7 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 				766B2E472E254BD600F3A668 /* XCRemoteSwiftPackageReference "Moya" */,
+				76C154E42EE46DDF00A8ED40 /* XCRemoteSwiftPackageReference "SPM-NMapsMap" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 76ECCDEE2E05AFCC0056CAF7 /* Products */;
@@ -287,7 +291,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = Z9PQC69UPK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DOKI/Info.plist;
@@ -321,7 +325,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = Z9PQC69UPK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DOKI/Info.plist;
@@ -380,6 +384,14 @@
 				minimumVersion = 15.0.3;
 			};
 		};
+		76C154E42EE46DDF00A8ED40 /* XCRemoteSwiftPackageReference "SPM-NMapsMap" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/navermaps/SPM-NMapsMap";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.23.0;
+			};
+		};
 		76ECCF2B2E05C4820056CAF7 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher";
@@ -403,6 +415,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 766B2E472E254BD600F3A668 /* XCRemoteSwiftPackageReference "Moya" */;
 			productName = Moya;
+		};
+		76C154E52EE46DDF00A8ED40 /* NMapsMap */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 76C154E42EE46DDF00A8ED40 /* XCRemoteSwiftPackageReference "SPM-NMapsMap" */;
+			productName = NMapsMap;
 		};
 		76ECCF2C2E05C4820056CAF7 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
