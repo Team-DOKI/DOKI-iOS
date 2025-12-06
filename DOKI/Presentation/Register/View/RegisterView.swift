@@ -59,7 +59,7 @@ extension RegisterView {
     private var mainButton: some View {
         MainButton(text: viewModel.isLastStep ? "완료" : "다음", buttonState: viewModel.buttonDisabled ? .disabled : .active1) {
             if viewModel.isLastStep {
-                authManager.login()
+                // TODO: 홈으로 이동
             } else {
                 viewModel.goToNextStep()
             }

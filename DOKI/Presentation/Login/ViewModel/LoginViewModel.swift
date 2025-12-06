@@ -10,9 +10,12 @@ import AuthenticationServices
 
 class LoginViewModel: ObservableObject {
     private let loginCoordinator: Coordinator<LoginRoute>
+    private let authManager: AuthManager
     
-    init(loginCoordinator: Coordinator<LoginRoute>) {
+    init(loginCoordinator: Coordinator<LoginRoute>,
+         authManager: AuthManager = .shared) {
         self.loginCoordinator = loginCoordinator
+        self.authManager = authManager
     }
     
     /// 유저정보 등록화면으로 이동
@@ -25,8 +28,19 @@ class LoginViewModel: ObservableObject {
         request.requestedScopes = [.fullName, .email]
     }
     
-    // Apple 로그인 완료
-    func onCompleteAppleLogin(_: Result<ASAuthorization, any Error>) {
-        
+    /// Apple 로그인 요청 완료
+    func onCompleteAppleLogin(_ result: Result<ASAuthorization, any Error>) {
+        switch result {
+        case .success(let authResult):
+            if let appleIDCredential = authResult.credential as? ASAuthorizationAppleIDCredential,
+               let identityTokenData = appleIDCredential.identityToken,
+               let identityToken = String(data: identityTokenData, encoding: .utf8) {
+                Task {
+                    await authManager.requestAppleLogin(identityToken, deviceId: "doki-service")
+                }
+            }
+        case .failure(let error):
+            print(error.localizedDescription)
+        }
     }
 }

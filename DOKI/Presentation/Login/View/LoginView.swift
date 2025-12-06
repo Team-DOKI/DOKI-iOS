@@ -34,9 +34,7 @@ struct LoginView: View {
                 }
                 .padding(.horizontal, 16)
                 
-                AppleLoginButton {
-                    
-                }
+                AppleLoginButton {}
                 .padding(.top, 8)
                 .padding(.horizontal, 16)
                 .overlay(
