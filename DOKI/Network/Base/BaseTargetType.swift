@@ -11,7 +11,7 @@ import Moya
 
 enum HeaderType {
     case noneHeader
-    case userHeader(userId: Int)
+    case userHeader
 }
 
 protocol BaseTargetType: TargetType {
@@ -30,11 +30,8 @@ extension BaseTargetType {
         switch headerType {
         case .noneHeader:
             return nil
-        case .userHeader(let userId):
-            return [
-                "Content-Type": "application/json",
-                "X-USER-ID": String(userId),
-            ]
+        case .userHeader:
+            return ["Content-Type": "application/json"]
         }
     }
 }
