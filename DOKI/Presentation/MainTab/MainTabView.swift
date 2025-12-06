@@ -20,12 +20,12 @@ struct MainTabView: View {
                 
                 WalkCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
                     .tabItem {
-                        Text("산책")
+                        Text("산책하기")
                     }
                 
                 RecommendCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
                     .tabItem {
-                        Text("코스추천")
+                        Text("루트 추천")
                     }
                 MyPageCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
                     .tabItem {

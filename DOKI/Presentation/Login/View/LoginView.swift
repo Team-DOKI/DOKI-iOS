@@ -12,24 +12,36 @@ struct LoginView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Image(.logo)
-                .padding(.top, 128)
+            Image(.imgLogo)
+                .padding(.top, 127)
+                .padding(.leading, 35)
+            
             Text("도키와 도키도키한 \n산책을 시작해요!")
-                .font(.pretendard(size: 20, weight: .bold))
+                .font(.header3)
                 .foregroundStyle(.contents)
                 .padding(.top, 21)
+                .padding(.leading, 35)
+            
             Spacer()
-            KakaoLoginButton {
-                viewModel.navigateToRegister()
-            }
-            AppleLoginButton {
+            
+            VStack(alignment: .center, spacing: 0) {
+                Image(.imgSignmessage)
+                    .padding(.bottom, 10)
                 
+                KakaoLoginButton {
+                    viewModel.navigateToRegister()
+                }
+                .padding(.horizontal, 16)
+                
+                AppleLoginButton {
+                    
+                }
+                .padding(.top, 8)
+                .padding(.horizontal, 16)
             }
-            .padding(.top, 8)
         }
-        .padding(.horizontal, 16)
         .overlay(alignment: .trailing) {
-            Image(.loginDog)
+            Image(.imgLogindog)
         }
     }
 }

@@ -8,22 +8,26 @@
 import SwiftUI
 
 struct MainTextField: View {
-    let placeholder: String    
+    let placeholder: String
+    
     @Binding var text: String
+    
     @FocusState private var fieldIsFocused: Bool
     
     var body: some View {
         VStack {
             TextField(placeholder, text: $text)
                 .padding(.leading, 16)
-                .font(.pretendard(size: 14, weight: .medium))
+                .font(.bodyActive)
                 .focused($fieldIsFocused)
         }
         .frame(maxWidth: .infinity, minHeight: 54)
+        .background(.defaultBackground)
         .cornerRadius(8)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(fieldIsFocused ? .defaultPrimary : .default, lineWidth: 1)
+                .inset(by: 0.5)
+                .stroke(fieldIsFocused ? .defaultPrimary : .defaultMiddle, lineWidth: 1)
         )
     }
 }

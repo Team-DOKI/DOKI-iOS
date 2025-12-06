@@ -31,7 +31,7 @@ struct RecommendCoordinatorView: View {
             RouteRecommendView(viewModel: recommendViewModel)
                 .navigationDestination(for: RecommendRoute.self) { destination in
                     switch destination {
-                    case .courseDetail(let id):
+                    case .courseDetail:
                         CourseDetailView(viewModel: courseDetailViewModel)
                     case .filterSetting:
                         FilterSettingView(viewModel: filterSettingViewModel)
@@ -57,7 +57,3 @@ struct RecommendCoordinatorView: View {
         }
     }
 }
-
-//#Preview {
-//    RecommendCoordinatorView()
-//}

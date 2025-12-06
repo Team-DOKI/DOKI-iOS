@@ -20,6 +20,10 @@ struct OptionItem: View {
         isChecked ? .defaultBackground : .contents
     }
     
+    var font: Font {
+        isChecked ? .bodyActive : .bodyDefault
+    }
+    
     var body: some View {
         Button {
             action?()
@@ -27,7 +31,7 @@ struct OptionItem: View {
             Text(text)
                 .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
                 .foregroundStyle(textColor)
-                .font(.pretendard(size: 14, weight: .regular))
+                .font(font)
                 .padding(.leading, 16)
                 .background(backgroundColor)
                 .cornerRadius(8)

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContextMenuModifier<CustomView: View>: ViewModifier {
     @Binding var isPresented: Bool
+    
     let contentView: () -> CustomView
     
     func body(content: Content) -> some View {

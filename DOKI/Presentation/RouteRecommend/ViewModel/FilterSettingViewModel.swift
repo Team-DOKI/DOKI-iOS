@@ -68,12 +68,12 @@ class FilterSettingViewModel: ObservableObject {
     
     func saveOption() {
         var selectedOption: [FilteringOption] = []
-                
+        
         selectedOption += safetyOption.filter { $0.isActive }
         selectedOption += convenienceOption.filter { $0.isActive }
         selectedOption += environmentOption.filter { $0.isActive }
         
-        // 단일선택 옵션 추가
+        // 단일 선택 옵션 추가
         if var selectedCongestion {
             selectedCongestion.isActive = true
             selectedOption.append(selectedCongestion)
@@ -90,5 +90,3 @@ class FilterSettingViewModel: ObservableObject {
         navigationAction?(.saveOption(selectedOption: selectedOption))
     }
 }
-
-

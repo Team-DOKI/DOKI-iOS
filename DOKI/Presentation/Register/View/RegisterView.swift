@@ -14,7 +14,9 @@ struct RegisterView: View {
     var body: some View {
         VStack {
             currentStepView
+            
             Spacer()
+            
             mainButton
         }
         .overlay(alignment: .top) { progressBar }
@@ -55,7 +57,7 @@ extension RegisterView {
     }
     
     private var mainButton: some View {
-        MainButton(text: viewModel.isLastStep ? "완료" : "다음", buttonState: viewModel.buttonDisabled ? .disabled : .default) {
+        MainButton(text: viewModel.isLastStep ? "완료" : "다음", buttonState: viewModel.buttonDisabled ? .disabled : .active1) {
             if viewModel.isLastStep {
                 authManager.login()
             } else {

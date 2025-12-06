@@ -9,14 +9,20 @@ import SwiftUI
 
 struct AddressTag: View {
     let text: String
+    
     var body: some View {
         Text(text)
-            .font(.pretendard(size: 10, weight: .medium))
-            .foregroundStyle(.defaultBackground)
+            .font(.small)
+            .foregroundStyle(.defaultPrimary)
             .padding(.vertical, 5)
             .padding(.horizontal, 6)
-            .background(.defaultPrimary)
+            .background(.opacity5)
             .cornerRadius(4)
+            .overlay(
+                RoundedRectangle(cornerRadius: 4)
+                    .inset(by: 0.5)
+                    .stroke(.defaultPrimary, lineWidth: 1)
+            )
     }
 }
 

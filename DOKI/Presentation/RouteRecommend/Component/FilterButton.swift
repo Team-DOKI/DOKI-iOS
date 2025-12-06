@@ -9,16 +9,15 @@ import SwiftUI
 
 struct FilterButton: View {
     let isActive: Bool
-    
     var action: () -> Void = {}
     
     var body: some View {
         Button(action: action) {
-            Image(.filterIcon)
+            Image(.btnFilter)
                 .renderingMode(.template)
                 .foregroundStyle(isActive ? .defaultPrimary : .defaultMiddle)
         }
-        .padding(6)
+        .padding(8)
         .background(isActive ? .opacity5 : .defaultBackground)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
@@ -29,4 +28,5 @@ struct FilterButton: View {
 
 #Preview {
     FilterButton(isActive: true)
+    FilterButton(isActive: false)
 }

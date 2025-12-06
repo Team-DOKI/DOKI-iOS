@@ -9,7 +9,9 @@ import SwiftUI
 
 struct SegmentedButton: View {
     let items: [FilteringOption]
+    
     @Binding var selectedItem: FilteringOption?
+    
     @Namespace var namespace
     
     var body: some View {
@@ -21,9 +23,10 @@ struct SegmentedButton: View {
                             .fill(.defaultPrimary)
                             .matchedGeometryEffect(id: "background", in: namespace)
                     }
-
+                    
                     Text(item.text)
-                        .subDefault(color: selectedItem == item ? .defaultBackground : .default)
+                        .font(selectedItem == item ? .subActive : .subDefault)
+                        .foregroundStyle(selectedItem == item ? .defaultBackground : .defaultMiddle)
                         .frame(maxWidth: .infinity, maxHeight: 40)
                 }
                 .contentShape(Rectangle())

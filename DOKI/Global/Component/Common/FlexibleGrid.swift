@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct FlexibleGrid<Data: Collection, Content: View>: View where Data.Element: Hashable {
-    
     let availableWidth: CGFloat
     let data: Data
     let spacing: CGFloat
@@ -59,10 +58,10 @@ struct FlexibleGrid<Data: Collection, Content: View>: View where Data.Element: H
 extension View {
     func readSize(onChange: @escaping (CGSize) -> Void) -> some View {
         background(
-          GeometryReader { geometryProxy in
-            Color.clear
-              .preference(key: SizePreferenceKey.self, value: geometryProxy.size)
-          }
+            GeometryReader { geometryProxy in
+                Color.clear
+                    .preference(key: SizePreferenceKey.self, value: geometryProxy.size)
+            }
         )
         .onPreferenceChange(SizePreferenceKey.self, perform: onChange)
     }

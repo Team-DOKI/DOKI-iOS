@@ -13,6 +13,7 @@ struct RangeSlider: View {
     
     let start: CGFloat
     let end: CGFloat
+    
     @Binding var value: Int
     
     var body: some View {
@@ -41,12 +42,15 @@ struct RangeSlider: View {
                         let percentage = currentOffset / geometry.size.width
                         value = Int(start + (end - start) * percentage)
                     }
-                HStack {
+                
+                HStack(spacing: 0) {
                     Text("\(Int(start))")
-                        .subDefault(color: .default)
+                        .subDefault(color: .defaultMiddle)
+                    
                     Spacer()
+                    
                     Text("\(Int(end))")
-                        .subDefault(color: .default)
+                        .subDefault(color: .defaultMiddle)
                 }
                 .padding(.top, 3)
             }
@@ -57,7 +61,7 @@ struct RangeSlider: View {
     func dragGesture(_ geometry: GeometryProxy) -> some Gesture {
         DragGesture()
             .onChanged { gesture in
-                // drag 시작할떄 0으로 초기화 방지
+                // drag 시작할 때 0으로 초기화 방지
                 let newOffset = initialOffset + gesture.translation.width
                 currentOffset = min(max(0, newOffset), geometry.size.width)
                 let percentage = currentOffset / geometry.size.width
@@ -68,4 +72,3 @@ struct RangeSlider: View {
             }
     }
 }
-

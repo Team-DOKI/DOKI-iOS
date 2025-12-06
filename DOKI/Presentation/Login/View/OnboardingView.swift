@@ -29,7 +29,7 @@ enum OnboardingStep: CaseIterable {
     var subTitle: String {
         switch self {
         case .welcome:
-            "DOGKY와 즐거운 산책을 시작해봐요!\n"
+            "DOKI와 즐거운 산책을 시작해봐요!\n"
         case .record:
             "산책의 거리, 분위기, 활동 등을 카테고리에 따라\n특별한 일상으로 저장할 수 있어요"
         case .share:
@@ -46,24 +46,25 @@ struct OnboardingView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            Image(.logo)
+            Image(.imgLogo)
                 .padding(.top, 40)
+            
             Text(currentStep.title)
-                .header2()
+                .font(.header2)
                 .foregroundStyle(.contents)
                 .padding(.top, 40)
             
             Text(currentStep.subTitle)
-                .bodyDefault()
+                .font(.bodyDefault)
                 .foregroundStyle(.defaultDark)
                 .padding(.top, 8)
                 .multilineTextAlignment(.center)
             
             TabView(selection: $currentStep) {
-                Image(.onboardingDog)
-                    .background(Image(.background))
+                Image(.imgOnboardingdog)
+                    .background(Image(.imgGrabackground))
                     .background(alignment: .bottom) {
-                        Image(.shadowBackground)
+                        Image(.imgShadow)
                     }
                     .tag(OnboardingStep.welcome)
                 
@@ -78,7 +79,7 @@ struct OnboardingView: View {
             }
             .tabViewStyle(.page)
             
-            HStack {
+            HStack(spacing: 4) {
                 ForEach(OnboardingStep.allCases, id: \.self) { step in
                     Rectangle()
                         .frame(width: currentStep == step ? 16 : 8, height: 8)
@@ -87,9 +88,16 @@ struct OnboardingView: View {
                         .animation(.default, value: currentStep)
                 }
             }
-            .padding(.bottom, 50)
+            .padding(.bottom, 24)
             
-            Spacer()
+            Button {
+                
+            } label: {
+                Text("건너뛰기")
+                    .font(.small)
+                    .foregroundColor(.defaultMiddle)
+            }.padding(.bottom, 14)
+            
             MainButton(text: "시작하기") {
                 isOnboarding = true
             }
