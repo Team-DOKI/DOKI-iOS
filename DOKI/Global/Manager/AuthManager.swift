@@ -25,15 +25,33 @@ class AuthManager: ObservableObject {
     private init() {}
     
     func checkLogin() {
-        authStatus = .loggedOut
+        do {
+            try KeychainManager.read(.refreshToken)
+            try KeychainManager.read(.accessToken)
+            authStatus = .loggedIn
+        } catch {
+            authStatus = .loggedOut
+            print(error.localizedDescription)
+        }
     }
     
     /// AppleLogin API
-    func requestAppleLogin(_ idToken: String, deviceId: String) async {
+    func loginWithApple(_ idToken: String, deviceId: String) async {
         do {
             let appleLoginReqDto = AppleLoginRequestDTO(idToken: idToken, deviceId: deviceId)
             let response: AppleLoginResponseDTO = try await provider.async.request(.appleLogin(appleLoginReqDto: appleLoginReqDto))
-            try KeychainManager.create("accessToken", response.accessToken)
+            try KeychainManager.create(.accessToken, response.accessToken)
+            try KeychainManager.create(.refreshToken, response.refreshToken)
+            authStatus = .loggedIn
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func logout() {
+        do {
+            try KeychainManager.delete(.accessToken)
+            try KeychainManager.delete(.refreshToken)
         } catch {
             print(error.localizedDescription)
         }

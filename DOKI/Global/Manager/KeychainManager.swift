@@ -21,28 +21,38 @@ enum KeychainError: Error {
     }
 }
 
+enum KeychainName: String {
+    case accessToken
+    case refreshToken
+}
+
 struct KeychainManager {
+    
     /// Keychain 저장소에서 key에 해당하는 값을 추가
-    static func create(_ key: String, _ value: String) throws {
-        guard let valueData = value.data(using: .utf8) else { throw KeychainError.unexpectedPasswordData }
-        
-        let query: NSDictionary = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: key,
-            kSecValueData: valueData
-        ]
-        SecItemDelete(query)
-        
-        let status = SecItemAdd(query, nil)
-        guard status == errSecSuccess else { throw KeychainError.unhandledError(status: status) }
+    static func create<T: Codable>(_ key: KeychainName, _ value: T) throws {
+        do {
+            let valueData = try JSONEncoder().encode(value)
+            let query: NSDictionary = [
+                kSecClass: kSecClassGenericPassword,
+                kSecAttrAccount: key.rawValue,
+                kSecValueData: valueData
+            ]
+            SecItemDelete(query)
+            
+            let status = SecItemAdd(query, nil)
+            guard status == errSecSuccess else { throw KeychainError.unhandledError(status: status) }
+        } catch {
+            throw KeychainError.unexpectedPasswordData
+        }
     }
     
     /// Keychain 저장소에서 key에 해당하는 값을 검색
-    static func read(_ key: String) throws -> String? {
+    @discardableResult
+    static func read(_ key: KeychainName) throws -> String? {
         let query: NSDictionary = [kSecClass: kSecClassGenericPassword,
-                                  kSecAttrAccount: key,
-                                  kSecMatchLimit: kSecMatchLimitOne,
-                                  kSecReturnData: true]
+                             kSecAttrAccount: key.rawValue,
+                              kSecMatchLimit: kSecMatchLimitOne,
+                              kSecReturnData: true]
         var item: CFTypeRef?
         let status = SecItemCopyMatching(query as CFDictionary, &item)
         guard status != errSecItemNotFound else { throw KeychainError.noPassword }
@@ -59,11 +69,13 @@ struct KeychainManager {
     }
     
     /// key에 해당하는 값을 삭제
-    static func delete(_ key: String) {
+    static func delete(_ key: KeychainName) throws {
         let query: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: key
+            kSecAttrAccount: key.rawValue
         ]
-        SecItemDelete(query)
+        let status = SecItemDelete(query)
+        guard status == errSecSuccess else { throw KeychainError.unhandledError(status: status) }
     }
 }
+
