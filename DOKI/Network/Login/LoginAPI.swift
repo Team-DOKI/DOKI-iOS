@@ -10,14 +10,14 @@ import Foundation
 import Moya
 
 enum LoginAPI {
-    case appleLogin(appleLoginReqDto: AppleLoginRequestDTO)
+    case appleLogin(appleLoginReqDto: AppleLoginRequestDTO)    
 }
 
 extension LoginAPI: BaseTargetType {
     var headerType: HeaderType {
         switch self {
         case .appleLogin:
-            return .userHeader
+            return .defaultHeader
         }
     }
     
