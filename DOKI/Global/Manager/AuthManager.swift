@@ -19,6 +19,7 @@ class AuthManager: ObservableObject {
     static let shared = AuthManager()
     
     @Published var authStatus: AuthState = .loading
+    
     private let provider = MoyaProvider<LoginAPI>(plugins: [NetworkLoggerPlugin()])
     
     private init() {}
@@ -31,7 +32,8 @@ class AuthManager: ObservableObject {
     func requestAppleLogin(_ idToken: String, deviceId: String) async {
         do {
             let appleLoginReqDto = AppleLoginRequestDTO(idToken: idToken, deviceId: deviceId)
-            let response: BaseDTO<String> = try await provider.async.request(.appleLogin(appleLoginReqDto: appleLoginReqDto))
+            let response: AppleLoginResponseDTO = try await provider.async.request(.appleLogin(appleLoginReqDto: appleLoginReqDto))
+            try KeychainManager.create("accessToken", response.accessToken)
         } catch {
             print(error.localizedDescription)
         }
