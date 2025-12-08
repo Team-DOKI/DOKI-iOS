@@ -20,15 +20,18 @@ class AuthManager: ObservableObject {
     
     @Published var authStatus: AuthState = .loading
     
+    private(set) var accessToken: String?
+    private(set) var refreshToken: String?
+    
     private let provider = MoyaProvider<LoginAPI>(plugins: [NetworkLoggerPlugin()])
     
     private init() {}
     
     func checkLogin() {
         do {
-            try KeychainManager.read(.refreshToken)
-            try KeychainManager.read(.accessToken)
-            authStatus = .loggedIn
+            self.accessToken = try KeychainManager.read(.accessToken)
+            self.refreshToken = try KeychainManager.read(.refreshToken)
+            authStatus = .loggedIn            
         } catch {
             authStatus = .loggedOut
             print(error.localizedDescription)
@@ -42,6 +45,9 @@ class AuthManager: ObservableObject {
             let response: AppleLoginResponseDTO = try await provider.async.request(.appleLogin(appleLoginReqDto: appleLoginReqDto))
             try KeychainManager.create(.accessToken, response.accessToken)
             try KeychainManager.create(.refreshToken, response.refreshToken)
+            self.accessToken = response.accessToken
+            self.refreshToken = response.refreshToken
+            
             authStatus = .loggedIn
         } catch {
             print(error.localizedDescription)
@@ -52,6 +58,18 @@ class AuthManager: ObservableObject {
         do {
             try KeychainManager.delete(.accessToken)
             try KeychainManager.delete(.refreshToken)
+            authStatus = .loggedOut
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func reissueToken(accessToken: String, refreshToken: String) {
+        do {
+            try KeychainManager.create(.accessToken, accessToken)
+            try KeychainManager.create(.refreshToken, refreshToken)
+            self.accessToken = accessToken
+            self.refreshToken = refreshToken
         } catch {
             print(error.localizedDescription)
         }
