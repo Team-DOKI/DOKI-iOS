@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct DOKIApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject var appDIContainer = AppDIContainer()
     @StateObject var authManager = AuthManager()
     

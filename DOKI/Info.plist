@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>네이버 지도 표시를 위해 위치 정보가 사용됩니다.</string>
 	<key>NAVER_CLIENT_ID</key>
 	<string>$(NAVER_CLIENT_ID)</string>
 	<key>BASE_URL</key>
