@@ -57,8 +57,8 @@ struct WalkCoordinatorView: View {
     func bindAction() {
         walkRecordViewModel.navigationAction = { destination in
             switch destination {
-            case .walkReview:
-                walkCoordinator.push(.courseReview)
+            case .walkResult:
+                walkCoordinator.push(.walkResult)
             }
         }
         

@@ -8,13 +8,13 @@
 import SwiftUI
 
 enum WalkReviewRoute {
-    case walkReview
+    case walkResult
 }
 
 class WalkRecordViewModel: ObservableObject {
     var navigationAction: ((WalkReviewRoute)->())?
     
-    func navigateToWalkReview() {
-        navigationAction?(.walkReview)
+    func navigateToWalkResult() {
+        navigationAction?(.walkResult)
     }
 }
