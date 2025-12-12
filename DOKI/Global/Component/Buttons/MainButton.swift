@@ -43,6 +43,7 @@ enum MainButtonState {
 struct MainButton: View {
     let text: String
     var buttonState: MainButtonState = .active1
+    var font: Font = .mainActive
     var action: (() -> Void)? = nil
     
     var body: some View {
@@ -56,7 +57,7 @@ struct MainButton: View {
                 } else {
                     Text(text)
                         .foregroundStyle(buttonState.textColor)
-                        .font(.mainActive)
+                        .font(font)
                 }
             }
             .frame(maxWidth: .infinity, minHeight: 56)
@@ -76,6 +77,6 @@ struct MainButton: View {
 
 #Preview {
     MainButton(text: "TEXT", buttonState: .active1)
-    MainButton(text: "TEXT", buttonState: .active2)
+    MainButton(text: "TEXT", buttonState: .active2, font: .subtitle)
     MainButton(text: "TEXT", buttonState: .disabled)
 }

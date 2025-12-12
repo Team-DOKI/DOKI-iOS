@@ -32,11 +32,11 @@ struct AreaMapView: View {
                         .padding(.bottom, 20)
                     
                     HStack(spacing: 8) {
-                        MainButton(text: "위치 수정하기", buttonState: .active2) {
+                        MainButton(text: "위치 수정하기", buttonState: .active2, font: .subtitle) {
                             
                         }
                         
-                        MainButton(text: "선택하기") {
+                        MainButton(text: "선택하기", font: .subtitle) {
                             viewModel.selectActivityArea()
                         }
                     }
