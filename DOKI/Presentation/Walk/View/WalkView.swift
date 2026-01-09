@@ -35,7 +35,7 @@ struct WalkView: View {
             
             // MARK: - 오늘의 산책 TIP
             
-            HStack(spacing: 0) {
+            HStack(spacing: 18) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("오늘의 산책 TIP")
                         .font(.small)
@@ -49,12 +49,13 @@ struct WalkView: View {
                         .font(.bodySmall)
                         .foregroundColor(.contents)
                 }
-                .padding(.vertical, 17)
-                .padding(.leading, 22)
+                .padding(.vertical, 16)
                 
-                Spacer()
+                Image(.imgWalkdog)
+                    .padding(.top, 8)
             }
             .frame(maxWidth: .infinity)
+            .padding(.horizontal, 16)
             .background(.defaultBackground)
             .cornerRadius(16)
             .overlay(
