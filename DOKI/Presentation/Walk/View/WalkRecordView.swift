@@ -7,6 +7,7 @@
 
 import SwiftUI
 import NMapsMap
+import CoreLocation
 
 struct WalkRecordView: View {
     @StateObject var viewModel: WalkRecordViewModel
@@ -14,14 +15,21 @@ struct WalkRecordView: View {
     @State private var isLocationOn = false
     @State private var showFinishConfirmation = false
     
+    @State private var pathCoordinates: [CLLocationCoordinate2D] = []
+    @State private var shouldCenterOnUser = false
+    
+    
     var body: some View {
         ZStack() {
-            NaverMap()
-                .ignoresSafeArea()
+            WalkNaverMap(
+                pathCoordinates: $pathCoordinates,
+                shouldCenterOnUser: $shouldCenterOnUser
+            )
+            .ignoresSafeArea()
             
             VStack(spacing: 0) {
                 
-                // 위치 공유
+                // 추후 위치 공유
                 HStack(spacing: 0) {
                     Spacer()
                     
@@ -32,16 +40,17 @@ struct WalkRecordView: View {
                 .padding(.top, 20)
                 .opacity(0)
                 
-                
                 Spacer()
                 
                 HStack(spacing: 0) {
                     Spacer()
                     
                     VStack(spacing: 12) {
-                        PinButton(icon: "ic_trash", action: {}).opacity(0) // 스팟 태그
-                        PinButton(icon: "ic_photo", action: {}).opacity(0) // 스팟 태그
-                        PinButton(icon: "ic_gps", action: {})
+                        PinButton(icon: "ic_trash", action: {}).opacity(0) // 추후 스팟 태그
+                        PinButton(icon: "ic_photo", action: {}).opacity(0) // 추후 스팟 태그
+                        PinButton(icon: "ic_gps", action: {
+                            shouldCenterOnUser.toggle()
+                        })
                     }
                     .padding(.trailing, 16)
                 }
@@ -114,15 +123,3 @@ struct WalkRecordView: View {
         }
     }
 }
-
-struct NaverMap: UIViewRepresentable {
-    func makeUIView(context: Context) -> NMFMapView {
-        let mapView = NMFMapView()
-        mapView.positionMode = .compass
-        
-        return mapView
-    }
-    
-    func updateUIView(_ uiView: NMFMapView, context: Context) {}
-}
-
