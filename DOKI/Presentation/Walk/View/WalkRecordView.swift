@@ -18,6 +18,7 @@ struct WalkRecordView: View {
     @State private var pathCoordinates: [CLLocationCoordinate2D] = []
     @State private var shouldCenterOnUser = false
     
+    @State private var confirmType: WalkConfirmType?
     
     var body: some View {
         ZStack() {
@@ -67,10 +68,12 @@ struct WalkRecordView: View {
                     .padding(.bottom, 20)
                     
                     HStack(spacing: 8) {
-                        MainButton(text: "산책 중단하기", buttonState: .active2, font: .subtitle)
+                        MainButton(text: "산책 중단하기", buttonState: .active2, font: .subtitle) {
+                            confirmType = .pause
+                        }
                         
                         MainButton(text: "산책 종료하기", buttonState: .active1, font: .subtitle) {
-                            showFinishConfirmation = true
+                            confirmType = .finish
                         }
                     }
                 }
@@ -82,44 +85,84 @@ struct WalkRecordView: View {
             }
             .ignoresSafeArea(edges: .bottom)
             
-            if showFinishConfirmation {
-                Color.contents.opacity(0.75)
-                    .ignoresSafeArea()
-                    .transition(.opacity)
-                
-                VStack(spacing: 0) {
-                    Spacer()
-                    
-                    VStack(spacing: 4) {
-                        Text("산책이 중단되었어요")
-                            .font(.header2)
-                            .foregroundColor(.defaultBackground)
-                        
-                        Text("산책을 정말 종료하시겠어요?")
-                            .font(.subtitle)
-                            .foregroundColor(.defaultBackground)
-                    }
-                    .multilineTextAlignment(.center)
-                    
-                    Spacer()
-                    
-                    HStack(spacing: 8) {
-                        MainButton(text: "산책 중단하기", buttonState: .active2, font: .subtitle) {
-                            withAnimation {
-                                showFinishConfirmation = false
-                            }
+            if let type = confirmType {
+                WalkConfirmOverlayView(
+                    title: type == .pause ? "산책이 중단되었어요" : "산책을 종료하시겠어요?",
+                    message: type == .pause
+                    ? "정비 후에 다시 이어서 산책을 해 보세요!"
+                    : "종료 후에는 산책 기록을 이어갈 수 없어요!",
+                    leftButtonText: type == .pause
+                    ? "이어서 하기" : "아니오",
+                    rightButtonText: type == .pause ? "산책 종료하기" : "예",
+                    onLeftAction: {
+                        withAnimation {
+                            confirmType = nil
                         }
-                        
-                        MainButton(text: "산책 종료하기", buttonState: .active1, font: .subtitle) {
-                            viewModel.navigateToWalkResult()
-                        }
+                    },
+                    onRightAction: {
+                        viewModel.navigateToWalkResult()
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 30)
-                }
-                .transition(.opacity)
-                .ignoresSafeArea()
+                )
             }
         }
+    }
+}
+
+enum WalkConfirmType {
+    case pause
+    case finish
+}
+
+struct WalkConfirmOverlayView: View {
+    
+    let title: String
+    let message: String
+    let leftButtonText: String
+    let rightButtonText: String
+    let onLeftAction: () -> Void
+    let onRightAction: () -> Void
+    
+    var body: some View {
+        ZStack {
+            Color.contents.opacity(0.75)
+                .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                Spacer()
+                
+                VStack(spacing: 4) {
+                    Text(title)
+                        .font(.header2)
+                        .foregroundColor(.defaultBackground)
+                    
+                    Text(message)
+                        .font(.subtitle)
+                        .foregroundColor(.defaultBackground)
+                }
+                .multilineTextAlignment(.center)
+                
+                Spacer()
+                
+                HStack(spacing: 8) {
+                    MainButton(
+                        text: leftButtonText,
+                        buttonState: .active2,
+                        font: .subtitle,
+                        action: onLeftAction
+                    )
+                    
+                    MainButton(
+                        text: rightButtonText,
+                        buttonState: .active1,
+                        font: .subtitle,
+                        action: onRightAction
+                    )
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 30)
+            }
+        }
+        .transition(.opacity)
+        .ignoresSafeArea()
     }
 }
