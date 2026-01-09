@@ -26,34 +26,43 @@ struct WalkView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                Image(.imgWalkdog)
-
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("숨이 얼어붙어요… 오늘은 나가지말아요")
-                        .font(.bodyBold)
-                        .foregroundColor(.defaultBackground)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("오늘의 산책 TIP")
+                        .font(.small)
+                        .foregroundStyle(.defaultMiddle)
                     
-                    Text("실외 금지! 실내 놀이로 대체")
-                        .font(.subDefault)
-                        .foregroundColor(.defaultBright)
+                    Text("발이 차가워요.. 잠깐 다녀와요!")
+                        .font(.subtitle)
+                        .foregroundColor(.contents)
+                    
+                    Text("10분 내 짧은 산책 / 패딩과 신발 필수")
+                        .font(.bodySmall)
+                        .foregroundColor(.contents)
                 }
+                .padding(.vertical, 17)
+                .padding(.leading, 22)
                 
                 Spacer()
+                
+                //                Image(.imgWalkdog)
             }
             .frame(maxWidth: .infinity)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
-            .background(.defaultPrimary)
+            .background(.defaultBackground)
             .cornerRadius(16)
-            .padding(.top, 20)
-            .padding(.horizontal, 16)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .inset(by: 0.5)
+                    .stroke(.defaultPrimary, lineWidth: 1)
+            )
+            .padding(.top, 16)
+            .padding(.horizontal, 15)
             
             VStack(alignment: .leading, spacing: 16) {
                 Text("산책 필수템")
                     .font(.subtitle)
                     .foregroundColor(.defaultDark)
                 
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 0) {
                     ForEach($items) { $item in
                         HStack(spacing: 8) {
                             Button {
@@ -64,11 +73,16 @@ struct WalkView: View {
                             
                             Text(item.name)
                                 .font(.subDefault)
-                                .foregroundColor(item.isChecked ? .defaultBackground : .defaultMiddle)
+                                .foregroundColor(item.isChecked ? .defaultDark : .defaultMiddle)
+                            
+                            Spacer()
+                            
+                            Image(.btnX)
                         }
-                        .padding(8)
-                        .background(item.isChecked ? .defaultPrimary : .defaultButton)
-                        .cornerRadius(8)
+                        .padding(.vertical, 8)
+                        
+                        Divider()
+                            .background(.defaultBright)
                     }
                 }
                 
@@ -88,12 +102,13 @@ struct WalkView: View {
             .cornerRadius(16)
             .padding(16)
             
+            Spacer()
+            
             MainButton(text: "산책 기록 시작하기", buttonState: .active2) {
                 viewModel.navigateToWalkRecord()
             }
             .padding(.horizontal, 16)
-            
-            Spacer()
+            .padding(.bottom, 25)
         }
         .background(.defaultBright)
         .topNavigationView(center: {
