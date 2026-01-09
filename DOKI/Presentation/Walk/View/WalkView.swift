@@ -24,6 +24,8 @@ struct WalkView: View {
         WalkItem(name: "간식", isChecked: false, isEditing: false)
     ]
     
+    @FocusState private var focusedItemID: UUID?
+    
     var isScrollable: Bool {
         items.count > 7
     }
@@ -73,20 +75,25 @@ struct WalkView: View {
                     ScrollView {
                         itemList
                     }
-                    //                    .frame(maxHeight: 240)
                     .scrollIndicators(.hidden)
                 } else {
                     itemList
                 }
                 
                 Button {
-                    items.append(
-                        WalkItem(
-                            name: "",
-                            isChecked: false,
-                            isEditing: true
-                        )
+                    let newItem = WalkItem(
+                        name: "",
+                        isChecked: false,
+                        isEditing: true
                     )
+                    
+                    items.append(newItem)
+                    
+                    if isScrollable {
+                        DispatchQueue.main.async {
+                            focusedItemID = newItem.id
+                        }
+                    }
                 } label: {
                     Text("+ 추가하기")
                         .font(.subActive)
@@ -134,8 +141,10 @@ struct WalkView: View {
                             .font(.subDefault)
                             .foregroundColor(.defaultMiddle)
                             .submitLabel(.done)
+                            .focused($focusedItemID, equals: item.id)
                             .onSubmit {
                                 item.isEditing = false
+                                focusedItemID = nil
                             }
                     } else {
                         Text(item.name)
