@@ -12,7 +12,7 @@ struct WalkCourseCell: View {
         VStack(alignment: .leading, spacing: 0) {
             Image("")
                 .resizable()
-                .frame(height: 212)
+                .frame(width: 167, height: 212)
                 .background(.defaultButton)
                 .cornerRadius(8)
                 .overlay(alignment: .top) {
