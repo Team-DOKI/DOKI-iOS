@@ -8,6 +8,8 @@
 import SwiftUI
 
 enum MyPageRoute: Route {
+    case myProfile
+    case petProfile
     
 }
 
@@ -23,6 +25,14 @@ struct MyPageCoordinatorView: View {
     var body: some View {
         NavigationStack(path: $myPageCoordinator.path) {
             MyPageView(viewModel: myPageViewModel)
+                .navigationDestination(for: MyPageRoute.self) { destination in
+                    switch destination {
+                    case .myProfile:
+                        MyProfileView()
+                    case .petProfile:
+                        PetProfileView()
+                    }
+                }
         }
     }
 }
