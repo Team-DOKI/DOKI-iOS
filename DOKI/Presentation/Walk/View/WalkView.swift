@@ -90,10 +90,8 @@ struct WalkView: View {
                     
                     items.append(newItem)
                     
-                    if isScrollable {
-                        DispatchQueue.main.async {
-                            focusedItemID = newItem.id
-                        }
+                    DispatchQueue.main.async {
+                        focusedItemID = newItem.id
                     }
                 } label: {
                     Text("+ 추가하기")
@@ -118,7 +116,8 @@ struct WalkView: View {
                 viewModel.navigateToWalkRecord()
             }
             .padding(.horizontal, 16)
-            .padding(.bottom, 25)
+            .padding(.bottom, 85)
+            .opacity(focusedItemID == nil ? 1 : 0)
         }
         .background(.defaultBright)
         .topNavigationView(center: {
