@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AuthenticationServices
 
 struct LoginView: View {
     @StateObject var viewModel: LoginViewModel
@@ -33,11 +34,17 @@ struct LoginView: View {
                 }
                 .padding(.horizontal, 16)
                 
-                AppleLoginButton {
-                    
-                }
+                AppleLoginButton {}
                 .padding(.top, 8)
                 .padding(.horizontal, 16)
+                .overlay(
+                    SignInWithAppleButton(
+                        onRequest: viewModel.requestAppleLogin(_:),
+                        onCompletion: viewModel.onCompleteAppleLogin(_:)
+                    )
+                    .frame(height: 50)
+                    .blendMode(.destinationOver)
+                )
             }
         }
         .overlay(alignment: .trailing) {

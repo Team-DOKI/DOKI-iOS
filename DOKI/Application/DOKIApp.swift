@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct DOKIApp: App {
     @StateObject var appDIContainer = AppDIContainer()
-    @StateObject var authManager = AuthManager()
+    @StateObject var authManager = AuthManager.shared
     
     var body: some Scene {
         WindowGroup {
