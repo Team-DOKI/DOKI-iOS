@@ -7,13 +7,6 @@
 
 import SwiftUI
 
-struct WalkItem: Identifiable {
-    let id = UUID()
-    var name: String
-    var isChecked: Bool
-    var isEditing: Bool
-}
-
 struct WalkView: View {
     @StateObject var viewModel: WalkViewModel
     
