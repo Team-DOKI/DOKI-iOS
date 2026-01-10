@@ -86,7 +86,7 @@ struct WalkRecordView: View {
             .ignoresSafeArea(edges: .bottom)
             
             if let type = confirmType {
-                WalkConfirmOverlayView(
+                WalkConfirmOverlay(
                     title: type == .pause ? "산책이 중단되었어요" : "산책을 종료하시겠어요?",
                     message: type == .pause
                     ? "정비 후에 다시 이어서 산책을 해 보세요!"
