@@ -23,6 +23,7 @@ struct WalkCoordinatorView: View {
     @StateObject var walkRecordViewModel: WalkRecordViewModel
     @StateObject var courseReviewViewModel: CourseReviewViewModel
     @StateObject var walkResultViewModel: WalkResultViewModel
+    @StateObject var courseDetailViewModel = CourseDetailViewModel()
     
     private let viewModelFactory: AppDIContainer.ViewModelFactory
     
@@ -43,7 +44,7 @@ struct WalkCoordinatorView: View {
                 .navigationDestination(for: WalkRoute.self, destination: { destination in
                     switch destination {
                     case .courseDetail:
-                        CourseDetailView(viewModel: .init())
+                        CourseDetailView(viewModel: courseDetailViewModel)
                     }
                 })
                 .fullScreenCover(item: $walkRecordCoordinator.fullScreenCover, onDismiss: {
@@ -68,6 +69,13 @@ struct WalkCoordinatorView: View {
     }
     
     func bindAction() {
+        courseDetailViewModel.navigationAction = { destination in
+            switch destination {
+            case .back:
+                walkCoordinator.pop()
+            }
+        }
+        
         walkRecordViewModel.navigationAction = { destination in
             switch destination {
             case .walkReview:

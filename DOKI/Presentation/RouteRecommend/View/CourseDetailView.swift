@@ -31,8 +31,13 @@ struct CourseDetailView: View {
                 Spacer().frame(height: 40)
             }
         }
+        .overlay(alignment: .top, content: {
+            Rectangle()
+                .frame(height: 2)
+                .foregroundStyle(.defaultButton)
+        })
         .topNavigationView {
-            BackButton(action: {})
+            BackButton(action: viewModel.navigateToBack)
         } center: {
             Text("루트 상세 정보")
                 .subtitle()
