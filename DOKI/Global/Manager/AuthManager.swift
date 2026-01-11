@@ -40,13 +40,17 @@ class AuthManager: ObservableObject {
     
     /// AppleLogin API
     func loginWithApple(_ idToken: String, deviceId: String) async {
+        
         do {
-            let appleLoginReqDto = AppleLoginRequestDTO(idToken: idToken, deviceId: deviceId)
-            let response: AppleLoginResponseDTO = try await provider.async.request(.appleLogin(appleLoginReqDto: appleLoginReqDto))
-            try KeychainManager.create(.accessToken, response.accessToken)
-            try KeychainManager.create(.refreshToken, response.refreshToken)
-            self.accessToken = response.accessToken
-            self.refreshToken = response.refreshToken
+            let appleLoginReqDto = AppleLoginRequestDTO(authorizationCode: idToken, deviceId: deviceId)
+            let response: BaseDTO<AppleLoginResponseDTO> = try await provider.async.request(.appleLogin(appleLoginReqDto: appleLoginReqDto))
+            
+            guard let data = response.data else { return }
+            
+            try KeychainManager.create(.accessToken, data.accessToken)
+            try KeychainManager.create(.refreshToken, data.refreshToken)
+            self.accessToken = data.accessToken
+            self.refreshToken = data.refreshToken
             
             authStatus = .loggedIn
         } catch {

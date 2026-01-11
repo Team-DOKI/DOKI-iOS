@@ -10,4 +10,5 @@ import Foundation
 struct AppleLoginResponseDTO: Codable {
     let accessToken: String
     let refreshToken: String
+    let isNewUser: Bool
 }

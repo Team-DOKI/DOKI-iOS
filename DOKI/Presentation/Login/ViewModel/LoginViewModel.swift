@@ -35,7 +35,7 @@ class LoginViewModel: ObservableObject {
             if let appleIDCredential = authResult.credential as? ASAuthorizationAppleIDCredential,
                let identityTokenData = appleIDCredential.identityToken,
                let identityToken = String(data: identityTokenData, encoding: .utf8) {
-                Task {
+                Task {                    
                     await authManager.loginWithApple(identityToken, deviceId: "doki-service")
                 }
             }

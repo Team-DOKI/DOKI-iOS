@@ -18,7 +18,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		00232BF72EB4E32E00F26249 /* Exceptions for "DOKI" folder in "DOKI" target */ = {
+		007D0E9E2F123D5600BCD675 /* Exceptions for "DOKI" folder in "DOKI" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -31,7 +31,7 @@
 		76ECCDEF2E05AFCC0056CAF7 /* DOKI */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				00232BF72EB4E32E00F26249 /* Exceptions for "DOKI" folder in "DOKI" target */,
+				007D0E9E2F123D5600BCD675 /* Exceptions for "DOKI" folder in "DOKI" target */,
 			);
 			path = DOKI;
 			sourceTree = "<group>";
@@ -166,7 +166,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BASE_URL = "";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -232,7 +231,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BASE_URL = "";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -324,6 +322,8 @@
 		};
 		76ECCDFA2E05AFCC0056CAF7 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 76ECCDEF2E05AFCC0056CAF7 /* DOKI */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

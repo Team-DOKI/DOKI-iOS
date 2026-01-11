@@ -16,7 +16,7 @@ struct DOKIApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(authManager)
-                .environmentObject(appDIContainer)
+                .environmentObject(appDIContainer)               
         }
     }
 }

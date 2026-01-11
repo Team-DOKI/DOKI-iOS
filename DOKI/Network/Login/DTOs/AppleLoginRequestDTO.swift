@@ -8,6 +8,6 @@
 import Foundation
 
 struct AppleLoginRequestDTO: Encodable {
-    let idToken: String
+    let authorizationCode: String
     let deviceId: String
 }
