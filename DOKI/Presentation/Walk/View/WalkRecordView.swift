@@ -14,8 +14,9 @@ struct WalkRecordView: View {
         Button {
             viewModel.navigateToWalkReview()
         } label: {
-            Text("후기페이지로 이동")
+            Text("산책 종료하기")
         }
+        .navigationTitle(Text("산책기록"))
     }
 }
 
