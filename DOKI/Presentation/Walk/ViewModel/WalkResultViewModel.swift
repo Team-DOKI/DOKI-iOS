@@ -13,7 +13,11 @@ enum WalkResultRoute {
 
 class WalkResultViewModel: ObservableObject {
     var navigationAction: ((WalkResultRoute)->())?
-    
+    @Published var reviewTitle: String = ""
+    @Published var reviewContent: String = ""
+    @Published var address: String = "상세 주소"
+    @Published var recordDate: String = "YY.MM.DD | 오후 00:00"
+    @Published var walkRecord: String = "거리 | 시간 | 걸음수"
     @Published var reviewImages: [UIImage] = []
     @Published var selectedCongestion: FilteringOption?
     @Published var selectedDogInteraction: FilteringOption?

@@ -17,7 +17,8 @@ struct WalkResultView: View {
             VStack(alignment: .leading, spacing: 0) {
                 Spacer().frame(height: 16)
                 photoPicker
-                
+                Spacer().frame(height: 12)
+                WalkInfoSection
                 Spacer().frame(height: 40)
                 congestionSection
                 Spacer().frame(height: 40)
@@ -30,6 +31,9 @@ struct WalkResultView: View {
                 environmentSection
                 Spacer().frame(height: 40)
                 reviewSection
+                Spacer().frame(height: 40)
+                buttonSection
+                Spacer().frame(height: 30)
             }
             .padding(.horizontal, 16)
         }
@@ -44,6 +48,19 @@ struct WalkResultView: View {
 }
 
 extension WalkResultView {
+    private var WalkInfoSection: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Label(title: {Text(viewModel.address)}, icon: {Image(.icMarker)})
+                .font(.bodyActive)
+                .foregroundStyle(.defaultDark)
+            Label(title: {Text(viewModel.recordDate)}, icon: {Image(.icTimeclock)})
+                .font(.bodyActive)
+                .foregroundStyle(.defaultDark)
+            Label(title: {Text(viewModel.walkRecord)}, icon: {Image(.icInfo)})
+                .font(.bodyActive)
+                .foregroundStyle(.defaultDark)
+        }
+    }
     private var photoPicker: some View {
         PhotosPicker(
             selection: $selectedItems,
@@ -130,7 +147,24 @@ extension WalkResultView {
         )
     }
     private var reviewSection: some View {
-        VStack {}
+        VStack(spacing: 0) {
+            SectionHeader(title: "산책에 대한 후기를 작성해주세요", subtitle: "")
+            Spacer().frame(height: 16)
+            TextField("후기 제목을 입력해주세요", text: $viewModel.reviewTitle)
+                .font(.bodyDefault)
+                .padding(17)
+                .background(.defaultBright)
+                .cornerRadius(8)
+            Spacer().frame(height: 8)
+            TextArea(text: $viewModel.reviewContent, placeholder: "산책에 대한 내용을 작성해주세요")
+        }
+    }
+    
+    private var buttonSection: some View {
+        VStack(spacing: 16) {
+            MainButton(text: "산책 기록 나만보기", buttonState: .active2)
+            MainButton(text: "산책 기록 공유하기")
+        }
     }
 }
 
