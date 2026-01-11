@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct Tag: View {
+    let text: String
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text(text)
+            .subActive(color: .defaultPrimary)
+            .padding(8)
+            .background(.primaryGra1)
+            .cornerRadius(8)
     }
 }
 
 #Preview {
-    Tag()
+    Tag(text: "혼잡도 보통")
 }
