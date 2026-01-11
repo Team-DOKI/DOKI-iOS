@@ -7,13 +7,18 @@
 
 import SwiftUI
 
-enum WalkRoute: Route {
+enum WalkRecordRoute: Route {
     case walkRecord
     case courseReview
     case walkResult
 }
 
+enum WalkRoute: Route {
+    case courseDetail
+}
+
 struct WalkCoordinatorView: View {
+    @StateObject var walkRecordCoordinator: Coordinator<WalkRecordRoute>
     @StateObject var walkCoordinator: Coordinator<WalkRoute>
     @StateObject var walkRecordViewModel: WalkRecordViewModel
     @StateObject var courseReviewViewModel: CourseReviewViewModel
@@ -21,10 +26,12 @@ struct WalkCoordinatorView: View {
     
     private let viewModelFactory: AppDIContainer.ViewModelFactory
     
-    init(walkCoordinator: Coordinator<WalkRoute> = Coordinator<WalkRoute>(),
+    init(walkRecordCoordinator: Coordinator<WalkRecordRoute> = Coordinator<WalkRecordRoute>(),
+         walkCoordinator: Coordinator<WalkRoute> = Coordinator<WalkRoute>(),
          viewModelFactory: AppDIContainer.ViewModelFactory) {
         self.viewModelFactory = viewModelFactory
-        self._walkCoordinator = StateObject(wrappedValue: Coordinator<WalkRoute>())
+        self._walkRecordCoordinator = StateObject(wrappedValue: walkRecordCoordinator)
+        self._walkCoordinator = StateObject(wrappedValue: walkCoordinator)
         self._walkRecordViewModel = StateObject(wrappedValue: viewModelFactory.makeWalkRecordViewModel())
         self._courseReviewViewModel = StateObject(wrappedValue: viewModelFactory.makeCourseReviewViewModel())
         self._walkResultViewModel = StateObject(wrappedValue: viewModelFactory.makeCourseResultViewModel())
@@ -32,13 +39,19 @@ struct WalkCoordinatorView: View {
     
     var body: some View {
         NavigationStack(path: $walkCoordinator.path) {
-            WalkView(viewModel: WalkViewModel(coordinator: walkCoordinator))
-                .fullScreenCover(item: $walkCoordinator.fullScreenCover, onDismiss: {
-                    walkCoordinator.clearStack()
+            WalkView(viewModel: WalkViewModel(coordinator: walkRecordCoordinator))
+                .navigationDestination(for: WalkRoute.self, destination: { destination in
+                    switch destination {
+                    case .courseDetail:
+                        CourseDetailView(viewModel: .init())
+                    }
+                })
+                .fullScreenCover(item: $walkRecordCoordinator.fullScreenCover, onDismiss: {
+                    walkRecordCoordinator.clearStack()
                 }, content: { destination in
-                    NavigationStack(path: $walkCoordinator.fullScreenPath) {
+                    NavigationStack(path: $walkRecordCoordinator.fullScreenPath) {
                         WalkRecordView(viewModel: walkRecordViewModel)
-                            .navigationDestination(for: WalkRoute.self) { destination in
+                            .navigationDestination(for: WalkRecordRoute.self) { destination in
                                 switch destination {
                                 case .walkRecord:
                                     WalkRecordView(viewModel: walkRecordViewModel)
@@ -58,21 +71,27 @@ struct WalkCoordinatorView: View {
         walkRecordViewModel.navigationAction = { destination in
             switch destination {
             case .walkReview:
-                walkCoordinator.push(.courseReview)
+                walkRecordCoordinator.push(.courseReview)
             }
         }
         
         courseReviewViewModel.navigationAction = { destination in
             switch destination {
             case .walkResult:
-                walkCoordinator.push(.walkResult)
+                walkRecordCoordinator.push(.walkResult)
             }
         }
         
         walkResultViewModel.navigationAction = { destination in
             switch destination {
             case .backToRoot:
-                walkCoordinator.dismiss()            
+                walkRecordCoordinator.dismiss()
+            case .detail:
+                // 화면 및 경로 제거
+                walkRecordCoordinator.dismiss()
+                walkRecordCoordinator.clearStack()
+                // 디테일뷰로 이동
+                walkCoordinator.push(.courseDetail)
             }
         }
     }

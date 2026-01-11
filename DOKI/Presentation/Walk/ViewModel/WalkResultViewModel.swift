@@ -8,7 +8,8 @@
 import SwiftUI
 
 enum WalkResultRoute {
-    case backToRoot    
+    case backToRoot
+    case detail
 }
 
 class WalkResultViewModel: ObservableObject {
@@ -62,7 +63,7 @@ class WalkResultViewModel: ObservableObject {
     }
     
     func navigateToDetail() {
-        
+        navigationAction?(.detail)
     }
     
     func showReviewComplete() {

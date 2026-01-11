@@ -67,13 +67,6 @@ struct HomeCoordinatorView: View {
             case .walkResult:
                 homeCoordinator.push(.walkResult)
             }
-        }
-        
-        walkResultViewModel.navigationAction = { destination in
-            switch destination {
-            case .backToRoot:
-                homeCoordinator.dismiss()
-            }
-        }
+        }                
     }
 }
