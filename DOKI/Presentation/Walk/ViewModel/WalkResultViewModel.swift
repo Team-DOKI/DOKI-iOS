@@ -8,11 +8,13 @@
 import SwiftUI
 
 enum WalkResultRoute {
-    case backToRoot
+    case backToRoot    
 }
 
 class WalkResultViewModel: ObservableObject {
     var navigationAction: ((WalkResultRoute)->())?
+    
+    @Published var isShowReviewCompleted: Bool = false
     @Published var reviewTitle: String = ""
     @Published var reviewContent: String = ""
     @Published var address: String = "상세 주소"
@@ -57,5 +59,13 @@ class WalkResultViewModel: ObservableObject {
     
     func navigateBackToRoot() {
         navigationAction?(.backToRoot)
+    }
+    
+    func navigateToDetail() {
+        
+    }
+    
+    func showReviewComplete() {
+        isShowReviewCompleted = true
     }
 }

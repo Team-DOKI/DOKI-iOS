@@ -36,13 +36,27 @@ struct WalkResultView: View {
                 Spacer().frame(height: 30)
             }
             .padding(.horizontal, 16)
-        }
+        }        
+        .overlay(alignment: .top, content: {
+            Rectangle()
+                .frame(height: 2)
+                .foregroundStyle(.defaultButton)
+        })
         .topNavigationView {
             BackButton(action: {})
         } center: {
             Text("산책 기록하기")
                 .subtitle()
         }
+        .customAlert(
+            isPresented: $viewModel.isShowReviewCompleted,
+            image: Image(.imgFoot),
+            message: "후기가 등록이 완료되었어요!",
+            subMessage: "덕분에 DOKI가 보호자님을 더 잘 알게 됐어요.\n이 정보로 다음엔 더 완벽한 경로를 추천해 드릴게요.",
+            primaryTitle: "홈으로 돌아가기",
+            secondaryTitle: "자세히 보러가기",
+            primaryAction: viewModel.navigateBackToRoot,
+            secondaryAction: viewModel.navigateToDetail)
         .ignoresSafeArea(.container, edges: .bottom)
     }
 }
@@ -162,8 +176,8 @@ extension WalkResultView {
     
     private var buttonSection: some View {
         VStack(spacing: 16) {
-            MainButton(text: "산책 기록 나만보기", buttonState: .active2)
-            MainButton(text: "산책 기록 공유하기")
+            MainButton(text: "산책 기록 나만보기", buttonState: .active2, action: viewModel.showReviewComplete)
+            MainButton(text: "산책 기록 공유하기", action: viewModel.showReviewComplete)
         }
     }
 }

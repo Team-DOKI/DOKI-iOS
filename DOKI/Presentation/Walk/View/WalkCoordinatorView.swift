@@ -72,7 +72,7 @@ struct WalkCoordinatorView: View {
         walkResultViewModel.navigationAction = { destination in
             switch destination {
             case .backToRoot:
-                walkCoordinator.dismiss()
+                walkCoordinator.dismiss()            
             }
         }
     }
