@@ -14,6 +14,7 @@ enum WalkResultRoute {
 class WalkResultViewModel: ObservableObject {
     var navigationAction: ((WalkResultRoute)->())?
     
+    @Published var reviewImages: [UIImage] = []
     @Published var selectedCongestion: FilteringOption?
     @Published var selectedDogInteraction: FilteringOption?
     @Published var safetyOption: [FilteringOption] = [
