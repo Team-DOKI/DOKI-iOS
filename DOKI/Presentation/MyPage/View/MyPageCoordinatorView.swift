@@ -22,12 +22,16 @@ struct MyPageCoordinatorView: View {
     @StateObject var myPageViewModel: MyPageViewModel
     @StateObject var myProfileViewModel:  MyProfileViewModel
     @StateObject var petProfileViewModel:  PetProfileViewModel
+    @StateObject var myWalkRecordViewModel: MyWalkRecordViewModel
+    @StateObject var mySavedWalkViewModel: MySavedWalkViewModel
     
     init(myPageCoordinator: Coordinator<MyPageRoute> = Coordinator<MyPageRoute>(), viewModelFactory: AppDIContainer.ViewModelFactory) {
         self._myPageCoordinator = StateObject(wrappedValue: myPageCoordinator)
         self._myPageViewModel = StateObject(wrappedValue: viewModelFactory.makeMyPageViewModel())
         self._myProfileViewModel = StateObject(wrappedValue: viewModelFactory.makeMyProfileViewModel())
         self._petProfileViewModel = StateObject(wrappedValue: viewModelFactory.makePetProfileViewModel())
+        self._myWalkRecordViewModel = StateObject(wrappedValue: viewModelFactory.makeMyWalkRecordViewModel())
+        self._mySavedWalkViewModel = StateObject(wrappedValue: viewModelFactory.makeMySavedWalkViewModel())
     }
     
     var body: some View {
@@ -40,9 +44,9 @@ struct MyPageCoordinatorView: View {
                     case .petProfile:
                         PetProfileView(viewModel: petProfileViewModel)
                     case .walkRecord:
-                        MyWalkRecordView()
+                        MyWalkRecordView(viewModel: myWalkRecordViewModel)
                     case .savedWalk:
-                        MySavedWalkView()
+                        MySavedWalkView(viewModel: mySavedWalkViewModel)
                     case .review:
                         MyReviewView()
                     case .activityAreaSetting:

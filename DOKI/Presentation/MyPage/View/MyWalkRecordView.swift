@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MyWalkRecordView: View {
+    @ObservedObject var viewModel: MyWalkRecordViewModel
     @Environment(\.dismiss) private var dismiss
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     
@@ -32,6 +33,3 @@ struct MyWalkRecordView: View {
     }
 }
 
-#Preview {
-    MyWalkRecordView()
-}

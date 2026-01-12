@@ -65,5 +65,13 @@ extension AppDIContainer {
         func makeFilterSettingViewModel() -> FilterSettingViewModel {
             return FilterSettingViewModel()
         }
+        
+        func makeMyWalkRecordViewModel() -> MyWalkRecordViewModel {
+            return MyWalkRecordViewModel()
+        }
+        
+        func makeMySavedWalkViewModel() -> MySavedWalkViewModel {
+            return MySavedWalkViewModel()
+        }
     }
 }
