@@ -14,6 +14,7 @@ enum LoginRoute: Route {
 struct LoginCoordinatorView: View {
     @StateObject var loginCoordinator: Coordinator<LoginRoute>
     @StateObject var loginViewModel: LoginViewModel
+    @StateObject var authManager: AuthManager = .shared
     
     let viewModelFactory: AppDIContainer.ViewModelFactory
     
@@ -32,6 +33,11 @@ struct LoginCoordinatorView: View {
                     case .register:
                         let viewModel = viewModelFactory.makeRegisterViewModel()
                         RegisterView(viewModel: viewModel)
+                    }
+                }
+                .onReceive(authManager.$isNewUser) { isNewUser in
+                    if isNewUser {
+                        loginCoordinator.push(.register)
                     }
                 }
         }

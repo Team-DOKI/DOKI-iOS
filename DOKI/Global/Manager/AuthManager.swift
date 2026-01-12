@@ -19,6 +19,7 @@ class AuthManager: ObservableObject {
     static let shared = AuthManager()
     
     @Published var authStatus: AuthState = .loading
+    @Published var isNewUser: Bool = false
     
     private(set) var accessToken: String?
     private(set) var refreshToken: String?
@@ -43,16 +44,18 @@ class AuthManager: ObservableObject {
         do {
             let appleLoginReqDto = AppleLoginRequestDTO(authorizationCode: idToken, deviceId: deviceId)
             let response: AppleLoginResponseDTO = try await provider.async.request(.appleLogin(appleLoginReqDto: appleLoginReqDto))
-            
-            
-            
+                        
             try KeychainManager.create(.accessToken, response.accessToken)
             try KeychainManager.create(.refreshToken, response.refreshToken)
             self.accessToken = response.accessToken
             self.refreshToken = response.refreshToken
-            
-            DispatchQueue.main.async {
-                self.authStatus = .loggedIn
+            self.isNewUser = response.isNewUser
+            print(response.isNewUser, "NewUser?")
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                if isNewUser {
+                    authStatus = .loggedIn
+                }
             }
         } catch {
             print(error.localizedDescription)
