@@ -15,14 +15,14 @@ struct MyPageView: View {
             Color.defaultBright.ignoresSafeArea()
             ScrollView {
                 VStack(spacing: 16) {
-                    MyProfile()
-                        .onTapGesture {
-                            print("프로필 수정")
-                        }
+                    MyProfile(
+                        nickname: "키큰오팔전차",
+                        email: "hello@gmail.com",
+                        action: {}
+                    )
+                    
                     PetProfile()
-                        .onTapGesture {
-                            print("반려견 프로필 수정")
-                        }
+
                     WalkRouteManage()
                     Setting()
                 }
