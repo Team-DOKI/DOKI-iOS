@@ -10,13 +10,17 @@ import SwiftUI
 @main
 struct DOKIApp: App {
     @StateObject var appDIContainer = AppDIContainer()
-    @StateObject var authManager = AuthManager()
+    @StateObject var authManager = AuthManager.shared
     
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(authManager)
                 .environmentObject(appDIContainer)
+                .onAppear {
+                    try? KeychainManager.delete(.accessToken)
+                    try? KeychainManager.delete(.refreshToken)
+                }
         }
     }
 }

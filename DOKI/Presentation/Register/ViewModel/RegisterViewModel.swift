@@ -117,6 +117,7 @@ class RegisterViewModel: ObservableObject {
         }
     }
     var isLastStep: Bool { next == nil }
+    var isFirstStep: Bool { prev == nil }
     
     // MARK: - User Action
     
@@ -125,7 +126,7 @@ class RegisterViewModel: ObservableObject {
     }
     
     func goToPrevStep() {
-        if let prev { currentStep = prev }
+        if let prev { currentStep = prev }        
     }
     
     func selecteGender(_ gender: Gender) {
