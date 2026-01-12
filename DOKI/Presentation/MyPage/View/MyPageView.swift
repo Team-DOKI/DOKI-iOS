@@ -20,8 +20,12 @@ struct MyPageView: View {
                         email: "hello@gmail.com",
                         action: {}
                     )
-                    
-                    PetProfile()
+                                        
+                    PetProfile(
+                        name: "단지",
+                        dbti: "동네인기스타bbb",
+                        petInfo: "6개월 / 여아 / 견종 이름"
+                    )
 
                     WalkRouteManage()
                     Setting()

@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct PetProfile: View {
+    let name: String
+    let dbti: String
+    let petInfo: String
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -23,11 +27,11 @@ struct PetProfile: View {
                 Image(.imgDefaultprofile)
                     .frame(width: 60, height: 60)
                 VStack(alignment: .leading, spacing: 4) {
-                    AddressTag(text: "동네인기스타 bbb")
+                    AddressTag(text: dbti)
                     HStack(spacing: 4) {
-                        Text("단지")
+                        Text(name)
                             .subtitle()
-                        Text("6개월 / 여아 / 견종 이름")
+                        Text(petInfo)
                             .subDefault(color: .defaultMiddle)
                     }
                 }
