@@ -16,7 +16,11 @@ struct DOKIApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(authManager)
-                .environmentObject(appDIContainer)               
+                .environmentObject(appDIContainer)
+//                .onAppear {
+//                    try? KeychainManager.delete(.accessToken)
+//                    try? KeychainManager.delete(.refreshToken)
+//                }
         }
     }
 }

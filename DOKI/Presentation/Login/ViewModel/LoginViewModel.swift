@@ -33,10 +33,11 @@ class LoginViewModel: ObservableObject {
         switch result {
         case .success(let authResult):
             if let appleIDCredential = authResult.credential as? ASAuthorizationAppleIDCredential,
-               let identityTokenData = appleIDCredential.identityToken,
+               let identityTokenData = appleIDCredential.authorizationCode,
                let identityToken = String(data: identityTokenData, encoding: .utf8) {
-                Task {                    
-                    await authManager.loginWithApple(identityToken, deviceId: "doki-service")
+                
+                Task {
+                    await authManager.loginWithApple(identityToken, deviceId: "device_abc123")
                 }
             }
         case .failure(let error):
