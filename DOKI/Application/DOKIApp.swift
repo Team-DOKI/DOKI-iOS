@@ -17,10 +17,10 @@ struct DOKIApp: App {
             RootView()
                 .environmentObject(authManager)
                 .environmentObject(appDIContainer)
-//                .onAppear {
-//                    try? KeychainManager.delete(.accessToken)
-//                    try? KeychainManager.delete(.refreshToken)
-//                }
+                .onAppear {
+                    try? KeychainManager.delete(.accessToken)
+                    try? KeychainManager.delete(.refreshToken)
+                }
         }
     }
 }

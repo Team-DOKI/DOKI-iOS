@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct RegisterView: View {
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var authManager: AuthManager
     @ObservedObject var viewModel: RegisterViewModel
     
@@ -26,7 +27,13 @@ struct RegisterView: View {
             }
         })
         .topNavigationView {
-            BackButton { viewModel.goToPrevStep() }
+            BackButton {
+                if viewModel.isFirstStep {
+                    dismiss()
+                } else {
+                    viewModel.goToPrevStep()
+                }
+            }
         } center: {
             Text(viewModel.currentStep.navTitle)
                 .subtitle()
@@ -59,7 +66,8 @@ extension RegisterView {
     private var mainButton: some View {
         MainButton(text: viewModel.isLastStep ? "완료" : "다음", buttonState: viewModel.buttonDisabled ? .disabled : .active1) {
             if viewModel.isLastStep {
-                // TODO: 홈으로 이동
+                // TODO: API 연동 전까지 임시 코드
+                authManager.authStatus = .loggedIn
             } else {
                 viewModel.goToNextStep()
             }

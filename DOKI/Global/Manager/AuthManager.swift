@@ -49,11 +49,12 @@ class AuthManager: ObservableObject {
             try KeychainManager.create(.refreshToken, response.refreshToken)
             self.accessToken = response.accessToken
             self.refreshToken = response.refreshToken
-            self.isNewUser = response.isNewUser
-            print(response.isNewUser, "NewUser?")
+            
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
-                if isNewUser {
+                isNewUser = response.isNewUser
+                
+                if !isNewUser {
                     authStatus = .loggedIn
                 }
             }
