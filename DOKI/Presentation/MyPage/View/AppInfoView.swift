@@ -8,9 +8,20 @@
 import SwiftUI
 
 struct AppInfoView: View {
+    @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
         Text("앱 설정")
+            .topNavigationView(left: {
+                BackButton(action: {
+                    dismiss()
+                })
+            }, center: {
+                Text("앱 정보")
+                    .subtitle()
+            })
     }
+    
 }
 
 #Preview {

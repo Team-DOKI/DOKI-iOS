@@ -37,4 +37,12 @@ class MyPageViewModel: ObservableObject {
     func navigateToAppInfo() {
         navigationAction?(.appInfo)
     }
+    
+    func logoutButtonTapped() {
+        
+    }
+    
+    func withdrawButtonTapped() {
+        
+    }
 }

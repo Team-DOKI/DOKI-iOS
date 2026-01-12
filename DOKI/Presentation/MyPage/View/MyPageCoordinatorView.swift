@@ -20,10 +20,12 @@ enum MyPageRoute: Route {
 struct MyPageCoordinatorView: View {
     @StateObject var myPageCoordinator: Coordinator<MyPageRoute>
     @StateObject var myPageViewModel: MyPageViewModel
+    @StateObject var myProfileViewModel:  MyProfileViewModel
     
     init(myPageCoordinator: Coordinator<MyPageRoute> = Coordinator<MyPageRoute>(), viewModelFactory: AppDIContainer.ViewModelFactory) {
         self._myPageCoordinator = StateObject(wrappedValue: myPageCoordinator)
         self._myPageViewModel = StateObject(wrappedValue: viewModelFactory.makeMyPageViewModel())
+        self._myProfileViewModel = StateObject(wrappedValue: viewModelFactory.makeMyProfileViewModel())
     }
     
     var body: some View {
@@ -32,7 +34,7 @@ struct MyPageCoordinatorView: View {
                 .navigationDestination(for: MyPageRoute.self) { destination in
                     switch destination {
                     case .myProfile:
-                        MyProfileView()
+                        MyProfileView(viewModel: myProfileViewModel)
                     case .petProfile:
                         PetProfileView()
                     case .walkRecord:

@@ -66,12 +66,12 @@ struct MyPageView: View {
                             MenuItem(
                                 title: "로그아웃",
                                 icon:  Image(.icLogout),
-                                action: {}
+                                action: viewModel.logoutButtonTapped
                             )
                             MenuItem(
                                 title: "탈퇴하기",
                                 icon:  Image(.icQuit),
-                                action: {}
+                                action: viewModel.withdrawButtonTapped
                             )
                         }
                     }
