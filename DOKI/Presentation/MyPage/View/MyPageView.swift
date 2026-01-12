@@ -30,6 +30,10 @@ struct MyPageView: View {
                 .padding(.vertical, 22)
             }
         }
+        .topNavigationView(center: {
+            Text("마이페이지")
+                .subtitle()
+        })
     }
 }
 
