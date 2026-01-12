@@ -23,7 +23,6 @@ struct PetProfile: View {
                 }
                 .frame(height: 36)
                 .padding(.horizontal, 16)
-                .padding(.vertical, 10)
                 .background(.defaultPrimary)
                 HStack(spacing: 16) {
                     Image(.imgDefaultprofile)
@@ -39,8 +38,7 @@ struct PetProfile: View {
                     }
                     Spacer()
                 }
-                .frame(height: 100)
-                .padding(.vertical, 10)
+                .frame(height: 100)                
                 .padding(.horizontal, 16)
                 .background(.defaultBackground)
             }

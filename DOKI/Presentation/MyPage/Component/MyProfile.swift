@@ -19,7 +19,7 @@ struct MyProfile: View {
                     Text(nickname)
                         .mainActive()
                     Text(email)
-                        .subDefault()
+                        .subDefault(color: .defaultMiddle)
                         .accentColor(.defaultMiddle)
                 }
                 Spacer()
