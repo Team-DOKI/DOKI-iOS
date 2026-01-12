@@ -9,9 +9,18 @@ import SwiftUI
 
 struct MyWalkRecordView: View {
     @Environment(\.dismiss) private var dismiss
+    var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     
     var body: some View {
-        Text("내가 기록한 산책")
+        ScrollView(showsIndicators: false) {
+            LazyVGrid(columns: columns, spacing: 16) {
+                ForEach(1...10, id: \.self) { _ in
+                    WalkCourseCell()
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 20)
+        }
             .topNavigationView(left: {
                 BackButton(action: {
                     dismiss()
