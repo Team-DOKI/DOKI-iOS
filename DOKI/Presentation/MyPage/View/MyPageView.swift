@@ -84,6 +84,24 @@ struct MyPageView: View {
             Text("마이페이지")
                 .subtitle()
         })
+        .customModal(
+            isPresented: $viewModel.isShowLogoutAlert,
+            message: "로그아웃",
+            subMessage: "진짜로 로그아웃 하시게요?😢",
+            primaryTitle: "로그아웃",
+            secondaryTitle: "취소",
+            primaryAction: viewModel.logoutButtonConfirmed,
+            secondaryAction: viewModel.logoutCancelButtonTapped
+        )
+        .customModal(
+            isPresented: $viewModel.isShowWithdrawAlert,
+            message: "탈퇴하기",
+            subMessage: "진짜로 탈퇴하시게요?😢",
+            primaryTitle: "탈퇴하기",
+            secondaryTitle: "취소",
+            primaryAction: viewModel.withdrawButtonConfirmed,
+            secondaryAction: viewModel.withdrawCancelButtonTapped
+        )
     }
 }
 
