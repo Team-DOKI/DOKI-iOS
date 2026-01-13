@@ -11,5 +11,4 @@ struct WalkItem: Identifiable {
     let id = UUID()
     var name: String
     var isChecked: Bool
-    var isEditing: Bool
 }

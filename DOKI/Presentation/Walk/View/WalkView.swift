@@ -11,17 +11,15 @@ struct WalkView: View {
     @StateObject var viewModel: WalkViewModel
     
     @State private var items: [WalkItem] = [
-        WalkItem(name: "배변 봉투", isChecked: false, isEditing: false),
-        WalkItem(name: "리드줄", isChecked: true, isEditing: false),
-        WalkItem(name: "물", isChecked: true, isEditing: false),
-        WalkItem(name: "간식", isChecked: false, isEditing: false)
+        WalkItem(name: "배변 봉투", isChecked: false),
+        WalkItem(name: "리드줄", isChecked: true),
+        WalkItem(name: "물", isChecked: true),
+        WalkItem(name: "간식", isChecked: false)
     ]
     
-    @FocusState private var focusedItemID: UUID?
-    
-    var isScrollable: Bool {
-        items.count > 7
-    }
+    @State private var isAddingItem: Bool = false
+    @State private var newItemText: String = ""
+    @FocusState private var isTextFieldFocused: Bool
     
     var body: some View {
         VStack(spacing: 0) {
@@ -65,26 +63,13 @@ struct WalkView: View {
                     .font(.subtitle)
                     .foregroundColor(.defaultDark)
                 
-                if isScrollable {
-                    ScrollView {
-                        itemList
-                    }
-                    .scrollIndicators(.hidden)
-                } else {
-                    itemList
-                }
+                itemList
                 
                 Button {
-                    let newItem = WalkItem(
-                        name: "",
-                        isChecked: false,
-                        isEditing: true
-                    )
+                    isAddingItem = true
                     
-                    items.append(newItem)
-                    
-                    DispatchQueue.main.async {
-                        focusedItemID = newItem.id
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                        isTextFieldFocused = true
                     }
                 } label: {
                     Text("+ 추가하기")
@@ -110,9 +95,9 @@ struct WalkView: View {
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 85)
-            .opacity(focusedItemID == nil ? 1 : 0)
         }
         .background(.defaultBright)
+        .ignoresSafeArea(.keyboard, edges: .bottom)
         .topNavigationView(center: {
             Text("산책")
                 .subtitle()
@@ -121,6 +106,7 @@ struct WalkView: View {
     
     private var itemList: some View {
         VStack(alignment: .leading, spacing: 0) {
+            
             ForEach($items) { $item in
                 HStack(spacing: 8) {
                     Button {
@@ -129,23 +115,9 @@ struct WalkView: View {
                         Image(item.isChecked ? .btnCheck : .btnUncheck)
                     }
                     
-                    if item.isEditing {
-                        TextField("준비물을 작성해주세요.", text: $item.name)
-                            .font(.subDefault)
-                            .foregroundColor(.defaultMiddle)
-                            .submitLabel(.done)
-                            .focused($focusedItemID, equals: item.id)
-                            .onSubmit {
-                                item.isEditing = false
-                                focusedItemID = nil
-                            }
-                    } else {
-                        Text(item.name)
-                            .font(.subDefault)
-                            .foregroundColor(
-                                item.isChecked ? .defaultDark : .defaultMiddle
-                            )
-                    }
+                    Text(item.name)
+                        .font(.subDefault)
+                        .foregroundColor(item.isChecked ? .defaultDark : .defaultMiddle)
                     
                     Spacer()
                     
@@ -154,6 +126,37 @@ struct WalkView: View {
                     } label: {
                         Image(.btnX)
                     }
+                }
+                .padding(.vertical, 8)
+                
+                Divider()
+                    .background(.defaultBright)
+            }
+            
+            if isAddingItem {
+                HStack(spacing: 8) {
+                    Image(.btnUncheck)
+                    
+                    TextField("준비물을 작성해주세요", text: $newItemText)
+                        .font(.subDefault)
+                        .foregroundStyle(.defaultMiddle)
+                        .focused($isTextFieldFocused)
+                        .submitLabel(.done)
+                        .onSubmit {
+                            let trimmed = newItemText.trimmingCharacters(in: .whitespaces)
+                            guard !trimmed.isEmpty else { return }
+                            
+                            items.append(
+                                WalkItem(name: trimmed, isChecked: false)
+                            )
+                            newItemText = ""
+                            isAddingItem = false
+                        }
+                    
+                    Spacer()
+                    
+                    Image(.btnX)
+                        .opacity(0)
                 }
                 .padding(.vertical, 8)
                 
