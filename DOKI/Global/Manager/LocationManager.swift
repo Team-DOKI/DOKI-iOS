@@ -1,40 +1,38 @@
 //
 //  LocationManager.swift
-//  PAWKEY
+//  DOKI
 //
-//  Created by 권석기 on 7/7/25.
+//  Created by 이세민 on 1/10/26.
 //
 
 import CoreLocation
+import Combine
 
-final class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
+final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+    
     static let shared = LocationManager()
     
-    private let locationManager = CLLocationManager()
+    private let manager = CLLocationManager()
     
     @Published var currentLocation: CLLocation?
     
     private override init() {
         super.init()
-        setLocationManager()
+        manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.distanceFilter = 5
     }
     
-    func setLocationManager() {
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest // 가장 높은 수준의 정확도
-        locationManager.distanceFilter = 5
-    }
-    
-    func requestLocationPermission() {
-        locationManager.requestWhenInUseAuthorization()
+    func requestPermission() {
+        manager.requestWhenInUseAuthorization()
     }
     
     func startUpdating() {
-        locationManager.startUpdatingLocation()
+        manager.startUpdatingLocation()
     }
     
     func stopUpdating() {
-        locationManager.stopUpdatingLocation()
+        manager.stopUpdatingLocation()
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
