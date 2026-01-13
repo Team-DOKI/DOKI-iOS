@@ -12,19 +12,12 @@ import CoreLocation
 struct WalkRecordView: View {
     @StateObject var viewModel: WalkRecordViewModel
     
-    @State private var isLocationOn = false
-    @State private var showFinishConfirmation = false
-    
-    @State private var pathCoordinates: [CLLocationCoordinate2D] = []
-    @State private var shouldCenterOnUser = false
-    
+    @State private var isLocationOn = false // 추후 위치 공유
     @State private var confirmType: WalkConfirmType?
     
     var body: some View {
         ZStack() {
-            WalkNaverMap(
-                pathCoordinates: $pathCoordinates,
-                shouldCenterOnUser: $shouldCenterOnUser
+            WalkNaverMap(pathCoordinates: $viewModel.pathCoordinates, userTrackingMode: $viewModel.userTrackingMode
             )
             .ignoresSafeArea()
             
@@ -50,7 +43,7 @@ struct WalkRecordView: View {
                         PinButton(icon: "ic_trash", action: {}).opacity(0) // 추후 스팟 태그
                         PinButton(icon: "ic_photo", action: {}).opacity(0) // 추후 스팟 태그
                         PinButton(icon: "ic_gps", action: {
-                            shouldCenterOnUser.toggle()
+                            viewModel.userTrackingMode.toggle()
                         })
                     }
                     .padding(.trailing, 16)
@@ -61,18 +54,20 @@ struct WalkRecordView: View {
                     Spacer().frame(height: 44)
                     
                     HStack(spacing: 0) {
-                        StatItem(title: "거리 (km)", value: "2.2")
-                        StatItem(title: "시간 (분)", value: "30:00")
-                        StatItem(title: "걸음 수 (걸음)", value: "12345")
+                        StatItem(title: "거리 (km)", value: viewModel.distanceString)
+                        StatItem(title: "시간 (분)", value: viewModel.elapsedTimeString)
+                        StatItem(title: "걸음 수 (걸음)", value: viewModel.stepString)
                     }
                     .padding(.bottom, 20)
                     
                     HStack(spacing: 8) {
                         MainButton(text: "산책 중단하기", buttonState: .active2, font: .subtitle) {
+                            viewModel.pauseTimer()
                             confirmType = .pause
                         }
                         
                         MainButton(text: "산책 종료하기", buttonState: .active1, font: .subtitle) {
+                            viewModel.pauseTimer()
                             confirmType = .finish
                         }
                     }
@@ -95,6 +90,7 @@ struct WalkRecordView: View {
                     ? "이어서 하기" : "아니오",
                     rightButtonText: type == .pause ? "산책 종료하기" : "예",
                     onLeftAction: {
+                        viewModel.resumeTimer()
                         withAnimation {
                             confirmType = nil
                         }
@@ -105,64 +101,9 @@ struct WalkRecordView: View {
                 )
             }
         }
-    }
-}
-
-enum WalkConfirmType {
-    case pause
-    case finish
-}
-
-struct WalkConfirmOverlayView: View {
-    
-    let title: String
-    let message: String
-    let leftButtonText: String
-    let rightButtonText: String
-    let onLeftAction: () -> Void
-    let onRightAction: () -> Void
-    
-    var body: some View {
-        ZStack {
-            Color.contents.opacity(0.75)
-                .ignoresSafeArea()
-            
-            VStack(spacing: 0) {
-                Spacer()
-                
-                VStack(spacing: 4) {
-                    Text(title)
-                        .font(.header2)
-                        .foregroundColor(.defaultBackground)
-                    
-                    Text(message)
-                        .font(.subtitle)
-                        .foregroundColor(.defaultBackground)
-                }
-                .multilineTextAlignment(.center)
-                
-                Spacer()
-                
-                HStack(spacing: 8) {
-                    MainButton(
-                        text: leftButtonText,
-                        buttonState: .active2,
-                        font: .subtitle,
-                        action: onLeftAction
-                    )
-                    
-                    MainButton(
-                        text: rightButtonText,
-                        buttonState: .active1,
-                        font: .subtitle,
-                        action: onRightAction
-                    )
-                }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 30)
-            }
+        .onAppear {
+            viewModel.reset()
+            viewModel.startTimer()
         }
-        .transition(.opacity)
-        .ignoresSafeArea()
     }
 }
