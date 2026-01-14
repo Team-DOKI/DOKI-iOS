@@ -8,21 +8,27 @@
 import SwiftUI
 
 struct MyProfile: View {
+    let nickname: String
+    let email: String
+    var action: ()->()
+    
     var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text("키큰오팔전차 님")
-                    .mainActive()
-                Text("hello@gmail.com")
-                    .subDefault()
-                    .accentColor(.defaultMiddle)
+        Button(action: action) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(nickname)
+                        .mainActive()
+                    Text(email)
+                        .subDefault(color: .defaultMiddle)
+                        .accentColor(.defaultMiddle)
+                }
+                Spacer()
+                Image(.btnMore)
             }
-            Spacer()
-            Image(.btnMore)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 20)
+            .background(.defaultBackground)
+            .cornerRadius(8)
         }
-        .frame(height: 74)
-        .padding(16)
-        .background(.defaultBackground)
-        .cornerRadius(8)
     }
 }
