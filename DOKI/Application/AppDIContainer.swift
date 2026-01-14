@@ -50,12 +50,28 @@ extension AppDIContainer {
             return MyPageViewModel()
         }
         
+        func makeMyProfileViewModel() -> MyProfileViewModel {
+            return MyProfileViewModel()
+        }
+        
         func makeRegisterViewModel() -> RegisterViewModel {
             return RegisterViewModel()
         }
         
+        func makePetProfileViewModel() -> PetProfileViewModel {
+            return PetProfileViewModel()
+        }
+        
         func makeFilterSettingViewModel() -> FilterSettingViewModel {
             return FilterSettingViewModel()
+        }
+        
+        func makeMyWalkRecordViewModel() -> MyWalkRecordViewModel {
+            return MyWalkRecordViewModel()
+        }
+        
+        func makeMySavedWalkViewModel() -> MySavedWalkViewModel {
+            return MySavedWalkViewModel()
         }
     }
 }

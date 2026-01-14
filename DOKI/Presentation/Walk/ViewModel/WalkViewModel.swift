@@ -8,9 +8,9 @@
 import SwiftUI
 
 class WalkViewModel: ObservableObject {
-    private let coordinator: Coordinator<WalkRoute>
+    private let coordinator: Coordinator<WalkRecordRoute>
     
-    init(coordinator: Coordinator<WalkRoute>) {
+    init(coordinator: Coordinator<WalkRecordRoute>) {
         self.coordinator = coordinator
     }
 

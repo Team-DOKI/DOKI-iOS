@@ -10,8 +10,7 @@ import Foundation
 import Moya
 
 enum HeaderType {
-    case noneHeader
-    case userHeader(userId: Int)
+    case defaultHeader
 }
 
 protocol BaseTargetType: TargetType {
@@ -28,13 +27,8 @@ extension BaseTargetType {
     
     var headers: [String: String]? {
         switch headerType {
-        case .noneHeader:
-            return nil
-        case .userHeader(let userId):
-            return [
-                "Content-Type": "application/json",
-                "X-USER-ID": String(userId),
-            ]
+        case .defaultHeader:
+            return ["Content-Type": "application/json"]    
         }
     }
 }
