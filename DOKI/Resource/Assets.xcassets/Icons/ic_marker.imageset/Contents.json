@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "ic_info.png",
+      "filename" : "ic_marker.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "information-square-contained@2x.png",
+      "filename" : "marker-02@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "information-square-contained@3x.png",
+      "filename" : "marker-02@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

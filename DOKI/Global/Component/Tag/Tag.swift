@@ -1,0 +1,24 @@
+//
+//  Tag.swift
+//  DOKI
+//
+//  Created by a on 1/11/26.
+//
+
+import SwiftUI
+
+struct Tag: View {
+    let text: String
+    
+    var body: some View {
+        Text(text)
+            .subActive(color: .defaultPrimary)
+            .padding(8)
+            .background(.primaryGra1)
+            .cornerRadius(8)
+    }
+}
+
+#Preview {
+    Tag(text: "혼잡도 보통")
+}
