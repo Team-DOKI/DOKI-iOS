@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "img_grabackground.png",
+      "filename" : "ic_sun.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "img_grabackground@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "img_grabackground@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

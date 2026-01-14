@@ -62,10 +62,7 @@ struct OnboardingView: View {
             
             TabView(selection: $currentStep) {
                 Image(.imgOnboardingdog)
-                    .background(Image(.imgGrabackground))
-                    .background(alignment: .bottom) {
-                        Image(.imgShadow)
-                    }
+                
                     .tag(OnboardingStep.welcome)
                 
                 Image(.onboardingDummy)
@@ -77,7 +74,7 @@ struct OnboardingView: View {
                 Image(.onboardingDummy)
                     .tag(OnboardingStep.explore)
             }
-            .tabViewStyle(.page)
+            .tabViewStyle(.page(indexDisplayMode: .never))
             
             HStack(spacing: 4) {
                 ForEach(OnboardingStep.allCases, id: \.self) { step in
@@ -103,8 +100,26 @@ struct OnboardingView: View {
             }
         }
         .padding(.horizontal, 16)
-        .background(.white)
+        .background(onboardingBackground)
+    }
+    
+    private var onboardingBackground: some View {
+        AnyView(
+            Group {
+                if currentStep == .welcome {
+                    RadialGradient(
+                        gradient: Gradient(colors: [
+                            .onboardingGra1.opacity(0.3),
+                            .defaultBackground
+                        ]),
+                        center: .center,
+                        startRadius: 10,
+                        endRadius: 250
+                    )
+                } else {
+                    Color.defaultBackground
+                }
+            }
+        )
     }
 }
-
-

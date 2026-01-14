@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct DOKIApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject var appDIContainer = AppDIContainer()
     @StateObject var authManager = AuthManager.shared
     
@@ -17,10 +18,10 @@ struct DOKIApp: App {
             RootView()
                 .environmentObject(authManager)
                 .environmentObject(appDIContainer)
-                .onAppear {
-                    try? KeychainManager.delete(.accessToken)
-                    try? KeychainManager.delete(.refreshToken)
-                }
+//                .onAppear {
+//                    try? KeychainManager.delete(.accessToken)
+//                    try? KeychainManager.delete(.refreshToken)
+//                }
         }
     }
 }

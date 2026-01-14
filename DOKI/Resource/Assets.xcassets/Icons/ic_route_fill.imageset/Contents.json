@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "img_shadow.png",
+      "filename" : "ic_route_fill.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "img_shadow@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "img_shadow@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
