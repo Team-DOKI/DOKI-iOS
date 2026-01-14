@@ -11,10 +11,28 @@ struct MyPageView: View {
     @ObservedObject var viewModel: MyPageViewModel
     
     var body: some View {
-        Text("마이페이지")
+        ZStack {
+            Color.defaultBright.ignoresSafeArea()
+            ScrollView {
+                VStack(spacing: 16) {
+                    MyProfile()
+                        .onTapGesture {
+                            print("프로필 수정")
+                        }
+                    PetProfile()
+                        .onTapGesture {
+                            print("반려견 프로필 수정")
+                        }
+                    WalkRouteManage()
+                    Setting()
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 22)
+            }
+        }
     }
 }
 
-//#Preview {
-//    MyPageView()
-//}
+#Preview {
+    MyPageView(viewModel: MyPageViewModel())
+}
