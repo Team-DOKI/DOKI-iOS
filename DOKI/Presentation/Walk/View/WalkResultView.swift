@@ -107,7 +107,7 @@ extension WalkResultView {
                 .frame(width: 160, height: 160)
                 .foregroundStyle(.defaultButton)
                 .cornerRadius(8)
-                .overlay(Image(.icAddImg))
+                .overlay(Image(.btnAddimg))
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 12) {
