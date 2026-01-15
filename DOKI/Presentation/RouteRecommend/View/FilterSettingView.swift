@@ -55,11 +55,11 @@ extension FilterSettingView {
                 subtitle: "(분)"
             )
             
-            RangeSlider(
-                start: 10,
-                end: 60,
-                value: $viewModel.walkTime
-            )
+//            RangeSlider(
+//                start: 10,
+//                end: 60,
+//                value: $viewModel.walkTime
+//            )
         }
     }
     

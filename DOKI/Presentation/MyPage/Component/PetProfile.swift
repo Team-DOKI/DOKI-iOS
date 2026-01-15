@@ -16,7 +16,7 @@ struct PetProfile: View {
     var body: some View {
         Button(action: action) {
             VStack(spacing: 0) {
-                HStack {
+                HStack(spacing: 0) {
                     Text("반려견 프로필")
                         .subActive(color: .defaultBackground)
                     

@@ -13,7 +13,7 @@ struct MenuSection<Content: View>: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
+            HStack(spacing: 0) {
                 Text(title)
                     .small(color: .defaultDark)
                     .frame(height: 38)

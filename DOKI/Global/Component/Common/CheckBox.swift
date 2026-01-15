@@ -28,20 +28,17 @@ struct CheckBox: View {
         Button {
             action?()
         } label: {
-            VStack {
-                Text(text)
-                    .font(.bodyDefault)
-                    .foregroundStyle(textColor)
-            }
-            .frame(maxWidth: .infinity, minHeight: 54)
-            .background(backgroundColor)
-            .cornerRadius(8)
-            .overlay(
-                RoundedCorner(radius: 8)
-                    .stroke(borderColor, lineWidth: 1)
-            )
+            Text(text)
+                .font(.bodyDefault)
+                .foregroundStyle(textColor)
+                .frame(maxWidth: .infinity, minHeight: 54)
+                .background(backgroundColor)
+                .cornerRadius(8)
+                .overlay(
+                    RoundedCorner(radius: 8)
+                        .stroke(borderColor, lineWidth: 1)
+                )
         }
-        
     }
 }
 

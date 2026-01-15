@@ -105,25 +105,24 @@ extension CourseDetailView {
                     .foregroundStyle(.defaultDark)
             }
             
-            VStack {
-                if viewModel.isExpanded {
-                    FlexibleGrid(availableWidth: 350, data: viewModel.tagList, spacing: 8, alignment: .leading) { tagName in
+            if viewModel.isExpanded {
+                FlexibleGrid(availableWidth: 350, data: viewModel.tagList, spacing: 8, alignment: .leading) { tagName in
+                    Tag(text: tagName)
+                }
+                .padding(.vertical, 10)
+            } else {
+                HStack(spacing: 0) {
+                    ForEach(viewModel.tagList.prefix(4), id: \.self) { tagName in
                         Tag(text: tagName)
                     }
-                } else {
-                    HStack {
-                        ForEach(viewModel.tagList.prefix(4), id: \.self) { tagName in
-                            Tag(text: tagName)
-                        }
-                        
-                        Spacer()
-                    }
+                    
+                    Spacer()
                 }
+                .padding(.vertical, 10)
             }
-            .padding(.vertical, 10)
             
             if viewModel.tagList.count > 4 && !viewModel.isExpanded {
-                HStack {
+                HStack(spacing: 5) {
                     Rectangle()
                         .frame(height: 1.5)
                         .foregroundStyle(.defaultButton)

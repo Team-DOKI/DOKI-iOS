@@ -14,7 +14,7 @@ struct MyProfile: View {
     
     var body: some View {
         Button(action: action) {
-            HStack {
+            HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(nickname)
                         .mainActive()

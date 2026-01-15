@@ -49,7 +49,7 @@ struct WalkCourseCell: View {
 }
 
 #Preview {
-    HStack {
+    HStack(spacing: 8) {
         WalkCourseCell()
         WalkCourseCell()
     }

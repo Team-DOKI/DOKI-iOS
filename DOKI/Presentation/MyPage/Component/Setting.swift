@@ -10,7 +10,7 @@ import SwiftUI
 struct Setting: View {
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
+            HStack(spacing: 0) {
                 Text("설정")
                     .small(color: .defaultDark)
                 

@@ -10,7 +10,7 @@ import SwiftUI
 struct WalkRouteManage: View {
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
+            HStack(spacing: 0) {
                 Text("산책 루트 관리")
                     .small(color: .defaultDark)
                 

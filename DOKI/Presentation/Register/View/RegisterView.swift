@@ -14,7 +14,7 @@ struct RegisterView: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             currentStepView
             
             Spacer()
