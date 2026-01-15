@@ -11,7 +11,7 @@ struct RouteRecommendView: View {
     @ObservedObject var viewModel: RecommendViewModel
     
     @State private var isSortMenuPresented = false
-    @State private var selectedSort: SortOption = .popular
+    @State private var selectedSort: SortOption = .latest
     
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     
