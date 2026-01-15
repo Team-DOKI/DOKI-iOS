@@ -55,15 +55,14 @@ struct RouteRecommendView: View {
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    let items = viewModel.selectedFilterOption.isEmpty ? viewModel.dummyFilterOption : viewModel.selectedFilterOption
-                    ForEach(items, id: \.self) { tag in
+                    ForEach(viewModel.filterTags, id: \.text) { tag in
                         FilteringTag(text: tag.text, isActive: tag.isActive)
                     }
                 }
             }
         }
     }
-    
+
     private var sortSection: some View {
         HStack {
             Text("000개의 루트")
