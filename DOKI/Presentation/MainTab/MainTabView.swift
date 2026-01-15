@@ -9,6 +9,8 @@ import SwiftUI
 
 struct MainTabView: View {
     @EnvironmentObject var appDIContainer: AppDIContainer
+    @EnvironmentObject var tabBarState: TabBarState
+    
     @State private var selectedTab: TabBarItem = .home
     
     var body: some View {
@@ -38,7 +40,9 @@ struct MainTabView: View {
             }
             
             .safeAreaInset(edge: .bottom) {
-                TabBar(selectedTab: $selectedTab)
+                if !tabBarState.isHidden {
+                    TabBar(selectedTab: $selectedTab)
+                }
             }
             .ignoresSafeArea(.keyboard)
         }

@@ -21,6 +21,7 @@ struct RootView: View {
                 switch authManager.authStatus {
                 case .loggedIn:
                     MainTabView()
+                        .environmentObject(TabBarState())
                 case .loggedOut:
                     LoginCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
                 case .loading:

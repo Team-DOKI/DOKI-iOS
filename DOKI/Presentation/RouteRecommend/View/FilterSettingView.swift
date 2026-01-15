@@ -16,7 +16,7 @@ struct FilterSettingView: View {
         VStack(alignment: .leading, spacing: 0) {
             Divider()
             
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: 40) {
                     walkTimeSection
                     congestionSection

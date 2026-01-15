@@ -18,6 +18,7 @@ struct CourseDetailView: View {
                 
                 titleSection
             }
+            
             VStack(alignment: .leading, spacing: 0) {
                 Divider()
                 
@@ -63,6 +64,7 @@ extension CourseDetailView {
             .resizable()
             .frame(maxWidth: .infinity, maxHeight: 292)
     }
+    
     private var titleSection: some View {
         Text("단지와의 룰루랄라")
             .header3()

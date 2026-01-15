@@ -13,6 +13,8 @@ enum RecommendRoute: Route {
 }
 
 struct RecommendCoordinatorView: View {
+    @EnvironmentObject var tabBarState: TabBarState
+    
     @StateObject var recommendCoordinator: Coordinator<RecommendRoute>
     @StateObject var recommendViewModel: RecommendViewModel
     @StateObject var courseDetailViewModel: CourseDetailViewModel
@@ -37,6 +39,9 @@ struct RecommendCoordinatorView: View {
                         FilterSettingView(viewModel: filterSettingViewModel)
                     }
                 }
+        }
+        .onChange(of: recommendCoordinator.path) { path in
+            tabBarState.isHidden = !path.isEmpty
         }
         .onAppear {
             courseDetailViewModel.navigationAction = { destination in

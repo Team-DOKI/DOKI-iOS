@@ -14,7 +14,7 @@ struct MyReviewView: View {
         ZStack {
             Color.defaultBright.ignoresSafeArea()
             
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 16) {
                     ForEach(1...10, id: \.self) { _ in
                         ReviewCell(
