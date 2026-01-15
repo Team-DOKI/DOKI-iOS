@@ -13,7 +13,6 @@ enum FilterSettingRoute {
 }
 
 class FilterSettingViewModel: ObservableObject {
-    @Published var walkTime: Int = 0
     @Published var selectedCongestion: FilteringOption?
     @Published var selectedDogInteraction: FilteringOption?
     
@@ -97,8 +96,8 @@ class FilterSettingViewModel: ObservableObject {
             selectedOption.append(selectedDogInteraction)
         }
         
-        if walkTime > 0 {
-            selectedOption.append(FilteringOption(text: "\(walkTime)분 이상", isActive: true, category: "walkTime"))
+        if let selectedWalkTime = walkTimeOption.first(where: { $0.isActive }) {
+            selectedOption.append(selectedWalkTime)
         }
         
         navigationAction?(.saveOption(selectedOption: selectedOption))
