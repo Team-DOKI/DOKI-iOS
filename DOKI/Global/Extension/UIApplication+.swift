@@ -1,6 +1,6 @@
 //
 //  UIApplication+.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by 권석기 on 7/9/25.
 //

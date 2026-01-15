@@ -17,8 +17,10 @@ struct MenuSection<Content: View>: View {
                 Text(title)
                     .small(color: .defaultDark)
                     .frame(height: 38)
+                
                 Spacer()
             }
+            
             content()
         }
         .padding(.horizontal, 16)
@@ -26,5 +28,3 @@ struct MenuSection<Content: View>: View {
         .cornerRadius(8)
     }
 }
-
-

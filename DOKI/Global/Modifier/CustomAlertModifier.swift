@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct CustomAlertModifier: ViewModifier {
-    @Binding var isPresented: Bool
-    
     let image: Image?
     let message: String
     let subMessage: String?
@@ -17,6 +15,8 @@ struct CustomAlertModifier: ViewModifier {
     let secondaryTitle: String
     let primaryAction: () -> Void
     let secondaryAction: () -> Void
+    
+    @Binding var isPresented: Bool
     
     func body(content: Content) -> some View {
         ZStack {
@@ -106,14 +106,14 @@ extension View {
     ) -> some View {
         modifier(
             CustomAlertModifier(
-                isPresented: isPresented,
                 image: image,
                 message: message,
                 subMessage: subMessage,
                 primaryTitle: primaryTitle,
                 secondaryTitle: secondaryTitle,
                 primaryAction: primaryAction,
-                secondaryAction: secondaryAction
+                secondaryAction: secondaryAction,
+                isPresented: isPresented
             )
         )
     }

@@ -5,18 +5,17 @@
 //  Created by a on 1/13/26.
 //
 
-
 import SwiftUI
 
 struct CustomModalModifier: ViewModifier {
-    @Binding var isPresented: Bool
-        
     let message: String
     let subMessage: String?
     let primaryTitle: String
     let secondaryTitle: String
     let primaryAction: () -> Void
     let secondaryAction: () -> Void
+    
+    @Binding var isPresented: Bool
     
     func body(content: Content) -> some View {
         ZStack {
@@ -51,14 +50,19 @@ struct CustomModalView: View {
     var body: some View {
         VStack(spacing: 0) {
             Spacer().frame(height: 16)
+            
             Text(message)
                 .mainActive()
+            
             Spacer().frame(height: 8)
+            
             if let subMessage {
                 Text(subMessage)
                     .bodyDefault(color: .defaultMiddle)
             }
+            
             Spacer().frame(height: 16)
+            
             HStack(spacing: 9) {
                 MainButton(
                     text: primaryTitle,
@@ -93,13 +97,13 @@ extension View {
     ) -> some View {
         modifier(
             CustomModalModifier(
-                isPresented: isPresented,                
                 message: message,
                 subMessage: subMessage,
                 primaryTitle: primaryTitle,
                 secondaryTitle: secondaryTitle,
                 primaryAction: primaryAction,
-                secondaryAction: secondaryAction
+                secondaryAction: secondaryAction,
+                isPresented: isPresented
             )
         )
     }

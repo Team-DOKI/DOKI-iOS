@@ -1,6 +1,6 @@
 //
 //  HomeView.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/26/25.
 //
@@ -49,7 +49,7 @@ struct HomeView: View {
             
             ScrollView {
                 VStack(spacing: 0) {
-                    WalkStatsBox(distance: 0.0, totalTime: "00:00:00", count: 0)
+                    TotalStatBox(distance: 0.0, totalTime: "00:00:00", count: 0)
                         .padding(.bottom, 24)
                     
                     HStack(spacing: 0) {

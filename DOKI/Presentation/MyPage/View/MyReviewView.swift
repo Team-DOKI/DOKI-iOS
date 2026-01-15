@@ -13,6 +13,7 @@ struct MyReviewView: View {
     var body: some View {
         ZStack {
             Color.defaultBright.ignoresSafeArea()
+            
             ScrollView {
                 LazyVStack(spacing: 16) {
                     ForEach(1...10, id: \.self) { _ in

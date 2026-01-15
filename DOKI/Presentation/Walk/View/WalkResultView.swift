@@ -1,6 +1,6 @@
 //
 //  WalkResultView.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/26/25.
 //
@@ -10,29 +10,48 @@ import PhotosUI
 
 struct WalkResultView: View {
     @StateObject var viewModel: WalkResultViewModel
+    
     @State private var selectedItems: [PhotosPickerItem] = []
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 Spacer().frame(height: 16)
+                
                 photoPicker
+                
                 Spacer().frame(height: 12)
+                
                 WalkInfoSection
+                
                 Spacer().frame(height: 40)
+                
                 congestionSection
+                
                 Spacer().frame(height: 40)
+                
                 dogInteractionSection
+                
                 Spacer().frame(height: 40)
+                
                 safetySection
+                
                 Spacer().frame(height: 40)
+                
                 convenienceSection
+                
                 Spacer().frame(height: 40)
+                
                 environmentSection
+                
                 Spacer().frame(height: 40)
+                
                 reviewSection
+                
                 Spacer().frame(height: 40)
+                
                 buttonSection
+                
                 Spacer().frame(height: 30)
             }
             .padding(.horizontal, 16)
@@ -67,9 +86,11 @@ extension WalkResultView {
             Label(title: {Text(viewModel.address)}, icon: {Image(.icMarker)})
                 .font(.bodyActive)
                 .foregroundStyle(.defaultDark)
+            
             Label(title: {Text(viewModel.recordDate)}, icon: {Image(.icTimeclock)})
                 .font(.bodyActive)
                 .foregroundStyle(.defaultDark)
+            
             Label(title: {Text(viewModel.walkRecord)}, icon: {Image(.icInfo)})
                 .font(.bodyActive)
                 .foregroundStyle(.defaultDark)
@@ -170,13 +191,14 @@ extension WalkResultView {
                 .background(.defaultBright)
                 .cornerRadius(8)
             Spacer().frame(height: 8)
-            TextArea(text: $viewModel.reviewContent, placeholder: "산책에 대한 내용을 작성해주세요")
+            TextArea(placeholder: "산책에 대한 내용을 작성해주세요", text: $viewModel.reviewContent)
         }
     }
     
     private var buttonSection: some View {
         VStack(spacing: 16) {
             MainButton(text: "산책 기록 나만보기", buttonState: .active2, action: viewModel.showReviewComplete)
+            
             MainButton(text: "산책 기록 공유하기", action: viewModel.showReviewComplete)
         }
     }

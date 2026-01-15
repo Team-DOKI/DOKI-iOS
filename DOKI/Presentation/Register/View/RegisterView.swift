@@ -1,6 +1,6 @@
 //
 //  RegisterView.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/26/25.
 //
@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct RegisterView: View {
-    @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var authManager: AuthManager
     @ObservedObject var viewModel: RegisterViewModel
+    
+    @EnvironmentObject var authManager: AuthManager
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         VStack {

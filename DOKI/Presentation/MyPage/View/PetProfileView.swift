@@ -10,22 +10,34 @@ import PhotosUI
 
 struct PetProfileView: View {
     @ObservedObject var viewModel: PetProfileViewModel
-    @Environment(\.dismiss) private var dismiss
+
     @State private var selectedItems: [PhotosPickerItem] = []
+
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 Spacer().frame(height: 26)
+                
                 photoPicker
+                
                 Spacer().frame(height: 30)
+                
                 nickname
+                
                 Spacer().frame(height: 16)
+                
                 birth
+                
                 Spacer().frame(height: 16)
+                
                 selectGender
+                
                 Spacer().frame(height: 16)
+                
                 selectBreed
+                
                 Spacer()
             }
             .padding(.horizontal, 16)

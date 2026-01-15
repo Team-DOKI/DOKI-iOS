@@ -9,7 +9,9 @@ import SwiftUI
 
 struct MySavedWalkView: View {
     @ObservedObject var viewModel: MySavedWalkViewModel
+    
     @Environment(\.dismiss) private var dismiss
+    
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     
     var body: some View {

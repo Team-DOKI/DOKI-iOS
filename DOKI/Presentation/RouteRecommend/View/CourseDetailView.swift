@@ -1,6 +1,6 @@
 //
 //  CourseDetailView.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/26/25.
 //
@@ -12,22 +12,33 @@ struct CourseDetailView: View {
     
     var body: some View {
         ScrollView(showsIndicators: false) {
-            // TODO: 임시 지도영역
+            // TODO: 임시 지도 영역
             ZStack(alignment: .bottom) {
                 mapView
+                
                 titleSection
             }
             VStack(alignment: .leading, spacing: 0) {
                 Divider()
+                
                 profileSection
+                
                 Divider()
+                
                 walkInfoSection
+                
                 divider
+                
                 reviewSection
+                
                 divider
+                
                 reviewRatingSection
+                
                 divider
+                
                 buttonSection
+                
                 Spacer().frame(height: 40)
             }
         }
@@ -71,6 +82,7 @@ extension CourseDetailView {
             
             Text("단지")
                 .subtitle(color: .defaultDark)
+            
             Spacer()
         }
         .padding(.vertical, 12)
@@ -83,9 +95,11 @@ extension CourseDetailView {
                 Label(title: {Text(viewModel.address)}, icon: {Image(.icMarker)})
                     .font(.bodyActive)
                     .foregroundStyle(.defaultDark)
+                
                 Label(title: {Text(viewModel.recordDate)}, icon: {Image(.icTimeclock)})
                     .font(.bodyActive)
                     .foregroundStyle(.defaultDark)
+                
                 Label(title: {Text(viewModel.walkRecord)}, icon: {Image(.icInfo)})
                     .font(.bodyActive)
                     .foregroundStyle(.defaultDark)
@@ -101,6 +115,7 @@ extension CourseDetailView {
                         ForEach(viewModel.tagList.prefix(4), id: \.self) { tagName in
                             Tag(text: tagName)
                         }
+                        
                         Spacer()
                     }
                 }
@@ -112,6 +127,7 @@ extension CourseDetailView {
                     Rectangle()
                         .frame(height: 1.5)
                         .foregroundStyle(.defaultButton)
+                    
                     Text("+ \(viewModel.tagList.count - 4)")
                         .bodySmall(color: .defaultMiddle)
                         .padding(.horizontal, 16)
@@ -119,6 +135,7 @@ extension CourseDetailView {
                         .clipShape(Capsule())
                         .background(.defaultButton)
                         .clipShape(Capsule())
+                    
                     Rectangle()
                         .frame(height: 1.5)
                         .foregroundStyle(.defaultButton)
@@ -162,6 +179,7 @@ extension CourseDetailView {
             HStack(spacing: 12) {
                 Text("이런 점이 좋았어요")
                     .mainActive()
+                
                 Label(title: {
                     Text("후기숫자")
                 }, icon: {
@@ -169,6 +187,7 @@ extension CourseDetailView {
                 })
                 .font(.subDefault)
                 .foregroundStyle(.defaultMiddle)
+                
                 Spacer()
             }
             .padding(.vertical, 16)

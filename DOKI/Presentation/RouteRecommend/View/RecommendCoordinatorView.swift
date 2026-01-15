@@ -1,6 +1,6 @@
 //
 //  RecommendCoordinatorView.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/26/25.
 //

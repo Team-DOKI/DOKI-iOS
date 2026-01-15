@@ -1,6 +1,6 @@
 //
 //  RouteRecommendView.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/26/25.
 //
@@ -15,12 +15,15 @@ struct RouteRecommendView: View {
     var body: some View {
         VStack(spacing: 0) {
             bannerSection
+            
             filterSection
                 .padding(.leading, 16)
                 .padding(.top, 16)
+            
             sortSection
                 .padding(.horizontal, 16)
                 .padding(.vertical, 14)
+            
             courseGridSection
         }
         .topNavigationView(center: {

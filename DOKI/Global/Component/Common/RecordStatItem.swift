@@ -1,5 +1,5 @@
 //
-//  StatItem.swift
+//  RecordStatItem.swift
 //  DOKI
 //
 //  Created by 이세민 on 12/12/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct StatItem: View {
+struct RecordStatItem: View {
     let title: String
     let value: String
     
@@ -26,5 +26,5 @@ struct StatItem: View {
 }
 
 #Preview {
-    StatItem(title: "거리 (km)", value: "2.2")
+    RecordStatItem(title: "거리 (km)", value: "2.2")
 }

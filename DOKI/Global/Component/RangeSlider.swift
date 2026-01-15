@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct RangeSlider: View {
-    @State private var currentOffset = CGFloat.zero
-    @State private var initialOffset = CGFloat.zero
-    
     let start: CGFloat
     let end: CGFloat
+    
+    @State private var currentOffset = CGFloat.zero
+    @State private var initialOffset = CGFloat.zero
     
     @Binding var value: Int
     

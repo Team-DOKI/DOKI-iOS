@@ -1,6 +1,6 @@
 //
 //  KakaoLoginButton.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by 권석기 on 9/21/25.
 //

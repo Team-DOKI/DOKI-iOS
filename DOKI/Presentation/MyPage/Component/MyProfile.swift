@@ -18,11 +18,14 @@ struct MyProfile: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(nickname)
                         .mainActive()
+                    
                     Text(email)
                         .subDefault(color: .defaultMiddle)
                         .accentColor(.defaultMiddle)
                 }
+                
                 Spacer()
+                
                 Image(.btnMore)
             }
             .padding(.horizontal, 16)

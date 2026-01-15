@@ -9,17 +9,25 @@ import SwiftUI
 
 struct MyProfileView: View {
     @ObservedObject var viewModel: MyProfileViewModel
+    
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Spacer().frame(height: 16)
+            
             nickname
+            
             Spacer().frame(height: 16)
+            
             birth
+            
             Spacer().frame(height: 16)
+            
             selecteGender
+            
             Spacer()
+            
             MainButton(
                 text: "저장하기",
                 action: viewModel.saveButtonTapped

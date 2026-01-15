@@ -1,6 +1,6 @@
 //
 //  BaseDTO.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by 이세민 on 6/21/25.
 //
