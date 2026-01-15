@@ -59,6 +59,7 @@ struct RouteRecommendView: View {
                         FilteringTag(text: tag.text, isActive: tag.isActive)
                     }
                 }
+                .padding(.trailing, 16)
             }
         }
     }
