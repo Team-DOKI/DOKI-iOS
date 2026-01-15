@@ -48,6 +48,7 @@ struct MainTabView: View {
         }
         .onAppear {
             print("ACCESS TOKEN: ", AuthManager.shared.accessToken ?? "nil")
+            print("RE TOKEN: ", AuthManager.shared.refreshToken ?? "nil")
         }
     }
 }

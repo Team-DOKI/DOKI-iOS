@@ -12,9 +12,6 @@ import Moya
 struct HomeView: View {
     @StateObject var viewModel: HomeViewModel
     
-    private let provider = MoyaProvider<RegionAPI>(session: .init(interceptor: AuthInterceptor.shared), plugins: [NetworkLoggerPlugin()])
-    @State var errorMessage = ""
-    
     var body: some View {
         VStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
@@ -108,6 +105,7 @@ struct HomeView: View {
                                 WalkCourseCell()
                             }
                         }
+                        .padding(.trailing, 16)
                     }
                     .padding(.leading, 16)
                 }
@@ -124,6 +122,7 @@ struct HomeView: View {
                                 WalkCourseCell()
                             }
                         }
+                        .padding(.trailing, 16)
                     }
                     .padding(.leading, 16)
                 }
@@ -131,15 +130,5 @@ struct HomeView: View {
             }
         }
         .scrollIndicators(.hidden)
-        .task {
-            do {
-                let response: BaseDTO<DistrictDTO> =
-                try await provider.async.request(.getRegions)
-                
-            } catch {
-                print(error.localizedDescription)
-                errorMessage = error.localizedDescription
-            }
-        }
     }
 }
