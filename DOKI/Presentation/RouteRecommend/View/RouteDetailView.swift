@@ -1,5 +1,5 @@
 //
-//  CourseDetailView.swift
+//  RouteDetailView.swift
 //  DOKI
 //
 //  Created by a on 10/26/25.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct CourseDetailView: View {
-    @ObservedObject var viewModel: CourseDetailViewModel
+struct RouteDetailView: View {
+    @ObservedObject var viewModel: RouteDetailViewModel
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -58,7 +58,7 @@ struct CourseDetailView: View {
     }
 }
 
-extension CourseDetailView {
+extension RouteDetailView {
     private var mapView: some View {
         Image(.mapView)
             .resizable()
@@ -102,7 +102,7 @@ extension CourseDetailView {
                     .font(.bodyActive)
                     .foregroundStyle(.defaultDark)
                 
-                Label(title: {Text(viewModel.walkRecord)}, icon: {Image(.icInfo)})
+                Label(title: {Text(viewModel.walkRecord)}, icon: {Image(.icWalkinfo)})
                     .font(.bodyActive)
                     .foregroundStyle(.defaultDark)
             }
@@ -224,7 +224,3 @@ extension CourseDetailView {
     }
     
 }
-
-//#Preview {
-//    CourseDetailView()
-//}

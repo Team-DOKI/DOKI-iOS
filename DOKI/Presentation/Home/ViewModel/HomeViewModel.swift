@@ -8,13 +8,9 @@
 import SwiftUI
 
 class HomeViewModel: ObservableObject {
-    private let coordinator: Coordinator<HomeRoute>
-    
-    init(coordinator: Coordinator<HomeRoute>) {
-        self.coordinator = coordinator
-    }
+    var navigationAction: ((WalkRecordRoute)->())?
     
     func navigateToWalkRecord() {
-        coordinator.presentFullScreen(.walkRecord)
+        navigationAction?(.walkRecord)
     }
 }

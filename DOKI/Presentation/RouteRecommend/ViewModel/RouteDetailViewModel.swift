@@ -1,5 +1,5 @@
 //
-//  CourseDetailViewModel.swift
+//  RouteDetailViewModel.swift
 //  DOKI
 //
 //  Created by a on 10/26/25.
@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-enum CourseDetailRoute {
+enum RouteDetailRoute {
     case back
 }
 
-class CourseDetailViewModel: ObservableObject {
+class RouteDetailViewModel: ObservableObject {
     var id: Int = 0
     
-    var navigationAction: ((CourseDetailRoute)->())?
+    var navigationAction: ((RouteDetailRoute)->())?
     
     @Published var address: String = "상세 주소"
     @Published var recordDate: String = "YY.MM.DD | 오후 00:00"

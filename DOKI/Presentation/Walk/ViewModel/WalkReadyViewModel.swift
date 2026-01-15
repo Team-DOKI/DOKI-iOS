@@ -1,5 +1,5 @@
 //
-//  WalkViewModel.swift
+//  WalkReadyViewModel.swift
 //  DOKI
 //
 //  Created by a on 10/26/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class WalkViewModel: ObservableObject {
+class WalkReadyViewModel: ObservableObject {
     private let coordinator: Coordinator<WalkRecordRoute>
     
     init(coordinator: Coordinator<WalkRecordRoute>) {

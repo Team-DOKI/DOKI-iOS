@@ -1,5 +1,5 @@
 //
-//  WalkNaverMap.swift
+//  WalkNaverMapView.swift
 //  DOKI
 //
 //  Created by 이세민 on 1/9/26.
@@ -10,7 +10,7 @@ import NMapsMap
 import CoreLocation
 import Combine
 
-struct WalkNaverMap: UIViewRepresentable {
+struct WalkNaverMapView: UIViewRepresentable {
     
     @ObservedObject var locationManager = LocationManager.shared
     
@@ -36,7 +36,7 @@ struct WalkNaverMap: UIViewRepresentable {
     }
     
     class Coordinator: NSObject {
-        let parent: WalkNaverMap
+        let parent: WalkNaverMapView
         weak var mapView: NMFMapView?
         
         private var pathOverlay: NMFPath?
@@ -44,7 +44,7 @@ struct WalkNaverMap: UIViewRepresentable {
         private var didMoveInitialCamera = false
         private var cancellables = Set<AnyCancellable>()
         
-        init(_ parent: WalkNaverMap) {
+        init(_ parent: WalkNaverMapView) {
             self.parent = parent
             super.init()
             

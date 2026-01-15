@@ -17,7 +17,7 @@ struct RecommendCoordinatorView: View {
     
     @StateObject var recommendCoordinator: Coordinator<RecommendRoute>
     @StateObject var recommendViewModel: RecommendViewModel
-    @StateObject var courseDetailViewModel: CourseDetailViewModel
+    @StateObject var courseDetailViewModel: RouteDetailViewModel
     @StateObject var filterSettingViewModel: FilterSettingViewModel
     
     init(recommendCoordinator: Coordinator<RecommendRoute> = Coordinator<RecommendRoute>(),
@@ -34,7 +34,7 @@ struct RecommendCoordinatorView: View {
                 .navigationDestination(for: RecommendRoute.self) { destination in
                     switch destination {
                     case .courseDetail:
-                        CourseDetailView(viewModel: courseDetailViewModel)
+                        RouteDetailView(viewModel: courseDetailViewModel)
                     case .filterSetting:
                         FilterSettingView(viewModel: filterSettingViewModel)
                     }

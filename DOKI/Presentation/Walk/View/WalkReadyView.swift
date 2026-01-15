@@ -1,5 +1,5 @@
 //
-//  WalkView.swift
+//  WalkReadyView.swift
 //  DOKI
 //
 //  Created by a on 10/26/25.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct WalkView: View {
-    @StateObject var viewModel: WalkViewModel
+struct WalkReadyView: View {
+    @StateObject var viewModel: WalkReadyViewModel
     
     @State private var items: [WalkItem] = [
         WalkItem(name: "배변 봉투", isChecked: false),
@@ -19,6 +19,7 @@ struct WalkView: View {
     
     @State private var isAddingItem: Bool = false
     @State private var newItemText: String = ""
+    
     @FocusState private var isTextFieldFocused: Bool
     
     var body: some View {

@@ -10,10 +10,6 @@ import Combine
 import CoreLocation
 import CoreMotion
 
-enum WalkReviewRoute {
-    case walkResult
-}
-
 class WalkRecordViewModel: ObservableObject {
     
     @Published var pathCoordinates: [CLLocationCoordinate2D] = []
@@ -118,7 +114,7 @@ class WalkRecordViewModel: ObservableObject {
         baseStepCount = 0
     }
     
-    var navigationAction: ((WalkReviewRoute)->())?
+    var navigationAction: ((WalkRecordRoute)->())?
     
     func navigateToWalkResult() {
         stopTimer()
