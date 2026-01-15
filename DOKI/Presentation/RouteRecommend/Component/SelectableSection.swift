@@ -7,10 +7,16 @@
 
 import SwiftUI
 
+enum SelectionMode {
+    case single
+    case multiple
+}
+
 struct SelectableSection: View {
     let title: String
     let subtitle: String
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
+    var selectionMode: SelectionMode = .multiple
     
     @Binding var items: [FilteringOption]
     
@@ -23,13 +29,27 @@ struct SelectableSection: View {
             
             ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 8) {
-                    ForEach($items, id: \.self) { $filterOption in
-                        SelectButton(text: filterOption.text, isActive: filterOption.isActive) {
-                            filterOption.isActive.toggle()
+                    ForEach(items.indices, id: \.self) { index in
+                        SelectButton(
+                            text: items[index].text,
+                            isActive: items[index].isActive
+                        ) {
+                            handleSelection(at: index)
                         }
                     }
                 }
             }
+        }
+    }
+    
+    private func handleSelection(at index: Int) {
+        switch selectionMode {
+        case .single:
+            for i in items.indices {
+                items[i].isActive = (i == index)
+            }
+        case .multiple:
+            items[index].isActive.toggle()
         }
     }
 }

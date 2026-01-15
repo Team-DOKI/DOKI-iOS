@@ -19,11 +19,17 @@ struct FilterSettingView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 40) {
                     walkTimeSection
+                    
                     congestionSection
+                    
                     dogInteractionSection
+                    
                     safetySection
+                    
                     convenienceSection
+                    
                     environmentSection
+                    
                     Spacer().frame(height: 20)
                 }
                 .padding(.horizontal, 16)
@@ -49,18 +55,12 @@ struct FilterSettingView: View {
 extension FilterSettingView {
     // 소요 시간
     private var walkTimeSection: some View {
-        VStack(spacing: 16) {
-            SectionHeader(
-                title: "산책 소요 시간",
-                subtitle: "(분)"
-            )
-            
-//            RangeSlider(
-//                start: 10,
-//                end: 60,
-//                value: $viewModel.walkTime
-//            )
-        }
+        SelectableSection(
+            title: "산책 소요 시간",
+            subtitle: "(분)",
+            selectionMode: .single,
+            items: $viewModel.walkTimeOption
+        )
     }
     
     // 혼잡도

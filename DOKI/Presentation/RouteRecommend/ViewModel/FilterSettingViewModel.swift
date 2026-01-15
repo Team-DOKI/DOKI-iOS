@@ -16,6 +16,14 @@ class FilterSettingViewModel: ObservableObject {
     @Published var walkTime: Int = 0
     @Published var selectedCongestion: FilteringOption?
     @Published var selectedDogInteraction: FilteringOption?
+    
+    @Published var walkTimeOption: [FilteringOption] = [
+        FilteringOption(text: "시간 무관", isActive: false),
+        FilteringOption(text: "30분 미만", isActive: false),
+        FilteringOption(text: "30분~60분", isActive: false),
+        FilteringOption(text: "60분 이상", isActive: false)
+    ]
+    
     @Published var safetyOption: [FilteringOption] = [
         FilteringOption(text: "차량 적음", isActive: false),
         FilteringOption(text: "보도/차도 분리", isActive: false),
