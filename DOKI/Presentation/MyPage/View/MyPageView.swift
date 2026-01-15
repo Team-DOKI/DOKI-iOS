@@ -13,7 +13,8 @@ struct MyPageView: View {
     var body: some View {
         ZStack {
             Color.defaultBright.ignoresSafeArea()
-            ScrollView {
+            
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
                     // 유저 & 반려견 프로필
                     MyProfile(
@@ -78,6 +79,7 @@ struct MyPageView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 22)
+                .padding(.bottom, 80)
             }
         }
         .topNavigationView(center: {
