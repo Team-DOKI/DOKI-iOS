@@ -10,6 +10,9 @@ import SwiftUI
 struct RouteRecommendView: View {
     @ObservedObject var viewModel: RecommendViewModel
     
+    @State private var isSortMenuPresented = false
+    @State private var selectedSort: SortOption = .popular
+    
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     
     var body: some View {
@@ -24,7 +27,15 @@ struct RouteRecommendView: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 14)
             
-            courseGridSection
+            ZStack(alignment: .topTrailing) {
+                courseGridSection
+                
+                if isSortMenuPresented {
+                    sortMenu
+                        .padding(.trailing, 16)
+                        .zIndex(1)
+                }
+            }
         }
         .topNavigationView(center: {
             Text("산책 루트 추천")
@@ -54,22 +65,58 @@ struct RouteRecommendView: View {
     }
     
     private var sortSection: some View {
-        HStack(spacing: 0) {
+        HStack {
             Text("000개의 루트")
                 .font(.bodySmall)
                 .foregroundStyle(.defaultDark)
             
             Spacer()
             
-            HStack(spacing: 8) {
-                Text("인기순")
-                    .subDefault(color: .defaultDark)
-                
-                Image(.btnDown)
-                    .renderingMode(.template)
-                    .foregroundStyle(.defaultDark)
+            Button {
+                withAnimation(.easeInOut) {
+                    isSortMenuPresented.toggle()
+                }
+            } label: {
+                HStack(spacing: 0) {
+                    Text(selectedSort.rawValue)
+                        .subDefault(color: .defaultDark)
+                    
+                    Image(.btnDown)
+                        .renderingMode(.template)
+                        .foregroundStyle(.defaultDark)
+                        .rotationEffect(.degrees(isSortMenuPresented ? 180 : 0))
+                }
             }
         }
+    }
+    
+    private var sortMenu: some View {
+        VStack(spacing: 2) {
+            ForEach(SortOption.allCases, id: \.self) { option in
+                Button {
+                    selectedSort = option
+                    isSortMenuPresented = false
+                } label: {
+                    Text(option.rawValue)
+                        .font(.small)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 2)
+                        .padding(.leading, 8)
+                        .foregroundStyle(option == selectedSort ? .defaultPrimary : .defaultMiddle)
+                        .background(option == selectedSort ? Color.primaryGra1 : Color.clear)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+        .background(.white)
+        .cornerRadius(4)
+        .overlay(
+            RoundedRectangle(cornerRadius: 4)
+                .inset(by: 0.5)
+                .stroke(.defaultBright, lineWidth: 1)
+        )
+        .frame(width: 67)
+        .offset(y: -10)
     }
     
     private var courseGridSection: some View {
@@ -82,5 +129,11 @@ struct RouteRecommendView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 80)
         }
+        .zIndex(0)
     }
+}
+
+enum SortOption: String, CaseIterable {
+    case latest = "최신순"
+    case popular = "인기순"
 }
