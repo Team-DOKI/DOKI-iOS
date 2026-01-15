@@ -54,7 +54,7 @@ class WalkResultViewModel: ObservableObject {
     
     @Published var dogInteractionOption: [FilteringOption] = [
         FilteringOption(text: "교류 없음", isActive: false),
-        FilteringOption(text: "보통", isActive: false),
+        FilteringOption(text: "교류 보통", isActive: false),
         FilteringOption(text: "교류 활발", isActive: false)
     ]
     

@@ -55,10 +55,17 @@ extension RecommendViewModel {
     var filterTags: [FilterTagItem] {
         FilterCategory.allCases.flatMap { category in
             let selected = selectedFilterOption.filter { $0.category == category.rawValue }
+            
             if selected.isEmpty {
                 return [FilterTagItem(text: category.title, isActive: false)]
             } else {
-                return selected.map { FilterTagItem(text: $0.text, isActive: true) }
+                return selected.map { option in
+                    var text = option.text
+                    if category == .congestion {
+                        text = "\(category.title) \(option.text)"
+                    }
+                    return FilterTagItem(text: text, isActive: true)
+                }
             }
         }
     }

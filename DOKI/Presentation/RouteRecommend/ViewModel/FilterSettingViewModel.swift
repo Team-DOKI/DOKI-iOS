@@ -59,7 +59,7 @@ class FilterSettingViewModel: ObservableObject {
     // 강아지 교류 빈도
     @Published var dogInteractionOption: [FilteringOption] = [
         FilteringOption(text: "교류 없음", isActive: false, category: "dogInteraction"),
-        FilteringOption(text: "보통", isActive: false, category: "dogInteraction"),
+        FilteringOption(text: "교류 보통", isActive: false, category: "dogInteraction"),
         FilteringOption(text: "교류 활발", isActive: false, category: "dogInteraction")
     ]
     
