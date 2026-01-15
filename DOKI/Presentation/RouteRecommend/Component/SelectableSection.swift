@@ -14,7 +14,7 @@ enum SelectionMode {
 
 struct SelectableSection: View {
     let title: String
-    let subtitle: String
+    var subtitle: String
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     var selectionMode: SelectionMode = .multiple
     

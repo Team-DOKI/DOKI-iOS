@@ -67,8 +67,7 @@ extension FilterSettingView {
     private var congestionSection: some View {
         VStack(spacing: 16) {
             SectionHeader(
-                title: "혼잡도",
-                subtitle: "(단일 선택 가능)"
+                title: "혼잡도"
             )
             
             SegmentedButton(
@@ -82,8 +81,7 @@ extension FilterSettingView {
     private var dogInteractionSection: some View {
         VStack(spacing: 16) {
             SectionHeader(
-                title: "강아지 교류 빈도",
-                subtitle: "(단일 선택 가능)"
+                title: "강아지 교류 빈도"
             )
             
             SegmentedButton(

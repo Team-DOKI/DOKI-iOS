@@ -129,8 +129,7 @@ extension WalkResultView {
     private var congestionSection: some View {
         VStack(spacing: 16) {
             SectionHeader(
-                title: "혼잡도",
-                subtitle: "(단일 선택 가능)"
+                title: "혼잡도"
             )
             
             SegmentedButton(
@@ -144,8 +143,7 @@ extension WalkResultView {
     private var dogInteractionSection: some View {
         VStack(spacing: 16) {
             SectionHeader(
-                title: "강아지 교류 빈도",
-                subtitle: "(단일 선택 가능)"
+                title: "강아지 교류 빈도"
             )
             
             SegmentedButton(
@@ -183,14 +181,18 @@ extension WalkResultView {
     }
     private var reviewSection: some View {
         VStack(spacing: 0) {
-            SectionHeader(title: "산책에 대한 후기를 작성해주세요", subtitle: "")
+            SectionHeader(title: "산책에 대한 후기를 작성해주세요")
+            
             Spacer().frame(height: 16)
+            
             TextField("후기 제목을 입력해주세요", text: $viewModel.reviewTitle)
                 .font(.bodyDefault)
                 .padding(17)
                 .background(.defaultBright)
                 .cornerRadius(8)
+            
             Spacer().frame(height: 8)
+            
             TextArea(placeholder: "산책에 대한 내용을 작성해주세요", text: $viewModel.reviewContent)
         }
     }
