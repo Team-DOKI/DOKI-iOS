@@ -21,34 +21,23 @@ struct TopNavigationViewModifier<C, L, R>: ViewModifier where C: View, L: View, 
     }
     
     func body(content: Content) -> some View {
-        VStack {
-            ZStack {
-                HStack {
-                    left?()
-                    Spacer()
-                    right?()
-                }
-                .frame(minHeight: 60, maxHeight: 60)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, 16)
-                .background(.white)
-//                .overlay(alignment: .bottom) {
-//                    Rectangle()
-//                        .frame(height: 1)
-//                        .foregroundStyle(.defaultButton)
-//                }
-                
-                HStack {
-                    Spacer()
+        content
+            .padding(.top, 60)
+            .overlay(alignment: .top) {
+                ZStack {
+                    HStack {
+                        left?()
+                        Spacer()
+                        right?()
+                    }
+                    .frame(height: 60)
+                    .padding(.horizontal, 16)
+                    
                     center?()
-                    Spacer()
                 }
-            }            
-            Spacer()
-            content
-            Spacer()
-        }
-        .navigationBarHidden(true)    
+                .background(.defaultBackground)
+            }
+            .navigationBarHidden(true)
     }
 }
 
