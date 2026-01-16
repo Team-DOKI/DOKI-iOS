@@ -55,7 +55,7 @@ struct WalkReviewView: View {
                 Spacer().frame(height: 30)
             }
             .padding(.horizontal, 16)
-        }        
+        }
         .overlay(alignment: .top, content: {
             Rectangle()
                 .frame(height: 2)
@@ -70,10 +70,11 @@ struct WalkReviewView: View {
             image: Image(.imgFoot),
             message: "후기가 등록이 완료되었어요!",
             subMessage: "덕분에 DOKI가 보호자님을 더 잘 알게 됐어요.\n이 정보로 다음엔 더 완벽한 경로를 추천해 드릴게요.",
-            primaryTitle: "홈으로 돌아가기",
-            secondaryTitle: "자세히 보러가기",
-            primaryAction: viewModel.navigateBackToRoot,
-            secondaryAction: viewModel.navigateToDetail)
+            secondaryTitle: "홈으로 돌아가기",
+            primaryTitle: "자세히 보러가기",
+            secondaryAction: viewModel.navigateBackToRoot,
+            primaryAction: viewModel.navigateToDetail
+        )
         .ignoresSafeArea(.container, edges: .bottom)
     }
 }
@@ -102,10 +103,10 @@ extension WalkReviewView {
         ) {
             if viewModel.reviewImages.isEmpty {
                 Rectangle()
-                .frame(width: 160, height: 160)
-                .foregroundStyle(.defaultButton)
-                .cornerRadius(8)
-                .overlay(Image(.btnAddimg))
+                    .frame(width: 160, height: 160)
+                    .foregroundStyle(.defaultButton)
+                    .cornerRadius(8)
+                    .overlay(Image(.btnAddimg))
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 12) {
