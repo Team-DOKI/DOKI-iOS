@@ -63,6 +63,7 @@ struct HomeView: View {
                         Spacer()
                         
                         Button {
+                            viewModel.navigateToWalkRecord()
                         } label: {
                             Text("산책 시작")
                                 .font(.bodyBold)

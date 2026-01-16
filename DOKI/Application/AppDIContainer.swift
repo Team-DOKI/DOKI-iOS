@@ -17,11 +17,6 @@ final class AppDIContainer: ObservableObject {
 
 extension AppDIContainer {
     struct ViewModelFactory {
-        func makeHomeViewModel() -> HomeViewModel {
-            let homeCoordinator = Coordinator<HomeRoute>()
-            return HomeViewModel()
-        }
-        
         func makeWalkRecordViewModel() -> WalkRecordViewModel {
             return WalkRecordViewModel()
         }
