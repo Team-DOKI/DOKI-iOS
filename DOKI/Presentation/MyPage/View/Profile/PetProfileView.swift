@@ -42,13 +42,14 @@ struct PetProfileView: View {
             }
             .padding(.horizontal, 16)
         }
-        .overlay(alignment: .bottom, content: {
+        .safeAreaInset(edge: .bottom) {
             MainButton(
                 text: "저장하기",
                 action: {}
             )
             .padding(.horizontal, 16)
-        })
+        }
+        .ignoresSafeArea(.keyboard)
         .sheet(isPresented: $viewModel.isShowBreedSearch) {
             DogSearch(viewModel: viewModel)
                 .presentationDetents([.height(600)])
