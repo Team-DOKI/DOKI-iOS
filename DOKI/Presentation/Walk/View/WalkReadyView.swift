@@ -19,6 +19,7 @@ struct WalkReadyView: View {
     
     @State private var isAddingItem: Bool = false
     @State private var newItemText: String = ""
+    @State private var itemListHeight: CGFloat = 0
     
     @FocusState private var isTextFieldFocused: Bool
     
@@ -60,7 +61,21 @@ struct WalkReadyView: View {
                         .font(.subtitle)
                         .foregroundColor(.defaultDark)
                     
-                    itemList
+                    ScrollView(showsIndicators: false) {
+                        itemList
+                    }
+                    .frame(maxHeight: itemListHeight == 0 ? .infinity : itemListHeight)
+                    .background(
+                        GeometryReader { geo in
+                            Color.clear
+                                .preference(key: HeightKey.self, value: geo.size.height)
+                        }
+                    )
+                    .onPreferenceChange(HeightKey.self) { height in
+                        if itemListHeight == 0 {
+                            itemListHeight = height
+                        }
+                    }
                     
                     Button {
                         isAddingItem = true
@@ -84,7 +99,6 @@ struct WalkReadyView: View {
                 .padding(16)
                 
                 Spacer()
-                
             }
         }
         .safeAreaInset(edge: .bottom) {
@@ -166,5 +180,12 @@ struct WalkReadyView: View {
                     .background(.defaultBright)
             }
         }
+    }
+}
+
+private struct HeightKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
     }
 }
