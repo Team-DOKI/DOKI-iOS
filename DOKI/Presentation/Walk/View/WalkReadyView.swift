@@ -19,86 +19,101 @@ struct WalkReadyView: View {
     
     @State private var isAddingItem: Bool = false
     @State private var newItemText: String = ""
+    @State private var itemListHeight: CGFloat = 0
     
     @FocusState private var isTextFieldFocused: Bool
     
     var body: some View {
-        VStack(spacing: 0) {
-            
-            // MARK: - 오늘의 산책 TIP
-            
-            HStack(spacing: 18) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("오늘의 산책 TIP")
-                        .font(.small)
-                        .foregroundStyle(.defaultMiddle)
-                    
-                    Text("발이 차가워요.. 잠깐 다녀와요!")
-                        .font(.subtitle)
-                        .foregroundColor(.contents)
-                    
-                    Text("10분 내 짧은 산책 / 패딩과 신발 필수")
-                        .font(.bodySmall)
-                        .foregroundColor(.contents)
-                }
-                .padding(.vertical, 16)
-                
-                Image(.imgWalkdog)
-                    .padding(.top, 8)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal, 16)
-            .background(.defaultBackground)
-            .cornerRadius(16)
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(.defaultPrimary, lineWidth: 1)
-            )
-            .padding(.top, 16)
-            .padding(.horizontal, 15)
-            
-            // MARK: - 산책 필수템
-            
-            VStack(alignment: .leading, spacing: 16) {
-                Text("산책 필수템")
-                    .font(.subtitle)
-                    .foregroundColor(.defaultDark)
-                
-                itemList
-                
-                Button {
-                    isAddingItem = true
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                        isTextFieldFocused = true
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 0) {
+                HStack(spacing: 18) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("오늘의 산책 TIP")
+                            .font(.small)
+                            .foregroundStyle(.defaultMiddle)
+                        
+                        Text("발이 차가워요.. 잠깐 다녀와요!")
+                            .font(.subtitle)
+                            .foregroundColor(.contents)
+                        
+                        Text("10분 내 짧은 산책 / 패딩과 신발 필수")
+                            .font(.bodySmall)
+                            .foregroundColor(.contents)
                     }
-                } label: {
-                    Text("+ 추가하기")
-                        .font(.subActive)
-                        .foregroundColor(.defaultPrimary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                        .background(.primaryGra1)
-                        .cornerRadius(8)
+                    .padding(.vertical, 16)
+                    
+                    Image(.imgWalkdog)
+                        .padding(.top, 8)
                 }
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 16)
+                .background(.defaultBackground)
+                .cornerRadius(16)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(.defaultPrimary, lineWidth: 1)
+                )
+                .padding(.top, 16)
+                .padding(.horizontal, 15)
+                
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("산책 필수템")
+                        .font(.subtitle)
+                        .foregroundColor(.defaultDark)
+                    
+                    ScrollView(showsIndicators: false) {
+                        itemList
+                    }
+                    .frame(maxHeight: itemListHeight == 0 ? .infinity : itemListHeight)
+                    .background(
+                        GeometryReader { geo in
+                            Color.clear
+                                .preference(key: HeightKey.self, value: geo.size.height)
+                        }
+                    )
+                    .onPreferenceChange(HeightKey.self) { height in
+                        if itemListHeight == 0 {
+                            itemListHeight = height
+                        }
+                    }
+                    
+                    Button {
+                        isAddingItem = true
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                            isTextFieldFocused = true
+                        }
+                    } label: {
+                        Text("+ 추가하기")
+                            .font(.subActive)
+                            .foregroundColor(.defaultPrimary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(.primaryGra1)
+                            .cornerRadius(8)
+                    }
+                }
+                .padding(16)
+                .background(.defaultBackground)
+                .cornerRadius(16)
+                .padding(16)
+                
+                Spacer()
             }
-            .padding(16)
-            .background(.defaultBackground)
-            .cornerRadius(16)
-            .padding(16)
-            
-            Spacer()
-            
-            // MARK: - 산책 기록 시작하기 버튼
-            
-            MainButton(text: "산책 기록 시작하기", buttonState: .active2) {
-                viewModel.navigateToWalkRecord()
-            }
+        }
+        .safeAreaInset(edge: .bottom) {
+            MainButton(
+                text: "산책 기록 시작하기",
+                buttonState: .active2,
+                action: {
+                    viewModel.navigateToWalkRecord()
+                }
+            )
             .padding(.horizontal, 16)
             .padding(.bottom, 85)
         }
+        .ignoresSafeArea(.keyboard)
         .background(.defaultBright)
-        .ignoresSafeArea(.keyboard, edges: .bottom)
         .topNavigationView(center: {
             Text("산책")
                 .subtitle()
@@ -165,5 +180,12 @@ struct WalkReadyView: View {
                     .background(.defaultBright)
             }
         }
+    }
+}
+
+private struct HeightKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
     }
 }
