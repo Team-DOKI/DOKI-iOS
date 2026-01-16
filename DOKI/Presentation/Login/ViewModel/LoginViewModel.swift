@@ -37,7 +37,8 @@ class LoginViewModel: ObservableObject {
                let identityToken = String(data: identityTokenData, encoding: .utf8) {
                 
                 Task {
-                    await authManager.loginWithApple(identityToken, deviceId: "device_abc123")
+                    let deviceId = DeviceIDManager.shared.getDeviceId()
+                    await authManager.loginWithApple(identityToken, deviceId: deviceId)
                 }
             }
         case .failure(let error):
