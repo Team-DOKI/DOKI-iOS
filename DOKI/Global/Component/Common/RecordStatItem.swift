@@ -21,7 +21,7 @@ struct RecordStatItem: View {
                 .font(.header3)
                 .foregroundColor(.defaultPrimary)
         }
-        .frame(width: 114)
+        .frame(maxWidth: .infinity)
     }
 }
 
