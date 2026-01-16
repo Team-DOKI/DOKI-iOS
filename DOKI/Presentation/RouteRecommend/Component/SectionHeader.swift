@@ -9,13 +9,16 @@ import SwiftUI
 
 struct SectionHeader: View {
     let title: String
-    let subtitle: String
+    var subtitle: String?
     
     var body: some View {
         HStack(spacing: 4) {
             Text(title).subtitle()
             
-            Text(subtitle).subDefault(color: .defaultMiddle)
+            if let subtitle {
+                Text(subtitle)
+                    .subDefault(color: .defaultMiddle)
+            }
             
             Spacer()
         }
@@ -23,5 +26,5 @@ struct SectionHeader: View {
 }
 
 #Preview {
-    SectionHeader(title: "혼잡도", subtitle: "(단일 선택 가능")
+    SectionHeader(title: "편의성", subtitle: "(복수 선택 가능)")
 }

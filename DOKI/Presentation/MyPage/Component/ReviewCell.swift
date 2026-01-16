@@ -8,18 +8,19 @@
 import SwiftUI
 
 struct ReviewCell: View {
-    @State private var isExpanded: Bool = false
-    
     let title: String
     let address: String
     let recordDate: String
     let tags: [String]
     
+    @State private var isExpanded: Bool = false
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
+            HStack(spacing: 0) {
                 Text(title)
                     .mainActive()
+                
                 Spacer()
             }
             

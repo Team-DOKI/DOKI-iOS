@@ -1,6 +1,6 @@
 //
 //  HomeCoordinatorView.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/26/25.
 //
@@ -8,16 +8,17 @@
 import SwiftUI
 
 enum HomeRoute: Route {
-    case walkRecord
-    case courseReview
-    case walkResult
+    case routeDetail
 }
 
 struct HomeCoordinatorView: View {
     @StateObject var homeCoordinator: Coordinator<HomeRoute>
+    @StateObject var walkRecordCoordinator: Coordinator<WalkRecordRoute>
+    @StateObject var homeViewModel: HomeViewModel
     @StateObject var walkRecordViewModel: WalkRecordViewModel
-    @StateObject var courseReviewViewModel: CourseReviewViewModel
     @StateObject var walkResultViewModel: WalkResultViewModel
+    @StateObject var walkReviewViewModel: WalkReviewViewModel
+    @StateObject var routeDetailViewModel = RouteDetailViewModel()
     
     private let viewModelFactory: AppDIContainer.ViewModelFactory
     
@@ -25,27 +26,35 @@ struct HomeCoordinatorView: View {
          viewModelFactory: AppDIContainer.ViewModelFactory) {
         self.viewModelFactory = viewModelFactory
         self._homeCoordinator = StateObject(wrappedValue: Coordinator<HomeRoute>())
+        self._walkRecordCoordinator = StateObject(wrappedValue: Coordinator<WalkRecordRoute>())
+        self._homeViewModel = StateObject(wrappedValue: viewModelFactory.makeHomeViewModel())
         self._walkRecordViewModel = StateObject(wrappedValue: viewModelFactory.makeWalkRecordViewModel())
-        self._courseReviewViewModel = StateObject(wrappedValue: viewModelFactory.makeCourseReviewViewModel())
-        self._walkResultViewModel = StateObject(wrappedValue: viewModelFactory.makeCourseResultViewModel())
+        self._walkResultViewModel = StateObject(wrappedValue: viewModelFactory.makeWalkResultViewModel())
+        self._walkReviewViewModel = StateObject(wrappedValue: viewModelFactory.makeWalkReviewViewModel())
     }
     
     var body: some View {
         NavigationStack(path: $homeCoordinator.path) {
-            HomeView(viewModel: HomeViewModel(coordinator: homeCoordinator))
-                .fullScreenCover(item: $homeCoordinator.fullScreenCover, onDismiss: {
-                    homeCoordinator.clearStack()
+            HomeView(viewModel: HomeViewModel())
+                .navigationDestination(for: HomeRoute.self) { destination in
+                    switch destination {
+                    case .routeDetail:
+                        RouteDetailView(viewModel: routeDetailViewModel)
+                    }
+                }
+                .fullScreenCover(item: $walkRecordCoordinator.fullScreenCover, onDismiss: {
+                    walkRecordCoordinator.clearStack()
                 }, content: { destination in
-                    NavigationStack(path: $homeCoordinator.fullScreenPath) {
+                    NavigationStack(path: $walkRecordCoordinator.fullScreenPath) {
                         WalkRecordView(viewModel: walkRecordViewModel)
-                            .navigationDestination(for: HomeRoute.self) { destination in
+                            .navigationDestination(for: WalkRecordRoute.self) { destination in
                                 switch destination {
                                 case .walkRecord:
                                     WalkRecordView(viewModel: walkRecordViewModel)
-                                case .courseReview:
-                                    CourseReviewView(viewModel: courseReviewViewModel)
                                 case .walkResult:
                                     WalkResultView(viewModel: walkResultViewModel)
+                                case .walkReview:
+                                    WalkReviewView(viewModel: walkReviewViewModel)
                                 }
                             }
                     }
@@ -55,17 +64,26 @@ struct HomeCoordinatorView: View {
     }
     
     func bindAction() {
+      
+        
         walkRecordViewModel.navigationAction = { destination in
             switch destination {
+            case .walkRecord:
+                walkRecordCoordinator.push(.walkRecord)
             case .walkResult:
-                homeCoordinator.push(.walkResult)
+                walkRecordCoordinator.push(.walkResult)
+            case .walkReview:
+                walkRecordCoordinator.push(.walkReview)
             }
         }
         
-        courseReviewViewModel.navigationAction = { destination in
+        walkReviewViewModel.navigationAction = { destination in
             switch destination {
-            case .walkResult:
-                homeCoordinator.push(.walkResult)
+            case .backToRoot:
+                walkRecordCoordinator.dismiss()
+            case .routeDetail:
+                walkRecordCoordinator.dismiss()
+                homeCoordinator.push(.routeDetail)
             }
         }                
     }

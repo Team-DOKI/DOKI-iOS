@@ -1,6 +1,6 @@
 //
 //  Config.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by 이세민 on 7/14/25.
 //
@@ -25,10 +25,10 @@ enum Config {
 
 extension Config {
     static let baseURL: String = {
-        guard let key = Config.infoDictionary[Keys.Plist.BASE_URL] as? String else {
-            fatalError("BASE_URL is not set in plist for this configuration")
+        guard let url = Config.infoDictionary[Keys.Plist.BASE_URL] as? String else {
+            fatalError("BASE_URL is not set in plist")
         }
-        return "https://" + key
+        return "https://" + url
     }()
     
     static let naverClientID: String = {

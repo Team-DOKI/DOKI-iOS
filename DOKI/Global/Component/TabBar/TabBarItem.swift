@@ -1,30 +1,42 @@
-////
-////  TabBarItem.swift
-////  PAWKEY
-////
-////  Created by 이세민 on 7/2/25.
-////
 //
-//import SwiftUI
+//  TabBarItem.swift
+//  DOKI
 //
-//enum TabBarItem: CaseIterable {
-//    case home, walk, community, mypage
+//  Created by 이세민 on 7/2/25.
 //
-//    var normalImage: Image {
-//        switch self {
-//        case .home: return Image(.homeIcon)
-//        case .walk: return Image(.walkIcon)
-//        case .community: return Image(.communityIcon)
-//        case .mypage: return Image(.mypageIcon)
-//        }
-//    }
-//
-//    var selectedImage: Image {
-//        switch self {
-//        case .home: return Image(.homeIconFill)
-//        case .walk: return Image(.walkIconFill)
-//        case .community: return Image(.communityIconFill)
-//        case .mypage: return Image(.mypageIconFill)
-//        }
-//    }
-//}
+
+import SwiftUI
+
+enum TabBarItem: Int, CaseIterable {
+    case home
+    case walk
+    case recommend
+    case mypage
+    
+    var title: String {
+        switch self {
+        case .home: return "홈"
+        case .walk: return "산책하기"
+        case .recommend: return "루트 추천"
+        case .mypage: return "마이페이지"
+        }
+    }
+    
+    var normalImage: String {
+        switch self {
+        case .home: return "ic_home"
+        case .walk: return "ic_walk"
+        case .recommend: return "ic_route"
+        case .mypage: return "ic_profile"
+        }
+    }
+    
+    var selectedImage: String {
+        switch self {
+        case .home: return "ic_home_fill"
+        case .walk: return "ic_walk_fill"
+        case .recommend: return "ic_route_fill"
+        case .mypage: return "ic_profile_fill"
+        }
+    }
+}

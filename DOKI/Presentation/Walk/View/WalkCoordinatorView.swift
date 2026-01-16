@@ -1,65 +1,78 @@
 //
 //  WalkCoordinatorView.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/26/25.
 //
 
 import SwiftUI
 
-enum WalkRecordRoute: Route {
-    case walkRecord
-    case courseReview
-    case walkResult
+enum WalkReadyRoute: Route {
+    case routeDetail
 }
 
-enum WalkRoute: Route {
-    case courseDetail
+enum WalkRecordRoute: Route {
+    case walkRecord
+    case walkResult
+    case walkReview
+}
+
+enum WalkResultRoute: Route {
+    case walkReview
+}
+
+enum WalkReviewRoute {
+    case backToRoot
+    case routeDetail
 }
 
 struct WalkCoordinatorView: View {
+    @EnvironmentObject var tabBarState: TabBarState
+    
+    @StateObject var walkReadyCoordinator: Coordinator<WalkReadyRoute>
     @StateObject var walkRecordCoordinator: Coordinator<WalkRecordRoute>
-    @StateObject var walkCoordinator: Coordinator<WalkRoute>
     @StateObject var walkRecordViewModel: WalkRecordViewModel
-    @StateObject var courseReviewViewModel: CourseReviewViewModel
     @StateObject var walkResultViewModel: WalkResultViewModel
-    @StateObject var courseDetailViewModel = CourseDetailViewModel()
+    @StateObject var walkReviewViewModel: WalkReviewViewModel
+    @StateObject var routeDetailViewModel = RouteDetailViewModel()
     
     private let viewModelFactory: AppDIContainer.ViewModelFactory
     
-    init(walkRecordCoordinator: Coordinator<WalkRecordRoute> = Coordinator<WalkRecordRoute>(),
-         walkCoordinator: Coordinator<WalkRoute> = Coordinator<WalkRoute>(),
+    init(walkReadyCoordinator: Coordinator<WalkReadyRoute> = Coordinator<WalkReadyRoute>(),
+         walkRecordCoordinator: Coordinator<WalkRecordRoute> = Coordinator<WalkRecordRoute>(),
          viewModelFactory: AppDIContainer.ViewModelFactory) {
         self.viewModelFactory = viewModelFactory
+        self._walkReadyCoordinator = StateObject(wrappedValue: walkReadyCoordinator)
         self._walkRecordCoordinator = StateObject(wrappedValue: walkRecordCoordinator)
-        self._walkCoordinator = StateObject(wrappedValue: walkCoordinator)
         self._walkRecordViewModel = StateObject(wrappedValue: viewModelFactory.makeWalkRecordViewModel())
-        self._courseReviewViewModel = StateObject(wrappedValue: viewModelFactory.makeCourseReviewViewModel())
-        self._walkResultViewModel = StateObject(wrappedValue: viewModelFactory.makeCourseResultViewModel())
+        self._walkResultViewModel = StateObject(wrappedValue: viewModelFactory.makeWalkResultViewModel())
+        self._walkReviewViewModel = StateObject(wrappedValue: viewModelFactory.makeWalkReviewViewModel())
     }
     
     var body: some View {
-        NavigationStack(path: $walkCoordinator.path) {
-            WalkView(viewModel: WalkViewModel(coordinator: walkRecordCoordinator))
-                .navigationDestination(for: WalkRoute.self, destination: { destination in
+        NavigationStack(path: $walkReadyCoordinator.path) {
+            WalkReadyView(viewModel: WalkReadyViewModel(coordinator: walkRecordCoordinator))
+                .navigationDestination(for: WalkReadyRoute.self) { destination in
                     switch destination {
-                    case .courseDetail:
-                        CourseDetailView(viewModel: courseDetailViewModel)
+                    case .routeDetail:
+                        RouteDetailView(viewModel: routeDetailViewModel)
+                            .onAppear { tabBarState.isHidden = true }
+                            .onDisappear { tabBarState.isHidden = false }
                     }
-                })
+                }
                 .fullScreenCover(item: $walkRecordCoordinator.fullScreenCover, onDismiss: {
                     walkRecordCoordinator.clearStack()
-                }, content: { destination in
+                }, content: { _ in
                     NavigationStack(path: $walkRecordCoordinator.fullScreenPath) {
                         WalkRecordView(viewModel: walkRecordViewModel)
                             .navigationDestination(for: WalkRecordRoute.self) { destination in
                                 switch destination {
                                 case .walkRecord:
                                     WalkRecordView(viewModel: walkRecordViewModel)
-                                case .courseReview:
-                                    CourseReviewView(viewModel: courseReviewViewModel)
                                 case .walkResult:
                                     WalkResultView(viewModel: walkResultViewModel)
+                                case .walkReview:
+                                    WalkReviewView(viewModel: walkReviewViewModel)
                                 }
                             }
                     }
@@ -69,39 +82,32 @@ struct WalkCoordinatorView: View {
     }
     
     func bindAction() {
-        courseDetailViewModel.navigationAction = { destination in
-            switch destination {
-            case .back:
-                walkCoordinator.pop()
-            }
-        }
-        
         walkRecordViewModel.navigationAction = { destination in
             switch destination {
+            case .walkRecord:
+                walkRecordCoordinator.push(.walkRecord)
             case .walkResult:
                 walkRecordCoordinator.push(.walkResult)
-            }
-        }
-        
-        courseReviewViewModel.navigationAction = { destination in
-            switch destination {
-            case .walkResult:
-                walkRecordCoordinator.push(.walkResult)
+            case .walkReview:
+                walkRecordCoordinator.push(.walkReview)
             }
         }
         
         walkResultViewModel.navigationAction = { destination in
             switch destination {
+            case .walkReview:
+                walkRecordCoordinator.push(.walkReview)
+            }
+        }
+        
+        walkReviewViewModel.navigationAction = { destination in
+            switch destination {
             case .backToRoot:
                 walkRecordCoordinator.dismiss()
-            case .detail:
-                // 화면 및 경로 제거
+            case .routeDetail:
                 walkRecordCoordinator.dismiss()
-                walkRecordCoordinator.clearStack()
-                // 디테일뷰로 이동
-                walkCoordinator.push(.courseDetail)
+                walkReadyCoordinator.push(.routeDetail)
             }
         }
     }
 }
-

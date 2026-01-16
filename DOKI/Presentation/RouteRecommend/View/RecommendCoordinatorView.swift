@@ -1,6 +1,6 @@
 //
 //  RecommendCoordinatorView.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/26/25.
 //
@@ -13,9 +13,11 @@ enum RecommendRoute: Route {
 }
 
 struct RecommendCoordinatorView: View {
+    @EnvironmentObject var tabBarState: TabBarState
+    
     @StateObject var recommendCoordinator: Coordinator<RecommendRoute>
     @StateObject var recommendViewModel: RecommendViewModel
-    @StateObject var courseDetailViewModel: CourseDetailViewModel
+    @StateObject var courseDetailViewModel: RouteDetailViewModel
     @StateObject var filterSettingViewModel: FilterSettingViewModel
     
     init(recommendCoordinator: Coordinator<RecommendRoute> = Coordinator<RecommendRoute>(),
@@ -32,11 +34,14 @@ struct RecommendCoordinatorView: View {
                 .navigationDestination(for: RecommendRoute.self) { destination in
                     switch destination {
                     case .courseDetail:
-                        CourseDetailView(viewModel: courseDetailViewModel)
+                        RouteDetailView(viewModel: courseDetailViewModel)
                     case .filterSetting:
                         FilterSettingView(viewModel: filterSettingViewModel)
                     }
                 }
+        }
+        .onChange(of: recommendCoordinator.path) { path in
+            tabBarState.isHidden = !path.isEmpty
         }
         .onAppear {
             courseDetailViewModel.navigationAction = { destination in

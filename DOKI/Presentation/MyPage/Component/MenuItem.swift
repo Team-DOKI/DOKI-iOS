@@ -16,10 +16,14 @@ struct MenuItem: View {
         Button(action: action) {
             HStack(spacing: 0) {
                 icon
+                
                 Spacer().frame(width: 8)
+                
                 Text(title)
                     .bodyDefault()
+                
                 Spacer()
+                
                 Image(.btnMore)
             }
             .frame(height: 56)

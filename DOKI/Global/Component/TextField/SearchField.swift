@@ -1,6 +1,6 @@
 //
 //  SearchField.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by 권석기 on 9/12/25.
 //
@@ -13,7 +13,7 @@ struct SearchField: View {
     @Binding var text: String
     
     var body: some View {
-        HStack {
+        HStack(spacing: 0) {
             TextField(placeholder, text: $text)
                 .padding(.leading, 16)
                 .font(.bodyActive)

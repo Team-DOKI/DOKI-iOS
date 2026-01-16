@@ -1,6 +1,6 @@
 //
 //  StartWalkViewModel.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/26/25.
 //
@@ -9,10 +9,6 @@ import SwiftUI
 import Combine
 import CoreLocation
 import CoreMotion
-
-enum WalkReviewRoute {
-    case walkResult
-}
 
 class WalkRecordViewModel: ObservableObject {
     
@@ -118,7 +114,7 @@ class WalkRecordViewModel: ObservableObject {
         baseStepCount = 0
     }
     
-    var navigationAction: ((WalkReviewRoute)->())?
+    var navigationAction: ((WalkRecordRoute)->())?
     
     func navigateToWalkResult() {
         stopTimer()

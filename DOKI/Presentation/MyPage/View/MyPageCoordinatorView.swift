@@ -1,6 +1,6 @@
 //
 //  MyPageCoordinatorView.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/26/25.
 //
@@ -18,6 +18,8 @@ enum MyPageRoute: Route {
 }
 
 struct MyPageCoordinatorView: View {
+    @EnvironmentObject var tabBarState: TabBarState
+    
     @StateObject var myPageCoordinator: Coordinator<MyPageRoute>
     @StateObject var myPageViewModel: MyPageViewModel
     @StateObject var myProfileViewModel:  MyProfileViewModel
@@ -55,6 +57,9 @@ struct MyPageCoordinatorView: View {
                         AppInfoView()
                     }
                 }
+        }
+        .onChange(of: myPageCoordinator.path) { path in
+            tabBarState.isHidden = !path.isEmpty
         }
         .onAppear(perform: bindAction)
     }

@@ -1,6 +1,6 @@
 //
 //  OnboardingView.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/31/25.
 //
@@ -62,7 +62,6 @@ struct OnboardingView: View {
             
             TabView(selection: $currentStep) {
                 Image(.imgOnboardingdog)
-                
                     .tag(OnboardingStep.welcome)
                 
                 Image(.onboardingDummy)

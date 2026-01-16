@@ -1,6 +1,6 @@
 //
 //  String+.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by 권석기 on 7/16/25.
 //

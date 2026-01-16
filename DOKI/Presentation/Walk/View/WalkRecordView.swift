@@ -1,6 +1,6 @@
 //
 //  WalkRecordView.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/26/25.
 //
@@ -17,7 +17,7 @@ struct WalkRecordView: View {
     
     var body: some View {
         ZStack() {
-            WalkNaverMap(pathCoordinates: $viewModel.pathCoordinates, userTrackingMode: $viewModel.userTrackingMode
+            WalkNaverMapView(pathCoordinates: $viewModel.pathCoordinates, userTrackingMode: $viewModel.userTrackingMode
             )
             .ignoresSafeArea()
             
@@ -54,9 +54,9 @@ struct WalkRecordView: View {
                     Spacer().frame(height: 44)
                     
                     HStack(spacing: 0) {
-                        StatItem(title: "거리 (km)", value: viewModel.distanceString)
-                        StatItem(title: "시간 (분)", value: viewModel.elapsedTimeString)
-                        StatItem(title: "걸음 수 (걸음)", value: viewModel.stepString)
+                        RecordStatItem(title: "거리 (km)", value: viewModel.distanceString)
+                        RecordStatItem(title: "시간 (분)", value: viewModel.elapsedTimeString)
+                        RecordStatItem(title: "걸음 수 (걸음)", value: viewModel.stepString)
                     }
                     .padding(.bottom, 20)
                     

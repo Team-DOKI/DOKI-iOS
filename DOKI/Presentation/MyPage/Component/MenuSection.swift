@@ -13,12 +13,14 @@ struct MenuSection<Content: View>: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
+            HStack(spacing: 0) {
                 Text(title)
                     .small(color: .defaultDark)
                     .frame(height: 38)
+                
                 Spacer()
             }
+            
             content()
         }
         .padding(.horizontal, 16)
@@ -26,5 +28,3 @@ struct MenuSection<Content: View>: View {
         .cornerRadius(8)
     }
 }
-
-

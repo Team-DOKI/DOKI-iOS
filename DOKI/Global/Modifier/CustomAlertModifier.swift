@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct CustomAlertModifier: ViewModifier {
-    @Binding var isPresented: Bool
-    
     let image: Image?
     let message: String
-    let subMessage: String?
+    let subMessage: String
+    let secondaryTitle: String?
     let primaryTitle: String
-    let secondaryTitle: String
+    let secondaryAction: (() -> Void)?
     let primaryAction: () -> Void
-    let secondaryAction: () -> Void
+    
+    @Binding var isPresented: Bool
     
     func body(content: Content) -> some View {
         ZStack {
@@ -31,15 +31,15 @@ struct CustomAlertModifier: ViewModifier {
                     image: image,
                     message: message,
                     subMessage: subMessage,
-                    primaryTitle: primaryTitle,
                     secondaryTitle: secondaryTitle,
+                    primaryTitle: primaryTitle,
+                    secondaryAction: {
+                        isPresented = false
+                        secondaryAction?()
+                    },
                     primaryAction: {
                         isPresented = false
                         primaryAction()
-                    },
-                    secondaryAction: {
-                        isPresented = false
-                        secondaryAction()
                     }
                 )
             }
@@ -50,11 +50,11 @@ struct CustomAlertModifier: ViewModifier {
 struct CustomAlertView: View {
     let image: Image?
     let message: String
-    let subMessage: String?
+    let subMessage: String
+    let secondaryTitle: String?
     let primaryTitle: String
-    let secondaryTitle: String
+    let secondaryAction: (() -> Void)?
     let primaryAction: () -> Void
-    let secondaryAction: () -> Void
     
     var body: some View {
         VStack(spacing: 0) {
@@ -63,31 +63,48 @@ struct CustomAlertView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 90, height: 90)
-                    .padding(.top, 24)
+                    .padding(.top, 20)
             }
             
             Text(message)
                 .mainActive()
                 .padding(.top, 34)
             
-            if let subMessage {
-                Text(subMessage)
-                    .bodySmall(color: .defaultMiddle)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 8)
-            }
+            Text(subMessage)
+                .bodySmall(color: .defaultMiddle)
+                .multilineTextAlignment(.center)
+                .padding(.top, 8)
             
             HStack(spacing: 8) {
-                MainButton(text: primaryTitle, buttonState: .disabled,  action: {})
-                    .onTapGesture {
-                        primaryAction()
+                if let secondaryTitle, let secondaryAction {
+                    Button {
+                        secondaryAction()
+                    } label: {
+                        Text(secondaryTitle)
+                            .foregroundStyle(.defaultDark)
+                            .font(.subtitle)
                     }
-                MainButton(text: secondaryTitle, action: secondaryAction)
+                    .frame(maxWidth: .infinity, minHeight: 56)
+                    .background(.defaultButton)
+                    .cornerRadius(8)
+                }
+                
+                Button {
+                    primaryAction()
+                } label: {
+                    Text(primaryTitle)
+                        .foregroundStyle(.defaultBackground)
+                        .font(.subtitle)
+                }
+                .frame(maxWidth: .infinity, minHeight: 56)
+                .background(.defaultPrimary)
+                .cornerRadius(8)
             }
             .padding(.top, 34)
         }
-        .padding(16)
-        .background(.white)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 20)
+        .background(.defaultBackground)
         .cornerRadius(16)
         .padding(.horizontal, 19)
     }
@@ -98,22 +115,22 @@ extension View {
         isPresented: Binding<Bool>,
         image: Image? = nil,
         message: String,
-        subMessage: String? = nil,
+        subMessage: String,
+        secondaryTitle: String? = nil,
         primaryTitle: String,
-        secondaryTitle: String,
-        primaryAction: @escaping () -> Void,
-        secondaryAction: @escaping () -> Void
+        secondaryAction: (() -> Void)? = nil,
+        primaryAction: @escaping () -> Void
     ) -> some View {
         modifier(
             CustomAlertModifier(
-                isPresented: isPresented,
                 image: image,
                 message: message,
                 subMessage: subMessage,
-                primaryTitle: primaryTitle,
                 secondaryTitle: secondaryTitle,
+                primaryTitle: primaryTitle,
+                secondaryAction: secondaryAction,
                 primaryAction: primaryAction,
-                secondaryAction: secondaryAction
+                isPresented: isPresented
             )
         )
     }

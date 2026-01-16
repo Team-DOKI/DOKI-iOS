@@ -1,6 +1,6 @@
 //
 //  ContextMenuModifier.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by 권석기 on 7/10/25.
 //
@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct ContextMenuModifier<CustomView: View>: ViewModifier {
-    @Binding var isPresented: Bool
-    
     let contentView: () -> CustomView
     
+    @Binding var isPresented: Bool
+
     func body(content: Content) -> some View {
         content
             .fullScreenCover(isPresented: $isPresented) {
@@ -50,6 +50,6 @@ struct ClearBackgroundView: UIViewRepresentable {
 
 extension View {
     func contextMenu<CustomView: View>(isPresented: Binding<Bool>, content: @escaping () -> CustomView) -> some View {
-        modifier(ContextMenuModifier(isPresented: isPresented, contentView: content))
+        modifier(ContextMenuModifier(contentView: content, isPresented: isPresented))
     }
 }

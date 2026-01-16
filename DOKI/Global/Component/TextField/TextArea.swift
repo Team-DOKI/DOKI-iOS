@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct TextArea: View {
-    @Binding var text: String
-    @FocusState private var isFocused: Bool    
     let placeholder: String
     
+    @Binding var text: String
+    
+    @FocusState private var isFocused: Bool
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             if text.isEmpty && !isFocused {

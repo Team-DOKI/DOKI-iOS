@@ -1,6 +1,6 @@
 //
 //  MyPageView.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/26/25.
 //
@@ -13,7 +13,8 @@ struct MyPageView: View {
     var body: some View {
         ZStack {
             Color.defaultBright.ignoresSafeArea()
-            ScrollView {
+            
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
                     // 유저 & 반려견 프로필
                     MyProfile(
@@ -78,6 +79,7 @@ struct MyPageView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 22)
+                .padding(.bottom, 80)
             }
         }
         .topNavigationView(center: {
@@ -87,7 +89,7 @@ struct MyPageView: View {
         .customModal(
             isPresented: $viewModel.isShowLogoutAlert,
             message: "로그아웃",
-            subMessage: "진짜로 로그아웃 하시게요?😢",
+            subMessage: "진짜로 로그아웃 하시게요? 😢",
             primaryTitle: "로그아웃",
             secondaryTitle: "취소",
             primaryAction: viewModel.logoutButtonConfirmed,
@@ -96,7 +98,7 @@ struct MyPageView: View {
         .customModal(
             isPresented: $viewModel.isShowWithdrawAlert,
             message: "탈퇴하기",
-            subMessage: "진짜로 탈퇴하시게요?😢",
+            subMessage: "진짜로 탈퇴하시게요? 😢",
             primaryTitle: "탈퇴하기",
             secondaryTitle: "취소",
             primaryAction: viewModel.withdrawButtonConfirmed,

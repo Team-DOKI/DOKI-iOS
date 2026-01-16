@@ -1,6 +1,6 @@
 //
 //  RecommendViewModel.swift
-//  PAWKEY
+//  DOKI
 //
 //  Created by a on 10/26/25.
 //
@@ -11,14 +11,6 @@ class RecommendViewModel: ObservableObject {
     private let coordinator: Coordinator<RecommendRoute>
     
     @Published var selectedFilterOption: [FilteringOption] = []
-    @Published var dummyFilterOption: [FilteringOption] = [
-        FilteringOption(text: "산책소요시간", isActive: false),
-        FilteringOption(text: "혼잡도", isActive: false),
-        FilteringOption(text: "강아지 교류 빈도", isActive: false),
-        FilteringOption(text: "안전", isActive: false),
-        FilteringOption(text: "편의성", isActive: false),
-        FilteringOption(text: "환경", isActive: false),
-    ]
     
     init(coordinator: Coordinator<RecommendRoute>) {
         self.coordinator = coordinator
@@ -30,5 +22,51 @@ class RecommendViewModel: ObservableObject {
     
     func navigateToFilterSetting() {
         coordinator.push(.filterSetting)
+    }
+}
+
+struct FilterTagItem: Identifiable {
+    let id = UUID()
+    let text: String
+    let isActive: Bool
+}
+
+enum FilterCategory: String, CaseIterable {
+    case walkTime
+    case congestion
+    case dogInteraction
+    case safety
+    case convenience
+    case environment
+    
+    var title: String {
+        switch self {
+        case .walkTime: return "산책 소요 시간"
+        case .congestion: return "혼잡도"
+        case .dogInteraction: return "강아지 교류 빈도"
+        case .safety: return "안전"
+        case .convenience: return "편의성"
+        case .environment: return "환경"
+        }
+    }
+}
+
+extension RecommendViewModel {
+    var filterTags: [FilterTagItem] {
+        FilterCategory.allCases.flatMap { category in
+            let selected = selectedFilterOption.filter { $0.category == category.rawValue }
+            
+            if selected.isEmpty {
+                return [FilterTagItem(text: category.title, isActive: false)]
+            } else {
+                return selected.map { option in
+                    var text = option.text
+                    if category == .congestion {
+                        text = "\(category.title) \(option.text)"
+                    }
+                    return FilterTagItem(text: text, isActive: true)
+                }
+            }
+        }
     }
 }
