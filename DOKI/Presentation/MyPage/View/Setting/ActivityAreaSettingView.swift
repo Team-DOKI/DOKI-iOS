@@ -11,15 +11,22 @@ struct ActivityAreaSettingView: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        Text("활동범위설정")
-            .topNavigationView(left: {
-                BackButton(action: {
-                    dismiss()
-                })
-            }, center: {
-                Text("활동 범위 설정")
-                    .subtitle()
+        VStack(spacing: 0) {
+            Spacer()
+            
+            Text("활동 범위 설정")
+            
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .topNavigationView(left: {
+            BackButton(action: {
+                dismiss()
             })
+        }, center: {
+            Text("활동 범위 설정")
+                .subtitle()
+        })
     }
 }
 
