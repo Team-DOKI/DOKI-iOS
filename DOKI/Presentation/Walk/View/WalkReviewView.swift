@@ -61,12 +61,10 @@ struct WalkReviewView: View {
                 .frame(height: 2)
                 .foregroundStyle(.defaultButton)
         })
-        .topNavigationView {
-            BackButton(action: {})
-        } center: {
+        .topNavigationView(center: {
             Text("산책 기록하기")
                 .subtitle()
-        }
+        })
         .customAlert(
             isPresented: $viewModel.isShowReviewCompleted,
             image: Image(.imgFoot),
