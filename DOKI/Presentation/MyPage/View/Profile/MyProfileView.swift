@@ -34,6 +34,7 @@ struct MyProfileView: View {
             )
         }
         .padding(.horizontal, 16)
+        .ignoresSafeArea(.keyboard, edges: .bottom)
         .topNavigationView(left: {
             BackButton(action: {
                 dismiss()
