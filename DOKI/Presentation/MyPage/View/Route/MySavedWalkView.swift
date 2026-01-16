@@ -24,14 +24,14 @@ struct MySavedWalkView: View {
             .padding(.horizontal, 16)
             .padding(.top, 20)
         }
-            .topNavigationView(left: {
-                BackButton(action: {
-                    dismiss()
-                })
-            }, center: {
-                Text("저장목록")
-                    .subtitle()
+        .topNavigationView(left: {
+            BackButton(action: {
+                dismiss()
             })
+        }, center: {
+            Text("저장목록")
+                .subtitle()
+        })
     }
 }
 

@@ -29,14 +29,14 @@ struct MyReviewView: View {
                 .padding(.top, 16)
             }
         }
-            .topNavigationView(left: {
-                BackButton(action: {
-                    dismiss()
-                })
-            }, center: {
-                Text("내가 남긴 후기")
-                    .subtitle()
+        .topNavigationView(left: {
+            BackButton(action: {
+                dismiss()
             })
+        }, center: {
+            Text("내가 남긴 후기")
+                .subtitle()
+        })
     }
 }
 
