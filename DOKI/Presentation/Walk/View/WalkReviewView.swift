@@ -56,6 +56,9 @@ struct WalkReviewView: View {
             }
             .padding(.horizontal, 16)
         }
+        .onTapGesture {
+            UIApplication.shared.hideKeyboard()
+        }
         .overlay(alignment: .top, content: {
             Rectangle()
                 .frame(height: 2)
