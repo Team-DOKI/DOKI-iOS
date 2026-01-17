@@ -16,6 +16,8 @@ enum HomeAction {
 }
 
 struct HomeCoordinatorView: View {
+    @EnvironmentObject var tabBarState: TabBarState
+    
     @StateObject var homeCoordinator: Coordinator<HomeRoute>
     @StateObject var walkRecordCoordinator: Coordinator<WalkRecordRoute>
     @StateObject var walkRecordViewModel: WalkRecordViewModel
@@ -44,6 +46,8 @@ struct HomeCoordinatorView: View {
                     switch destination {
                     case .routeDetail:
                         RouteDetailView(viewModel: routeDetailViewModel)
+                            .onAppear { tabBarState.isHidden = true }
+                            .onDisappear { tabBarState.isHidden = false }
                     }
                 }
                 .fullScreenCover(item: $walkRecordCoordinator.fullScreenCover, onDismiss: {
