@@ -32,7 +32,7 @@ struct SegmentedButton: View {
                 .contentShape(Rectangle())
                 .onTapGesture {
                     withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                        selectedItem = item
+                        selectedItem = selectedItem == item ? nil : item
                     }
                 }
             }
