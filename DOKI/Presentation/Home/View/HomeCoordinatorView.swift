@@ -11,13 +11,20 @@ enum HomeRoute: Route {
     case routeDetail
 }
 
+enum HomeAction {
+    case walkRecord
+}
+
 struct HomeCoordinatorView: View {
+    @EnvironmentObject var tabBarState: TabBarState
+    
     @StateObject var homeCoordinator: Coordinator<HomeRoute>
     @StateObject var walkRecordCoordinator: Coordinator<WalkRecordRoute>
     @StateObject var walkRecordViewModel: WalkRecordViewModel
     @StateObject var walkResultViewModel: WalkResultViewModel
     @StateObject var walkReviewViewModel: WalkReviewViewModel
     @StateObject var routeDetailViewModel = RouteDetailViewModel()
+    @StateObject var homeViewModel = HomeViewModel()
     
     private let viewModelFactory: AppDIContainer.ViewModelFactory
     
@@ -34,11 +41,13 @@ struct HomeCoordinatorView: View {
     
     var body: some View {
         NavigationStack(path: $homeCoordinator.path) {
-            HomeView(viewModel: HomeViewModel(coordinator: walkRecordCoordinator))
+            HomeView(viewModel: homeViewModel)
                 .navigationDestination(for: HomeRoute.self) { destination in
                     switch destination {
                     case .routeDetail:
                         RouteDetailView(viewModel: routeDetailViewModel)
+                            .onAppear { tabBarState.isHidden = true }
+                            .onDisappear { tabBarState.isHidden = false }
                     }
                 }
                 .fullScreenCover(item: $walkRecordCoordinator.fullScreenCover, onDismiss: {
@@ -63,7 +72,13 @@ struct HomeCoordinatorView: View {
     }
     
     func bindAction() {
-      
+        
+        homeViewModel.navigationAction = { destination in
+            switch destination {
+            case .walkRecord:
+                walkRecordCoordinator.presentFullScreen(.walkRecord)
+            }
+        }
         
         walkRecordViewModel.navigationAction = { destination in
             switch destination {
@@ -71,6 +86,13 @@ struct HomeCoordinatorView: View {
                 walkRecordCoordinator.push(.walkRecord)
             case .walkResult:
                 walkRecordCoordinator.push(.walkResult)
+            case .walkReview:
+                walkRecordCoordinator.push(.walkReview)
+            }
+        }
+        
+        walkResultViewModel.navigationAction = { destination in
+            switch destination {
             case .walkReview:
                 walkRecordCoordinator.push(.walkReview)
             }
@@ -84,6 +106,13 @@ struct HomeCoordinatorView: View {
                 walkRecordCoordinator.dismiss()
                 homeCoordinator.push(.routeDetail)
             }
-        }                
+        }
+        
+        routeDetailViewModel.navigationAction = { destination in
+            switch destination {
+            case .back:
+                homeCoordinator.pop()
+            }
+        }
     }
 }

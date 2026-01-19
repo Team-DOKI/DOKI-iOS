@@ -108,12 +108,15 @@ extension RouteDetailView {
             }
             
             if viewModel.isExpanded {
-                FlexibleGrid(availableWidth: 350, data: viewModel.tagList, spacing: 8, alignment: .leading) { tagName in
+                FlexibleGrid(availableWidth: UIScreen.main.bounds.width - 70,
+                             data: viewModel.tagList,
+                             spacing: 8,
+                             alignment: .leading) { tagName in
                     Tag(text: tagName)
                 }
                 .padding(.vertical, 10)
             } else {
-                HStack(spacing: 0) {
+                HStack(spacing: 8) {
                     ForEach(viewModel.tagList.prefix(4), id: \.self) { tagName in
                         Tag(text: tagName)
                     }

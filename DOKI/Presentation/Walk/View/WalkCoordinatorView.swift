@@ -109,5 +109,12 @@ struct WalkCoordinatorView: View {
                 walkReadyCoordinator.push(.routeDetail)
             }
         }
+        
+        routeDetailViewModel.navigationAction = { destination in
+            switch destination {
+            case .back:
+                walkReadyCoordinator.pop()
+            }
+        }
     }
 }
