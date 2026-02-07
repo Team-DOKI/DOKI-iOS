@@ -46,12 +46,5 @@ struct MainTabView: View {
             }
             .ignoresSafeArea(.keyboard)
         }
-        .onAppear {
-            print("ACCESS TOKEN:", AuthManager.shared.accessToken ?? "nil")
-            print("REFRESH TOKEN:", AuthManager.shared.refreshToken ?? "nil")
-            
-            let deviceId = DeviceIDManager.shared.getDeviceId()
-            print("DEVICE ID:", deviceId)
-        }
     }
 }

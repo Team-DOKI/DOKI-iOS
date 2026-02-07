@@ -24,7 +24,10 @@ class AuthManager: ObservableObject {
     private(set) var accessToken: String?
     private(set) var refreshToken: String?
     
-    private let provider = MoyaProvider<LoginAPI>(plugins: [NetworkLoggerPlugin()])
+    private let provider = MoyaProvider<AuthAPI>(
+        session: MoyaSession.shared,
+        plugins: [MoyaLoggingPlugin()]
+    )
     
     private init() {}
     
@@ -44,8 +47,8 @@ class AuthManager: ObservableObject {
     func loginWithApple(_ idToken: String, deviceId: String) async {
         do {
             let request = AppleLoginRequestDTO(authorizationCode: idToken, deviceId: deviceId)
-            let response: AppleLoginResponseDTO = try await provider.async.request(.appleLogin(appleLoginReqDto: request))
-
+            let response: AppleLoginResponseDTO = try await provider.async.request(.appleLogin(request: request))
+            
             try KeychainManager.create(.accessToken, response.accessToken)
             try KeychainManager.create(.refreshToken, response.refreshToken)
             
@@ -63,14 +66,32 @@ class AuthManager: ObservableObject {
         }
     }
     
-    func logout() {
+    /// Logout API
+    func logout() async {
+        do {
+            let deviceId = DeviceIDManager.shared.getDeviceId()
+            let request = LogoutRequestDTO(deviceId: deviceId)
+            
+            try await provider.async.requestPlain(
+                .logout(request: request)
+            )
+            
+            logoutLocal()
+        } catch {
+            print("로그아웃 실패:", error.localizedDescription)
+        }
+    }
+    
+    func logoutLocal() {
         do {
             try KeychainManager.delete(.accessToken)
             try KeychainManager.delete(.refreshToken)
-            
-            authStatus = .loggedOut
         } catch {
             print(error.localizedDescription)
+        }
+        
+        DispatchQueue.main.async {
+            self.authStatus = .loggedOut
         }
     }
     
@@ -82,6 +103,26 @@ class AuthManager: ObservableObject {
             self.refreshToken = refreshToken
         } catch {
             print(error.localizedDescription)
+        }
+    }
+    
+    /// withdraw API
+    func withdraw() async {
+        do {
+            let request = WithdrawRequestDTO(provider: "APPLE")
+            try await provider.async.requestPlain(.withdraw(request: request))
+            
+            await MainActor.run {
+                UserDefaults.standard.removeObject(forKey: "hasSeenOnboarding")
+                UserDefaults.standard.removeObject(forKey: "hasCompletedRegister")
+                
+                self.authStatus = .loggedOut
+            }
+            
+            try KeychainManager.delete(.accessToken)
+            try KeychainManager.delete(.refreshToken)
+        } catch {
+            print("회원탈퇴 실패:", error.localizedDescription)
         }
     }
 }

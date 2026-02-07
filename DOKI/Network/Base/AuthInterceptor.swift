@@ -15,7 +15,7 @@ final class AuthInterceptor: RequestInterceptor {
     
     private init() {}
     
-    // 네트워크 요청하기전 헤더에 accessToken 추가
+    // 네트워크 요청하기 전 헤더에 accessToken 추가
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, any Error>) -> Void) {
         var request = urlRequest
         
@@ -40,7 +40,7 @@ final class AuthInterceptor: RequestInterceptor {
         // refreshToken 가져오기 없다면 종료
         guard let refreshToken = AuthManager.shared.refreshToken?.replacingOccurrences(of: "\"", with: "") else {
             completion(.doNotRetry)
-            AuthManager.shared.logout()
+            AuthManager.shared.logoutLocal()
             return
         }
         
@@ -61,16 +61,16 @@ final class AuthInterceptor: RequestInterceptor {
         let defaultSession = URLSession(configuration: .default)
         
         defaultSession.dataTask(with: refreshRequest) { (data: Data?, response: URLResponse?, error: Error?) in
-            // 에러 발생시 재요청x
+            // 에러 발생시 재요청 x
             guard error == nil else {
                 completion(.doNotRetry)
-                AuthManager.shared.logout()
+                AuthManager.shared.logoutLocal()
                 return
             }
             
             guard let data, let response = response as? HTTPURLResponse, (200..<300) ~= response.statusCode else {
                 completion(.doNotRetry)
-                AuthManager.shared.logout()
+                AuthManager.shared.logoutLocal()
                 return
             }
             
@@ -88,7 +88,7 @@ final class AuthInterceptor: RequestInterceptor {
             } catch {
                 print("토큰 재발급 실패 - 로그아웃")
                 completion(.doNotRetryWithError(error))
-                AuthManager.shared.logout()
+                AuthManager.shared.logoutLocal()
             }
         }.resume()
     }

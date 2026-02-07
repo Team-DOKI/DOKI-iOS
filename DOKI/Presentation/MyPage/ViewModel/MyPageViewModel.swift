@@ -13,6 +13,12 @@ class MyPageViewModel: ObservableObject {
     @Published var isShowLogoutAlert: Bool = false
     @Published var isShowWithdrawAlert: Bool = false
     
+    private let authManager: AuthManager
+    
+    init(authManager: AuthManager = .shared) {
+        self.authManager = authManager
+    }
+    
     /// 로그아웃 모달 표시
     func logoutButtonTapped() {
         isShowLogoutAlert = true
@@ -35,15 +41,24 @@ class MyPageViewModel: ObservableObject {
     
     /// 회원탈퇴 처리
     func withdrawButtonConfirmed() {
-        print("회원탈퇴")
+        isShowWithdrawAlert = false
+        
+        Task {
+            await authManager.withdraw()
+        }
     }
     
     /// 로그아웃 처리
     func logoutButtonConfirmed() {
-        print("로그아웃")
-    }
+        isShowLogoutAlert = false
         
+        Task {
+            await authManager.logout()
+        }
+    }
+    
     // MARK: - Navigation
+    
     func navigateToPetProfile() {
         navigationAction?(.petProfile)
     }
