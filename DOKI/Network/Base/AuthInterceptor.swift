@@ -18,16 +18,16 @@ final class AuthInterceptor: RequestInterceptor {
     // 네트워크 요청하기전 헤더에 accessToken 추가
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, any Error>) -> Void) {
         var request = urlRequest
-           
-           if request.url?.absoluteString.contains("auth/refresh") == true {
-               completion(.success(request))
-               return
-           }
-           if let accessToken = AuthManager.shared.accessToken {
-               request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-           }
-
-           completion(.success(request))
+        
+        if request.url?.absoluteString.contains("auth/refresh") == true {
+            completion(.success(request))
+            return
+        }
+        if let accessToken = AuthManager.shared.accessToken {
+            request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        }
+        
+        completion(.success(request))
     }
     
     func retry(_ request: Request, for session: Session, dueTo error: any Error, completion: @escaping (RetryResult) -> Void) {
@@ -48,8 +48,15 @@ final class AuthInterceptor: RequestInterceptor {
         var refreshRequest = URLRequest(url: URL(string: Config.baseURL + "auth/refresh")!)
         refreshRequest.httpMethod = "POST"
         refreshRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
-                
-        let requestBody = try? JSONSerialization.data(withJSONObject: ["refreshToken": refreshToken, "deviceId": "doki-service"])
+        
+        let deviceId = DeviceIDManager.shared.getDeviceId()
+        
+        let requestBody = try? JSONSerialization.data(
+            withJSONObject: [
+                "refreshToken": refreshToken,
+                "deviceId": deviceId
+            ]
+        )
         refreshRequest.httpBody = requestBody
         let defaultSession = URLSession(configuration: .default)
         

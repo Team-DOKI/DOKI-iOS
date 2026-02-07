@@ -30,7 +30,7 @@ struct LoginView: View {
                     .padding(.bottom, 10)
                 
                 KakaoLoginButton {
-                    viewModel.navigateToRegister()
+                  
                 }
                 .padding(.horizontal, 16)
                 

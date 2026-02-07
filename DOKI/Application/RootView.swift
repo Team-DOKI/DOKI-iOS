@@ -11,24 +11,32 @@ struct RootView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var appDIContainer: AppDIContainer
     
-    @AppStorage("isOnboarding") var isOnboardingCompleted: Bool = UserDefaults.standard.bool(forKey: "isOnboarding")
+    @AppStorage("hasSeenOnboarding") var hasSeenOnboarding: Bool = false
+    @AppStorage("hasCompletedRegister") var hasCompletedRegister: Bool = false
     
     var body: some View {
         Group {
-            if !isOnboardingCompleted {
-                OnboardingView(isOnboarding: $isOnboardingCompleted)
+            if !hasSeenOnboarding {
+                OnboardingView(hasSeenOnboarding: $hasSeenOnboarding)
             } else {
                 switch authManager.authStatus {
-                case .loggedIn:
-                    MainTabView()
-                        .environmentObject(TabBarState())
-                case .loggedOut:
-                    LoginCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
                 case .loading:
                     Text("스플래쉬")
-                        .onAppear {
-                            authManager.checkLogin()
-                        }
+                        .onAppear { authManager.checkLogin() }
+                    
+                case .loggedOut:
+                    LoginCoordinatorView(viewModelFactory: appDIContainer.viewModelFactory)
+                    
+                case .loggedIn:
+                    if !hasCompletedRegister {
+                        RegisterView(
+                            viewModel: appDIContainer.viewModelFactory.makeRegisterViewModel(),
+                            hasCompletedRegister: $hasCompletedRegister
+                        )
+                    } else {
+                        MainTabView()
+                            .environmentObject(TabBarState())
+                    }
                 }
             }
         }

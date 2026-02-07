@@ -12,34 +12,21 @@ enum LoginRoute: Route {
 }
 
 struct LoginCoordinatorView: View {
-    @StateObject var loginCoordinator: Coordinator<LoginRoute>
     @StateObject var loginViewModel: LoginViewModel
-    @StateObject var authManager: AuthManager = .shared
+    @EnvironmentObject var authManager: AuthManager
     
     let viewModelFactory: AppDIContainer.ViewModelFactory
     
-    init(loginCoordinator: Coordinator<LoginRoute> = Coordinator<LoginRoute>(),
-         viewModelFactory: AppDIContainer.ViewModelFactory) {
+    init(viewModelFactory: AppDIContainer.ViewModelFactory) {
         self.viewModelFactory = viewModelFactory
-        self._loginCoordinator = StateObject(wrappedValue: loginCoordinator)
-        self._loginViewModel = StateObject(wrappedValue: viewModelFactory.makeLoginViewModel(loginCoordinator))
+        self._loginViewModel = StateObject(
+            wrappedValue: viewModelFactory.makeLoginViewModel()
+        )
     }
     
     var body: some View {
-        NavigationStack(path: $loginCoordinator.path) {
+        NavigationStack {
             LoginView(viewModel: loginViewModel)
-                .navigationDestination(for: LoginRoute.self) { destination in
-                    switch destination {
-                    case .register:
-                        let viewModel = viewModelFactory.makeRegisterViewModel()
-                        RegisterView(viewModel: viewModel)
-                    }
-                }
-                .onReceive(authManager.$isNewUser) { isNewUser in
-                    if isNewUser {
-                        loginCoordinator.push(.register)
-                    }
-                }
         }
     }
 }

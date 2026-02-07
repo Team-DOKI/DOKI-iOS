@@ -32,7 +32,8 @@ class AuthManager: ObservableObject {
         do {
             self.accessToken = try KeychainManager.read(.accessToken)
             self.refreshToken = try KeychainManager.read(.refreshToken)
-            authStatus = .loggedIn            
+            
+            authStatus = .loggedIn
         } catch {
             authStatus = .loggedOut
             print(error.localizedDescription)
@@ -42,21 +43,20 @@ class AuthManager: ObservableObject {
     /// AppleLogin API
     func loginWithApple(_ idToken: String, deviceId: String) async {
         do {
-            let appleLoginReqDto = AppleLoginRequestDTO(authorizationCode: idToken, deviceId: deviceId)
-            let response: AppleLoginResponseDTO = try await provider.async.request(.appleLogin(appleLoginReqDto: appleLoginReqDto))
-                        
+            let request = AppleLoginRequestDTO(authorizationCode: idToken, deviceId: deviceId)
+            let response: AppleLoginResponseDTO = try await provider.async.request(.appleLogin(appleLoginReqDto: request))
+
             try KeychainManager.create(.accessToken, response.accessToken)
             try KeychainManager.create(.refreshToken, response.refreshToken)
+            
             self.accessToken = response.accessToken
             self.refreshToken = response.refreshToken
             
             DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                isNewUser = response.isNewUser
+                guard let self = self else { return }
                 
-                if !isNewUser {
-                    authStatus = .loggedIn
-                }
+                self.isNewUser = response.isNewUser
+                self.authStatus = .loggedIn
             }
         } catch {
             print(error.localizedDescription)
@@ -67,6 +67,7 @@ class AuthManager: ObservableObject {
         do {
             try KeychainManager.delete(.accessToken)
             try KeychainManager.delete(.refreshToken)
+            
             authStatus = .loggedOut
         } catch {
             print(error.localizedDescription)
@@ -84,5 +85,3 @@ class AuthManager: ObservableObject {
         }
     }
 }
-
-

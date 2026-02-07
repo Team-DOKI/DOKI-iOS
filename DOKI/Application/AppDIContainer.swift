@@ -29,8 +29,8 @@ extension AppDIContainer {
             return WalkResultViewModel()
         }
         
-        func makeLoginViewModel(_ coordinator: Coordinator<LoginRoute>) -> LoginViewModel {
-            return LoginViewModel(loginCoordinator: coordinator)
+        func makeLoginViewModel() -> LoginViewModel {
+            return LoginViewModel()
         }
         
         func makeRecommendViewModel(_ coordinator: Coordinator<RecommendRoute>) -> RecommendViewModel {

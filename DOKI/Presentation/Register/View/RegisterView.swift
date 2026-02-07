@@ -13,6 +13,8 @@ struct RegisterView: View {
     @EnvironmentObject var authManager: AuthManager
     @Environment(\.dismiss) private var dismiss
     
+    @Binding var hasCompletedRegister: Bool
+    
     var body: some View {
         VStack(spacing: 0) {
             currentStepView
@@ -27,6 +29,7 @@ struct RegisterView: View {
                 AreaMapView(viewModel: viewModel)
             }
         })
+        .ignoresSafeArea(.keyboard)
         .topNavigationView {
             BackButton {
                 if viewModel.isFirstStep {
@@ -68,7 +71,7 @@ extension RegisterView {
         MainButton(text: viewModel.isLastStep ? "완료" : "다음", buttonState: viewModel.buttonDisabled ? .disabled : .active1) {
             if viewModel.isLastStep {
                 // TODO: API 연동 전까지 임시 코드
-                authManager.authStatus = .loggedIn
+                hasCompletedRegister = true
             } else {
                 viewModel.goToNextStep()
             }
