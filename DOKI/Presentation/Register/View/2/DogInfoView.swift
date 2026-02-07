@@ -60,6 +60,7 @@ extension DogInfoView {
                 .bodyDefault(color: .defaultMiddle)
         }
     }
+    
     private var photoPicker: some View {
         PhotosPicker(
             selection: $selectedItems,

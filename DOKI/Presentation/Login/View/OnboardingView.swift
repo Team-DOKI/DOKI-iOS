@@ -42,7 +42,7 @@ enum OnboardingStep: CaseIterable {
 
 struct OnboardingView: View {
     @State private var currentStep: OnboardingStep = .welcome
-    @Binding var isOnboarding: Bool
+    @Binding var hasSeenOnboarding: Bool
     
     var body: some View {
         VStack(spacing: 0) {
@@ -95,7 +95,7 @@ struct OnboardingView: View {
             }.padding(.bottom, 14)
             
             MainButton(text: "시작하기") {
-                isOnboarding = true
+                hasSeenOnboarding = true
             }
         }
         .padding(.horizontal, 16)

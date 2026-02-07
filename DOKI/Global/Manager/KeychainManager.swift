@@ -24,6 +24,7 @@ enum KeychainError: Error {
 enum KeychainName: String {
     case accessToken
     case refreshToken
+    case deviceId
 }
 
 struct KeychainManager {

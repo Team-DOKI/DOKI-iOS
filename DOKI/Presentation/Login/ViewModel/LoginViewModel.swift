@@ -9,20 +9,13 @@ import SwiftUI
 import AuthenticationServices
 
 class LoginViewModel: ObservableObject {
-    private let loginCoordinator: Coordinator<LoginRoute>
     private let authManager: AuthManager
     
-    init(loginCoordinator: Coordinator<LoginRoute>,
+    init(
          authManager: AuthManager = .shared) {
-        self.loginCoordinator = loginCoordinator
         self.authManager = authManager
     }
-    
-    /// 유저정보 등록화면으로 이동
-    func navigateToRegister() {
-        loginCoordinator.push(.register)
-    }
-    
+
     /// Apple 로그인 요청
     func requestAppleLogin(_ request :ASAuthorizationAppleIDRequest) {
         request.requestedScopes = [.fullName, .email]
@@ -37,7 +30,8 @@ class LoginViewModel: ObservableObject {
                let identityToken = String(data: identityTokenData, encoding: .utf8) {
                 
                 Task {
-                    await authManager.loginWithApple(identityToken, deviceId: "device_abc123")
+                    let deviceId = DeviceIDManager.shared.getDeviceId()
+                    await authManager.loginWithApple(identityToken, deviceId: deviceId)
                 }
             }
         case .failure(let error):
