@@ -13,6 +13,7 @@ import Combine
 struct WalkNaverMapView: UIViewRepresentable {
     
     @ObservedObject var locationManager = LocationManager.shared
+    @ObservedObject var viewModel: WalkRecordViewModel
     
     @Binding var pathCoordinates: [CLLocationCoordinate2D]
     @Binding var userTrackingMode: Bool
@@ -115,6 +116,7 @@ struct WalkNaverMapView: UIViewRepresentable {
                location.distance(from: last) < 3 { return }
             
             lastLocation = location
+            parent.viewModel.updateLocation(location)
             parent.pathCoordinates.append(location.coordinate)
             updatePath()
         }
