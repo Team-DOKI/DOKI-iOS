@@ -17,9 +17,8 @@ struct WalkRecordView: View {
     
     var body: some View {
         ZStack() {
-            WalkNaverMapView(pathCoordinates: $viewModel.pathCoordinates, userTrackingMode: $viewModel.userTrackingMode
-            )
-            .ignoresSafeArea()
+            WalkNaverMapView(pathCoordinates: $viewModel.pathCoordinates, userTrackingMode: $viewModel.userTrackingMode)
+                .ignoresSafeArea()
             
             VStack(spacing: 0) {
                 

@@ -43,6 +43,20 @@ class WalkRecordViewModel: ObservableObject {
         "\(stepCount)"
     }
     
+    var navigationAction: ((WalkRecordRoute)->())?
+    
+    func navigateToWalkResult() {
+        stopTimer()
+        navigationAction?(.walkResult)
+    }
+
+    func reset() {
+        elapsedSeconds = 0
+        distance = 0.0
+        stepCount = 0
+        baseStepCount = 0
+    }
+    
     // MARK: - 시간 (타이머)
     
     func startTimer() {
@@ -105,19 +119,5 @@ class WalkRecordViewModel: ObservableObject {
     func stopStepCounting() {
         pedometer.stopUpdates()
         isPedometerRunning = false
-    }
-    
-    func reset() {
-        elapsedSeconds = 0
-        distance = 0.0
-        stepCount = 0
-        baseStepCount = 0
-    }
-    
-    var navigationAction: ((WalkRecordRoute)->())?
-    
-    func navigateToWalkResult() {
-        stopTimer()
-        navigationAction?(.walkResult)
     }
 }
