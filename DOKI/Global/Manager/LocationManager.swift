@@ -22,14 +22,12 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest
         manager.distanceFilter = 5
-    }
-    
-    func requestPermission() {
+        
         manager.requestWhenInUseAuthorization()
-    }
-    
-    func startUpdating() {
-        manager.startUpdatingLocation()
+        
+        if let lastLocation = manager.location {
+            currentLocation = lastLocation
+        }
     }
     
     func stopUpdating() {
@@ -43,7 +41,7 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
-            startUpdating()
+            manager.startUpdatingLocation()
         default:
             break
         }

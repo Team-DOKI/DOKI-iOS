@@ -13,6 +13,7 @@ import Combine
 struct WalkNaverMapView: UIViewRepresentable {
     
     @ObservedObject var locationManager = LocationManager.shared
+    @ObservedObject var viewModel: WalkRecordViewModel
     
     @Binding var pathCoordinates: [CLLocationCoordinate2D]
     @Binding var userTrackingMode: Bool
@@ -23,25 +24,52 @@ struct WalkNaverMapView: UIViewRepresentable {
     
     func makeUIView(context: Context) -> NMFMapView {
         let mapView = NMFMapView()
-        mapView.positionMode = .direction
+        
+        if let location = locationManager.currentLocation {
+            let latLng = NMGLatLng(
+                lat: location.coordinate.latitude,
+                lng: location.coordinate.longitude
+            )
+            
+            let cameraUpdate = NMFCameraUpdate(scrollTo: latLng)
+            cameraUpdate.animation = .none
+            mapView.moveCamera(cameraUpdate)
+        }
+        
+        mapView.positionMode = .normal
         
         let overlay = mapView.locationOverlay
         overlay.hidden = false
         
+        if let image = UIImage(named: "ic_mylocation") {
+            overlay.icon = NMFOverlayImage(image: image)
+        }
+        
+        mapView.addCameraDelegate(delegate: context.coordinator)
         context.coordinator.mapView = mapView
         return mapView
     }
     
     func updateUIView(_ uiView: NMFMapView, context: Context) {
+        guard userTrackingMode else { return }
+        guard let location = locationManager.currentLocation else { return }
+        
+        let target = NMGLatLng(
+            lat: location.coordinate.latitude,
+            lng: location.coordinate.longitude
+        )
+        
+        let cameraUpdate = NMFCameraUpdate(scrollTo: target)
+        cameraUpdate.animation = .easeIn
+        uiView.moveCamera(cameraUpdate)
     }
     
-    class Coordinator: NSObject {
+    class Coordinator: NSObject, NMFMapViewCameraDelegate {
         let parent: WalkNaverMapView
         weak var mapView: NMFMapView?
         
         private var pathOverlay: NMFPath?
         private var lastLocation: CLLocation?
-        private var didMoveInitialCamera = false
         private var cancellables = Set<AnyCancellable>()
         
         init(_ parent: WalkNaverMapView) {
@@ -51,38 +79,44 @@ struct WalkNaverMapView: UIViewRepresentable {
             parent.locationManager.$currentLocation
                 .compactMap { $0 }
                 .sink { [weak self] location in
-                    self?.update(location)
+                    DispatchQueue.main.async {
+                        self?.update(location)
+                    }
                 }
                 .store(in: &cancellables)
         }
         
-        private func update(_ location: CLLocation) {
-            guard let mapView = mapView else { return }
+        func mapView(_ mapView: NMFMapView,
+                     cameraDidChangeByReason reason: Int,
+                     animated: Bool) {
             
-            let latLng = NMGLatLng(
+            guard reason == NMFMapChangedByGesture else { return }
+            
+            guard parent.userTrackingMode else { return }
+            
+            guard let location = parent.locationManager.currentLocation else { return }
+            
+            let target = NMGLatLng(
                 lat: location.coordinate.latitude,
                 lng: location.coordinate.longitude
             )
             
-            let overlay = mapView.locationOverlay
-            overlay.location = latLng
-            overlay.hidden = false
+            let current = mapView.cameraPosition.target
+            let distance = current.distance(to: target)
             
-            if let image = UIImage(named: "ic_mylocation") {
-                overlay.icon = NMFOverlayImage(image: image)
-            }
+            guard distance > 3 else { return }
             
-            if !didMoveInitialCamera || parent.userTrackingMode {
-                let cameraUpdate = NMFCameraUpdate(scrollTo: latLng)
-                cameraUpdate.animation = .easeIn
-                mapView.moveCamera(cameraUpdate)
-                didMoveInitialCamera = true
-            }
-            
+            let cameraUpdate = NMFCameraUpdate(scrollTo: target)
+            cameraUpdate.animation = .easeIn
+            mapView.moveCamera(cameraUpdate)
+        }
+        
+        private func update(_ location: CLLocation) {
             if let last = lastLocation,
                location.distance(from: last) < 3 { return }
             
             lastLocation = location
+            parent.viewModel.updateLocation(location)
             parent.pathCoordinates.append(location.coordinate)
             updatePath()
         }

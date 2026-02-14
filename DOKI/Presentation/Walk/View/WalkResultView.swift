@@ -40,9 +40,9 @@ struct WalkResultView: View {
                     .cornerRadius(4)
                 
                 HStack(spacing: 0) {
-                    RecordStatItem(title: "거리 (km)", value: "2.2")
-                    RecordStatItem(title: "시간 (분)", value: "30:00")
-                    RecordStatItem(title: "걸음 수 (걸음)", value: "12345")
+                    RecordStatItem(title: "거리 (km)", value: viewModel.distanceString)
+                    RecordStatItem(title: "시간 (분)", value: viewModel.elapsedTimeString)
+                    RecordStatItem(title: "걸음 수 (걸음)", value: viewModel.stepString)
                 }
                 .padding(.vertical, 14)
             }
@@ -62,11 +62,5 @@ struct WalkResultView: View {
             Text("산책 완료")
                 .subtitle()
         })
-    }
-}
-
-#Preview {
-    NavigationStack {
-        WalkResultView(viewModel: WalkResultViewModel())
     }
 }
