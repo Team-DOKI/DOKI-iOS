@@ -30,20 +30,20 @@ enum KeychainName: String {
 struct KeychainManager {
     
     /// Keychain 저장소에서 key에 해당하는 값을 추가
-    static func create<T: Codable>(_ key: KeychainName, _ value: T) throws {
-        do {
-            let valueData = try JSONEncoder().encode(value)
-            let query: NSDictionary = [
-                kSecClass: kSecClassGenericPassword,
-                kSecAttrAccount: key.rawValue,
-                kSecValueData: valueData
-            ]
-            SecItemDelete(query)
-            
-            let status = SecItemAdd(query, nil)
-            guard status == errSecSuccess else { throw KeychainError.unhandledError(status: status) }
-        } catch {
-            throw KeychainError.unexpectedPasswordData
+    static func create(_ key: KeychainName, _ value: String) throws {
+        let valueData = value.data(using: .utf8)!
+        
+        let query: NSDictionary = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: key.rawValue,
+            kSecValueData: valueData
+        ]
+        
+        SecItemDelete(query)
+        
+        let status = SecItemAdd(query, nil)
+        guard status == errSecSuccess else {
+            throw KeychainError.unhandledError(status: status)
         }
     }
     

@@ -21,6 +21,7 @@ struct DOKIApp: App {
 //                .onAppear {
 //                    try? KeychainManager.delete(.accessToken)
 //                    try? KeychainManager.delete(.refreshToken)
+//                    try? KeychainManager.delete(.deviceId)
 //                }
         }
     }
