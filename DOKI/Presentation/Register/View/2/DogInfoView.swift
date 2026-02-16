@@ -163,7 +163,7 @@ extension DogInfoView {
                        let newImage = UIImage(data: data),
                        !viewModel.profileImage.contains(where: { $0.pngData() == newImage.pngData() }) {
                         DispatchQueue.main.async {
-                            viewModel.profileImage.append(newImage)
+                            viewModel.uploadDogImage(newImage)
                         }
                     }
                 case .failure:

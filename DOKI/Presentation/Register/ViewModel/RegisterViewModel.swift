@@ -257,3 +257,95 @@ extension RegisterViewModel {
         }
     }
 }
+
+// MARK: - API (이미지 등록)
+
+extension RegisterViewModel {
+    func uploadDogImage(_ image: UIImage) {
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
+        
+        let imageProvider = MoyaProvider<ImageAPI>(
+            session: MoyaSession.shared,
+            plugins: [MoyaLoggingPlugin()]
+        )
+        
+        let presignedRequest = PresignedUrlRequestDTO(
+            domain: "PET_PROFILE",
+            contentType: "image/jpeg"
+        )
+        
+        imageProvider.request(.presigned(request: presignedRequest)) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(BaseDTO<PresignedUrlResponseDTO>.self, from: response.data)
+                    guard let presignedUrlString = decoded.data?.uploadUrl,
+                          let imageUrl = decoded.data?.imageUrl,
+                          let presignedUrl = URL(string: presignedUrlString) else {
+                        print("Presigned URL parsing 실패")
+                        return
+                    }
+                    
+                    self.uploadToS3(url: presignedUrl, data: imageData) { success in
+                        if success {
+                            let registerRequest = RegisterImageRequestDTO(
+                                imageUrl: imageUrl,
+                                contentType: "image/jpeg",
+                                width: Int(image.size.width),
+                                height: Int(image.size.height),
+                                domain: "PET_PROFILE"
+                            )
+                            
+                            imageProvider.request(.register(request: registerRequest)) { result in
+                                switch result {
+                                case .success(let response):
+                                    do {
+                                        let decodedImage = try JSONDecoder().decode(BaseDTO<RegisterImageResponseDTO>.self, from: response.data)
+                                        DispatchQueue.main.async {
+                                            if let imageId = decodedImage.data?.imageId {
+                                                self.imageId = imageId
+                                                self.profileImage.append(image)
+                                                print("이미지 업로드 성공, ImageId: \(imageId)")
+                                            }
+                                        }
+                                    } catch {
+                                        print("이미지 등록 디코딩 실패:", error)
+                                    }
+                                case .failure(let error):
+                                    print("이미지 등록 실패:", error.localizedDescription)
+                                }
+                            }
+                            
+                        } else {
+                            print("S3 업로드 실패")
+                        }
+                    }
+                    
+                } catch {
+                    print("Presigned URL 디코딩 실패:", error)
+                }
+                
+            case .failure(let error):
+                print("Presigned URL 요청 실패:", error.localizedDescription)
+            }
+        }
+    }
+    
+    private func uploadToS3(url: URL, data: Data, completion: @escaping (Bool) -> Void) {
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("image/jpeg", forHTTPHeaderField: "Content-Type")
+        request.httpBody = data
+        
+        URLSession.shared.dataTask(with: request) { _, response, error in
+            if let httpResponse = response as? HTTPURLResponse,
+               200..<300 ~= httpResponse.statusCode {
+                completion(true)
+            } else {
+                completion(false)
+            }
+        }.resume()
+    }
+}
