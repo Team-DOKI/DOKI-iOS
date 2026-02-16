@@ -7,5 +7,5 @@
 
 struct RegisterResponseDTO {
     let userId: Int
-    let token: String
+    let petId: String
 }

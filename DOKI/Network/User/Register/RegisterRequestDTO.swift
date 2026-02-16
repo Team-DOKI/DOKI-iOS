@@ -6,26 +6,18 @@
 //
 
 struct UserProfileDTO: Encodable {
-    let loginId: String
-    let password: String
     let name: String
+    let birth: String
     let gender: String
-    let age: Int
-    let regionId: Int
+    let dongId: Int
     let pet: PetProfileDTO
 }
 
 struct PetProfileDTO: Encodable {
     let name: String
     let gender: String
-    let age: Int
-    let isAgeKnown: Bool
+    let birth: String
     let isNeutered: Bool
-    let breed: String
-    let petTraits: [PetTraitsDTO]
-}
-
-struct PetTraitsDTO: Encodable {
-    let traitCategoryId: Int
-    let traitOptionId: Int
+    let breedId: Int
+    let imageId: Int
 }

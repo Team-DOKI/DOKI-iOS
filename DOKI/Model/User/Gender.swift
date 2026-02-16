@@ -13,10 +13,16 @@ enum Gender: String, CaseIterable, Identifiable {
     
     var dogText: String {
         switch self {
-        case .male:
-            "남아"
-        case .female:
-            "여아"
+        case .male: return "남아"
+        case .female: return "여아"
+        }
+    }
+    
+    
+    var serverValue: String {
+        switch self {
+        case .male: return "M"
+        case .female: return "F"
         }
     }
 }

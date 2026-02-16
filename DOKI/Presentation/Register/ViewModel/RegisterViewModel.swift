@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
+import Moya
 
-class RegisterViewModel: ObservableObject {
+final class RegisterViewModel: ObservableObject {
     enum UserInfoStep: Int {
         case userProfile
         case dogProfile
@@ -22,22 +23,38 @@ class RegisterViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Published Properties
+    private let provider = MoyaProvider<UserAPI>(
+        session: MoyaSession.shared,
+        plugins: [MoyaLoggingPlugin()]
+    )
     
     @Published var currentStep: UserInfoStep = .userProfile
+    
+    // MARK: - RegisterRequestDTO
+    
     @Published var nickname = ""
     @Published var birthDay = ""
     @Published var gender: Gender?
+    @Published var selectedDongId: Int?
+    
     @Published var dogName = ""
-    @Published var dogBirthDay = ""
     @Published var dogGender: Gender?
-    @Published var breed = ""
-    @Published var isNeutering = false
+    @Published var dogBirthDay = ""
+    @Published var isNeutered = false
+    @Published var breedId: Int?
+    @Published var imageId: Int?
+    
+    // MARK: - UI
+    
+    @Published var breedList: [BreedDTO] = []
+    @Published var selectedBreedName: String = ""
+    @Published var breedSearchText = ""
+    
     @Published var profileImage: [UIImage] = []
     @Published var isShowBreedSearch = false
     @Published var isShowActivityArea = false
     @Published var selectedGuId: Int?
-    @Published var selectedDongId: Int?
+    
     @Published var regionDisplayName = ""
     @Published var regionList: [DistrictDTO] = [
         DistrictDTO(
@@ -89,19 +106,7 @@ class RegisterViewModel: ObservableObject {
             ]
         )
     ]
-    @Published var breedList: [String] = [
-        "말티즈",
-        "포메라니안",
-        "푸들",
-        "시츄",
-        "치와와",
-        "골든 리트리버",
-        "래브라도 리트리버",
-        "시베리안 허스키",
-        "요크셔 테리어",
-        "보더콜리"
-    ]
-    @Published var breedSearchText = ""
+    
     @Published var areaSearchText = ""
     @Published var isShowMapView = false
     
@@ -112,12 +117,22 @@ class RegisterViewModel: ObservableObject {
     var buttonDisabled: Bool {
         switch currentStep {
         case .userProfile: nickname.isEmpty || birthDay.isEmpty || gender == nil
-        case .dogProfile: dogName.isEmpty || dogBirthDay.isEmpty || dogGender == nil || breed.isEmpty
+        case .dogProfile: dogName.isEmpty || dogBirthDay.isEmpty || dogGender == nil || breedId == nil
         case .activityArea: selectedGuId == nil || selectedDongId == nil
         }
     }
     var isLastStep: Bool { next == nil }
     var isFirstStep: Bool { prev == nil }
+    
+    var filteredBreeds: [BreedDTO] {
+        if breedSearchText.isEmpty {
+            return breedList
+        } else {
+            return breedList.filter {
+                $0.name.localizedCaseInsensitiveContains(breedSearchText)
+            }
+        }
+    }
     
     // MARK: - User Action
     
@@ -126,7 +141,7 @@ class RegisterViewModel: ObservableObject {
     }
     
     func goToPrevStep() {
-        if let prev { currentStep = prev }        
+        if let prev { currentStep = prev }
     }
     
     func selecteGender(_ gender: Gender) {
@@ -137,16 +152,17 @@ class RegisterViewModel: ObservableObject {
         self.dogGender = gender
     }
     
-    func toggleIsNeutering() {
-        isNeutering.toggle()
+    func toggleIsNeutered() {
+        isNeutered.toggle()
     }
     
     func toggleBreedSearchSheet() {
         isShowBreedSearch.toggle()
     }
     
-    func selectBreed(_ breed: String) {
-        self.breed = breed
+    func selectBreed(_ breedList: BreedDTO) {
+        breedId = breedList.id
+        selectedBreedName = breedList.name
     }
     
     func selectGuID(_ id: Int) {
@@ -171,5 +187,73 @@ class RegisterViewModel: ObservableObject {
         }
         regionDisplayName = "\(district.gu.name) \(dong.name)"
         isShowMapView = false
+    }
+}
+
+// MARK: - API (유저 및 반려견 정보)
+
+extension RegisterViewModel {
+    
+    // 회원가입
+    func registerUser() {
+        guard
+            let gender,
+            let dogGender,
+            let breedId,
+            let imageId
+        else {
+            return
+        }
+        
+        let formattedBirthDay = birthDay.replacingOccurrences(of: "/", with: "-")
+        let formattedDogBirthDay = dogBirthDay.replacingOccurrences(of: "/", with: "-")
+        
+        let request = UserProfileDTO(
+            name: nickname,
+            birth: formattedBirthDay,
+            gender: gender.serverValue,
+            dongId: 3, // 수정 예정
+            pet: PetProfileDTO(
+                name: dogName,
+                gender: dogGender.serverValue,
+                birth: formattedDogBirthDay,
+                isNeutered: isNeutered,
+                breedId: breedId,
+                imageId: imageId
+            )
+        )
+        
+        provider.request(.register(request: request)) { result in
+            switch result {
+            case .success(let response):
+                print("회원가입 성공")
+                print("statusCode:", response.statusCode)
+            case .failure(let error):
+                print("회원가입 실패")
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    // 견종 조회
+    func fetchBreedList() {
+        provider.request(.fetchBreedList) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder()
+                        .decode(BaseDTO<BreedListResponseDTO>.self, from: response.data)
+                    
+                    self.breedList = decoded.data?.breedList ?? []
+                } catch {
+                    print("견종 디코딩 실패:", error)
+                }
+                
+            case .failure(let error):
+                print("견종 조회 실패:", error.localizedDescription)
+            }
+        }
     }
 }

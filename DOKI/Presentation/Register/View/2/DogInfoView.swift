@@ -120,10 +120,10 @@ extension DogInfoView {
             }
             
             Button {
-                viewModel.toggleIsNeutering()
+                viewModel.toggleIsNeutered()
             } label: {
                 HStack(spacing: 8) {
-                    Image(viewModel.isNeutering ? .btnNeutralized : .btnNotneutralized)
+                    Image(viewModel.isNeutered ? .btnNeutralized : .btnNotneutralized)
                     
                     Text("중성화 했어요").bodySmall(color: .defaultMiddle)
                 }
@@ -137,7 +137,7 @@ extension DogInfoView {
             
             SearchField(
                 placeholder: "견종을 검색해보세요",
-                text: $viewModel.breed
+                text: $viewModel.selectedBreedName
             )
             .disabled(true)
             .overlay {
