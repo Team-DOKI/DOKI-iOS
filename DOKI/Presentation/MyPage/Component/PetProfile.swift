@@ -11,6 +11,7 @@ struct PetProfile: View {
     let name: String
     let dbti: String
     let petInfo: String
+    let imageUrl: String?
     let action: ()->()
     
     var body: some View {
@@ -28,8 +29,25 @@ struct PetProfile: View {
                 .background(.defaultPrimary)
                 
                 HStack(spacing: 16) {
-                    Image(.imgDefaultprofile)
+                    if let imageUrl, let url = URL(string: imageUrl) {
+                        AsyncImage(url: url) { image in
+                            image
+                                .resizable()
+                                .scaledToFill()
+                        } placeholder: {
+                            Image(.imgDefaultprofile)
+                                .resizable()
+                                .scaledToFill()
+                        }
                         .frame(width: 60, height: 60)
+                        .clipShape(Circle())
+                    } else {
+                        Image(.imgDefaultprofile)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 60, height: 60)
+                            .clipShape(Circle())
+                    }
                     
                     VStack(alignment: .leading, spacing: 4) {
                         AddressTag(text: dbti)

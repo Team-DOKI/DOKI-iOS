@@ -226,8 +226,13 @@ extension RegisterViewModel {
         provider.request(.register(request: request)) { result in
             switch result {
             case .success(let response):
-                print("회원가입 성공")
-                print("statusCode:", response.statusCode)
+                do {
+                    let decoded = try JSONDecoder().decode(BaseDTO<RegisterResponseDTO>.self, from: response.data)
+                    UserDefaults.standard.set(decoded.data?.petId, forKey: "petId")
+                } catch {
+                    print("회원가입 응답 디코딩 실패:", error)
+                }
+                
             case .failure(let error):
                 print("회원가입 실패")
                 print(error.localizedDescription)

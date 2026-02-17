@@ -12,12 +12,14 @@ import Moya
 enum UserAPI {
     case register(request: UserProfileDTO)
     case fetchBreedList
+    case fetchUserProfile
+    case fetchPetProfile(petId: Int)
 }
 
 extension UserAPI: BaseTargetType {
     var headerType: HeaderType {
         switch self {
-        case .register, .fetchBreedList:
+        case .register, .fetchBreedList, .fetchUserProfile, .fetchPetProfile:
             return .defaultHeader
         }
     }
@@ -28,14 +30,18 @@ extension UserAPI: BaseTargetType {
             return "users"
         case .fetchBreedList:
             return "pets/breeds"
-        }
+        case .fetchUserProfile:
+            return "users/me/userInfo"
+        case let .fetchPetProfile(petId):
+                return "pets/\(petId)"
+            }
     }
     
     var method: Moya.Method {
         switch self {
         case .register:
             return .post
-        case .fetchBreedList:
+        case .fetchBreedList, .fetchUserProfile, .fetchPetProfile:
             return .get
         }
     }
@@ -44,7 +50,7 @@ extension UserAPI: BaseTargetType {
         switch self {
         case let .register(request):
             return .requestJSONEncodable(request)
-        case .fetchBreedList:
+        case .fetchBreedList, .fetchUserProfile, .fetchPetProfile:
             return .requestPlain
         }
     }
