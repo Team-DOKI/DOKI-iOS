@@ -32,15 +32,17 @@ struct WalkReadyView: View {
                             .font(.small)
                             .foregroundStyle(.defaultMiddle)
                         
-                        Text("발이 차가워요.. 잠깐 다녀와요!")
+                        Text(viewModel.mainMessage)
                             .font(.subtitle)
                             .foregroundColor(.contents)
                         
-                        Text("10분 내 짧은 산책 / 패딩과 신발 필수")
+                        Text(viewModel.subMessage)
                             .font(.bodySmall)
                             .foregroundColor(.contents)
                     }
                     .padding(.vertical, 16)
+                    
+                    Spacer()
                     
                     Image(.imgWalkdog)
                         .padding(.top, 8)
