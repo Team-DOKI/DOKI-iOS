@@ -1,11 +1,11 @@
 //
-//  PetProfileResponseDTO.swift
+//  PetProfileResponse.swift
 //  DOKI
 //
 //  Created by 이세민 on 2/17/26.
 //
 
-struct PetProfileResponseDTO: Codable {
+struct PetProfileResponse: Codable {
     let petId: Int
     let imageUrl: String
     let name: String

@@ -18,15 +18,15 @@ struct MyPageView: View {
                 VStack(spacing: 16) {
                     // 유저 & 반려견 프로필
                     MyProfile(
-                        nickname: viewModel.userName,
-                        email: viewModel.userEmail,
+                        nickname: viewModel.userNameText,
+                        email: viewModel.userEmailText,
                         action: viewModel.navigateToMyProfile
                     )
                     
                     PetProfile(
-                        name: viewModel.petName,
-                        dbti: viewModel.petDbti,
-                        petInfo: viewModel.petInfo,
+                        name: viewModel.petNameText,
+                        dbti: viewModel.petDbtiText,
+                        petInfo: viewModel.petInfoText,
                         imageUrl: viewModel.petProfile?.imageUrl,
                         action: viewModel.navigateToPetProfile
                     )

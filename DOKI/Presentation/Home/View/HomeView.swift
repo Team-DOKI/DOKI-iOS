@@ -23,7 +23,7 @@ struct HomeView: View {
                     HStack(spacing: 2) {
                         Image(.icSun)
                         
-                        Text("\(viewModel.weather?.temperature ?? 0)°C")
+                        Text(viewModel.temperatureText)
                             .foregroundStyle(.contents)
                             .font(.subActive)
                     }
@@ -31,14 +31,14 @@ struct HomeView: View {
                     HStack(spacing: 2) {
                         Image(.icDrop)
                         
-                        Text("\(viewModel.weather?.rainyMm ?? 0)mm")
+                        Text(viewModel.rainyText)
                             .foregroundStyle(.contents)
                             .font(.subActive)
                     }
                     
                     Spacer()
                     
-                    AddressTag(text: viewModel.weather?.region ?? "지역 정보 없음")
+                    AddressTag(text: viewModel.regionText)
                 }
             }
             .padding(.horizontal, 16)

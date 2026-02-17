@@ -9,8 +9,8 @@ import Foundation
 import Moya
 
 enum ImageAPI {
-    case presigned(request: PresignedUrlRequestDTO)
-    case register(request: RegisterImageRequestDTO)
+    case presigned(request: PresignedUrlRequest)
+    case register(request: RegisterImageRequest)
 }
 
 extension ImageAPI: BaseTargetType {

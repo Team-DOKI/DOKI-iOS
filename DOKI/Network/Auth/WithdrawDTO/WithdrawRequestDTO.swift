@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct WithdrawRequestDTO: Encodable {
+struct WithdrawRequestDTO: Codable {
     let provider: String
 }

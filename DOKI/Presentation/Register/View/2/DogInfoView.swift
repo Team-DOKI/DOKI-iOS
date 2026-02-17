@@ -11,7 +11,7 @@ import PhotosUI
 struct DogInfoView: View {
     @ObservedObject var viewModel: RegisterViewModel
     
-    @State private var selectedItems: [PhotosPickerItem] = []
+    @State private var selectedItem: PhotosPickerItem?
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -63,11 +63,10 @@ extension DogInfoView {
     
     private var photoPicker: some View {
         PhotosPicker(
-            selection: $selectedItems,
-            maxSelectionCount: 1,
+            selection: $selectedItem,
             matching: .images
         ) {
-            if let profileImage = viewModel.profileImage.last {
+            if let profileImage = viewModel.petProfileImage {
                 Image(uiImage: profileImage)
                     .resizable()
                     .frame(width: 94, height: 94)
@@ -77,8 +76,9 @@ extension DogInfoView {
                 Image(.btnDogprofile)
             }
         }
-        .onChange(of: selectedItems) { _, selectedPhoto in
-            handleSelectedPhotos(selectedPhoto)
+        .onChange(of: selectedItem) { _, newItem in
+            guard let newItem else { return }
+            handleSelectedPhoto(newItem)
         }
     }
     
@@ -154,23 +154,22 @@ extension DogInfoView {
 // MARK: - Helpers
 
 extension DogInfoView {
-    private func handleSelectedPhotos(_ newPhotos: [PhotosPickerItem]) {
-        for newPhoto in newPhotos {
-            newPhoto.loadTransferable(type: Data.self) { result in
-                switch result {
-                case .success(let data):
-                    if let data,
-                       let newImage = UIImage(data: data),
-                       !viewModel.profileImage.contains(where: { $0.pngData() == newImage.pngData() }) {
-                        DispatchQueue.main.async {
-                            viewModel.uploadDogImage(newImage)
-                        }
-                    }
-                case .failure:
-                    break
+    private func handleSelectedPhoto(_ item: PhotosPickerItem) {
+        item.loadTransferable(type: Data.self) { result in
+            switch result {
+            case .success(let data):
+                guard
+                    let data,
+                    let image = UIImage(data: data)
+                else { return }
+                
+                DispatchQueue.main.async {
+                    viewModel.uploadDogImage(image)
                 }
+                
+            default:
+                print("이미지를 불러오지 못했습니다.")
             }
         }
-        selectedItems.removeAll()
     }
 }

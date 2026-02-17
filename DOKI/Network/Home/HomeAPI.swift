@@ -9,7 +9,7 @@ import Foundation
 import Moya
 
 enum HomeAPI {
-    case fetchWeather
+    case fetchWeather // 날씨 조회
 }
 
 extension HomeAPI: BaseTargetType {

@@ -11,42 +11,45 @@ import SwiftUI
 import Moya
 
 class MyPageViewModel: ObservableObject {
-    var navigationAction: ((MyPageRoute)->())?
+    private let userAPIService: UserAPIServiceProtocol
+    private let authManager: AuthManager
+    
+    init(
+        userAPIService: UserAPIServiceProtocol = UserAPIService(),
+        authManager: AuthManager = .shared
+    ) {
+        self.userAPIService = userAPIService
+        self.authManager = authManager
+        
+        fetchUserProfile()
+        
+        if let petId = UserDefaults.standard.value(forKey: "petId") as? Int {
+            fetchPetProfile(petId: petId)
+        }
+    }
     
     @Published var isShowLogoutAlert: Bool = false
     @Published var isShowWithdrawAlert: Bool = false
     
-    @Published var userName: String = ""
-    @Published var userEmail: String = ""
-    @Published var userBirth: String = ""
-    @Published var userGender: String = ""
-
-    @Published var petProfile: PetProfileResponseDTO?
+    @Published var userProfile: UserProfileResponse?
+    @Published var petProfile: PetProfileResponse?
     
-    var petName: String { petProfile?.name ?? "" }
-    var petDbti: String { petProfile?.dbtiName ?? "" }
-    var petInfo: String {
+    // MARK: - Computed Properties (UI)
+    
+    var userNameText: String { userProfile?.name ?? "" }
+    var userEmailText: String { userProfile?.email ?? "" }
+    var userBirthText: String { userProfile?.birth ?? "" }
+    var userGenderText: String { userProfile?.gender ?? "" }
+    
+    var petNameText: String { petProfile?.name ?? "" }
+    var petDbtiText: String { petProfile?.dbtiName ?? "" }
+    var petInfoText: String {
         guard let pet = petProfile else { return "" }
         let genderText = pet.gender == "F" ? "여아" : "남아"
         return "\(pet.age) / \(genderText) / \(pet.breed)"
     }
     
-    private let authManager: AuthManager
-    private let provider = MoyaProvider<UserAPI>(
-        session: MoyaSession.shared,
-        plugins: [MoyaLoggingPlugin()]
-    )
-    
-    init(authManager: AuthManager = .shared) {
-        self.authManager = authManager
-        fetchUserProfile()
-        
-        if let petId = UserDefaults.standard.value(forKey: "petId") as? Int {
-                fetchPetProfile(petId: petId)
-            } else {
-                print("petId 없음")
-            }
-    }
+    // MARK: - User Action
     
     /// 로그아웃 모달 표시
     func logoutButtonTapped() {
@@ -56,6 +59,13 @@ class MyPageViewModel: ObservableObject {
     /// 회원탈퇴 모달 표시
     func withdrawButtonTapped() {
         isShowWithdrawAlert = true
+    }
+    
+    /// 로그아웃 처리
+    func logoutButtonConfirmed() async {
+        isShowLogoutAlert = false
+        
+        await authManager.logout()
     }
     
     /// 로그아웃 취소
@@ -73,17 +83,11 @@ class MyPageViewModel: ObservableObject {
         isShowWithdrawAlert = false
         
         await authManager.withdraw()
-        
-    }
-    
-    /// 로그아웃 처리
-    func logoutButtonConfirmed() async {
-        isShowLogoutAlert = false
-        
-        await authManager.logout()
     }
     
     // MARK: - Navigation
+    
+    var navigationAction: ((MyPageRoute)->())?
     
     func navigateToPetProfile() {
         navigationAction?(.petProfile)
@@ -117,50 +121,34 @@ class MyPageViewModel: ObservableObject {
 // MARK: - API
 
 extension MyPageViewModel {
+    /// 유저 정보 조회
     func fetchUserProfile() {
-        provider.request(.fetchUserProfile) { [weak self] result in
-            guard let self = self else { return }
+        userAPIService.fetchUserProfile { [weak self] result in
+            guard let self else { return }
             
-            switch result {
-            case .success(let response):
-                do {
-                    let decoded = try JSONDecoder()
-                        .decode(BaseDTO<UserProfileResponseDTO>.self, from: response.data)
-                    
-                    DispatchQueue.main.async {
-                        if let userData = decoded.data {
-                            self.userName = userData.name
-                            self.userEmail = userData.email
-                            self.userBirth = userData.birth
-                            self.userGender = userData.gender
-                        }
-                    }
-                } catch {
-                    print("유저 프로필 디코딩 실패:", error)
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.userProfile = response?.data
+                default:
+                    print("유저 정보를 불러오지 못했습니다.")
                 }
-                
-            case .failure(let error):
-                print("유저 프로필 조회 실패:", error.localizedDescription)
             }
         }
     }
     
+    /// 반려견 정보 조회
     func fetchPetProfile(petId: Int) {
-        provider.request(.fetchPetProfile(petId: petId)) { [weak self] result in
-            guard let self = self else { return }
+        userAPIService.fetchPetProfile(petId: petId) { [weak self] result in
+            guard let self else { return }
             
-            switch result {
-            case .success(let response):
-                do {
-                    let decoded = try JSONDecoder().decode(BaseDTO<PetProfileResponseDTO>.self, from: response.data)
-                    DispatchQueue.main.async {
-                        self.petProfile = decoded.data
-                    }
-                } catch {
-                    print("펫 프로필 디코딩 실패:", error)
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.petProfile = response?.data
+                default:
+                    print("반려견 정보를 불러오지 못했습니다.")
                 }
-            case .failure(let error):
-                print("펫 프로필 조회 실패:", error.localizedDescription)
             }
         }
     }

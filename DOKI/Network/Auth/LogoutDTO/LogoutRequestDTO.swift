@@ -5,6 +5,6 @@
 //  Created by 이세민 on 2/7/26.
 //
 
-struct LogoutRequestDTO: Encodable {
+struct LogoutRequestDTO: Codable {
     let deviceId: String
 }

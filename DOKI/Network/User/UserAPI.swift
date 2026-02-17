@@ -10,10 +10,10 @@ import Foundation
 import Moya
 
 enum UserAPI {
-    case register(request: UserProfileDTO)
-    case fetchBreedList
-    case fetchUserProfile
-    case fetchPetProfile(petId: Int)
+    case register(request: UserProfileRequest) // 유저 및 반려견 정보 등록
+    case fetchBreedList // 견종 조회
+    case fetchUserProfile // 유저 정보 조회
+    case fetchPetProfile(petId: Int) // 반려견 정보 조회
 }
 
 extension UserAPI: BaseTargetType {

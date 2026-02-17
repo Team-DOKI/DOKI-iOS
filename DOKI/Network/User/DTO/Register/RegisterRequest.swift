@@ -1,19 +1,19 @@
 //
-//  RegisterRequestDTO.swift
+//  RegisterRequest.swift
 //  DOKI
 //
 //  Created by 권석기 on 7/15/25.
 //
 
-struct UserProfileDTO: Encodable {
+struct UserProfileRequest: Codable {
     let name: String
     let birth: String
     let gender: String
     let dongId: Int
-    let pet: PetProfileDTO
+    let pet: PetProfileRequest
 }
 
-struct PetProfileDTO: Encodable {
+struct PetProfileRequest: Codable {
     let name: String
     let gender: String
     let birth: String

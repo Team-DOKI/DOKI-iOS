@@ -9,34 +9,23 @@ import SwiftUI
 import Moya
 
 final class RegisterViewModel: ObservableObject {
-    enum UserInfoStep: Int {
-        case userProfile
-        case dogProfile
-        case activityArea
-        
-        var navTitle: String {
-            switch self {
-            case .userProfile: "내 정보 입력"
-            case .dogProfile: "반려견 정보 입력"
-            case .activityArea: "산책 지역 입력"
-            }
-        }
+    private let userAPIService: UserAPIServiceProtocol
+    private let imageAPIService: ImageAPIServiceProtocol
+    
+    init(
+        userAPIService: UserAPIServiceProtocol = UserAPIService(),
+        imageAPIService: ImageAPIServiceProtocol = ImageAPIService()
+    ) {
+        self.userAPIService = userAPIService
+        self.imageAPIService = imageAPIService
     }
     
-    private let provider = MoyaProvider<UserAPI>(
-        session: MoyaSession.shared,
-        plugins: [MoyaLoggingPlugin()]
-    )
-    
-    @Published var currentStep: UserInfoStep = .userProfile
-    
-    // MARK: - RegisterRequestDTO
+    // MARK: - Published Properties (DTO)
     
     @Published var nickname = ""
     @Published var birthDay = ""
     @Published var gender: Gender?
     @Published var selectedDongId: Int?
-    
     @Published var dogName = ""
     @Published var dogGender: Gender?
     @Published var dogBirthDay = ""
@@ -44,14 +33,15 @@ final class RegisterViewModel: ObservableObject {
     @Published var breedId: Int?
     @Published var imageId: Int?
     
-    // MARK: - UI
+    // MARK: - Published Properties (UI)
     
-    @Published var breedList: [BreedDTO] = []
+    @Published var petProfileImage: UIImage?
+    
+    @Published var breedList: [BreedList] = []
     @Published var selectedBreedName: String = ""
     @Published var breedSearchText = ""
-    
-    @Published var profileImage: [UIImage] = []
     @Published var isShowBreedSearch = false
+    
     @Published var isShowActivityArea = false
     @Published var selectedGuId: Int?
     
@@ -110,7 +100,23 @@ final class RegisterViewModel: ObservableObject {
     @Published var areaSearchText = ""
     @Published var isShowMapView = false
     
-    // MARK: - Computed Properties
+    // MARK: - Step
+    
+    @Published var currentStep: UserInfoStep = .userProfile
+    
+    enum UserInfoStep: Int {
+        case userProfile
+        case dogProfile
+        case activityArea
+        
+        var navTitle: String {
+            switch self {
+            case .userProfile: "내 정보 입력"
+            case .dogProfile: "반려견 정보 입력"
+            case .activityArea: "산책 지역 입력"
+            }
+        }
+    }
     
     var next: UserInfoStep? { UserInfoStep(rawValue: currentStep.rawValue + 1) }
     var prev: UserInfoStep? { UserInfoStep(rawValue: currentStep.rawValue - 1) }
@@ -124,7 +130,9 @@ final class RegisterViewModel: ObservableObject {
     var isLastStep: Bool { next == nil }
     var isFirstStep: Bool { prev == nil }
     
-    var filteredBreeds: [BreedDTO] {
+    // MARK: - User Action
+    
+    var filteredBreeds: [BreedList] {
         if breedSearchText.isEmpty {
             return breedList
         } else {
@@ -133,8 +141,6 @@ final class RegisterViewModel: ObservableObject {
             }
         }
     }
-    
-    // MARK: - User Action
     
     func goToNextStep() {
         if let next { currentStep = next }
@@ -160,7 +166,7 @@ final class RegisterViewModel: ObservableObject {
         isShowBreedSearch.toggle()
     }
     
-    func selectBreed(_ breedList: BreedDTO) {
+    func selectBreed(_ breedList: BreedList) {
         breedId = breedList.id
         selectedBreedName = breedList.name
     }
@@ -169,12 +175,12 @@ final class RegisterViewModel: ObservableObject {
         selectedGuId = id
     }
     
-    func toggleActivityArea() {
-        isShowActivityArea.toggle()
-    }
-    
     func seletDongId(_ id: Int) {
         selectedDongId = id
+    }
+    
+    func toggleActivityArea() {
+        isShowActivityArea.toggle()
     }
     
     func selectActivityArea() {
@@ -193,27 +199,24 @@ final class RegisterViewModel: ObservableObject {
 // MARK: - API (유저 및 반려견 정보)
 
 extension RegisterViewModel {
-    
-    // 회원가입
+    /// 유저 및 반려견 정보 등록
     func registerUser() {
         guard
             let gender,
             let dogGender,
             let breedId,
             let imageId
-        else {
-            return
-        }
+        else { return }
         
         let formattedBirthDay = birthDay.replacingOccurrences(of: "/", with: "-")
         let formattedDogBirthDay = dogBirthDay.replacingOccurrences(of: "/", with: "-")
         
-        let request = UserProfileDTO(
+        let request = UserProfileRequest(
             name: nickname,
             birth: formattedBirthDay,
             gender: gender.serverValue,
-            dongId: 3, // 수정 예정
-            pet: PetProfileDTO(
+            dongId: 3,
+            pet: PetProfileRequest(
                 name: dogName,
                 gender: dogGender.serverValue,
                 birth: formattedDogBirthDay,
@@ -223,41 +226,30 @@ extension RegisterViewModel {
             )
         )
         
-        provider.request(.register(request: request)) { result in
+        userAPIService.register(request: request) { result in
             switch result {
             case .success(let response):
-                do {
-                    let decoded = try JSONDecoder().decode(BaseDTO<RegisterResponseDTO>.self, from: response.data)
-                    UserDefaults.standard.set(decoded.data?.petId, forKey: "petId")
-                } catch {
-                    print("회원가입 응답 디코딩 실패:", error)
+                if let petId = response?.data?.petId {
+                    UserDefaults.standard.set(petId, forKey: "petId")
                 }
                 
-            case .failure(let error):
-                print("회원가입 실패")
-                print(error.localizedDescription)
+            default:
+                print("회원가입 정보를 불러오지 못했습니다.")
             }
         }
     }
     
-    // 견종 조회
+    /// 견종 조회
     func fetchBreedList() {
-        provider.request(.fetchBreedList) { [weak self] result in
+        userAPIService.fetchBreedList { [weak self] result in
             guard let self else { return }
-            
-            switch result {
-            case .success(let response):
-                do {
-                    let decoded = try JSONDecoder()
-                        .decode(BaseDTO<BreedListResponseDTO>.self, from: response.data)
-                    
-                    self.breedList = decoded.data?.breedList ?? []
-                } catch {
-                    print("견종 디코딩 실패:", error)
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.breedList = response?.data?.breedList ?? []
+                default:
+                    print("견종 정보를 불러오지 못했습니다.")
                 }
-                
-            case .failure(let error):
-                print("견종 조회 실패:", error.localizedDescription)
             }
         }
     }
@@ -269,71 +261,66 @@ extension RegisterViewModel {
     func uploadDogImage(_ image: UIImage) {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
         
-        let imageProvider = MoyaProvider<ImageAPI>(
-            session: MoyaSession.shared,
-            plugins: [MoyaLoggingPlugin()]
-        )
-        
-        let presignedRequest = PresignedUrlRequestDTO(
+        let presignedRequest = PresignedUrlRequest(
             domain: "PET_PROFILE",
             contentType: "image/jpeg"
         )
         
-        imageProvider.request(.presigned(request: presignedRequest)) { [weak self] result in
-            guard let self = self else { return }
+        imageAPIService.fetchPresignedURL(request: presignedRequest) { [weak self] result in
+            guard let self else { return }
             
-            switch result {
-            case .success(let response):
-                do {
-                    let decoded = try JSONDecoder().decode(BaseDTO<PresignedUrlResponseDTO>.self, from: response.data)
-                    guard let presignedUrlString = decoded.data?.uploadUrl,
-                          let imageUrl = decoded.data?.imageUrl,
-                          let presignedUrl = URL(string: presignedUrlString) else {
-                        print("Presigned URL parsing 실패")
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    guard
+                        let data = response?.data,
+                        let uploadUrl = URL(string: data.uploadUrl)
+                    else {
+                        print("Presigned URL 파싱 실패")
                         return
                     }
                     
-                    self.uploadToS3(url: presignedUrl, data: imageData) { success in
+                    self.uploadToS3(url: uploadUrl, data: imageData) { success in
                         if success {
-                            let registerRequest = RegisterImageRequestDTO(
-                                imageUrl: imageUrl,
-                                contentType: "image/jpeg",
-                                width: Int(image.size.width),
-                                height: Int(image.size.height),
-                                domain: "PET_PROFILE"
+                            self.registerImage(
+                                image: image,
+                                imageUrl: data.imageUrl
                             )
-                            
-                            imageProvider.request(.register(request: registerRequest)) { result in
-                                switch result {
-                                case .success(let response):
-                                    do {
-                                        let decodedImage = try JSONDecoder().decode(BaseDTO<RegisterImageResponseDTO>.self, from: response.data)
-                                        DispatchQueue.main.async {
-                                            if let imageId = decodedImage.data?.imageId {
-                                                self.imageId = imageId
-                                                self.profileImage.append(image)
-                                                print("이미지 업로드 성공, ImageId: \(imageId)")
-                                            }
-                                        }
-                                    } catch {
-                                        print("이미지 등록 디코딩 실패:", error)
-                                    }
-                                case .failure(let error):
-                                    print("이미지 등록 실패:", error.localizedDescription)
-                                }
-                            }
-                            
                         } else {
                             print("S3 업로드 실패")
                         }
                     }
                     
-                } catch {
-                    print("Presigned URL 디코딩 실패:", error)
+                default:
+                    print("Presigned URL 요청 실패")
                 }
-                
-            case .failure(let error):
-                print("Presigned URL 요청 실패:", error.localizedDescription)
+            }
+        }
+    }
+    
+    private func registerImage(image: UIImage, imageUrl: String) {
+        let request = RegisterImageRequest(
+            imageUrl: imageUrl,
+            contentType: "image/jpeg",
+            width: Int(image.size.width),
+            height: Int(image.size.height),
+            domain: "PET_PROFILE"
+        )
+        
+        imageAPIService.registerImage(request: request) { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    if let imageId = response?.data?.imageId {
+                        self.imageId = imageId
+                        self.petProfileImage = image
+                        print("이미지 업로드 성공, imageId:", imageId)
+                    }
+                default:
+                    print("이미지 등록 실패")
+                }
             }
         }
     }
@@ -344,7 +331,7 @@ extension RegisterViewModel {
         request.setValue("image/jpeg", forHTTPHeaderField: "Content-Type")
         request.httpBody = data
         
-        URLSession.shared.dataTask(with: request) { _, response, error in
+        URLSession.shared.dataTask(with: request) { _, response, _ in
             if let httpResponse = response as? HTTPURLResponse,
                200..<300 ~= httpResponse.statusCode {
                 completion(true)

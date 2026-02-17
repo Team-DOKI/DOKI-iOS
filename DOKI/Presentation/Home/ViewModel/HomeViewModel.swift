@@ -9,16 +9,34 @@ import SwiftUI
 import Moya
 
 class HomeViewModel: ObservableObject {
-    @Published var weather: WeatherResponseDTO?
+    private let homeAPIService: HomeAPIServiceProtocol
     
-    private let provider = MoyaProvider<HomeAPI>(
-        session: MoyaSession.shared,
-        plugins: [MoyaLoggingPlugin()]
-    )
+    init(
+        homeAPIService: HomeAPIServiceProtocol = HomeAPIService()
+    ) {
+        self.homeAPIService = homeAPIService
+        fetchWeather()
+    }
     
-    init() {
-            fetchWeather()
-        }
+    // MARK: - Published Properties
+    
+    @Published var weather: WeatherResponse?
+    
+    // MARK: - Computed Properties (UI)
+    
+    var temperatureText: String {
+        "\(weather?.temperature ?? 0)°C"
+    }
+    
+    var rainyText: String {
+        "\(weather?.rainyMm ?? 0)mm"
+    }
+    
+    var regionText: String {
+        weather?.region ?? "지역 정보 없음"
+    }
+    
+    // MARK: - Navigation
     
     var navigationAction: ((HomeAction)->())?
     
@@ -26,22 +44,24 @@ class HomeViewModel: ObservableObject {
         //        coordinator.presentFullScreen(.walkRecord)
         navigationAction?(.walkRecord)
     }
-    
+}
+
+// MARK: - API
+
+extension HomeViewModel {
+    /// 날씨 정보 조회
     func fetchWeather() {
-        provider.request(.fetchWeather) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let response):
-                do {
-                    let decoded = try JSONDecoder().decode(BaseDTO<WeatherResponseDTO>.self, from: response.data)
-                    DispatchQueue.main.async {
-                        self.weather = decoded.data
-                    }
-                } catch {
-                    print("날씨 디코딩 실패:", error)
+        homeAPIService.fetchWeather { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.weather = response?.data
+                    
+                default:
+                    print("날씨 정보를 불러오지 못했습니다.")
                 }
-            case .failure(let error):
-                print("날씨 API 호출 실패:", error.localizedDescription)
             }
         }
     }
