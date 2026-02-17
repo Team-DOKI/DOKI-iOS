@@ -16,7 +16,7 @@ final class DeviceIDManager {
     
     func getDeviceId() -> String {
         if let storedId = try? KeychainManager.read(deviceIdKey) {
-            return storedId
+            return storedId.replacingOccurrences(of: "\"", with: "")
         }
         
         let newId = UUID().uuidString
