@@ -46,8 +46,8 @@ class AuthManager: ObservableObject {
     /// AppleLogin API
     func loginWithApple(_ idToken: String, deviceId: String) async {
         do {
-            let request = AppleLoginRequestDTO(authorizationCode: idToken, deviceId: deviceId)
-            let response: AppleLoginResponseDTO = try await provider.async.request(.appleLogin(request: request))
+            let request = AppleLoginRequest(authorizationCode: idToken, deviceId: deviceId)
+            let response: AppleLoginResponse = try await provider.async.request(.appleLogin(request: request))
             
             try KeychainManager.create(.accessToken, response.accessToken)
             try KeychainManager.create(.refreshToken, response.refreshToken)
@@ -70,7 +70,7 @@ class AuthManager: ObservableObject {
     func logout() async {
         do {
             let deviceId = DeviceIDManager.shared.getDeviceId()
-            let request = LogoutRequestDTO(deviceId: deviceId)
+            let request = LogoutRequest(deviceId: deviceId)
             
             try await provider.async.requestPlain(
                 .logout(request: request)
@@ -109,7 +109,7 @@ class AuthManager: ObservableObject {
     /// withdraw API
     func withdraw() async {
         do {
-            let request = WithdrawRequestDTO(provider: "APPLE")
+            let request = WithdrawRequest(provider: "APPLE")
             try await provider.async.requestPlain(.withdraw(request: request))
             
             await MainActor.run {

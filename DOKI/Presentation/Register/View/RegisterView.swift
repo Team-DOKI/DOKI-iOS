@@ -42,6 +42,11 @@ struct RegisterView: View {
             Text(viewModel.currentStep.navTitle)
                 .subtitle()
         }
+        .onAppear {
+            print("ACCESS TOKEN: ", AuthManager.shared.accessToken ?? "nil")
+            print("REFRESH TOKEN: ", AuthManager.shared.refreshToken ?? "nil")
+            print("DEVICE ID: ", DeviceIDManager.shared.getDeviceId())
+        }
     }
 }
 
