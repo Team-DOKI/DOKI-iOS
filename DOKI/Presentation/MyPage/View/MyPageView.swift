@@ -28,7 +28,8 @@ struct MyPageView: View {
                         petInfo: viewModel.petInfoText,
                         imageUrl: viewModel.petProfile?.imageUrl,
                         dbti: viewModel.petDbtiText,
-                        action: viewModel.navigateToPetProfile
+                        profileAction: viewModel.navigateToPetProfile,
+                        dbtiAction: viewModel.navigateToPetProfile
                     )
                     
                     // 산책 루트 관리

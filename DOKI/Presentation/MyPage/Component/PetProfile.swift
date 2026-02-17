@@ -12,17 +12,17 @@ struct PetProfile: View {
     let petInfo: String
     let imageUrl: String?
     let dbti: String
-    let action: ()->()
-    
+
+    let profileAction: () -> Void
+    let dbtiAction: () -> Void
+
     var body: some View {
-        Button(action: action) {
-            VStack(spacing: 16) {
+        VStack(spacing: 16) {
+            Button(action: profileAction) {
                 HStack(spacing: 16) {
                     if let imageUrl, let url = URL(string: imageUrl) {
                         AsyncImage(url: url) { image in
-                            image
-                                .resizable()
-                                .scaledToFill()
+                            image.resizable().scaledToFill()
                         } placeholder: {
                             Image(.imgDefaultprofile)
                                 .resizable()
@@ -37,23 +37,23 @@ struct PetProfile: View {
                             .frame(width: 60, height: 60)
                             .clipShape(Circle())
                     }
-                    
+
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(name)
-                            .subtitle()
+                        Text(name).subtitle()
                         
-                        Text(petInfo)
-                            .subDefault(color: .defaultMiddle)
+                        Text(petInfo).subDefault(color: .defaultMiddle)
                     }
-                    
+
                     Spacer()
                 }
                 .padding(.top, 16)
-    
-                Rectangle()
-                    .frame(height: 1)
-                    .foregroundColor(.defaultButton)
-                
+            }
+            .buttonStyle(.plain)
+
+            Divider()
+                .background(.defaultButton)
+
+            Button(action: dbtiAction) {
                 Text(dbti)
                     .bodyBold(color: .defaultPrimary)
                     .padding(.vertical, 8)
@@ -62,9 +62,10 @@ struct PetProfile: View {
                     .cornerRadius(8)
                     .padding(.bottom, 16)
             }
-            .padding(.horizontal, 16)
-            .background(.defaultBackground)
-            .cornerRadius(8)
+            .buttonStyle(.plain)
         }
+        .padding(.horizontal, 16)
+        .background(.defaultBackground)
+        .cornerRadius(8)
     }
 }
