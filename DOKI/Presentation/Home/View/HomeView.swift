@@ -23,7 +23,7 @@ struct HomeView: View {
                     HStack(spacing: 2) {
                         Image(.icSun)
                         
-                        Text("35°C")
+                        Text("\(viewModel.weather?.temperature ?? 0)°C")
                             .foregroundStyle(.contents)
                             .font(.subActive)
                     }
@@ -31,14 +31,14 @@ struct HomeView: View {
                     HStack(spacing: 2) {
                         Image(.icDrop)
                         
-                        Text("0mm")
+                        Text("\(viewModel.weather?.rainyMm ?? 0)mm")
                             .foregroundStyle(.contents)
                             .font(.subActive)
                     }
                     
                     Spacer()
                     
-                    AddressTag(text: "강남구 역삼동")
+                    AddressTag(text: viewModel.weather?.region ?? "지역 정보 없음")
                 }
             }
             .padding(.horizontal, 16)
@@ -131,5 +131,10 @@ struct HomeView: View {
             }
         }
         .scrollIndicators(.hidden)
+        .onAppear {
+            print("ACCESS TOKEN: ", AuthManager.shared.accessToken ?? "nil")
+            print("REFRESH TOKEN: ", AuthManager.shared.refreshToken ?? "nil")
+            print("DEVICE ID: ", DeviceIDManager.shared.getDeviceId())
+        }
     }
 }
