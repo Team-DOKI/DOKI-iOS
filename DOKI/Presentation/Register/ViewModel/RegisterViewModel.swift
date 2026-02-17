@@ -229,10 +229,12 @@ extension RegisterViewModel {
         userAPIService.register(request: request) { result in
             switch result {
             case .success(let response):
-                if let petId = response?.data?.petId {
-                    UserDefaults.standard.set(petId, forKey: "petId")
-                }
+                guard
+                    let userId = response?.data?.userId,
+                    let petId  = response?.data?.petId
+                else { return }
                 
+                // TODO: petId 관리 (반려견 정보 조회 등에서 사용)
             default:
                 print("회원가입 정보를 불러오지 못했습니다.")
             }

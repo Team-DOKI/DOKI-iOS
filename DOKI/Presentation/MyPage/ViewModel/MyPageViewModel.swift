@@ -22,10 +22,7 @@ class MyPageViewModel: ObservableObject {
         self.authManager = authManager
         
         fetchUserProfile()
-        
-        if let petId = UserDefaults.standard.value(forKey: "petId") as? Int {
-            fetchPetProfile(petId: petId)
-        }
+        fetchPetProfile(petId: 10)
     }
     
     @Published var isShowLogoutAlert: Bool = false
@@ -42,7 +39,13 @@ class MyPageViewModel: ObservableObject {
     var userGenderText: String { userProfile?.gender ?? "" }
     
     var petNameText: String { petProfile?.name ?? "" }
-    var petDbtiText: String { petProfile?.dbtiName ?? "" }
+    var petDbtiText: String {
+        if let name = petProfile?.dbtiName,
+           let description = petProfile?.dbtiDescription {
+            return "\(name) | \(description)"
+        }
+        return "DBTI 검사하러 가기"
+    }
     var petInfoText: String {
         guard let pet = petProfile else { return "" }
         let genderText = pet.gender == "F" ? "여아" : "남아"

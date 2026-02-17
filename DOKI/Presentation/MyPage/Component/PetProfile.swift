@@ -9,25 +9,14 @@ import SwiftUI
 
 struct PetProfile: View {
     let name: String
-    let dbti: String
     let petInfo: String
     let imageUrl: String?
+    let dbti: String
     let action: ()->()
     
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 0) {
-                HStack(spacing: 0) {
-                    Text("반려견 프로필")
-                        .subActive(color: .defaultBackground)
-                    
-                    Spacer()
-                }
-                
-                .frame(height: 36)
-                .padding(.horizontal, 16)
-                .background(.defaultPrimary)
-                
+            VStack(spacing: 16) {
                 HStack(spacing: 16) {
                     if let imageUrl, let url = URL(string: imageUrl) {
                         AsyncImage(url: url) { image in
@@ -50,23 +39,31 @@ struct PetProfile: View {
                     }
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        AddressTag(text: dbti)
+                        Text(name)
+                            .subtitle()
                         
-                        HStack(spacing: 4) {
-                            Text(name)
-                                .subtitle()
-                            
-                            Text(petInfo)
-                                .subDefault(color: .defaultMiddle)
-                        }
+                        Text(petInfo)
+                            .subDefault(color: .defaultMiddle)
                     }
                     
                     Spacer()
                 }
-                .frame(height: 100)                
-                .padding(.horizontal, 16)
-                .background(.defaultBackground)
+                .padding(.top, 16)
+    
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundColor(.defaultButton)
+                
+                Text(dbti)
+                    .bodyBold(color: .defaultPrimary)
+                    .padding(.vertical, 8)
+                    .frame(maxWidth: .infinity)
+                    .background(.primaryGra1)
+                    .cornerRadius(8)
+                    .padding(.bottom, 16)
             }
+            .padding(.horizontal, 16)
+            .background(.defaultBackground)
             .cornerRadius(8)
         }
     }

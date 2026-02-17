@@ -25,9 +25,9 @@ struct MyPageView: View {
                     
                     PetProfile(
                         name: viewModel.petNameText,
-                        dbti: viewModel.petDbtiText,
                         petInfo: viewModel.petInfoText,
                         imageUrl: viewModel.petProfile?.imageUrl,
+                        dbti: viewModel.petDbtiText,
                         action: viewModel.navigateToPetProfile
                     )
                     
