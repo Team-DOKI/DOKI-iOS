@@ -1,63 +1,57 @@
-////
-////  UserAPI.swift
-////  DOKI
-////
-////  Created by 권석기 on 7/15/25.
-////
 //
-//import Foundation
+//  UserAPI.swift
+//  DOKI
 //
-//import Moya
+//  Created by 권석기 on 7/15/25.
 //
-//enum UserAPI {
-//    case updateUserProfile(UserProfile)
-//}
-//
-//extension UserAPI: BaseTargetType {
-//    var headerType: HeaderType {
-//        switch self {
-//        case .updateUserProfile:
-//            return .userHeader(userId: 2)
-//        }
-//    }
-//    
-//    var path: String {
-//        switch self {
-//        case .updateUserProfile:
-//            return "users"
-//        }
-//    }
-//    
-//    var method: Moya.Method {
-//        switch self {
-//        case .updateUserProfile:
-//            return .post
-//        }
-//    }
-//    
-//    var task: Task {
-//        switch self {
-//        case let .updateUserProfile(userProfile):
-//            
-//            var multipartData: [MultipartFormData] = []
-//            
-//            if let jsonData = try? JSONEncoder().encode(userProfile.toDto()) {
-//                multipartData.append(MultipartFormData(
-//                    provider: .data(jsonData),
-//                    name: "data",
-//                    mimeType: "application/json"
-//                ))
-//            }
-//            
-//            if let image = userProfile.profileImage {
-//                multipartData.append(MultipartFormData(
-//                    provider: .data(userProfile.profileImage?.pngData() ?? Data()),
-//                    name: "pet_profile",
-//                    fileName: "pet_profile1.jpg",
-//                    mimeType: "multipart/form-data"
-//                ))
-//            }
-//            return .uploadMultipart(multipartData)
-//        }
-//    }
-//}
+
+import Foundation
+
+import Moya
+
+enum UserAPI {
+    case register(request: UserProfileRequest) // 유저 및 반려견 정보 등록
+    case fetchBreedList // 견종 조회
+    case fetchUserProfile // 유저 정보 조회
+    case fetchPetProfile(petId: Int) // 반려견 정보 조회
+}
+
+extension UserAPI: BaseTargetType {
+    var headerType: HeaderType {
+        switch self {
+        case .register, .fetchBreedList, .fetchUserProfile, .fetchPetProfile:
+            return .defaultHeader
+        }
+    }
+    
+    var path: String {
+        switch self {
+        case .register:
+            return "users"
+        case .fetchBreedList:
+            return "pets/breeds"
+        case .fetchUserProfile:
+            return "users/me/userInfo"
+        case let .fetchPetProfile(petId):
+                return "pets/\(petId)"
+            }
+    }
+    
+    var method: Moya.Method {
+        switch self {
+        case .register:
+            return .post
+        case .fetchBreedList, .fetchUserProfile, .fetchPetProfile:
+            return .get
+        }
+    }
+    
+    var task: Task {
+        switch self {
+        case let .register(request):
+            return .requestJSONEncodable(request)
+        case .fetchBreedList, .fetchUserProfile, .fetchPetProfile:
+            return .requestPlain
+        }
+    }
+}

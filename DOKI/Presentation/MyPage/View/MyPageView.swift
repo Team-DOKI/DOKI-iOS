@@ -18,16 +18,18 @@ struct MyPageView: View {
                 VStack(spacing: 16) {
                     // 유저 & 반려견 프로필
                     MyProfile(
-                        nickname: "키큰오팔전차",
-                        email: "hello@gmail.com",
+                        nickname: viewModel.userNameText,
+                        email: viewModel.userEmailText,
                         action: viewModel.navigateToMyProfile
                     )
                     
                     PetProfile(
-                        name: "단지",
-                        dbti: "동네인기스타bbb",
-                        petInfo: "6개월 / 여아 / 견종 이름",
-                        action: viewModel.navigateToPetProfile
+                        name: viewModel.petNameText,
+                        petInfo: viewModel.petInfoText,
+                        imageUrl: viewModel.petProfile?.imageUrl,
+                        dbti: viewModel.petDbtiText,
+                        profileAction: viewModel.navigateToPetProfile,
+                        dbtiAction: viewModel.navigateToPetProfile
                     )
                     
                     // 산책 루트 관리
@@ -92,7 +94,11 @@ struct MyPageView: View {
             subMessage: "진짜로 로그아웃 하시게요? 😢",
             primaryTitle: "로그아웃",
             secondaryTitle: "취소",
-            primaryAction: viewModel.logoutButtonConfirmed,
+            primaryAction: {
+                Task {
+                    await viewModel.logoutButtonConfirmed()
+                }
+            },
             secondaryAction: viewModel.logoutCancelButtonTapped
         )
         .customModal(
@@ -101,7 +107,11 @@ struct MyPageView: View {
             subMessage: "진짜로 탈퇴하시게요? 😢",
             primaryTitle: "탈퇴하기",
             secondaryTitle: "취소",
-            primaryAction: viewModel.withdrawButtonConfirmed,
+            primaryAction: {
+                Task {
+                    await viewModel.withdrawButtonConfirmed()
+                }
+            },
             secondaryAction: viewModel.withdrawCancelButtonTapped
         )
     }

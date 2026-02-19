@@ -42,6 +42,11 @@ struct RegisterView: View {
             Text(viewModel.currentStep.navTitle)
                 .subtitle()
         }
+        .onAppear {
+            print("ACCESS TOKEN: ", AuthManager.shared.accessToken ?? "nil")
+            print("REFRESH TOKEN: ", AuthManager.shared.refreshToken ?? "nil")
+            print("DEVICE ID: ", DeviceIDManager.shared.getDeviceId())
+        }
     }
 }
 
@@ -70,7 +75,7 @@ extension RegisterView {
     private var mainButton: some View {
         MainButton(text: viewModel.isLastStep ? "완료" : "다음", buttonState: viewModel.buttonDisabled ? .disabled : .active1) {
             if viewModel.isLastStep {
-                // TODO: API 연동 전까지 임시 코드
+                viewModel.registerUser()
                 hasCompletedRegister = true
             } else {
                 viewModel.goToNextStep()

@@ -22,6 +22,7 @@ struct MyProfile: View {
                     Text(email)
                         .subDefault(color: .defaultMiddle)
                         .accentColor(.defaultMiddle)
+                        .multilineTextAlignment(.leading)
                 }
                 
                 Spacer()

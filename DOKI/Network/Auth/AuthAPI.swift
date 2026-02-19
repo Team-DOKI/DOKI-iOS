@@ -10,9 +10,9 @@ import Foundation
 import Moya
 
 enum AuthAPI {
-    case appleLogin(request: AppleLoginRequestDTO)
-    case logout(request: LogoutRequestDTO)
-    case withdraw(request: WithdrawRequestDTO)
+    case appleLogin(request: AppleLoginRequest)
+    case logout(request: LogoutRequest)
+    case withdraw(request: WithdrawRequest)
 }
 
 extension AuthAPI: BaseTargetType {
