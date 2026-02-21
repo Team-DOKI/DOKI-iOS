@@ -14,6 +14,7 @@ struct RegisterView: View {
     @Environment(\.dismiss) private var dismiss
     
     @Binding var hasCompletedRegister: Bool
+    @Binding var showDBTIStart: Bool
     
     var body: some View {
         VStack(spacing: 0) {
@@ -77,6 +78,7 @@ extension RegisterView {
             if viewModel.isLastStep {
                 viewModel.registerUser()
                 hasCompletedRegister = true
+                showDBTIStart = true
             } else {
                 viewModel.goToNextStep()
             }

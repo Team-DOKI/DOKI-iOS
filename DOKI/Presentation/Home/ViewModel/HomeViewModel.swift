@@ -41,7 +41,6 @@ class HomeViewModel: ObservableObject {
     var navigationAction: ((HomeAction)->())?
     
     func navigateToWalkRecord() {
-        //        coordinator.presentFullScreen(.walkRecord)
         navigationAction?(.walkRecord)
     }
 }

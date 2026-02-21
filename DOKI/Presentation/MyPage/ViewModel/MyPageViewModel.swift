@@ -22,7 +22,7 @@ class MyPageViewModel: ObservableObject {
         self.authManager = authManager
         
         fetchUserProfile()
-//        fetchPetProfile(petId: 11)
+        fetchPetProfile(petId: 14)
     }
     
     @Published var isShowLogoutAlert: Bool = false
@@ -66,7 +66,9 @@ class MyPageViewModel: ObservableObject {
     
     /// 로그아웃 처리
     func logoutButtonConfirmed() async {
-        isShowLogoutAlert = false
+        await MainActor.run {
+            isShowLogoutAlert = false
+        }
         
         await authManager.logout()
     }
@@ -83,7 +85,9 @@ class MyPageViewModel: ObservableObject {
     
     /// 회원탈퇴 처리
     func withdrawButtonConfirmed() async {
-        isShowWithdrawAlert = false
+        await MainActor.run {
+            isShowWithdrawAlert = false
+        }
         
         await authManager.withdraw()
     }
@@ -100,8 +104,13 @@ class MyPageViewModel: ObservableObject {
         navigationAction?(.myProfile)
     }
     
+    // TODO: dbti 데이터 유무에 따라 Start / Result 네비게이션
+    func navigateToDbti() {
+        navigationAction?(.dbtiStart)
+    }
+    
     func navigateToWalkRecord() {
-        navigationAction?(.walkRecord)
+        navigationAction?(.myWalkRecord)
     }
     
     func navigateToSavedWalk() {
