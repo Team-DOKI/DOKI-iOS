@@ -82,11 +82,14 @@ struct WalkCoordinatorView: View {
     }
     
     func bindAction() {
-        walkRecordViewModel.navigationAction = { destination in
+        walkRecordViewModel.navigationAction = { destination, resultData in
             switch destination {
             case .walkRecord:
                 walkRecordCoordinator.push(.walkRecord)
             case .walkResult:
+                if let data = resultData {
+                    walkResultViewModel.update(with: data)
+                }
                 walkRecordCoordinator.push(.walkResult)
             case .walkReview:
                 walkRecordCoordinator.push(.walkReview)

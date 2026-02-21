@@ -9,31 +9,33 @@ import SwiftUI
 
 struct DBTISurveyView: View {
     @ObservedObject var viewModel: DBTIViewModel
-
+    
     @Environment(\.dismiss) private var dismiss
-
+    
     var body: some View {
         VStack(spacing: 0) {
-            DBTIQuestionView(viewModel: viewModel)
-
+            if let question = viewModel.currentQuestion {
+                DBTIQuestion(
+                    data: question,
+                    selectedIndex: $viewModel.selectedIndex
+                )
+            }
+            
             Spacer()
-
+            
             MainButton(
                 text: viewModel.isLastStep ? "완료" : "다음으로",
                 buttonState: viewModel.buttonDisabled ? .disabled : .active1
             ) {
-                if viewModel.isLastStep {
-                    viewModel.complete()
-                } else {
-                    viewModel.goToNextStep()
-                }
+                viewModel.goToNextStep()
             }
             .padding(.horizontal, 16)
         }
         .overlay(alignment: .top) {
-            progressBar
+            ProgressView(value: viewModel.progress)
+                .frame(height: 2)
+                .tint(.defaultPrimary)
         }
-        .ignoresSafeArea(.keyboard)
         .topNavigationView {
             BackButton {
                 if viewModel.isFirstStep {
@@ -43,17 +45,9 @@ struct DBTISurveyView: View {
                 }
             }
         } center: {
-            Text("프로필 설정")
+            Text("DBTI")
                 .subtitle()
         }
-    }
-
-    private var progressBar: some View {
-        ProgressView(value: viewModel.progress)
-            .frame(height: 2)
-            .progressViewStyle(.linear)
-            .tint(.defaultPrimary)
-            .animation(.easeInOut, value: viewModel.currentIndex)
     }
 }
 

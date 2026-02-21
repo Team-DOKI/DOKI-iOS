@@ -76,7 +76,7 @@ final class AuthInterceptor: RequestInterceptor {
             
             // 토큰 재발급 요청 성공
             do {
-                let response = try JSONDecoder().decode(AppleLoginResponseDTO.self, from: data)
+                let response = try JSONDecoder().decode(AppleLoginResponse.self, from: data)
                 // 토큰 재발급
                 AuthManager.shared.reissueToken(
                     accessToken: response.accessToken,

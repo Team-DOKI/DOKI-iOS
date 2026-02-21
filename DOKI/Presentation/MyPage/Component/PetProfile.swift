@@ -9,47 +9,63 @@ import SwiftUI
 
 struct PetProfile: View {
     let name: String
-    let dbti: String
     let petInfo: String
-    let action: ()->()
-    
+    let imageUrl: String?
+    let dbti: String
+
+    let profileAction: () -> Void
+    let dbtiAction: () -> Void
+
     var body: some View {
-        Button(action: action) {
-            VStack(spacing: 0) {
-                HStack(spacing: 0) {
-                    Text("반려견 프로필")
-                        .subActive(color: .defaultBackground)
-                    
-                    Spacer()
-                }
-                
-                .frame(height: 36)
-                .padding(.horizontal, 16)
-                .background(.defaultPrimary)
-                
+        VStack(spacing: 16) {
+            Button(action: profileAction) {
                 HStack(spacing: 16) {
-                    Image(.imgDefaultprofile)
-                        .frame(width: 60, height: 60)
-                    
-                    VStack(alignment: .leading, spacing: 4) {
-                        AddressTag(text: dbti)
-                        
-                        HStack(spacing: 4) {
-                            Text(name)
-                                .subtitle()
-                            
-                            Text(petInfo)
-                                .subDefault(color: .defaultMiddle)
+                    if let imageUrl, let url = URL(string: imageUrl) {
+                        AsyncImage(url: url) { image in
+                            image.resizable().scaledToFill()
+                        } placeholder: {
+                            Image(.imgDefaultprofile)
+                                .resizable()
+                                .scaledToFill()
                         }
+                        .frame(width: 60, height: 60)
+                        .clipShape(Circle())
+                    } else {
+                        Image(.imgDefaultprofile)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 60, height: 60)
+                            .clipShape(Circle())
                     }
-                    
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(name).subtitle()
+                        
+                        Text(petInfo).subDefault(color: .defaultMiddle)
+                    }
+
                     Spacer()
                 }
-                .frame(height: 100)                
-                .padding(.horizontal, 16)
-                .background(.defaultBackground)
+                .padding(.top, 16)
             }
-            .cornerRadius(8)
+            .buttonStyle(.plain)
+
+            Divider()
+                .background(.defaultButton)
+
+            Button(action: dbtiAction) {
+                Text(dbti)
+                    .bodyBold(color: .defaultPrimary)
+                    .padding(.vertical, 8)
+                    .frame(maxWidth: .infinity)
+                    .background(.primaryGra1)
+                    .cornerRadius(8)
+                    .padding(.bottom, 16)
+            }
+            .buttonStyle(.plain)
         }
+        .padding(.horizontal, 16)
+        .background(.defaultBackground)
+        .cornerRadius(8)
     }
 }

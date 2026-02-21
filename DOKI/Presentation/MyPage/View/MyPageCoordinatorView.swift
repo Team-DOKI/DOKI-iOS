@@ -10,11 +10,17 @@ import SwiftUI
 enum MyPageRoute: Route {
     case myProfile
     case petProfile
-    case walkRecord
+    
+    case myWalkRecord
     case savedWalk
     case review
+    
     case activityAreaSetting
     case appInfo
+    
+    case dbtiStart
+    case dbtiSurvey
+    case dbtiResult
 }
 
 struct MyPageCoordinatorView: View {
@@ -26,6 +32,7 @@ struct MyPageCoordinatorView: View {
     @StateObject var petProfileViewModel:  PetProfileViewModel
     @StateObject var myWalkRecordViewModel: MyWalkRecordViewModel
     @StateObject var mySavedWalkViewModel: MySavedWalkViewModel
+    @StateObject var dbtiViewModel = DBTIViewModel(entryContext: .myPage)
     
     init(myPageCoordinator: Coordinator<MyPageRoute> = Coordinator<MyPageRoute>(), viewModelFactory: AppDIContainer.ViewModelFactory) {
         self._myPageCoordinator = StateObject(wrappedValue: myPageCoordinator)
@@ -45,7 +52,7 @@ struct MyPageCoordinatorView: View {
                         MyProfileView(viewModel: myProfileViewModel)
                     case .petProfile:
                         PetProfileView(viewModel: petProfileViewModel)
-                    case .walkRecord:
+                    case .myWalkRecord:
                         MyWalkRecordView(viewModel: myWalkRecordViewModel)
                     case .savedWalk:
                         MySavedWalkView(viewModel: mySavedWalkViewModel)
@@ -55,6 +62,12 @@ struct MyPageCoordinatorView: View {
                         ActivityAreaSettingView()
                     case .appInfo:
                         AppInfoView()
+                    case .dbtiStart:
+                        DBTIStartView(viewModel: dbtiViewModel)
+                    case .dbtiSurvey:
+                        DBTISurveyView(viewModel: dbtiViewModel)
+                    case .dbtiResult:
+                        DBTIResultView(viewModel: dbtiViewModel)
                     }
                 }
         }
@@ -71,8 +84,8 @@ struct MyPageCoordinatorView: View {
                 myPageCoordinator.push(.myProfile)
             case .petProfile:
                 myPageCoordinator.push(.petProfile)
-            case .walkRecord:
-                myPageCoordinator.push(.walkRecord)
+            case .myWalkRecord:
+                myPageCoordinator.push(.myWalkRecord)
             case .savedWalk:
                 myPageCoordinator.push(.savedWalk)
             case .review:
@@ -81,7 +94,30 @@ struct MyPageCoordinatorView: View {
                 myPageCoordinator.push(.activityAreaSetting)
             case .appInfo:
                 myPageCoordinator.push(.appInfo)
+            case .dbtiStart:
+                myPageCoordinator.push(.dbtiStart)
+            case .dbtiSurvey:
+                myPageCoordinator.push(.dbtiSurvey)
+            case .dbtiResult:
+                myPageCoordinator.push(.dbtiResult)
+            }
+        }
+        
+        dbtiViewModel.navigationAction = { action in
+            switch action {
+            case .dbtiStart:
+                myPageCoordinator.push(.dbtiStart)
+            case .dbtiSurvey:
+                myPageCoordinator.push(.dbtiSurvey)
+            case .dbtiResult:
+                myPageCoordinator.push(.dbtiResult)
+            case .dbtiRestart:
+                myPageCoordinator.popToRoot()
+                myPageCoordinator.push(.dbtiSurvey)
+            case .dbtiFinish:
+                myPageCoordinator.popToRoot()
             }
         }
     }
 }
+

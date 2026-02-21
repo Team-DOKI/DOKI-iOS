@@ -22,8 +22,8 @@ struct DogSearchView: View {
             
             ScrollView {
                 LazyVStack {
-                    ForEach(viewModel.breedList, id: \.self) { breed in
-                        OptionItem(text: breed, isChecked: viewModel.breed == breed) {
+                    ForEach(viewModel.filteredBreeds, id: \.id) { breed in
+                        OptionItem(text: breed.name, isChecked: viewModel.selectedBreedName == breed.name) {
                             viewModel.selectBreed(breed)
                             viewModel.toggleBreedSearchSheet()
                         }
@@ -31,6 +31,9 @@ struct DogSearchView: View {
                 }
                 .padding(.horizontal, 16)
             }
+        }
+        .onAppear {
+            viewModel.fetchBreedList()
         }
     }
 }

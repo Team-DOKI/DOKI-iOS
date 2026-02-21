@@ -13,6 +13,7 @@ struct RootView: View {
     
     @AppStorage("hasSeenOnboarding") var hasSeenOnboarding: Bool = false
     @AppStorage("hasCompletedRegister") var hasCompletedRegister: Bool = false
+    @AppStorage("showDBTIStart") var showDBTIStart: Bool = false
     
     var body: some View {
         Group {
@@ -31,7 +32,14 @@ struct RootView: View {
                     if !hasCompletedRegister {
                         RegisterView(
                             viewModel: appDIContainer.viewModelFactory.makeRegisterViewModel(),
-                            hasCompletedRegister: $hasCompletedRegister
+                            hasCompletedRegister: $hasCompletedRegister,
+                            showDBTIStart: $showDBTIStart
+                        )
+                    } else if showDBTIStart {
+                        AfterRegisterDBTIFlow(
+                            onFinish: {
+                                showDBTIStart = false
+                            }
                         )
                     } else {
                         MainTabView()

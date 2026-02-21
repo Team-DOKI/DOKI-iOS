@@ -25,12 +25,13 @@ class WalkRecordViewModel: ObservableObject {
     
     private var timer: Timer?
     
+    private var lastLocation: CLLocation?
     private let pedometer = CMPedometer()
     private var baseStepCount: Int = 0
     private var isPedometerRunning = false
     
     var distanceString: String {
-        String(format: "%.2f", distance)
+        String(format: "%.2f", distance / 1000)
     }
     
     var elapsedTimeString: String {
@@ -42,6 +43,44 @@ class WalkRecordViewModel: ObservableObject {
     var stepString: String {
         "\(stepCount)"
     }
+    
+    var navigationAction: ((WalkRecordRoute, WalkResultData?) -> Void)?
+    
+    func navigateToWalkResult() {
+        stopTimer()
+        
+        let resultData = WalkResultData(
+            distance: distance,
+            elapsedSeconds: elapsedSeconds,
+            stepCount: stepCount
+        )
+        
+        navigationAction?(.walkResult, resultData)
+    }
+    
+    func reset() {
+        elapsedSeconds = 0
+        distance = 0.0
+        stepCount = 0
+        baseStepCount = 0
+        lastLocation = nil
+    }
+    
+    func updateLocation(_ newLocation: CLLocation) {
+        guard !isPaused else { return }
+
+        if let last = lastLocation {
+            let delta = newLocation.distance(from: last)
+
+            guard delta > 1 else { return }
+
+            distance += delta
+        }
+
+        lastLocation = newLocation
+        currentLocation = newLocation
+    }
+
     
     // MARK: - 시간 (타이머)
     
@@ -71,11 +110,13 @@ class WalkRecordViewModel: ObservableObject {
     func stopTimer() {
         timer?.invalidate()
         timer = nil
-        
+
         stopStepCounting()
-        
-        print("🕒🕒🕒 최종 산책 시간: \(elapsedTimeString) 🕒🕒🕒")
-        print("👣👣👣 최종 걸음 수: \(stepCount) 👣👣👣")
+        lastLocation = nil
+
+        print("🕒 최종 산책 시간: \(elapsedTimeString)")
+        print("📏 최종 거리: \(distanceString)m")
+        print("👣 최종 걸음 수: \(stepCount)")
     }
     
     // MARK: - 걸음수
@@ -105,19 +146,5 @@ class WalkRecordViewModel: ObservableObject {
     func stopStepCounting() {
         pedometer.stopUpdates()
         isPedometerRunning = false
-    }
-    
-    func reset() {
-        elapsedSeconds = 0
-        distance = 0.0
-        stepCount = 0
-        baseStepCount = 0
-    }
-    
-    var navigationAction: ((WalkRecordRoute)->())?
-    
-    func navigateToWalkResult() {
-        stopTimer()
-        navigationAction?(.walkResult)
     }
 }
