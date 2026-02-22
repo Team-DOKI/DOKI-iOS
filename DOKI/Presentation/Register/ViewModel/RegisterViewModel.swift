@@ -11,16 +11,19 @@ import Moya
 final class RegisterViewModel: ObservableObject {
     private let userAPIService: UserAPIServiceProtocol
     private let imageAPIService: ImageAPIServiceProtocol
+    private let regionAPIService: RegionAPIServiceProtocol
     
     init(
         userAPIService: UserAPIServiceProtocol = UserAPIService(),
-        imageAPIService: ImageAPIServiceProtocol = ImageAPIService()
+        imageAPIService: ImageAPIServiceProtocol = ImageAPIService(),
+        regionAPIService: RegionAPIServiceProtocol = RegionAPIService()
     ) {
         self.userAPIService = userAPIService
         self.imageAPIService = imageAPIService
+        self.regionAPIService = regionAPIService
     }
     
-    // MARK: - Published Properties (DTO)
+    // MARK: - Published Properties (Register Request DTO)
     
     @Published var nickname = ""
     @Published var birthDay = ""
@@ -42,67 +45,16 @@ final class RegisterViewModel: ObservableObject {
     @Published var breedSearchText = ""
     @Published var isShowBreedSearch = false
     
-    @Published var isShowActivityArea = false
+    @Published var regionList: [DistrictDTOs] = []
     @Published var selectedGuId: Int?
-    
-    @Published var regionDisplayName = ""
-    @Published var regionList: [DistrictDTO] = [
-        DistrictDTO(
-            gu: Gu(id: 1, name: "강남구"),
-            dongs: [
-                Dong(id: 101, name: "역삼동"),
-                Dong(id: 102, name: "삼성동"),
-                Dong(id: 103, name: "논현동"),
-                Dong(id: 104, name: "청담동")
-            ]
-        ),
-        DistrictDTO(
-            gu: Gu(id: 2, name: "송파구"),
-            dongs: [
-                Dong(id: 201, name: "잠실동"),
-                Dong(id: 202, name: "방이동"),
-                Dong(id: 203, name: "풍납동"),
-                Dong(id: 204, name: "가락동")
-            ]
-        ),
-        DistrictDTO(
-            gu: Gu(id: 3, name: "마포구"),
-            dongs: [
-                Dong(id: 301, name: "합정동"),
-                Dong(id: 302, name: "상수동"),
-                Dong(id: 303, name: "망원동"),
-                Dong(id: 304, name: "서교동"),
-                Dong(id: 305, name: "연남동")
-            ]
-        ),
-        DistrictDTO(
-            gu: Gu(id: 4, name: "용산구"),
-            dongs: [
-                Dong(id: 401, name: "이태원동"),
-                Dong(id: 402, name: "한남동"),
-                Dong(id: 403, name: "후암동"),
-                Dong(id: 404, name: "효창동"),
-                Dong(id: 405, name: "용문동")
-            ]
-        ),
-        DistrictDTO(
-            gu: Gu(id: 5, name: "종로구"),
-            dongs: [
-                Dong(id: 501, name: "청운동"),
-                Dong(id: 502, name: "부암동"),
-                Dong(id: 503, name: "평창동"),
-                Dong(id: 504, name: "삼청동"),
-                Dong(id: 505, name: "혜화동")
-            ]
-        )
-    ]
-    
+    @Published var previewRegionName: String = ""
+    @Published var selectedRegionName = ""
     @Published var areaSearchText = ""
-    @Published var isShowMapView = false
     
     // MARK: - Step
     
     @Published var currentStep: UserInfoStep = .userProfile
+    @Published var regionFlow: RegionFlow = .none
     
     enum UserInfoStep: Int {
         case userProfile
@@ -129,6 +81,12 @@ final class RegisterViewModel: ObservableObject {
     }
     var isLastStep: Bool { next == nil }
     var isFirstStep: Bool { prev == nil }
+    
+    enum RegionFlow {
+        case none
+        case search
+        case map
+    }
     
     // MARK: - User Action
     
@@ -173,26 +131,30 @@ final class RegisterViewModel: ObservableObject {
     
     func selectGuID(_ id: Int) {
         selectedGuId = id
+        selectedDongId = nil
     }
     
     func seletDongId(_ id: Int) {
         selectedDongId = id
-    }
-    
-    func toggleActivityArea() {
-        isShowActivityArea.toggle()
-    }
-    
-    func selectActivityArea() {
+        
         guard let guId = selectedGuId,
-              let dongId = selectedDongId,
-              let district = regionList.first(where: {$0.gu.id == guId}),
-              let dong = district.dongs.first(where: {$0.id == dongId }) else {
-            regionDisplayName = ""
-            return
-        }
-        regionDisplayName = "\(district.gu.name) \(dong.name)"
-        isShowMapView = false
+              let region = regionList.first(where: { $0.gu.id == guId }),
+              let dong = region.dongs.first(where: { $0.id == id })
+        else { return }
+        
+        previewRegionName = "\(region.gu.name) \(dong.name)"
+        regionFlow = .map
+    }
+    
+    func selectRegion() {
+        selectedRegionName = previewRegionName
+    }
+    
+    func resetRegionSelection() {
+        selectedGuId = nil
+        selectedDongId = nil
+        previewRegionName = ""
+        selectedRegionName = ""
     }
 }
 
@@ -205,7 +167,8 @@ extension RegisterViewModel {
             let gender,
             let dogGender,
             let breedId,
-            let imageId
+            let imageId,
+            let selectedDongId
         else { return }
         
         let formattedBirthDay = birthDay.replacingOccurrences(of: "/", with: "-")
@@ -215,7 +178,7 @@ extension RegisterViewModel {
             name: nickname,
             birth: formattedBirthDay,
             gender: gender.serverValue,
-            dongId: 3,
+            dongId: selectedDongId,
             pet: PetProfileRequest(
                 name: dogName,
                 gender: dogGender.serverValue,
@@ -251,6 +214,23 @@ extension RegisterViewModel {
                     self.breedList = response?.data?.breedList ?? []
                 default:
                     print("견종 정보를 불러오지 못했습니다.")
+                }
+            }
+        }
+    }
+    
+    /// 지역구 조회
+    func fetchRegions() {
+        regionAPIService.fetchRegions { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.regionList = response?.data?.districtDtos ?? []
+                    
+                default:
+                    print("지역 정보를 불러오지 못했습니다.")
                 }
             }
         }

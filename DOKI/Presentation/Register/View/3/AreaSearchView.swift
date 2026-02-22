@@ -37,7 +37,7 @@ struct AreaSearchView: View {
                 ScrollView {
                     LazyVStack {
                         ForEach(viewModel.regionList.first {$0.gu.id == viewModel.selectedGuId}?.dongs ?? [], id: \.self.id) { dong in
-                            OptionItem(text: dong.name, isChecked: dong.id == viewModel.selectedDongId) {                                
+                            OptionItem(text: dong.name, isChecked: dong.id == viewModel.selectedDongId) {
                                 viewModel.seletDongId(dong.id)
                             }
                         }
@@ -45,6 +45,9 @@ struct AreaSearchView: View {
                 }
             }
             .padding(.horizontal, 16)
+        }
+        .onAppear {
+            viewModel.fetchRegions()
         }
     }
 }

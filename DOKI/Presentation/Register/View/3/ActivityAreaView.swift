@@ -25,13 +25,14 @@ struct ActivityAreaView: View {
             searchTextField
         }
         .padding(.horizontal, 16)
-        .sheet(isPresented: $viewModel.isShowActivityArea) {
+        .sheet(
+            isPresented: Binding(
+                get: { viewModel.regionFlow == .search },
+                set: { _ in }
+            )
+        ) {
             AreaSearchView(viewModel: viewModel)
                 .presentationDetents([.height(600)])
-        }
-        .onChange(of: viewModel.selectedDongId) { _ in
-            viewModel.toggleActivityArea()
-            viewModel.isShowMapView = true
         }
     }
     
@@ -47,14 +48,14 @@ struct ActivityAreaView: View {
     private var searchTextField: some View {
         SearchField(
             placeholder: "주로 산책하는 지역을 검색해보세요",
-            text: $viewModel.regionDisplayName
+            text: $viewModel.selectedRegionName
         )
         .disabled(true)
         .overlay {
             Color.clear
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    viewModel.toggleActivityArea()
+                    viewModel.regionFlow = .search
                 }
         }
     }

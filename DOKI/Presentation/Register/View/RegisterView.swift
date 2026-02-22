@@ -26,7 +26,7 @@ struct RegisterView: View {
         }
         .overlay(alignment: .top) { progressBar }
         .overlay(alignment: .top, content: {
-            if viewModel.isShowMapView {
+            if viewModel.regionFlow == .map {
                 AreaMapView(viewModel: viewModel)
             }
         })
