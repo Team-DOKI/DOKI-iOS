@@ -90,6 +90,11 @@ extension DogInfoView {
                 placeholder: "최대 8글자 이내로 입력해주세요",
                 text: $viewModel.dogName
             )
+            .onChange(of: viewModel.dogName) { _, newValue in
+                if newValue.count > 8 {
+                    viewModel.dogName = String(newValue.prefix(8))
+                }
+            }
         }
     }
     
@@ -101,6 +106,15 @@ extension DogInfoView {
                 placeholder: "YYYY/MM/DD",
                 text: $viewModel.dogBirthDay
             )
+            .keyboardType(.numberPad)
+            .onChange(of: viewModel.dogBirthDay) { old, new in
+                guard new.count >= old.count else { return }
+                
+                let formatted = viewModel.formatBirthDate(new)
+                if formatted != new {
+                    viewModel.dogBirthDay = formatted
+                }
+            }
         }
     }
     
