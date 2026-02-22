@@ -89,8 +89,14 @@ struct HomeView: View {
                     }
                     
                     Spacer()
+                    
+                    Image(.imgUpperbodydog)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 87, height: 76)
+                        .clipped()
                 }
-                .padding(20)
+                .padding(.horizontal, 16)
                 .background(.defaultPrimary)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 24)

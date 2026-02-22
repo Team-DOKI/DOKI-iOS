@@ -44,7 +44,7 @@ struct WalkReadyView: View {
                     
                     Spacer()
                     
-                    Image(.imgWalkdog)
+                    Image(.imgUpperbodydog)
                         .padding(.top, 8)
                 }
                 .frame(maxWidth: .infinity)
