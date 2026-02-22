@@ -43,7 +43,7 @@ class AuthManager: ObservableObject {
         }
     }
     
-    /// AppleLogin API
+    /// 애플 로그인 API
     func loginWithApple(_ idToken: String, deviceId: String) async {
         do {
             let request = AppleLoginRequest(authorizationCode: idToken, deviceId: deviceId)
@@ -66,7 +66,7 @@ class AuthManager: ObservableObject {
         }
     }
     
-    /// Logout API
+    /// 로그아웃 API
     func logout() async {
         do {
             let deviceId = DeviceIDManager.shared.getDeviceId()
@@ -95,18 +95,7 @@ class AuthManager: ObservableObject {
         }
     }
     
-    func reissueToken(accessToken: String, refreshToken: String) {
-        do {
-            try KeychainManager.create(.accessToken, accessToken)
-            try KeychainManager.create(.refreshToken, refreshToken)
-            self.accessToken = accessToken
-            self.refreshToken = refreshToken
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-    
-    /// withdraw API
+    /// 탈퇴 API
     func withdraw() async {
         do {
             let request = WithdrawRequest(provider: "APPLE")
@@ -123,6 +112,51 @@ class AuthManager: ObservableObject {
             try KeychainManager.delete(.refreshToken)
         } catch {
             print("회원탈퇴 실패:", error.localizedDescription)
+        }
+    }
+}
+
+extension AuthManager {
+    /// 토큰 재발급 API
+    func refreshToken(completion: @escaping (Bool) -> Void) {
+        guard let refreshToken else {
+            completion(false)
+            return
+        }
+        
+        let request = TokenRefreshRequest(
+            refreshToken: refreshToken,
+            deviceId: DeviceIDManager.shared.getDeviceId()
+        )
+        
+        provider.request(.refreshToken(request: request)) { result in
+            switch result {
+            case .success(let response):
+                guard (200..<300).contains(response.statusCode),
+                      let decoded = try? JSONDecoder().decode(TokenRefreshResponse.self, from: response.data)
+                else {
+                    self.logoutLocal()
+                    completion(false)
+                    return
+                }
+                
+                do {
+                    try KeychainManager.create(.accessToken, decoded.accessToken)
+                    try KeychainManager.create(.refreshToken, decoded.refreshToken)
+                    
+                    self.accessToken = decoded.accessToken
+                    self.refreshToken = decoded.refreshToken
+                    
+                    completion(true)
+                } catch {
+                    self.logoutLocal()
+                    completion(false)
+                }
+                
+            case .failure:
+                self.logoutLocal()
+                completion(false)
+            }
         }
     }
 }

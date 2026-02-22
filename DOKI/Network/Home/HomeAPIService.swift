@@ -24,39 +24,13 @@ final class HomeAPIService: BaseAPIService, HomeAPIServiceProtocol {
         plugins: [MoyaLoggingPlugin()]
     )
     
-    // MARK: - 공통 request
-    
-    private func request<T: Decodable>(
-        _ target: HomeAPI,
-        completion: @escaping (NetworkResult<T>) -> Void
-    ) {
-        provider.request(target) { [weak self] result in
-            guard let self else { return }
-            
-            let networkResult: NetworkResult<T>
-            
-            switch result {
-            case .success(let response):
-                networkResult = self.fetchNetworkResult(statusCode: response.statusCode, data: response.data)
-                
-            case .failure(let error):
-                if let response = error.response {
-                    networkResult = self.fetchNetworkResult(statusCode: response.statusCode, data: response.data)
-                } else {
-                    networkResult = .networkFail
-                }
-            }
-            
-            completion(networkResult)
-        }
-    }
-    
     // MARK: - API
     
     /// 날씨 조회
-    func fetchWeather(
-        completion: @escaping (NetworkResult<BaseDTO<WeatherResponse>>) -> Void
-    ) {
-        request(.fetchWeather, completion: completion)
+    func fetchWeather(completion: @escaping (NetworkResult<BaseDTO<WeatherResponse>>) -> Void) {
+        request(.fetchWeather,
+                provider: provider,
+                responseType: BaseDTO<WeatherResponse>.self,
+                completion: completion)
     }
 }

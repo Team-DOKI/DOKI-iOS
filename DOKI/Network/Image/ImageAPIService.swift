@@ -34,47 +34,15 @@ final class ImageAPIService: BaseAPIService, ImageAPIServiceProtocol {
         plugins: [MoyaLoggingPlugin()]
     )
     
-    // MARK: - 공통 request
-    
-    private func request<T: Decodable>(
-        _ target: ImageAPI,
-        completion: @escaping (NetworkResult<T>) -> Void
-    ) {
-        provider.request(target) { [weak self] result in
-            guard let self else { return }
-            
-            let networkResult: NetworkResult<T>
-            
-            switch result {
-            case .success(let response):
-                networkResult = self.fetchNetworkResult(
-                    statusCode: response.statusCode,
-                    data: response.data
-                )
-                
-            case .failure(let error):
-                if let response = error.response {
-                    networkResult = self.fetchNetworkResult(
-                        statusCode: response.statusCode,
-                        data: response.data
-                    )
-                } else {
-                    networkResult = .networkFail
-                }
-            }
-            
-            completion(networkResult)
-        }
-    }
-    
-    // MARK: - API
-    
     /// Presigned URL 요청
     func fetchPresignedURL(
         request: PresignedUrlRequest,
         completion: @escaping (NetworkResult<PresignedUrlResponseDTO>) -> Void
     ) {
-        self.request(.presigned(request: request), completion: completion)
+        self.request(.presigned(request: request),
+                     provider: provider,
+                     responseType: PresignedUrlResponseDTO.self,
+                     completion: completion)
     }
     
     /// 이미지 등록
@@ -82,6 +50,9 @@ final class ImageAPIService: BaseAPIService, ImageAPIServiceProtocol {
         request: RegisterImageRequest,
         completion: @escaping (NetworkResult<RegisterImageResponseDTO>) -> Void
     ) {
-        self.request(.register(request: request), completion: completion)
+        self.request(.register(request: request),
+                     provider: provider,
+                     responseType: RegisterImageResponseDTO.self,
+                     completion: completion)
     }
 }
