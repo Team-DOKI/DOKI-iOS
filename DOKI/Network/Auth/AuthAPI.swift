@@ -13,12 +13,13 @@ enum AuthAPI {
     case appleLogin(request: AppleLoginRequest)
     case logout(request: LogoutRequest)
     case withdraw(request: WithdrawRequest)
+    case refreshToken(request: TokenRefreshRequest)
 }
 
 extension AuthAPI: BaseTargetType {
     var headerType: HeaderType {
         switch self {
-        case .appleLogin, .logout, .withdraw:
+        case .appleLogin, .logout, .withdraw, .refreshToken:
             return .defaultHeader
         }
     }
@@ -31,12 +32,14 @@ extension AuthAPI: BaseTargetType {
             return "auth/logout"
         case .withdraw:
             return "auth/withdraw"
+        case .refreshToken:
+            return "auth/refresh"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .appleLogin, .logout:
+        case .appleLogin, .logout, .refreshToken:
             return .post
         case .withdraw:
             return .delete
@@ -52,6 +55,9 @@ extension AuthAPI: BaseTargetType {
             return .requestJSONEncodable(request)
             
         case let .withdraw(request):
+            return .requestJSONEncodable(request)
+            
+        case let .refreshToken(request):
             return .requestJSONEncodable(request)
         }
     }

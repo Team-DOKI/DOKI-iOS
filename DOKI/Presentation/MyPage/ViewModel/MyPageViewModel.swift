@@ -22,7 +22,7 @@ class MyPageViewModel: ObservableObject {
         self.authManager = authManager
         
         fetchUserProfile()
-        fetchPetProfile(petId: 14)
+//        fetchPetProfile(petId: 14)
     }
     
     @Published var isShowLogoutAlert: Bool = false

@@ -24,43 +24,13 @@ final class WalkAPIService: BaseAPIService, WalkAPIServiceProtocol {
         plugins: [MoyaLoggingPlugin()]
     )
     
-    // MARK: - 공통 request
-    
-    private func request<T: Decodable>(
-        _ target: WalkAPI,
-        completion: @escaping (NetworkResult<T>) -> Void
-    ) {
-        provider.request(target) { [weak self] result in
-            guard let self else { return }
-            
-            let networkResult: NetworkResult<T>
-            
-            switch result {
-            case .success(let response):
-                networkResult = self.fetchNetworkResult(
-                    statusCode: response.statusCode,
-                    data: response.data
-                )
-                
-            case .failure(let error):
-                if let response = error.response {
-                    networkResult = self.fetchNetworkResult(
-                        statusCode: response.statusCode,
-                        data: response.data
-                    )
-                } else {
-                    networkResult = .networkFail
-                }
-            }
-            
-            completion(networkResult)
-        }
-    }
-    
-    // MARK: - API
-    
     /// 산책 준비 메세지 조회
-    func fetchPreparationMessage(completion: @escaping (NetworkResult<PreparationMessageResponseDTO>) -> Void) {
-        self.request(.preparationMessage, completion: completion)
+    func fetchPreparationMessage(
+        completion: @escaping (NetworkResult<PreparationMessageResponseDTO>) -> Void
+    ) {
+        self.request(.preparationMessage,
+                     provider: provider,
+                     responseType: PreparationMessageResponseDTO.self,
+                     completion: completion)
     }
 }
