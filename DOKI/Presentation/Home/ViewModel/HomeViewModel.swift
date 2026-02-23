@@ -15,12 +15,15 @@ class HomeViewModel: ObservableObject {
         homeAPIService: HomeAPIServiceProtocol = HomeAPIService()
     ) {
         self.homeAPIService = homeAPIService
+        
         fetchWeather()
+        fetchWalkInfo()
     }
     
     // MARK: - Published Properties
     
     @Published var weather: WeatherResponse?
+    @Published var walkInfo: WalkInfoResponse?
     
     // MARK: - Computed Properties (UI)
     
@@ -36,12 +39,32 @@ class HomeViewModel: ObservableObject {
         weather?.region ?? "지역 정보 없음"
     }
     
+    var totalDistance: Double {
+        walkInfo?.distance ?? 0
+    }
+    
+    var totalWalkCount: Int {
+        walkInfo?.count ?? 0
+    }
+    
+    var totalWalkTimeText: String {
+        formatSecondsToTime(walkInfo?.totalTime ?? 0)
+    }
+    
     // MARK: - Navigation
     
     var navigationAction: ((HomeAction)->())?
     
     func navigateToWalkRecord() {
         navigationAction?(.walkRecord)
+    }
+    
+    private func formatSecondsToTime(_ seconds: Int) -> String {
+        let hours = seconds / 3600
+        let minutes = (seconds % 3600) / 60
+        let seconds = seconds % 60
+        
+        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
     }
 }
 
@@ -60,6 +83,23 @@ extension HomeViewModel {
                     
                 default:
                     print("날씨 정보를 불러오지 못했습니다.")
+                }
+            }
+        }
+    }
+    
+    /// 산책 정보(누적) 조회
+    func fetchWalkInfo() {
+        homeAPIService.fetchWalkInfo { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.walkInfo = response?.data
+                    
+                default:
+                    print("산책 정보를 불러오지 못했습니다.")
                 }
             }
         }

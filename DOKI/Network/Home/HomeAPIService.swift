@@ -11,10 +11,13 @@ import Moya
 protocol HomeAPIServiceProtocol {
     /// 날씨 조회
     func fetchWeather(completion: @escaping (NetworkResult<WeatherResponseDTO>) -> Void)
+    /// 산책 정보(누적) 조회
+    func fetchWalkInfo(completion: @escaping (NetworkResult<WalkInfoResponseDTO>) -> Void)
 }
 
 extension HomeAPIServiceProtocol {
     typealias WeatherResponseDTO = BaseDTO<WeatherResponse>
+    typealias WalkInfoResponseDTO = BaseDTO<WalkInfoResponse>
 }
 
 final class HomeAPIService: BaseAPIService, HomeAPIServiceProtocol {
@@ -31,6 +34,14 @@ final class HomeAPIService: BaseAPIService, HomeAPIServiceProtocol {
         request(.fetchWeather,
                 provider: provider,
                 responseType: BaseDTO<WeatherResponse>.self,
+                completion: completion)
+    }
+    
+    /// 산책 정보(누적) 조회
+    func fetchWalkInfo(completion: @escaping (NetworkResult<BaseDTO<WalkInfoResponse>>) -> Void) {
+        request(.fetchWalkInfo,
+                provider: provider,
+                responseType: BaseDTO<WalkInfoResponse>.self,
                 completion: completion)
     }
 }

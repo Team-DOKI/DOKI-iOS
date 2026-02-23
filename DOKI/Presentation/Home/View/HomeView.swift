@@ -46,7 +46,7 @@ struct HomeView: View {
             
             ScrollView {
                 VStack(spacing: 0) {
-                    TotalStatBox(distance: 0.0, totalTime: "00:00:00", count: 0)
+                    TotalStatBox(distance: viewModel.totalDistance, totalTime: viewModel.totalWalkTimeText, count: viewModel.totalWalkCount)
                         .padding(.bottom, 24)
                     
                     HStack(spacing: 0) {
