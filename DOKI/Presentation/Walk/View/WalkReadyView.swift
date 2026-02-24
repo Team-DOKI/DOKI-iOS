@@ -10,12 +10,7 @@ import SwiftUI
 struct WalkReadyView: View {
     @StateObject var viewModel: WalkReadyViewModel
     
-    @State private var items: [WalkItem] = [
-        WalkItem(name: "배변 봉투", isChecked: false),
-        WalkItem(name: "리드줄", isChecked: true),
-        WalkItem(name: "물", isChecked: true),
-        WalkItem(name: "간식", isChecked: false)
-    ]
+    @State private var items: [WalkItem] = []
     
     @State private var isAddingItem: Bool = false
     @State private var newItemText: String = ""
@@ -101,6 +96,11 @@ struct WalkReadyView: View {
                 .padding(16)
                 
                 Spacer()
+            }
+        }
+        .onChange(of: viewModel.preparations) { _, newValue in
+            items = newValue.map {
+                WalkItem(name: $0, isChecked: false)
             }
         }
         .safeAreaInset(edge: .bottom) {

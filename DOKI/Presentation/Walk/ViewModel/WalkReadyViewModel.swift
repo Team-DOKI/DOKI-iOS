@@ -9,17 +9,20 @@ import SwiftUI
 
 class WalkReadyViewModel: ObservableObject {
     private let coordinator: Coordinator<WalkRecordRoute>
-    private let walkService: WalkAPIServiceProtocol
+    private let walkAPIService: WalkAPIServiceProtocol
     
-    init(coordinator: Coordinator<WalkRecordRoute>, walkService: WalkAPIServiceProtocol = WalkAPIService()) {
+    init(coordinator: Coordinator<WalkRecordRoute>, walkAPIService: WalkAPIServiceProtocol = WalkAPIService()) {
         self.coordinator = coordinator
-        self.walkService = walkService
+        self.walkAPIService = walkAPIService
         
         fetchPreparationMessage()
+        fetchPreparation()
     }
     
     @Published var mainMessage: String = ""
     @Published var subMessage: String = ""
+    
+    @Published var preparations: [String] = []
     
     func navigateToWalkRecord() {
         coordinator.presentFullScreen(.walkRecord)
@@ -27,8 +30,9 @@ class WalkReadyViewModel: ObservableObject {
 }
 
 extension WalkReadyViewModel {
+    /// 산책 준비 메세지 조회
     func fetchPreparationMessage() {
-        walkService.fetchPreparationMessage { [weak self] result in
+        walkAPIService.fetchPreparationMessage { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 
@@ -39,6 +43,23 @@ extension WalkReadyViewModel {
                     
                 default:
                     print("산책 준비 메세지 조회 실패했습니다.")
+                }
+            }
+        }
+    }
+    
+    /// 산책 준비물 조회
+    func fetchPreparation() {
+        walkAPIService.fetchPreparation { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.preparations = response?.data?.preparation ?? []
+                    
+                default:
+                    print("산책 준비물을 불러오지 못했습니다.")
                 }
             }
         }
