@@ -14,6 +14,12 @@ protocol WalkAPIServiceProtocol {
     
     /// 산책 준비물 조회
     func fetchPreparation(completion: @escaping (NetworkResult<PreparationResponseDTO>) -> Void)
+    
+    /// 산책 준비물 저장(동기화)
+    func savePreparation(
+        request: PreparationRequest,
+        completion: @escaping (NetworkResult<PreparationResponseDTO>) -> Void
+    )
 }
 
 extension WalkAPIServiceProtocol {
@@ -44,6 +50,19 @@ final class WalkAPIService: BaseAPIService, WalkAPIServiceProtocol {
     ) {
         request(
             .fetchPreparation,
+            provider: provider,
+            responseType: PreparationResponseDTO.self,
+            completion: completion
+        )
+    }
+    
+    /// 산책 준비물 저장(동기화)
+    func savePreparation(
+        request: PreparationRequest,
+        completion: @escaping (NetworkResult<PreparationResponseDTO>) -> Void
+    ) {
+        self.request(
+            .savePreparation(request),
             provider: provider,
             responseType: PreparationResponseDTO.self,
             completion: completion

@@ -22,7 +22,7 @@ class WalkReadyViewModel: ObservableObject {
     @Published var mainMessage: String = ""
     @Published var subMessage: String = ""
     
-    @Published var preparations: [String] = []
+    @Published var preparationItems: [String] = []
     
     func navigateToWalkRecord() {
         coordinator.presentFullScreen(.walkRecord)
@@ -56,10 +56,31 @@ extension WalkReadyViewModel {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
-                    self.preparations = response?.data?.preparation ?? []
+                    self.preparationItems = response?.data?.preparation ?? []
                     
                 default:
                     print("산책 준비물을 불러오지 못했습니다.")
+                }
+            }
+        }
+    }
+    
+    /// 산책 준비물 저장(동기화)
+    func savePreparations() {
+        let request = PreparationRequest(
+            preparation: preparationItems
+        )
+        
+        walkAPIService.savePreparation(request: request) { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.preparationItems = response?.data?.preparation ?? []
+                    
+                default:
+                    print("산책 준비물 저장에 실패했습니다.")
                 }
             }
         }

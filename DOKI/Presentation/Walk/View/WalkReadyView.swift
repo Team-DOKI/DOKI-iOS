@@ -98,10 +98,14 @@ struct WalkReadyView: View {
                 Spacer()
             }
         }
-        .onChange(of: viewModel.preparations) { _, newValue in
+        .onChange(of: viewModel.preparationItems) { _, newValue in
             items = newValue.map {
                 WalkItem(name: $0, isChecked: false)
             }
+        }
+        .onDisappear {
+            viewModel.preparationItems = items.map { $0.name }
+            viewModel.savePreparations()
         }
         .safeAreaInset(edge: .bottom) {
             MainButton(

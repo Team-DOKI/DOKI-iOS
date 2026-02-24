@@ -12,6 +12,7 @@ import Moya
 enum WalkAPI {
     case preparationMessage // 산책 준비 메세지
     case fetchPreparation // 산책 준비물 조회
+    case savePreparation(PreparationRequest) // 산책 준비물 저장(동기화)
 }
 
 extension WalkAPI: BaseTargetType {
@@ -23,7 +24,7 @@ extension WalkAPI: BaseTargetType {
         switch self {
         case .preparationMessage:
             return "/walk/preparation/message"
-        case .fetchPreparation:
+        case .fetchPreparation, .savePreparation:
             return "/walk/preparation"
         }
     }
@@ -32,6 +33,8 @@ extension WalkAPI: BaseTargetType {
         switch self {
         case .preparationMessage, .fetchPreparation:
             return .get
+        case .savePreparation:
+            return .patch
         }
     }
     
@@ -39,6 +42,8 @@ extension WalkAPI: BaseTargetType {
         switch self {
         case .preparationMessage, .fetchPreparation:
             return .requestPlain
+        case .savePreparation(let request):
+            return .requestJSONEncodable(request)
         }
     }
 }
