@@ -110,7 +110,7 @@ extension DogInfoView {
             .onChange(of: viewModel.dogBirthDay) { old, new in
                 guard new.count >= old.count else { return }
                 
-                let formatted = viewModel.formatBirthDate(new)
+                let formatted = viewModel.autoFormatBirth(new)
                 if formatted != new {
                     viewModel.dogBirthDay = formatted
                 }

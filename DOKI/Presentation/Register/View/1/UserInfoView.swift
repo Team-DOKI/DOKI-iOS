@@ -69,7 +69,7 @@ extension UserInfoView {
             .onChange(of: viewModel.birthDay) { old, new in
                 guard new.count >= old.count else { return }
                 
-                let formatted = viewModel.formatBirthDate(new)
+                let formatted = viewModel.autoFormatBirth(new)
                 if formatted != new {
                     viewModel.birthDay = formatted
                 }
