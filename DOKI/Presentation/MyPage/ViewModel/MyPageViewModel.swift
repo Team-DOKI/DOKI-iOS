@@ -104,9 +104,12 @@ class MyPageViewModel: ObservableObject {
         navigationAction?(.myProfile)
     }
     
-    // TODO: dbti 데이터 유무에 따라 Start / Result 네비게이션
     func navigateToDbti() {
-        navigationAction?(.dbtiStart)
+        if petProfile?.dbtiName != nil {
+            navigationAction?(.dbtiResult)
+        } else {
+            navigationAction?(.dbtiStart)
+        }
     }
     
     func navigateToWalkRecord() {

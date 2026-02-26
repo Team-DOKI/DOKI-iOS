@@ -64,5 +64,10 @@ struct DBTIResultView: View {
             Text("DBTI 결과")
                 .subtitle()
         }
+        .onAppear {
+            if viewModel.entryContext == .myPage {
+                viewModel.fetchDBTIResult(petId: 17)
+            }
+        }
     }
 }

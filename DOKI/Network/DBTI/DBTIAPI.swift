@@ -9,8 +9,9 @@ import Foundation
 import Moya
 
 enum DBTIAPI {
-    case fetchQuestions // DBTI 질문 조회
+    case fetchDBTIQuestions // DBTI 질문 조회
     case submitDBTI(petId: Int, request: DBTISurveyRequest) // DBTI 검사 제출
+    case fetchDBTIResult(petId: Int) // DBTI 결과 조회
 }
 
 extension DBTIAPI: BaseTargetType {
@@ -21,16 +22,17 @@ extension DBTIAPI: BaseTargetType {
     
     var path: String {
         switch self {
-        case .fetchQuestions:
+        case .fetchDBTIQuestions:
             return "pets/dbti/questions"
-        case let .submitDBTI(petId, _):
+        case let .submitDBTI(petId, _),
+            let .fetchDBTIResult(petId):
             return "pets/dbti/\(petId)"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .fetchQuestions:
+        case .fetchDBTIQuestions, .fetchDBTIResult:
             return .get
         case .submitDBTI:
             return .post
@@ -39,7 +41,7 @@ extension DBTIAPI: BaseTargetType {
     
     var task: Task {
         switch self {
-        case .fetchQuestions:
+        case .fetchDBTIQuestions, .fetchDBTIResult:
             return .requestPlain
         case let .submitDBTI(_, request):
             return .requestJSONEncodable(request)

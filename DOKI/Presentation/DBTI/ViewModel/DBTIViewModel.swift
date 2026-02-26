@@ -164,4 +164,35 @@ extension DBTIViewModel {
             }
         }
     }
+    
+    /// DBTI 결과 조회
+    func fetchDBTIResult(petId: Int) {
+        dbtiAPIService.fetchDBTIResult(petId: petId) { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    guard let data = response?.data else { return }
+                    
+                    self.dbtiName = data.name
+                    self.type = data.type
+                    self.resultImageUrl = data.image
+                    self.keywords = data.keyword
+                    self.description = data.description
+                    self.analysis = data.analysis.map {
+                        AxisAnalysisData(
+                            leftLabel: $0.leftLabel,
+                            rightLabel: $0.rightLabel,
+                            dominantSide: $0.dominantSide,
+                            score: $0.score
+                        )
+                    }
+                    
+                default:
+                    print("DBTI 결과 조회에 실패했습니다.")
+                }
+            }
+        }
+    }
 }

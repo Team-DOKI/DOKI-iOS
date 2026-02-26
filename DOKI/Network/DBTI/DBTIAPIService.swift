@@ -20,6 +20,12 @@ protocol DBTIAPIServiceProtocol {
         request: DBTISurveyRequest,
         completion: @escaping (NetworkResult<DBTIResultResponseDTO>) -> Void
     )
+    
+    /// DBTI 결과 조회
+    func fetchDBTIResult(
+        petId: Int,
+        completion: @escaping (NetworkResult<DBTIResultResponseDTO>) -> Void
+    )
 }
 
 extension DBTIAPIServiceProtocol {
@@ -39,7 +45,7 @@ final class DBTIAPIService: BaseAPIService, DBTIAPIServiceProtocol {
         completion: @escaping (NetworkResult<DBTIQuestionsResponseDTO>) -> Void
     ) {
         self.request(
-            .fetchQuestions,
+            .fetchDBTIQuestions,
             provider: provider,
             responseType: DBTIQuestionsResponseDTO.self,
             completion: completion
@@ -54,6 +60,19 @@ final class DBTIAPIService: BaseAPIService, DBTIAPIServiceProtocol {
     ) {
         self.request(
             .submitDBTI(petId: petId, request: request),
+            provider: provider,
+            responseType: DBTIResultResponseDTO.self,
+            completion: completion
+        )
+    }
+    
+    /// DBTI 결과 조회
+    func fetchDBTIResult(
+        petId: Int,
+        completion: @escaping (NetworkResult<DBTIResultResponseDTO>) -> Void
+    ) {
+        self.request(
+            .fetchDBTIResult(petId: petId),
             provider: provider,
             responseType: DBTIResultResponseDTO.self,
             completion: completion
