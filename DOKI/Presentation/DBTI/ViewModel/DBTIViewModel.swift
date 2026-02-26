@@ -7,43 +7,18 @@
 
 import Foundation
 
-enum DBTIEntryContext {
-    case afterRegister
-    case myPage
-}
-
-enum DBTIAction {
-    case dbtiStart
-    case dbtiSurvey
-    case dbtiResult
-    case dbtiRestart
-    case dbtiFinish
-}
-
 final class DBTIViewModel: ObservableObject {
-    
+    private let dbtiAPIService: DBTIAPIServiceProtocol
     let entryContext: DBTIEntryContext
     
-    init(entryContext: DBTIEntryContext) {
+    init(
+        entryContext: DBTIEntryContext,
+        dbtiAPIService: DBTIAPIServiceProtocol = DBTIAPIService()
+    ) {
         self.entryContext = entryContext
+        self.dbtiAPIService = dbtiAPIService
         
-        // 임시
-        let dummy = DBTIQuestionData(
-            title: "휴식가 vs 탐험가",
-            question: "산책 나가면 우리 강아지는…",
-            options: [
-                DBTIOptionData(
-                    content: "익숙한 코스에서\n짧게 다녀오는 게 좋아요",
-                    imageUrl: ""
-                ),
-                DBTIOptionData(
-                    content: "동네 구석구석\n새 길을 탐험해야 신나요",
-                    imageUrl: ""
-                )
-            ]
-        )
-        
-        self.questions = Array(repeating: dummy, count: 9)
+        fetchDBTIQuestions()
     }
     
     //MARK: - Survey
@@ -131,5 +106,36 @@ final class DBTIViewModel: ObservableObject {
     
     func finish() {
         navigationAction?(.dbtiFinish)
+    }
+}
+
+// MARK: - API
+
+extension DBTIViewModel {
+    /// DBTI 질문 조회
+    func fetchDBTIQuestions() {
+        dbtiAPIService.fetchDBTIQuestions { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.questions = response?.data?.questions.map { q in
+                        DBTIQuestionData(
+                            title: q.category.name,
+                            question: q.content,
+                            options: q.options.map {
+                                DBTIOptionData(
+                                    content: $0.content,
+                                    imageUrl: $0.imageUrl
+                                )
+                            }
+                        )
+                    } ?? []
+                default:
+                    print("DBTI 질문 조회 실패")
+                }
+            }
+        }
     }
 }
