@@ -13,10 +13,18 @@ protocol DBTIAPIServiceProtocol {
     func fetchDBTIQuestions(
         completion: @escaping (NetworkResult<DBTIQuestionsResponseDTO>) -> Void
     )
+    
+    /// DBTI 검사 제출
+    func submitDBTI(
+        petId: Int,
+        request: DBTISurveyRequest,
+        completion: @escaping (NetworkResult<DBTIResultResponseDTO>) -> Void
+    )
 }
 
 extension DBTIAPIServiceProtocol {
     typealias DBTIQuestionsResponseDTO = BaseDTO<DBTIQuestionsResponse>
+    typealias DBTIResultResponseDTO = BaseDTO<DBTIResultResponse>
 }
 
 final class DBTIAPIService: BaseAPIService, DBTIAPIServiceProtocol {
@@ -34,6 +42,20 @@ final class DBTIAPIService: BaseAPIService, DBTIAPIServiceProtocol {
             .fetchQuestions,
             provider: provider,
             responseType: DBTIQuestionsResponseDTO.self,
+            completion: completion
+        )
+    }
+    
+    /// DBTI 검사 제출
+    func submitDBTI(
+        petId: Int,
+        request: DBTISurveyRequest,
+        completion: @escaping (NetworkResult<DBTIResultResponseDTO>) -> Void
+    ) {
+        self.request(
+            .submitDBTI(petId: petId, request: request),
+            provider: provider,
+            responseType: DBTIResultResponseDTO.self,
             completion: completion
         )
     }

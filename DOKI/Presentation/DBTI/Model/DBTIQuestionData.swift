@@ -14,6 +14,7 @@ struct DBTIQuestionData {
 }
 
 struct DBTIOptionData {
+    let id: Int
     let content: String
     let imageUrl: String
 }

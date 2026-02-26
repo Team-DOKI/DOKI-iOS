@@ -9,22 +9,22 @@ import Foundation
 import Moya
 
 enum DBTIAPI {
-    case fetchQuestions
+    case fetchQuestions // DBTI 질문 조회
+    case submitDBTI(petId: Int, request: DBTISurveyRequest) // DBTI 검사 제출
 }
 
 extension DBTIAPI: BaseTargetType {
     
     var headerType: HeaderType {
-        switch self {
-        case .fetchQuestions:
-            return .defaultHeader
-        }
+        .defaultHeader
     }
     
     var path: String {
         switch self {
         case .fetchQuestions:
             return "pets/dbti/questions"
+        case let .submitDBTI(petId, _):
+            return "pets/dbti/\(petId)"
         }
     }
     
@@ -32,6 +32,8 @@ extension DBTIAPI: BaseTargetType {
         switch self {
         case .fetchQuestions:
             return .get
+        case .submitDBTI:
+            return .post
         }
     }
     
@@ -39,6 +41,8 @@ extension DBTIAPI: BaseTargetType {
         switch self {
         case .fetchQuestions:
             return .requestPlain
+        case let .submitDBTI(_, request):
+            return .requestJSONEncodable(request)
         }
     }
 }

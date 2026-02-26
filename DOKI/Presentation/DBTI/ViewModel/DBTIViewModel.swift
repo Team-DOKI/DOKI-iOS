@@ -24,35 +24,16 @@ final class DBTIViewModel: ObservableObject {
     //MARK: - Survey
     
     @Published var questions: [DBTIQuestionData] = []
+    @Published private var selectedOptionIds: [Int] = []
     
     //MARK: - Result
     
-    @Published var dbtiName: String = "자유로운 꼬리바람"
-    @Published var type: String = "EPF"
-    @Published var resultImageUrl: String?
-    @Published var keywords: [String] = ["자유", "즉흥", "활발"]
-    @Published var description: String =
-    "즉흥적이고 변화를 좋아해요.\n친구들과 매일 산책 코스를 즐기는 자유로운 영혼!"
-    @Published var analysis: [AxisAnalysisData] = [
-        .init(
-            leftLabel: "휴식가",
-            rightLabel: "탐험가",
-            dominantSide: "right",
-            score: 2
-        ),
-        .init(
-            leftLabel: "부끄멍",
-            rightLabel: "적극멍",
-            dominantSide: "left",
-            score: 1
-        ),
-        .init(
-            leftLabel: "루틴러",
-            rightLabel: "자유러",
-            dominantSide: "right",
-            score: 3
-        )
-    ]
+    @Published var dbtiName: String = ""
+    @Published var type: String = ""
+    @Published var resultImageUrl: String? = nil
+    @Published var keywords: [String] = []
+    @Published var description: String = ""
+    @Published var analysis: [AxisAnalysisData] = []
     
     // MARK: - Step
     
@@ -81,14 +62,19 @@ final class DBTIViewModel: ObservableObject {
     
     // MARK: - Actions
     
-    func goToNextStep() {
-        guard selectedIndex != nil else { return }
+    func goToNextStep(petId: Int) {
+        guard
+            let selectedIndex
+        else { return }
+        
+        let optionId = questions[currentStep].options[selectedIndex].id
+        selectedOptionIds.append(optionId)
         
         if isLastStep {
-            navigationAction?(.dbtiResult)
+            submitDBTI(petId: petId)
         } else {
             currentStep += 1
-            selectedIndex = nil
+            self.selectedIndex = nil
         }
     }
     
@@ -101,6 +87,7 @@ final class DBTIViewModel: ObservableObject {
     func restartSurvey() {
         currentStep = 0
         selectedIndex = nil
+        selectedOptionIds.removeAll()
         navigationAction?(.dbtiRestart)
     }
     
@@ -126,6 +113,7 @@ extension DBTIViewModel {
                             question: q.content,
                             options: q.options.map {
                                 DBTIOptionData(
+                                    id: $0.id,
                                     content: $0.content,
                                     imageUrl: $0.imageUrl
                                 )
@@ -133,7 +121,45 @@ extension DBTIViewModel {
                         )
                     } ?? []
                 default:
-                    print("DBTI 질문 조회 실패")
+                    print("DBTI 질문 조회에 실패했습니다.")
+                }
+            }
+        }
+    }
+    
+    /// DBTI 검사 제출
+    func submitDBTI(petId: Int) {
+        let request = DBTISurveyRequest(optionIds: selectedOptionIds)
+        
+        dbtiAPIService.submitDBTI(
+            petId: petId,
+            request: request
+        ) { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    guard let data = response?.data else { return }
+                    
+                    self.type = data.type
+                    self.dbtiName = data.name
+                    self.resultImageUrl = data.image
+                    self.keywords = data.keyword
+                    self.description = data.description
+                    self.analysis = data.analysis.map {
+                        AxisAnalysisData(
+                            leftLabel: $0.leftLabel,
+                            rightLabel: $0.rightLabel,
+                            dominantSide: $0.dominantSide,
+                            score: $0.score
+                        )
+                    }
+                    
+                    self.navigationAction?(.dbtiResult)
+                    
+                default:
+                    print("DBTI 검사 제출에 실패했습니다.")
                 }
             }
         }

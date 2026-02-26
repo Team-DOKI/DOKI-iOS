@@ -20,8 +20,6 @@ class MyPageViewModel: ObservableObject {
     ) {
         self.userAPIService = userAPIService
         self.authManager = authManager
-        
-        //        fetchPetProfile(petId: 14)
     }
     
     @Published var isShowLogoutAlert: Bool = false

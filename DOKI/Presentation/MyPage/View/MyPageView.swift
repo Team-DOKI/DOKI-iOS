@@ -115,7 +115,8 @@ struct MyPageView: View {
             secondaryAction: viewModel.withdrawCancelButtonTapped
         )
         .onAppear {
-                    viewModel.fetchUserProfile()
-                }
+            viewModel.fetchUserProfile()
+            viewModel.fetchPetProfile(petId: 17)
+        }
     }
 }
