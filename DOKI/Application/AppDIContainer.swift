@@ -45,10 +45,6 @@ extension AppDIContainer {
             return MyPageViewModel()
         }
         
-        func makeMyProfileViewModel() -> MyProfileViewModel {
-            return MyProfileViewModel()
-        }
-        
         func makeRegisterViewModel() -> RegisterViewModel {
             return RegisterViewModel()
         }

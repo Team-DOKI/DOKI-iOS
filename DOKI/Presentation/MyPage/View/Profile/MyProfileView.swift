@@ -55,6 +55,11 @@ extension MyProfileView {
                 placeholder: "최대 8글자 이내로 입력해주세요",
                 text: $viewModel.nickname
             )
+            .onChange(of: viewModel.nickname) { _, newValue in
+                if newValue.count > 8 {
+                    viewModel.nickname = String(newValue.prefix(8))
+                }
+            }
         }
     }
     
@@ -66,6 +71,15 @@ extension MyProfileView {
                 placeholder: "YYYY/MM/DD",
                 text: $viewModel.birthDay
             )
+            .keyboardType(.numberPad)
+            .onChange(of: viewModel.birthDay) { old, new in
+                guard new.count >= old.count else { return }
+                
+                let formatted = viewModel.formatBirthDate(new)
+                if formatted != new {
+                    viewModel.birthDay = formatted
+                }
+            }
         }
     }
     
