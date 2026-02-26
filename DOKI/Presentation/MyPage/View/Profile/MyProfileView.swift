@@ -43,6 +43,11 @@ struct MyProfileView: View {
             Text("내 정보 수정")
                 .subtitle()
         })
+        .onChange(of: viewModel.isSaveCompleted) { _, completed in
+            if completed {
+                dismiss()
+            }
+        }
     }
 }
 

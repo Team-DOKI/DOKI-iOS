@@ -114,9 +114,8 @@ struct MyPageView: View {
             },
             secondaryAction: viewModel.withdrawCancelButtonTapped
         )
+        .onAppear {
+                    viewModel.fetchUserProfile()
+                }
     }
-}
-
-#Preview {
-    MyPageView(viewModel: MyPageViewModel())
 }

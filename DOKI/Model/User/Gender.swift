@@ -18,7 +18,6 @@ enum Gender: String, CaseIterable, Identifiable {
         }
     }
     
-    
     var serverValue: String {
         switch self {
         case .male: return "M"

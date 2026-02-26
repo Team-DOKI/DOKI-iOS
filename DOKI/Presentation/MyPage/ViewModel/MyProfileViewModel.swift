@@ -8,10 +8,6 @@
 import SwiftUI
 
 class MyProfileViewModel: ObservableObject {
-    @Published var nickname: String
-    @Published var birthDay: String
-    @Published var gender: Gender
-    
     private let userAPIService: UserAPIServiceProtocol
     
     init(
@@ -24,6 +20,12 @@ class MyProfileViewModel: ObservableObject {
         self.userAPIService = userAPIService
     }
     
+    @Published var nickname: String
+    @Published var birthDay: String
+    @Published var gender: Gender
+    
+    @Published var isSaveCompleted = false
+    
     func selecteGender(_ gender: Gender) {
         self.gender = gender
     }
@@ -33,6 +35,24 @@ class MyProfileViewModel: ObservableObject {
     }
     
     func saveButtonTapped() {
+        let formattedBirthDay = birthDay.replacingOccurrences(of: "/", with: "-")
         
+        let request = UpdateUserProfileRequest(
+            name: nickname,
+            birth: formattedBirthDay,
+            gender: gender.serverValue
+        )
+        
+        userAPIService.updateUserProfile(request: request) { result in
+            switch result {
+            case .success:
+                DispatchQueue.main.async {
+                    self.isSaveCompleted = true
+                }
+                
+            default:
+                print("유저 정보 수정에 실패했습니다.")
+            }
+        }
     }
 }

@@ -21,7 +21,6 @@ class MyPageViewModel: ObservableObject {
         self.userAPIService = userAPIService
         self.authManager = authManager
         
-        fetchUserProfile()
         //        fetchPetProfile(petId: 14)
     }
     

@@ -21,6 +21,12 @@ protocol UserAPIServiceProtocol {
     
     /// 반려견 정보 조회
     func fetchPetProfile(petId: Int,completion: @escaping (NetworkResult<PetProfileResponseDTO>) -> Void)
+    
+    /// 유저 정보 수정
+    func updateUserProfile(
+        request: UpdateUserProfileRequest,
+        completion: @escaping (NetworkResult<BaseDTO<EmptyResponse>>) -> Void
+    )
 }
 
 extension UserAPIServiceProtocol {
@@ -67,5 +73,18 @@ final class UserAPIService: BaseAPIService, UserAPIServiceProtocol {
                      provider: provider,
                      responseType: PetProfileResponseDTO.self,
                      completion: completion)
+    }
+    
+    /// 유저 정보 수정
+    func updateUserProfile(
+        request: UpdateUserProfileRequest,
+        completion: @escaping (NetworkResult<BaseDTO<EmptyResponse>>) -> Void
+    ) {
+        self.request(
+            .updateUserProfile(request: request),
+            provider: provider,
+            responseType: BaseDTO<EmptyResponse>.self,
+            completion: completion
+        )
     }
 }
