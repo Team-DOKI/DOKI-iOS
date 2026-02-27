@@ -63,12 +63,13 @@ final class DBTIViewModel: ObservableObject {
     // MARK: - Actions
     
     func goToNextStep(petId: Int) {
-        guard
-            let selectedIndex
-        else { return }
+        guard let selectedIndex else { return }
         
-        let optionId = questions[currentStep].options[selectedIndex].id
-        selectedOptionIds.append(optionId)
+        if selectedOptionIds.count != questions.count {
+            selectedOptionIds = Array(repeating: 0, count: questions.count)
+        }
+        
+        selectedOptionIds[currentStep] = questions[currentStep].options[selectedIndex].id
         
         if isLastStep {
             submitDBTI(petId: petId)
