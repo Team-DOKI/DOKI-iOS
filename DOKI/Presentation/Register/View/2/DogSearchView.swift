@@ -8,7 +8,13 @@
 import SwiftUI
 
 struct DogSearchView: View {
-    @ObservedObject var viewModel: RegisterViewModel
+    let breeds: [BreedList]
+    let selectedBreedName: String
+    
+    @Binding var searchText: String
+    
+    let onSelect: (BreedList) -> Void
+    let onDismiss: () -> Void
     
     var body: some View {
         VStack(spacing: 0) {
@@ -16,24 +22,26 @@ struct DogSearchView: View {
                 .subtitle()
                 .padding(.vertical, 25)
             
-            SearchField(placeholder: "견종을 검색해보세요", text: $viewModel.breedSearchText)
+            SearchField(placeholder: "견종을 검색해보세요", text: $searchText)
                 .padding(.horizontal, 16)
                 .padding(.bottom, 8)
             
             ScrollView {
                 LazyVStack {
-                    ForEach(viewModel.filteredBreeds, id: \.id) { breed in
-                        OptionItem(text: breed.name, isChecked: viewModel.selectedBreedName == breed.name) {
-                            viewModel.selectBreed(breed)
-                            viewModel.toggleBreedSearchSheet()
+                    ForEach(filteredBreeds, id: \.id) { breed in
+                        OptionItem(text: breed.name, isChecked: selectedBreedName == breed.name) {
+                            onSelect(breed)
+                            onDismiss()
                         }
                     }
                 }
                 .padding(.horizontal, 16)
             }
         }
-        .onAppear {
-            viewModel.fetchBreedList()
-        }
+    }
+    
+    private var filteredBreeds: [BreedList] {
+        if searchText.isEmpty { return breeds }
+        return breeds.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
     }
 }

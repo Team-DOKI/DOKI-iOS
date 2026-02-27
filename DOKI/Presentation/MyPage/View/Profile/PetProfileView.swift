@@ -59,7 +59,7 @@ struct PetProfileView: View {
             }
         }
         .sheet(isPresented: $viewModel.isShowBreedSearch) {
-            BreedSearchView(
+            DogSearchView(
                 breeds: viewModel.breedList,
                 selectedBreedName: viewModel.selectedBreedName,
                 searchText: $viewModel.breedSearchText,

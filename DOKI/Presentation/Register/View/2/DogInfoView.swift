@@ -44,9 +44,20 @@ struct DogInfoView: View {
             }
             .padding(.horizontal, 16)
         }
+        .onAppear{ viewModel.fetchBreedList() }
         .sheet(isPresented: $viewModel.isShowBreedSearch) {
-            DogSearchView(viewModel: viewModel)
-                .presentationDetents([.height(600)])
+            DogSearchView(
+                breeds: viewModel.breedList,
+                selectedBreedName: viewModel.selectedBreedName,
+                searchText: $viewModel.breedSearchText,
+                onSelect: { breed in
+                    viewModel.selectBreed(breed)
+                },
+                onDismiss: {
+                    viewModel.toggleBreedSearchSheet()
+                }
+            )
+            .presentationDetents([.height(600)])
         }
     }
 }

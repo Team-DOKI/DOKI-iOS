@@ -90,16 +90,6 @@ final class RegisterViewModel: ObservableObject {
     
     // MARK: - User Action
     
-    var filteredBreeds: [BreedList] {
-        if breedSearchText.isEmpty {
-            return breedList
-        } else {
-            return breedList.filter {
-                $0.name.localizedCaseInsensitiveContains(breedSearchText)
-            }
-        }
-    }
-    
     func goToNextStep() {
         if let next { currentStep = next }
     }
