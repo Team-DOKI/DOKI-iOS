@@ -45,12 +45,19 @@ struct PetProfileView: View {
         .safeAreaInset(edge: .bottom) {
             MainButton(
                 text: "저장하기",
-                action: {}
+                action: {
+                    viewModel.saveButtonTapped(petId: 17)
+                }
             )
             .padding(.horizontal, 16)
         }
         .ignoresSafeArea(.keyboard)
         .onAppear{ viewModel.fetchBreedList() }
+        .onChange(of: viewModel.isSaveCompleted) { _, completed in
+            if completed {
+                dismiss()
+            }
+        }
         .sheet(isPresented: $viewModel.isShowBreedSearch) {
             BreedSearchView(
                 breeds: viewModel.breedList,

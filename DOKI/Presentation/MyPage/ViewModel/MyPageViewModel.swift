@@ -45,7 +45,7 @@ class MyPageViewModel: ObservableObject {
     }
     var petInfoText: String {
         guard let pet = petProfile else { return "" }
-        let genderText = pet.gender == "F" ? "여아" : "남아"
+        let genderText = pet.gender
         return "\(pet.age) / \(genderText) / \(pet.breed)"
     }
     

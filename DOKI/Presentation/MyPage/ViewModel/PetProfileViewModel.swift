@@ -47,6 +47,10 @@ class PetProfileViewModel: ObservableObject {
     @Published var breedSearchText = ""
     @Published var isShowBreedSearch = false
     
+    @Published var isSaveCompleted = false
+    
+    // MARK: - User Action
+    
     func selectDogGender(_ gender: Gender) {
         self.dogGender = gender
     }
@@ -67,32 +71,43 @@ class PetProfileViewModel: ObservableObject {
     func autoFormatBirth(_ input: String) -> String {
         BirthDateInputFormatter.autoFormat(input)
     }
+    
+    func saveButtonTapped(petId: Int) {
+        updatePetProfile(petId: petId)
+    }
 }
 
 // MARK: - API
 
 extension PetProfileViewModel {
     /// 반려견 정보 수정
-    func saveButtonTapped() {
+    func updatePetProfile(petId: Int) {
+        guard
+            let breedId,
+            let imageId
+        else { return }
+        
         let formattedBirthDay = dogBirthDay.replacingOccurrences(of: "/", with: "-")
         
-        //        let request = UpdatePetProfileRequest(
-        //            name: dogName,
-        //            birth: formattedBirthDay,
-        //            gender: dogGender.serverValue,
-        //            isNeutered: isNeutered,
-        //            breedId: breedId,
-        //            imageId: imageId
-        //        )
+        let request = UpdatePetProfileRequest(
+            name: dogName,
+            birth: formattedBirthDay,
+            gender: dogGender.serverValue,
+            isNeutered: isNeutered,
+            breedId: breedId,
+            imageId: imageId
+        )
         
-        //        userAPIService.updatePetProfile(petId: petId, request: request) { result in
-        //            switch result {
-        //            case .success:
-        //
-        //            default:
-        //                print("반려견 정보 수정에 실패했습니다.")
-        //            }
-        //        }
+        userAPIService.updatePetProfile(petId: petId, request: request) { result in
+            switch result {
+            case .success:
+                DispatchQueue.main.async {
+                    self.isSaveCompleted = true
+                }
+            default:
+                print("반려견 정보 수정에 실패했습니다.")
+            }
+        }
     }
     
     /// 견종 조회

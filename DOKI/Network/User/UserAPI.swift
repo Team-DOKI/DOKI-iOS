@@ -17,14 +17,12 @@ enum UserAPI {
     case fetchPetProfile(petId: Int) // 반려견 정보 조회
     
     case updateUserProfile(request: UpdateUserProfileRequest) // 유저 정보 수정
+    case updatePetProfile(petId: Int, request: UpdatePetProfileRequest) // 반려견 프로필 수정
 }
 
 extension UserAPI: BaseTargetType {
     var headerType: HeaderType {
-        switch self {
-        case .register, .fetchBreedList, .fetchUserProfile, .fetchPetProfile, .updateUserProfile:
-            return .defaultHeader
-        }
+        .defaultHeader
     }
     
     var path: String {
@@ -37,6 +35,8 @@ extension UserAPI: BaseTargetType {
             return "users/me/userInfo"
         case let .fetchPetProfile(petId):
             return "pets/\(petId)"
+        case let .updatePetProfile(petId, _):
+            return "pets/\(petId)"
         }
     }
     
@@ -46,7 +46,7 @@ extension UserAPI: BaseTargetType {
             return .post
         case .fetchBreedList, .fetchUserProfile, .fetchPetProfile:
             return .get
-        case .updateUserProfile:
+        case .updateUserProfile, .updatePetProfile:
             return .patch
         }
     }
@@ -56,6 +56,8 @@ extension UserAPI: BaseTargetType {
         case let .register(request):
             return .requestJSONEncodable(request)
         case let .updateUserProfile(request):
+            return .requestJSONEncodable(request)
+        case let .updatePetProfile(_, request):
             return .requestJSONEncodable(request)
         case .fetchBreedList, .fetchUserProfile, .fetchPetProfile:
             return .requestPlain
