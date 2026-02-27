@@ -94,6 +94,9 @@ class MyPageViewModel: ObservableObject {
     var navigationAction: ((MyPageRoute)->())?
     
     func navigateToPetProfile() {
+        guard petProfile != nil else {
+            return
+        }
         navigationAction?(.petProfile)
     }
     

@@ -10,13 +10,13 @@ import PhotosUI
 
 struct PetProfileView: View {
     @ObservedObject var viewModel: PetProfileViewModel
-
-    @State private var selectedItems: [PhotosPickerItem] = []
-
+    
+    @State private var selectedItem: PhotosPickerItem?
+    
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 0) {
                 Spacer().frame(height: 26)
                 
@@ -50,9 +50,20 @@ struct PetProfileView: View {
             .padding(.horizontal, 16)
         }
         .ignoresSafeArea(.keyboard)
+        .onAppear{ viewModel.fetchBreedList() }
         .sheet(isPresented: $viewModel.isShowBreedSearch) {
-            DogSearch(viewModel: viewModel)
-                .presentationDetents([.height(600)])
+            BreedSearchView(
+                breeds: viewModel.breedList,
+                selectedBreedName: viewModel.selectedBreedName,
+                searchText: $viewModel.breedSearchText,
+                onSelect: { breed in
+                    viewModel.selectBreed(breed)
+                },
+                onDismiss: {
+                    viewModel.toggleBreedSearchSheet()
+                }
+            )
+            .presentationDetents([.height(600)])
         }
         .topNavigationView(left: {
             BackButton(action: {
@@ -68,22 +79,36 @@ struct PetProfileView: View {
 extension PetProfileView {
     private var photoPicker: some View {
         PhotosPicker(
-            selection: $selectedItems,
-            maxSelectionCount: 1,
+            selection: $selectedItem,
             matching: .images
         ) {
-            if let profileImage = viewModel.profileImage.last {
-                Image(uiImage: profileImage)
+            if let newImage = viewModel.newPetProfileImage {
+                Image(uiImage: newImage)
                     .resizable()
                     .frame(width: 94, height: 94)
                     .aspectRatio(contentMode: .fill)
                     .clipShape(Circle())
-            } else {
+            }
+            else if let urlString = viewModel.petProfileImageUrl,
+                    let url = URL(string: urlString) {
+                AsyncImage(url: url) { image in
+                    image
+                        .resizable()
+                        .frame(width: 94, height: 94)
+                        .aspectRatio(contentMode: .fill)
+                        .clipShape(Circle())
+                } placeholder: {
+                    ProgressView()
+                        .frame(width: 94, height: 94)
+                }
+            }
+            else {
                 Image(.btnDogprofile)
             }
         }
-        .onChange(of: selectedItems) { _, selectedPhoto in
-            handleSelectedPhotos(selectedPhoto)
+        .onChange(of: selectedItem) { _, newItem in
+            guard let newItem else { return }
+            handleSelectedPhoto(newItem)
         }
     }
     
@@ -95,6 +120,11 @@ extension PetProfileView {
                 placeholder: "최대 8글자 이내로 입력해주세요",
                 text: $viewModel.dogName
             )
+            .onChange(of: viewModel.dogName) { _, newValue in
+                if newValue.count > 8 {
+                    viewModel.dogName = String(newValue.prefix(8))
+                }
+            }
         }
     }
     
@@ -106,6 +136,15 @@ extension PetProfileView {
                 placeholder: "YYYY/MM/DD",
                 text: $viewModel.dogBirthDay
             )
+            .keyboardType(.numberPad)
+            .onChange(of: viewModel.dogBirthDay) { old, new in
+                guard new.count >= old.count else { return }
+                
+                let formatted = viewModel.autoFormatBirth(new)
+                if formatted != new {
+                    viewModel.dogBirthDay = formatted
+                }
+            }
         }
     }
     
@@ -125,10 +164,10 @@ extension PetProfileView {
             }
             
             Button {
-                viewModel.toggleIsNeutering()
+                viewModel.toggleIsNeutered()
             } label: {
                 HStack(spacing: 8) {
-                    Image(viewModel.isNeutering ? .btnNeutralized : .btnNotneutralized)
+                    Image(viewModel.isNeutered ? .btnNeutralized : .btnNotneutralized)
                     
                     Text("중성화 했어요").bodySmall(color: .defaultMiddle)
                 }
@@ -142,7 +181,7 @@ extension PetProfileView {
             
             SearchField(
                 placeholder: "견종을 검색해보세요",
-                text: $viewModel.breed
+                text: $viewModel.selectedBreedName
             )
             .disabled(true)
             .overlay {
@@ -156,24 +195,25 @@ extension PetProfileView {
     }
 }
 
+// MARK: - Helpers
+
 extension PetProfileView {
-    private func handleSelectedPhotos(_ newPhotos: [PhotosPickerItem]) {
-        for newPhoto in newPhotos {
-            newPhoto.loadTransferable(type: Data.self) { result in
-                switch result {
-                case .success(let data):
-                    if let data,
-                       let newImage = UIImage(data: data),
-                       !viewModel.profileImage.contains(where: { $0.pngData() == newImage.pngData() }) {
-                        DispatchQueue.main.async {
-                            viewModel.profileImage.append(newImage)
-                        }
-                    }
-                case .failure:
-                    break
+    private func handleSelectedPhoto(_ item: PhotosPickerItem) {
+        item.loadTransferable(type: Data.self) { result in
+            switch result {
+            case .success(let data):
+                guard
+                    let data,
+                    let image = UIImage(data: data)
+                else { return }
+                
+                DispatchQueue.main.async {
+                    viewModel.uploadDogImage(image)
                 }
+                
+            default:
+                print("이미지를 불러오지 못했습니다.")
             }
         }
-        selectedItems.removeAll()
     }
 }

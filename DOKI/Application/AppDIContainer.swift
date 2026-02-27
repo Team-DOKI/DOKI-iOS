@@ -49,10 +49,6 @@ extension AppDIContainer {
             return RegisterViewModel()
         }
         
-        func makePetProfileViewModel() -> PetProfileViewModel {
-            return PetProfileViewModel()
-        }
-        
         func makeFilterSettingViewModel() -> FilterSettingViewModel {
             return FilterSettingViewModel()
         }

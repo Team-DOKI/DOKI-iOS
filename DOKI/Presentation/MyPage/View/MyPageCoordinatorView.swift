@@ -28,7 +28,6 @@ struct MyPageCoordinatorView: View {
     
     @StateObject var myPageCoordinator: Coordinator<MyPageRoute>
     @StateObject var myPageViewModel: MyPageViewModel
-    @StateObject var petProfileViewModel:  PetProfileViewModel
     @StateObject var myWalkRecordViewModel: MyWalkRecordViewModel
     @StateObject var mySavedWalkViewModel: MySavedWalkViewModel
     @StateObject var dbtiViewModel = DBTIViewModel(entryContext: .myPage)
@@ -36,7 +35,6 @@ struct MyPageCoordinatorView: View {
     init(myPageCoordinator: Coordinator<MyPageRoute> = Coordinator<MyPageRoute>(), viewModelFactory: AppDIContainer.ViewModelFactory) {
         self._myPageCoordinator = StateObject(wrappedValue: myPageCoordinator)
         self._myPageViewModel = StateObject(wrappedValue: viewModelFactory.makeMyPageViewModel())
-        self._petProfileViewModel = StateObject(wrappedValue: viewModelFactory.makePetProfileViewModel())
         self._myWalkRecordViewModel = StateObject(wrappedValue: viewModelFactory.makeMyWalkRecordViewModel())
         self._mySavedWalkViewModel = StateObject(wrappedValue: viewModelFactory.makeMySavedWalkViewModel())
     }
@@ -53,7 +51,11 @@ struct MyPageCoordinatorView: View {
                             )
                         }
                     case .petProfile:
-                        PetProfileView(viewModel: petProfileViewModel)
+                        if let petProfile = myPageViewModel.petProfile {
+                            PetProfileView(
+                                viewModel: PetProfileViewModel(petProfile: petProfile)
+                            )
+                        }
                     case .myWalkRecord:
                         MyWalkRecordView(viewModel: myWalkRecordViewModel)
                     case .savedWalk:
