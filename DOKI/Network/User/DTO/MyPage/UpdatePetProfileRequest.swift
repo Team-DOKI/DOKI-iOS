@@ -6,10 +6,10 @@
 //
 
 struct UpdatePetProfileRequest: Codable {
-    let name: String
-    let birth: String
-    let gender: String 
-    let isNeutered: Bool
-    let breedId: Int
+    let name: String?
+    let birth: String?
+    let gender: String?
+    let isNeutered: Bool?
+    let breedId: Int?
     let imageId: Int?
 }

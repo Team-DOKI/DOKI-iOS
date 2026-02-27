@@ -82,11 +82,6 @@ class PetProfileViewModel: ObservableObject {
 extension PetProfileViewModel {
     /// 반려견 정보 수정
     func updatePetProfile(petId: Int) {
-        guard
-            let breedId,
-            let imageId
-        else { return }
-        
         let formattedBirthDay = dogBirthDay.replacingOccurrences(of: "/", with: "-")
         
         let request = UpdatePetProfileRequest(
