@@ -36,13 +36,11 @@ struct WalkReadyView: View {
                             .foregroundColor(.contents)
                     }
                     .padding(.vertical, 16)
-                    
-                    Spacer()
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     
                     Image(.imgUpperbodydog)
                         .padding(.top, 8)
                 }
-                .frame(maxWidth: .infinity)
                 .padding(.horizontal, 16)
                 .background(.defaultBackground)
                 .cornerRadius(16)
@@ -195,3 +193,4 @@ private struct HeightKey: PreferenceKey {
         value = max(value, nextValue())
     }
 }
+
