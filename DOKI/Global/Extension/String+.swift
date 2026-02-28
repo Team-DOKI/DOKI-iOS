@@ -40,14 +40,14 @@ extension String {
         guard let date = formatter.date(from: self) else { return self }
         
         let displayFormatter = DateFormatter()
-        displayFormatter.dateFormat = "yy/MM/dd"
+        displayFormatter.dateFormat = "yyyy/MM/dd"
         return displayFormatter.string(from: date)
     }
 }
 
 extension Int {
     func formattedDuration() -> String {
-        if self < 60 {
+        if self <= 60 {
             return "\(self)min"
         } else {
             let hours = self / 60

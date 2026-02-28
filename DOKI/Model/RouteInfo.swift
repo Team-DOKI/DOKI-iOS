@@ -13,6 +13,6 @@ struct RouteInfo: Identifiable {
     let address: String
     let date: String
     let duration: String
-    let isLiked: Bool
+    var isLiked: Bool
     let imageURL: String
 }

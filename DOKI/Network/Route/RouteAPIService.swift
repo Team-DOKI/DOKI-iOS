@@ -18,10 +18,17 @@ protocol RouteAPIServiceProtocol {
     func fetchMyLikedPosts(
         completion: @escaping (NetworkResult<RouteInfoResponseDTO>) -> Void
     )
+    
+    /// 게시글 좋아요/취소
+    func toggleLike(
+        postId: Int,
+        completion: @escaping (NetworkResult<LikeResponseDTO>) -> Void
+    )
 }
 
 extension RouteAPIServiceProtocol {
     typealias RouteInfoResponseDTO = BaseDTO<RouteInfoResponse>
+    typealias LikeResponseDTO = BaseDTO<LikeResponse>
 }
 
 final class RouteAPIService: BaseAPIService, RouteAPIServiceProtocol {
@@ -53,6 +60,16 @@ final class RouteAPIService: BaseAPIService, RouteAPIServiceProtocol {
             .fetchMyLikedPosts,
             provider: provider,
             responseType: RouteInfoResponseDTO.self,
+            completion: completion
+        )
+    }
+    
+    /// 게시글 좋아요/취소
+    func toggleLike(postId: Int, completion: @escaping (NetworkResult<LikeResponseDTO>) -> Void) {
+        self.request(
+            .toggleLike(postId: postId),
+            provider: provider,
+            responseType: LikeResponseDTO.self,
             completion: completion
         )
     }

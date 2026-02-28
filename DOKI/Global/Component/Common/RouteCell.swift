@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RouteCell: View {
     let route: RouteInfo
+    let likeAction: () -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -25,11 +26,16 @@ struct RouteCell: View {
                     
                     Spacer()
                     
-                    if route.isLiked {
-                        Image(.btnRedheart)
-                    } else {
-                        Image(.btnGrayheart)
+                    Button {
+                        likeAction()
+                    } label: {
+                        if route.isLiked {
+                            Image(.btnRedheart)
+                        } else {
+                            Image(.btnGrayheart)
+                        }
                     }
+                    .buttonStyle(.plain)
                 }
                 .padding(8)
             }
