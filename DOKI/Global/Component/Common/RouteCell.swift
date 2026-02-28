@@ -8,50 +8,56 @@
 import SwiftUI
 
 struct RouteCell: View {
+    let route: RouteInfo
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Image("")
-                .resizable()
-                .frame(width: 167, height: 212)
-                .background(.defaultButton)
-                .cornerRadius(8)
-                .overlay(alignment: .top) {
-                    HStack(spacing: 0) {
-                        AddressTag(text: "강남구 역삼동")
-                        
-                        Spacer()
-                        
+            AsyncImage(url: URL(string: route.imageURL)) { image in
+                image.resizable()
+            } placeholder: {
+                Color(.systemGray5)
+            }
+            .frame(width: 167, height: 212)
+            .cornerRadius(8)
+            .overlay(alignment: .top) {
+                HStack(spacing: 0) {
+                    AddressTag(text: route.address)
+                    
+                    Spacer()
+                    
+                    if route.isLiked {
                         Image(.btnRedheart)
+                    } else {
+                        Image(.btnGrayheart)
                     }
-                    .padding(8)
                 }
+                .padding(8)
+            }
             
-            Text("오늘도 단지랑 룰루랄라")
+            Text(route.title)
                 .bodyBold()
                 .padding(.top, 8)
+                .padding(.horizontal, 2)
             
-            HStack(spacing: 16) {
+            HStack(spacing: 0) {
                 HStack(spacing: 4) {
                     Image(.icCalendar)
-                    Text("2025/09/19")
+                    
+                    Text(route.date)
                         .small(color: .defaultMiddle)
                 }
                 
+                Spacer()
+                
                 HStack(spacing: 4) {
                     Image(.icClock)
-                    Text("30min")
+                    
+                    Text(route.duration)
                         .small(color: .defaultMiddle)
                 }
             }
             .padding(.top, 8)
+            .padding(.horizontal, 2)
         }
     }
-}
-
-#Preview {
-    HStack(spacing: 8) {
-        RouteCell()
-        RouteCell()
-    }
-    .padding()
 }

@@ -17,21 +17,24 @@ struct MyPostsView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             LazyVGrid(columns: columns, spacing: 16) {
-                ForEach(1...10, id: \.self) { _ in
-                    RouteCell()
+                ForEach(viewModel.posts, id: \.id) { post in
+                    RouteCell(route: post)
                 }
             }
             .padding(.horizontal, 16)
             .padding(.top, 20)
         }
-            .topNavigationView(left: {
-                BackButton(action: {
-                    dismiss()
-                })
-            }, center: {
-                Text("내가 기록한 산책")
-                    .subtitle()
+        .topNavigationView(left: {
+            BackButton(action: {
+                dismiss()
             })
+        }, center: {
+            Text("내가 기록한 산책")
+                .subtitle()
+        })
+        .onAppear {
+            viewModel.fetchMyPosts()
+        }
     }
 }
 

@@ -32,4 +32,31 @@ extension String {
             return "\(year)/\(month)/\(day)"
         }
     }
+    
+    func formattedToYYMMDD() -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+        guard let date = formatter.date(from: self) else { return self }
+        
+        let displayFormatter = DateFormatter()
+        displayFormatter.dateFormat = "yy/MM/dd"
+        return displayFormatter.string(from: date)
+    }
+}
+
+extension Int {
+    func formattedDuration() -> String {
+        if self < 60 {
+            return "\(self)min"
+        } else {
+            let hours = self / 60
+            let minutes = self % 60
+            if minutes == 0 {
+                return "\(hours)h"
+            } else {
+                return "\(hours)h \(minutes)min"
+            }
+        }
+    }
 }
