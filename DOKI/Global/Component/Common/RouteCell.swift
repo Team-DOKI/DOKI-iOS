@@ -1,5 +1,5 @@
 //
-//  WalkCourseCell.swift
+//  RouteCell.swift
 //  DOKI
 //
 //  Created by a on 11/2/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WalkCourseCell: View {
+struct RouteCell: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Image("")
@@ -50,8 +50,8 @@ struct WalkCourseCell: View {
 
 #Preview {
     HStack(spacing: 8) {
-        WalkCourseCell()
-        WalkCourseCell()
+        RouteCell()
+        RouteCell()
     }
     .padding()
 }
