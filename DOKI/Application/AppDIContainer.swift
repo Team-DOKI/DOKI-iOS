@@ -37,7 +37,7 @@ extension AppDIContainer {
             return RecommendViewModel(coordinator: coordinator)
         }
         
-        func makeCourseDetailViewModel() -> RouteDetailViewModel {
+        func makeRouteDetailViewModel() -> RouteDetailViewModel {
             return RouteDetailViewModel()
         }
         
@@ -53,12 +53,12 @@ extension AppDIContainer {
             return FilterSettingViewModel()
         }
         
-        func makeMyWalkRecordViewModel() -> MyWalkRecordViewModel {
-            return MyWalkRecordViewModel()
+        func makeMyPostViewModel() -> MyPostsViewModel {
+            return MyPostsViewModel()
         }
         
-        func makeMySavedWalkViewModel() -> MySavedWalkViewModel {
-            return MySavedWalkViewModel()
+        func makeMyLikedPostViewModel() -> MyLikedPostsViewModel {
+            return MyLikedPostsViewModel()
         }
     }
 }

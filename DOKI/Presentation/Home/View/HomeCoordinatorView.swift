@@ -20,11 +20,13 @@ struct HomeCoordinatorView: View {
     
     @StateObject var homeCoordinator: Coordinator<HomeRoute>
     @StateObject var walkRecordCoordinator: Coordinator<WalkRecordRoute>
+    
+    @StateObject var homeViewModel = HomeViewModel()
+    @StateObject var routeDetailViewModel = RouteDetailViewModel()
+    
     @StateObject var walkRecordViewModel: WalkRecordViewModel
     @StateObject var walkResultViewModel: WalkResultViewModel
     @StateObject var walkReviewViewModel: WalkReviewViewModel
-    @StateObject var routeDetailViewModel = RouteDetailViewModel()
-    @StateObject var homeViewModel = HomeViewModel()
     
     private let viewModelFactory: AppDIContainer.ViewModelFactory
     
@@ -32,8 +34,9 @@ struct HomeCoordinatorView: View {
          walkRecordCoordinator: Coordinator<WalkRecordRoute> = Coordinator<WalkRecordRoute>(),
          viewModelFactory: AppDIContainer.ViewModelFactory) {
         self.viewModelFactory = viewModelFactory
-        self._homeCoordinator = StateObject(wrappedValue: Coordinator<HomeRoute>())
-        self._walkRecordCoordinator = StateObject(wrappedValue: Coordinator<WalkRecordRoute>())
+        self._homeCoordinator = StateObject(wrappedValue: homeCoordinator)
+        self._walkRecordCoordinator = StateObject(wrappedValue: walkRecordCoordinator)
+        
         self._walkRecordViewModel = StateObject(wrappedValue: viewModelFactory.makeWalkRecordViewModel())
         self._walkResultViewModel = StateObject(wrappedValue: viewModelFactory.makeWalkResultViewModel())
         self._walkReviewViewModel = StateObject(wrappedValue: viewModelFactory.makeWalkReviewViewModel())
@@ -72,7 +75,6 @@ struct HomeCoordinatorView: View {
     }
     
     func bindAction() {
-        
         homeViewModel.navigationAction = { destination in
             switch destination {
             case .walkRecord:

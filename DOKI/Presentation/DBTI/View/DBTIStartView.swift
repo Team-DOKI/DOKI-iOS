@@ -34,9 +34,9 @@ struct DBTIStartView: View {
             
             Spacer()
             
-            if viewModel.entryContext == .afterRegister {
+            if viewModel.dbtiEntryContext == .afterRegister {
                 Button {
-                    viewModel.finish()
+                    viewModel.finishDBTI()
                 } label: {
                     Text("건너뛰기")
                         .subtitle(color: .defaultMiddle)

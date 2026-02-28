@@ -9,39 +9,36 @@ import Foundation
 import Moya
 
 enum ImageAPI {
-    case presigned(request: PresignedUrlRequest)
-    case register(request: RegisterImageRequest)
+    case presignedURL(request: PresignedURLRequest) // Presigned URL 요청
+    case registerImage(request: RegisterImageRequest) // 이미지 등록
 }
 
 extension ImageAPI: BaseTargetType {
     var headerType: HeaderType {
-        switch self {
-        case .presigned, .register:
-            return .defaultHeader
-        }
+        return .defaultHeader
     }
     
     var path: String {
         switch self {
-        case .presigned:
+        case .presignedURL:
             return "images/presigned"
-        case .register:
+        case .registerImage:
             return "images/register"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .presigned, .register:
+        case .presignedURL, .registerImage:
             return .post
         }
     }
     
     var task: Task {
         switch self {
-        case let .presigned(request):
+        case let .presignedURL(request):
             return .requestJSONEncodable(request)
-        case let .register(request):
+        case let .registerImage(request):
             return .requestJSONEncodable(request)
         }
     }

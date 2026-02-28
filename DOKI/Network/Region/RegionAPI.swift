@@ -15,10 +15,7 @@ enum RegionAPI {
 
 extension RegionAPI: BaseTargetType {
     var headerType: HeaderType {
-        switch self {
-        case .fetchRegions:
-            return .defaultHeader
-        }
+        return .defaultHeader
     }
     
     var path: String {

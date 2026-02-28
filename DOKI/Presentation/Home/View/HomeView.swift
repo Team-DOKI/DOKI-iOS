@@ -44,9 +44,9 @@ struct HomeView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 26)
             
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
-                    TotalStatBox(distance: viewModel.totalDistance, totalTime: viewModel.totalWalkTimeText, count: viewModel.totalWalkCount)
+                    TotalWalkStatBox(distance: viewModel.totalDistance, totalTime: viewModel.totalWalkTimeText, count: viewModel.totalWalkCount)
                         .padding(.bottom, 24)
                     
                     HStack(spacing: 0) {
@@ -136,7 +136,6 @@ struct HomeView: View {
                 .padding(.bottom, 100)
             }
         }
-        .scrollIndicators(.hidden)
         .onAppear {
             print("ACCESS TOKEN: ", AuthManager.shared.accessToken ?? "nil")
             print("REFRESH TOKEN: ", AuthManager.shared.refreshToken ?? "nil")

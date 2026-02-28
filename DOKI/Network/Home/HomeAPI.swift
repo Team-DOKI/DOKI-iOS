@@ -10,7 +10,7 @@ import Moya
 
 enum HomeAPI {
     case fetchWeather // 날씨 조회
-    case fetchWalkInfo // 산책 정보(누적) 조회
+    case fetchTotalWalkStat // 누적 산책 정보 조회
 }
 
 extension HomeAPI: BaseTargetType {
@@ -22,21 +22,21 @@ extension HomeAPI: BaseTargetType {
         switch self {
         case .fetchWeather:
             return "home/weather"
-        case .fetchWalkInfo:
+        case .fetchTotalWalkStat:
             return "home/info"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .fetchWeather, .fetchWalkInfo:
+        case .fetchWeather, .fetchTotalWalkStat:
             return .get
         }
     }
     
     var task: Task {
         switch self {
-        case .fetchWeather, .fetchWalkInfo:
+        case .fetchWeather, .fetchTotalWalkStat:
             return .requestPlain
         }
     }

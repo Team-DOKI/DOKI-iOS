@@ -11,17 +11,17 @@ import Moya
 protocol RouteAPIServiceProtocol {
     /// 내가 작성한 게시글 조회
     func fetchMyPosts(
-        completion: @escaping (NetworkResult<RouteCellResponseDTO>) -> Void
+        completion: @escaping (NetworkResult<RouteInfoResponseDTO>) -> Void
     )
     
     /// 내가 좋아요한 게시글 조회
     func fetchMyLikedPosts(
-        completion: @escaping (NetworkResult<RouteCellResponseDTO>) -> Void
+        completion: @escaping (NetworkResult<RouteInfoResponseDTO>) -> Void
     )
 }
 
 extension RouteAPIServiceProtocol {
-    typealias RouteCellResponseDTO = BaseDTO<RouteCellResponse>
+    typealias RouteInfoResponseDTO = BaseDTO<RouteInfoResponse>
 }
 
 final class RouteAPIService: BaseAPIService, RouteAPIServiceProtocol {
@@ -31,26 +31,28 @@ final class RouteAPIService: BaseAPIService, RouteAPIServiceProtocol {
         plugins: [MoyaLoggingPlugin()]
     )
     
+    // MARK: - API
+    
     /// 내가 작성한 게시글 조회
     func fetchMyPosts(
-        completion: @escaping (NetworkResult<RouteCellResponseDTO>) -> Void
+        completion: @escaping (NetworkResult<RouteInfoResponseDTO>) -> Void
     ) {
         self.request(
             .fetchMyPosts,
             provider: provider,
-            responseType: RouteCellResponseDTO.self,
+            responseType: RouteInfoResponseDTO.self,
             completion: completion
         )
     }
     
     /// 내가 좋아요한 게시글 조회
     func fetchMyLikedPosts(
-        completion: @escaping (NetworkResult<RouteCellResponseDTO>) -> Void
+        completion: @escaping (NetworkResult<RouteInfoResponseDTO>) -> Void
     ) {
         self.request(
             .fetchMyLikedPosts,
             provider: provider,
-            responseType: RouteCellResponseDTO.self,
+            responseType: RouteInfoResponseDTO.self,
             completion: completion
         )
     }

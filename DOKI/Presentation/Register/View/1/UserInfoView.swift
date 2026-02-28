@@ -26,7 +26,7 @@ struct UserInfoView: View {
             
             Spacer().frame(height: 16)
             
-            selecteGender
+            selectGender
         }
         .padding(.horizontal, 16)
     }
@@ -69,7 +69,7 @@ extension UserInfoView {
             .onChange(of: viewModel.birthDay) { old, new in
                 guard new.count >= old.count else { return }
                 
-                let formatted = viewModel.autoFormatBirth(new)
+                let formatted = new.formattedBirthDate()
                 if formatted != new {
                     viewModel.birthDay = formatted
                 }
@@ -77,13 +77,13 @@ extension UserInfoView {
         }
     }
     
-    private var selecteGender: some View {
+    private var selectGender: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("성별").bodyActive()
             
             HStack(spacing: 4) {
                 ForEach(Gender.allCases) { gender in
-                    CheckBox(
+                    GenderSelectButton(
                         text: gender.rawValue,
                         isChecked: viewModel.gender == gender
                     ) {

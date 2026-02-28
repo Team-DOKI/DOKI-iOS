@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum WalkReadyRoute: Route {
+enum WalkPreparationRoute: Route {
     case routeDetail
 }
 
@@ -29,30 +29,33 @@ enum WalkReviewRoute {
 struct WalkCoordinatorView: View {
     @EnvironmentObject var tabBarState: TabBarState
     
-    @StateObject var walkReadyCoordinator: Coordinator<WalkReadyRoute>
+    @StateObject var walkPreparationCoordinator: Coordinator<WalkPreparationRoute>
     @StateObject var walkRecordCoordinator: Coordinator<WalkRecordRoute>
+    
     @StateObject var walkRecordViewModel: WalkRecordViewModel
     @StateObject var walkResultViewModel: WalkResultViewModel
     @StateObject var walkReviewViewModel: WalkReviewViewModel
+    
     @StateObject var routeDetailViewModel = RouteDetailViewModel()
     
     private let viewModelFactory: AppDIContainer.ViewModelFactory
     
-    init(walkReadyCoordinator: Coordinator<WalkReadyRoute> = Coordinator<WalkReadyRoute>(),
+    init(walkPreparationCoordinator: Coordinator<WalkPreparationRoute> = Coordinator<WalkPreparationRoute>(),
          walkRecordCoordinator: Coordinator<WalkRecordRoute> = Coordinator<WalkRecordRoute>(),
          viewModelFactory: AppDIContainer.ViewModelFactory) {
         self.viewModelFactory = viewModelFactory
-        self._walkReadyCoordinator = StateObject(wrappedValue: walkReadyCoordinator)
+        self._walkPreparationCoordinator = StateObject(wrappedValue: walkPreparationCoordinator)
         self._walkRecordCoordinator = StateObject(wrappedValue: walkRecordCoordinator)
+        
         self._walkRecordViewModel = StateObject(wrappedValue: viewModelFactory.makeWalkRecordViewModel())
         self._walkResultViewModel = StateObject(wrappedValue: viewModelFactory.makeWalkResultViewModel())
         self._walkReviewViewModel = StateObject(wrappedValue: viewModelFactory.makeWalkReviewViewModel())
     }
     
     var body: some View {
-        NavigationStack(path: $walkReadyCoordinator.path) {
-            WalkReadyView(viewModel: WalkReadyViewModel(coordinator: walkRecordCoordinator))
-                .navigationDestination(for: WalkReadyRoute.self) { destination in
+        NavigationStack(path: $walkPreparationCoordinator.path) {
+            WalkPreparationView(viewModel: WalkPreparationViewModel(coordinator: walkRecordCoordinator))
+                .navigationDestination(for: WalkPreparationRoute.self) { destination in
                     switch destination {
                     case .routeDetail:
                         RouteDetailView(viewModel: routeDetailViewModel)
@@ -109,14 +112,14 @@ struct WalkCoordinatorView: View {
                 walkRecordCoordinator.dismiss()
             case .routeDetail:
                 walkRecordCoordinator.dismiss()
-                walkReadyCoordinator.push(.routeDetail)
+                walkPreparationCoordinator.push(.routeDetail)
             }
         }
         
         routeDetailViewModel.navigationAction = { destination in
             switch destination {
             case .back:
-                walkReadyCoordinator.pop()
+                walkPreparationCoordinator.pop()
             }
         }
     }

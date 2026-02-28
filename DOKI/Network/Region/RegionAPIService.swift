@@ -10,11 +10,11 @@ import Moya
 
 protocol RegionAPIServiceProtocol {
     /// 지역구 조회
-    func fetchRegions(completion: @escaping (NetworkResult<RegionsResponseDTO>) -> Void)
+    func fetchRegions(completion: @escaping (NetworkResult<RegionListResponseDTO>) -> Void)
 }
 
 extension RegionAPIServiceProtocol {
-    typealias RegionsResponseDTO = BaseDTO<RegionsResponse>
+    typealias RegionListResponseDTO = BaseDTO<RegionListResponse>
 }
 
 final class RegionAPIService: BaseAPIService, RegionAPIServiceProtocol {
@@ -27,10 +27,10 @@ final class RegionAPIService: BaseAPIService, RegionAPIServiceProtocol {
     // MARK: - API
     
     /// 지역구 조회
-    func fetchRegions(completion: @escaping (NetworkResult<BaseDTO<RegionsResponse>>) -> Void) {
+    func fetchRegions(completion: @escaping (NetworkResult<RegionListResponseDTO>) -> Void) {
         request(.fetchRegions,
                 provider: provider,
-                responseType: BaseDTO<RegionsResponse>.self,
+                responseType: RegionListResponseDTO.self,
                 completion: completion)
     }
 }

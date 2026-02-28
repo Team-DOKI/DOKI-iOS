@@ -17,13 +17,13 @@ class HomeViewModel: ObservableObject {
         self.homeAPIService = homeAPIService
         
         fetchWeather()
-        fetchWalkInfo()
+        fetchTotalWalkStat()
     }
     
     // MARK: - Published Properties
     
     @Published var weather: WeatherResponse?
-    @Published var walkInfo: WalkInfoResponse?
+    @Published var walkInfo: TotalWalkStatResponse?
     
     // MARK: - Computed Properties (UI)
     
@@ -59,6 +59,8 @@ class HomeViewModel: ObservableObject {
         navigationAction?(.walkRecord)
     }
     
+    // MARK: - Helper
+    
     private func formatSecondsToTime(_ seconds: Int) -> String {
         let hours = seconds / 3600
         let minutes = (seconds % 3600) / 60
@@ -71,7 +73,7 @@ class HomeViewModel: ObservableObject {
 // MARK: - API
 
 extension HomeViewModel {
-    /// 날씨 정보 조회
+    /// 날씨 조회
     func fetchWeather() {
         homeAPIService.fetchWeather { [weak self] result in
             guard let self else { return }
@@ -88,9 +90,9 @@ extension HomeViewModel {
         }
     }
     
-    /// 산책 정보(누적) 조회
-    func fetchWalkInfo() {
-        homeAPIService.fetchWalkInfo { [weak self] result in
+    /// 누적 산책 정보 조회
+    func fetchTotalWalkStat() {
+        homeAPIService.fetchTotalWalkStat { [weak self] result in
             guard let self else { return }
             
             DispatchQueue.main.async {

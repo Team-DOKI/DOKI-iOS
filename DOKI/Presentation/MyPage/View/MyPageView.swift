@@ -16,11 +16,11 @@ struct MyPageView: View {
             
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
-                    // 유저 & 반려견 프로필
-                    MyProfile(
+                    // 유저 및 반려견 프로필
+                    UserProfile(
                         nickname: viewModel.userNameText,
                         email: viewModel.userEmailText,
-                        action: viewModel.navigateToMyProfile
+                        action: viewModel.navigateToUserProfile
                     )
                     
                     PetProfile(
@@ -91,7 +91,7 @@ struct MyPageView: View {
         .customModal(
             isPresented: $viewModel.isShowLogoutAlert,
             message: "로그아웃",
-            subMessage: "진짜로 로그아웃 하시게요? 😢",
+            subMessage: "진짜로 로그아웃 하시게요?",
             primaryTitle: "로그아웃",
             secondaryTitle: "취소",
             primaryAction: {
@@ -104,7 +104,7 @@ struct MyPageView: View {
         .customModal(
             isPresented: $viewModel.isShowWithdrawAlert,
             message: "탈퇴하기",
-            subMessage: "진짜로 탈퇴하시게요? 😢",
+            subMessage: "진짜로 탈퇴하시게요?",
             primaryTitle: "탈퇴하기",
             secondaryTitle: "취소",
             primaryAction: {

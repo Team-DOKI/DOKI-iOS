@@ -9,16 +9,16 @@ import SwiftUI
 import Moya
 
 final class RegisterViewModel: ObservableObject {
-    private let userAPIService: UserAPIServiceProtocol
+    private let profileAPIService: ProfileAPIServiceProtocol
     private let imageAPIService: ImageAPIServiceProtocol
     private let regionAPIService: RegionAPIServiceProtocol
     
     init(
-        userAPIService: UserAPIServiceProtocol = UserAPIService(),
+        profileAPIService: ProfileAPIServiceProtocol = ProfileAPIService(),
         imageAPIService: ImageAPIServiceProtocol = ImageAPIService(),
         regionAPIService: RegionAPIServiceProtocol = RegionAPIService()
     ) {
-        self.userAPIService = userAPIService
+        self.profileAPIService = profileAPIService
         self.imageAPIService = imageAPIService
         self.regionAPIService = regionAPIService
     }
@@ -53,30 +53,30 @@ final class RegisterViewModel: ObservableObject {
     
     // MARK: - Step
     
-    @Published var currentStep: UserInfoStep = .userProfile
+    @Published var currentStep: RegisterStep = .userProfile
     @Published var regionFlow: RegionFlow = .none
     
-    enum UserInfoStep: Int {
+    enum RegisterStep: Int {
         case userProfile
-        case dogProfile
-        case activityArea
+        case petProfile
+        case region
         
         var navTitle: String {
             switch self {
             case .userProfile: "내 정보 입력"
-            case .dogProfile: "반려견 정보 입력"
-            case .activityArea: "산책 지역 입력"
+            case .petProfile: "반려견 정보 입력"
+            case .region: "산책 지역 입력"
             }
         }
     }
     
-    var next: UserInfoStep? { UserInfoStep(rawValue: currentStep.rawValue + 1) }
-    var prev: UserInfoStep? { UserInfoStep(rawValue: currentStep.rawValue - 1) }
+    var next: RegisterStep? { RegisterStep(rawValue: currentStep.rawValue + 1) }
+    var prev: RegisterStep? { RegisterStep(rawValue: currentStep.rawValue - 1) }
     var buttonDisabled: Bool {
         switch currentStep {
         case .userProfile: nickname.isEmpty || birthDay.isEmpty || gender == nil
-        case .dogProfile: dogName.isEmpty || dogBirthDay.isEmpty || dogGender == nil || breedId == nil
-        case .activityArea: selectedGuId == nil || selectedDongId == nil
+        case .petProfile: dogName.isEmpty || dogBirthDay.isEmpty || dogGender == nil || breedId == nil
+        case .region: selectedGuId == nil || selectedDongId == nil
         }
     }
     var isLastStep: Bool { next == nil }
@@ -88,7 +88,7 @@ final class RegisterViewModel: ObservableObject {
         case map
     }
     
-    // MARK: - User Action
+    // MARK: - User Actions
     
     func goToNextStep() {
         if let next { currentStep = next }
@@ -146,10 +146,6 @@ final class RegisterViewModel: ObservableObject {
         previewRegionName = ""
         selectedRegionName = ""
     }
-    
-    func autoFormatBirth(_ input: String) -> String {
-        BirthDateInputFormatter.autoFormat(input)
-    }
 }
 
 // MARK: - API (유저 및 반려견 정보)
@@ -183,7 +179,7 @@ extension RegisterViewModel {
             )
         )
         
-        userAPIService.register(request: request) { result in
+        profileAPIService.register(request: request) { result in
             switch result {
             case .success(let response):
                 guard
@@ -200,7 +196,7 @@ extension RegisterViewModel {
     
     /// 견종 조회
     func fetchBreedList() {
-        userAPIService.fetchBreedList { [weak self] result in
+        profileAPIService.fetchBreedList { [weak self] result in
             guard let self else { return }
             DispatchQueue.main.async {
                 switch result {
@@ -234,15 +230,15 @@ extension RegisterViewModel {
 // MARK: - API (이미지 등록)
 
 extension RegisterViewModel {
-    func uploadDogImage(_ image: UIImage) {
+    func presignedURL(_ image: UIImage) {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
         
-        let presignedRequest = PresignedUrlRequest(
+        let request = PresignedURLRequest(
             domain: "PET_PROFILE",
             contentType: "image/jpeg"
         )
         
-        imageAPIService.fetchPresignedURL(request: presignedRequest) { [weak self] result in
+        imageAPIService.presignedURL(request: request) { [weak self] result in
             guard let self else { return }
             
             DispatchQueue.main.async {
@@ -292,7 +288,6 @@ extension RegisterViewModel {
                     if let imageId = response?.data?.imageId {
                         self.imageId = imageId
                         self.petProfileImage = image
-                        print("이미지 업로드 성공, imageId:", imageId)
                     }
                 default:
                     print("이미지 등록 실패")

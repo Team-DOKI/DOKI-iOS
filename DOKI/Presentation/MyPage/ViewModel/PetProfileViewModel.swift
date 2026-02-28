@@ -8,16 +8,17 @@
 import SwiftUI
 
 class PetProfileViewModel: ObservableObject {
-    private let userAPIService: UserAPIServiceProtocol
+    private let profileAPIService: ProfileAPIServiceProtocol
     private let imageAPIService: ImageAPIServiceProtocol
     
     init(
-        userAPIService: UserAPIServiceProtocol = UserAPIService(),
+        profileAPIService: ProfileAPIServiceProtocol = ProfileAPIService(),
         imageAPIService: ImageAPIServiceProtocol = ImageAPIService(),
+        
         petProfile: PetProfileResponse
         
     ) {
-        self.userAPIService = userAPIService
+        self.profileAPIService = profileAPIService
         self.imageAPIService = imageAPIService
         
         self.dogName = petProfile.name
@@ -49,7 +50,7 @@ class PetProfileViewModel: ObservableObject {
     
     @Published var isSaveCompleted = false
     
-    // MARK: - User Action
+    // MARK: - User Actions
     
     func selectDogGender(_ gender: Gender) {
         self.dogGender = gender
@@ -66,10 +67,6 @@ class PetProfileViewModel: ObservableObject {
     func selectBreed(_ breed: BreedList) {
         self.breedId = breed.id
         self.selectedBreedName = breed.name
-    }
-    
-    func autoFormatBirth(_ input: String) -> String {
-        BirthDateInputFormatter.autoFormat(input)
     }
     
     func saveButtonTapped(petId: Int) {
@@ -93,7 +90,7 @@ extension PetProfileViewModel {
             imageId: imageId
         )
         
-        userAPIService.updatePetProfile(petId: petId, request: request) { result in
+        profileAPIService.updatePetProfile(petId: petId, request: request) { result in
             switch result {
             case .success:
                 DispatchQueue.main.async {
@@ -107,7 +104,7 @@ extension PetProfileViewModel {
     
     /// 견종 조회
     func fetchBreedList() {
-        userAPIService.fetchBreedList { [weak self] result in
+        profileAPIService.fetchBreedList { [weak self] result in
             guard let self else { return }
             DispatchQueue.main.async {
                 switch result {
@@ -121,15 +118,15 @@ extension PetProfileViewModel {
     }
     
     /// Presigned URL 요청
-    func uploadDogImage(_ image: UIImage) {
+    func presignedURL(_ image: UIImage) {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
         
-        let presignedRequest = PresignedUrlRequest(
+        let request = PresignedURLRequest(
             domain: "PET_PROFILE",
             contentType: "image/jpeg"
         )
         
-        imageAPIService.fetchPresignedURL(request: presignedRequest) { [weak self] result in
+        imageAPIService.presignedURL(request: request) { [weak self] result in
             guard let self else { return }
             
             DispatchQueue.main.async {
@@ -173,7 +170,6 @@ extension PetProfileViewModel {
                     if let imageId = response?.data?.imageId {
                         self.imageId = imageId
                         self.newPetProfileImage = image
-                        print("이미지 업로드 성공, imageId:", imageId)
                     }
                 default:
                     print("이미지 등록 실패")

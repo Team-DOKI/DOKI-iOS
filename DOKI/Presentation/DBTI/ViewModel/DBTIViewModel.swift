@@ -9,14 +9,14 @@ import Foundation
 
 final class DBTIViewModel: ObservableObject {
     private let dbtiAPIService: DBTIAPIServiceProtocol
-    let entryContext: DBTIEntryContext
+    let dbtiEntryContext: DBTIEntryContext
     
     init(
-        entryContext: DBTIEntryContext,
-        dbtiAPIService: DBTIAPIServiceProtocol = DBTIAPIService()
+        dbtiAPIService: DBTIAPIServiceProtocol = DBTIAPIService(),
+        entryContext: DBTIEntryContext
     ) {
-        self.entryContext = entryContext
         self.dbtiAPIService = dbtiAPIService
+        self.dbtiEntryContext = entryContext
         
         fetchDBTIQuestions()
     }
@@ -35,12 +35,12 @@ final class DBTIViewModel: ObservableObject {
     @Published var description: String = ""
     @Published var analysis: [AxisAnalysisData] = []
     
-    // MARK: - Step
-    
-    var navigationAction: ((DBTIAction) -> Void)?
+    // MARK: - Navigation & Step
     
     @Published var currentStep: Int = 0
     @Published var selectedIndex: Int? = nil
+    
+    var navigationAction: ((DBTIAction) -> Void)?
     
     var currentQuestion: DBTIQuestionData? {
         guard currentStep < questions.count else { return nil }
@@ -60,7 +60,7 @@ final class DBTIViewModel: ObservableObject {
         selectedIndex == nil
     }
     
-    // MARK: - Actions
+    // MARK: - User Actions
     
     func goToNextStep(petId: Int) {
         guard let selectedIndex else { return }
@@ -85,14 +85,14 @@ final class DBTIViewModel: ObservableObject {
         selectedIndex = nil
     }
     
-    func restartSurvey() {
+    func restartDBTI() {
         currentStep = 0
         selectedIndex = nil
         selectedOptionIds.removeAll()
         navigationAction?(.dbtiRestart)
     }
     
-    func finish() {
+    func finishDBTI() {
         navigationAction?(.dbtiFinish)
     }
 }
@@ -113,7 +113,7 @@ extension DBTIViewModel {
                             title: q.category.name,
                             question: q.content,
                             options: q.options.map {
-                                DBTIOptionData(
+                                DBTIOptionsData(
                                     id: $0.id,
                                     content: $0.content,
                                     imageUrl: $0.imageUrl

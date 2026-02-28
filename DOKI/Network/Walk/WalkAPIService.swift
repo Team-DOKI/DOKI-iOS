@@ -34,11 +34,13 @@ final class WalkAPIService: BaseAPIService, WalkAPIServiceProtocol {
         plugins: [MoyaLoggingPlugin()]
     )
     
+    // MARK: - API
+    
     /// 산책 준비 메세지 조회
     func fetchPreparationMessage(
         completion: @escaping (NetworkResult<PreparationMessageResponseDTO>) -> Void
     ) {
-        self.request(.preparationMessage,
+        self.request(.fetchPreparationMessage,
                      provider: provider,
                      responseType: PreparationMessageResponseDTO.self,
                      completion: completion)

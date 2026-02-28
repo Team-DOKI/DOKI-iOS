@@ -59,7 +59,7 @@ struct PetProfileView: View {
             }
         }
         .sheet(isPresented: $viewModel.isShowBreedSearch) {
-            DogSearchView(
+            BreedSearchView(
                 breeds: viewModel.breedList,
                 selectedBreedName: viewModel.selectedBreedName,
                 searchText: $viewModel.breedSearchText,
@@ -147,7 +147,7 @@ extension PetProfileView {
             .onChange(of: viewModel.dogBirthDay) { old, new in
                 guard new.count >= old.count else { return }
                 
-                let formatted = viewModel.autoFormatBirth(new)
+                let formatted = new.formattedBirthDate()
                 if formatted != new {
                     viewModel.dogBirthDay = formatted
                 }
@@ -161,7 +161,7 @@ extension PetProfileView {
             
             HStack(spacing: 4) {
                 ForEach(Gender.allCases) { gender in
-                    CheckBox(
+                    GenderSelectButton(
                         text: gender.dogText,
                         isChecked: viewModel.dogGender == gender
                     ) {
@@ -202,7 +202,7 @@ extension PetProfileView {
     }
 }
 
-// MARK: - Helpers
+// MARK: - Helper
 
 extension PetProfileView {
     private func handleSelectedPhoto(_ item: PhotosPickerItem) {
@@ -215,7 +215,7 @@ extension PetProfileView {
                 else { return }
                 
                 DispatchQueue.main.async {
-                    viewModel.uploadDogImage(image)
+                    viewModel.presignedURL(image)
                 }
                 
             default:

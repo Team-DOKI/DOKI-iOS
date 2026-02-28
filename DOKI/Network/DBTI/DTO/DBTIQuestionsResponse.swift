@@ -8,14 +8,14 @@
 import Foundation
 
 struct DBTIQuestionsResponse: Codable {
-    let questions: [Question]
+    let questions: [Questions]
 }
 
-struct Question: Codable {
+struct Questions: Codable {
     let id: Int
     let category: Category
     let content: String
-    let options: [Option]
+    let options: [Options]
 }
 
 struct Category: Codable {
@@ -23,7 +23,7 @@ struct Category: Codable {
     let name: String
 }
 
-struct Option: Codable {
+struct Options: Codable {
     let id: Int
     let content: String
     let imageUrl: String

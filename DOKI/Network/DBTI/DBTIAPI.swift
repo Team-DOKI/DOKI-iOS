@@ -15,7 +15,6 @@ enum DBTIAPI {
 }
 
 extension DBTIAPI: BaseTargetType {
-    
     var headerType: HeaderType {
         .defaultHeader
     }

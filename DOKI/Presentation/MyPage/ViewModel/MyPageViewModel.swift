@@ -11,14 +11,14 @@ import SwiftUI
 import Moya
 
 class MyPageViewModel: ObservableObject {
-    private let userAPIService: UserAPIServiceProtocol
+    private let profileAPIService: ProfileAPIServiceProtocol
     private let authManager: AuthManager
     
     init(
-        userAPIService: UserAPIServiceProtocol = UserAPIService(),
+        profileAPIService: ProfileAPIServiceProtocol = ProfileAPIService(),
         authManager: AuthManager = .shared
     ) {
-        self.userAPIService = userAPIService
+        self.profileAPIService = profileAPIService
         self.authManager = authManager
     }
     
@@ -49,7 +49,7 @@ class MyPageViewModel: ObservableObject {
         return "\(pet.age) / \(genderText) / \(pet.breed)"
     }
     
-    // MARK: - User Action
+    // MARK: - User Actions
     
     /// 로그아웃 모달 표시
     func logoutButtonTapped() {
@@ -100,11 +100,11 @@ class MyPageViewModel: ObservableObject {
         navigationAction?(.petProfile)
     }
     
-    func navigateToMyProfile() {
+    func navigateToUserProfile() {
         guard userProfile != nil else {
             return
         }
-        navigationAction?(.myProfile)
+        navigationAction?(.userProfile)
     }
     
     func navigateToDbti() {
@@ -116,11 +116,11 @@ class MyPageViewModel: ObservableObject {
     }
     
     func navigateToWalkRecord() {
-        navigationAction?(.myWalkRecord)
+        navigationAction?(.myPosts)
     }
     
     func navigateToSavedWalk() {
-        navigationAction?(.savedWalk)
+        navigationAction?(.myLikedPosts)
     }
     
     func navigateToReview() {
@@ -128,7 +128,7 @@ class MyPageViewModel: ObservableObject {
     }
     
     func navigateToActivityAreaSetting() {
-        navigationAction?(.activityAreaSetting)
+        navigationAction?(.regionSetting)
     }
     
     func navigateToAppInfo() {
@@ -141,7 +141,7 @@ class MyPageViewModel: ObservableObject {
 extension MyPageViewModel {
     /// 유저 정보 조회
     func fetchUserProfile() {
-        userAPIService.fetchUserProfile { [weak self] result in
+        profileAPIService.fetchUserProfile { [weak self] result in
             guard let self else { return }
             
             DispatchQueue.main.async {
@@ -157,7 +157,7 @@ extension MyPageViewModel {
     
     /// 반려견 정보 조회
     func fetchPetProfile(petId: Int) {
-        userAPIService.fetchPetProfile(petId: petId) { [weak self] result in
+        profileAPIService.fetchPetProfile(petId: petId) { [weak self] result in
             guard let self else { return }
             
             DispatchQueue.main.async {

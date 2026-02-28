@@ -29,22 +29,15 @@ struct DBTIResultCard: View {
                 .header1(color: .defaultPrimary)
                 .padding(.bottom, 20)
             
-            if let imageUrl,
-               let url = URL(string: imageUrl) {
-                AsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .scaledToFit()
-                } placeholder: {
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.2))
-                }
-                .frame(width: 150, height: 150)
-            } else {
+            let url = URL(string: imageUrl ?? "")
+            
+            AsyncImage(url: url) { image in
+                image.resizable().scaledToFit()
+            } placeholder: {
                 Rectangle()
                     .fill(Color.gray.opacity(0.2))
-                    .frame(width: 150, height: 150)
             }
+            .frame(width: 150, height: 150)
             
             HStack(spacing: 8) {
                 ForEach(keywords, id: \.self) { keyword in

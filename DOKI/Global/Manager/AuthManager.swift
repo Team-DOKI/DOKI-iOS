@@ -124,7 +124,7 @@ extension AuthManager {
             return
         }
         
-        let request = TokenRefreshRequest(
+        let request = RefreshTokenRequest(
             refreshToken: refreshToken,
             deviceId: DeviceIDManager.shared.getDeviceId()
         )
@@ -133,7 +133,7 @@ extension AuthManager {
             switch result {
             case .success(let response):
                 guard (200..<300).contains(response.statusCode),
-                      let decoded = try? JSONDecoder().decode(TokenRefreshResponse.self, from: response.data)
+                      let decoded = try? JSONDecoder().decode(RefreshTokenResponse.self, from: response.data)
                 else {
                     self.logoutLocal()
                     completion(false)

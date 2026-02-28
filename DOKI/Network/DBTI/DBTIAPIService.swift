@@ -40,6 +40,8 @@ final class DBTIAPIService: BaseAPIService, DBTIAPIServiceProtocol {
         plugins: [MoyaLoggingPlugin()]
     )
     
+    // MARK: - API
+    
     /// DBTI 질문 조회
     func fetchDBTIQuestions(
         completion: @escaping (NetworkResult<DBTIQuestionsResponseDTO>) -> Void

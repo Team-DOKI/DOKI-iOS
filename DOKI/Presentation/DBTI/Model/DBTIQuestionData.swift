@@ -10,10 +10,10 @@ import Foundation
 struct DBTIQuestionData {
     let title: String
     let question: String
-    let options: [DBTIOptionData]
+    let options: [DBTIOptionsData]
 }
 
-struct DBTIOptionData {
+struct DBTIOptionsData {
     let id: Int
     let content: String
     let imageUrl: String
