@@ -23,15 +23,13 @@ struct ReviewCell: View {
                 
                 Spacer()
             }
-            
-            Spacer().frame(height: 8)
+            .padding(.bottom, 12)
             
             Label(title: {Text(address)}, icon: {Image(.icMarker)})
                 .font(.bodyActive)
                 .foregroundStyle(.defaultDark)
-            
-            Spacer().frame(height: 4)
-            
+                .padding(.bottom, 4)
+ 
             Label(title: {Text(recordDate)}, icon: {Image(.icTimeclock)})
                 .font(.bodyActive)
                 .foregroundStyle(.defaultDark)
@@ -51,8 +49,10 @@ struct ReviewCell: View {
                     .background(.primaryGra1)
                     .cornerRadius(8)
             }
-            if !isExpanded {
+            
+            if !isExpanded && tags.count > 4 {
                 Spacer().frame(height: 11)
+                
                 HStack(spacing: 5) {
                     Rectangle()
                         .frame(height: 1.5)
@@ -74,7 +74,7 @@ struct ReviewCell: View {
                 }
             }
         }
-        .padding(.vertical, 20)
+        .padding(.vertical, 16)
         .padding(.horizontal, 16)
         .background(.defaultBackground)
         .cornerRadius(16)
