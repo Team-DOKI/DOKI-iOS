@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RouteCell: View {
-    let route: RouteInfo
+    let route: RouteData
     let likeAction: () -> Void
     
     var body: some View {

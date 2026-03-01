@@ -1,5 +1,5 @@
 //
-//  MyReviewView.swift
+//  MyReviewsView.swift
 //  DOKI
 //
 //  Created by a on 1/13/26.
@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-struct MyReviewView: View {
+struct MyReviewsView: View {
+    @ObservedObject var viewModel: MyReviewsViewModel
+    
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -16,12 +18,12 @@ struct MyReviewView: View {
             
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 16) {
-                    ForEach(1...10, id: \.self) { _ in
+                    ForEach(viewModel.reviews) { review in
                         ReviewCell(
-                            title: "TITLE",
-                            address: "상세 주소",
-                            recordDate: "YY.MM.DD",
-                            tags: ["혼잡도 보통", "교류 활발", "보도/차도 분리", "보도 넒음", "벤치", "배변 봉투 쓰레기통", "잔디길"]
+                            title: review.title,
+                            address: review.address,
+                            recordDate: "review.date",
+                            tags: review.tags
                         )
                     }
                 }
@@ -37,9 +39,8 @@ struct MyReviewView: View {
             Text("내가 남긴 후기")
                 .subtitle()
         })
+        .onAppear {
+            viewModel.fetchMyReviews()
+        }
     }
-}
-
-#Preview {
-    MyReviewView()
 }

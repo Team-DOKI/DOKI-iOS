@@ -13,7 +13,7 @@ enum MyPageRoute: Route, Hashable {
     
     case myPosts
     case myLikedPosts
-    case review
+    case myReviews
     
     case regionSetting
     case appInfo
@@ -29,8 +29,10 @@ struct MyPageCoordinatorView: View {
     @StateObject var myPageCoordinator: Coordinator<MyPageRoute>
     
     @StateObject var myPageViewModel: MyPageViewModel
+    
     @StateObject var myPostsViewModel: MyPostsViewModel
     @StateObject var myLikedPostsViewModel: MyLikedPostsViewModel
+    @StateObject var myReviewsViewModel: MyReviewsViewModel
     
     @StateObject var dbtiViewModel = DBTIViewModel(entryContext: .myPage)
     
@@ -38,8 +40,10 @@ struct MyPageCoordinatorView: View {
         self._myPageCoordinator = StateObject(wrappedValue: myPageCoordinator)
         
         self._myPageViewModel = StateObject(wrappedValue: viewModelFactory.makeMyPageViewModel())
+        
         self._myPostsViewModel = StateObject(wrappedValue: viewModelFactory.makeMyPostViewModel())
         self._myLikedPostsViewModel = StateObject(wrappedValue: viewModelFactory.makeMyLikedPostViewModel())
+        self._myReviewsViewModel = StateObject(wrappedValue: viewModelFactory.makeMyReviewsViewModel())
     }
     
     var body: some View {
@@ -63,8 +67,8 @@ struct MyPageCoordinatorView: View {
                         MyPostsView(viewModel: myPostsViewModel)
                     case .myLikedPosts:
                         MyLikedPostsView(viewModel: myLikedPostsViewModel)
-                    case .review:
-                        MyReviewView()
+                    case .myReviews:
+                        MyReviewsView(viewModel: myReviewsViewModel)
                     case .regionSetting:
                         RegionSettingView()
                     case .appInfo:
@@ -95,8 +99,8 @@ struct MyPageCoordinatorView: View {
                 myPageCoordinator.push(.myPosts)
             case .myLikedPosts:
                 myPageCoordinator.push(.myLikedPosts)
-            case .review:
-                myPageCoordinator.push(.review)
+            case .myReviews:
+                myPageCoordinator.push(.myReviews)
             case .regionSetting:
                 myPageCoordinator.push(.regionSetting)
             case .appInfo:

@@ -124,7 +124,7 @@ class MyPageViewModel: ObservableObject {
     }
     
     func navigateToReview() {
-        navigationAction?(.review)
+        navigationAction?(.myReviews)
     }
     
     func navigateToActivityAreaSetting() {

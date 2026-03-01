@@ -45,6 +45,10 @@ extension AppDIContainer {
             return MyPageViewModel()
         }
         
+        func makeMyReviewsViewModel() -> MyReviewsViewModel {
+            return MyReviewsViewModel()
+        }
+        
         func makeRegisterViewModel() -> RegisterViewModel {
             return RegisterViewModel()
         }

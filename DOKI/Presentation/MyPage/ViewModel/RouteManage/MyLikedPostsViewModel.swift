@@ -8,7 +8,7 @@
 import SwiftUI
 
 class MyLikedPostsViewModel: ObservableObject {
-    @Published var posts: [RouteInfo] = []
+    @Published var posts: [RouteData] = []
     private let routeAPIService: RouteAPIServiceProtocol
     
     init(routeAPIService: RouteAPIServiceProtocol = RouteAPIService()) {
@@ -21,7 +21,7 @@ class MyLikedPostsViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self?.posts = response?.data?.posts.map { post in
-                        RouteInfo(
+                        RouteData(
                             id: post.postId,
                             title: post.title,
                             address: post.regionName,
