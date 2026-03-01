@@ -43,7 +43,7 @@ struct ReviewCell: View {
                 spacing: 8,
                 alignment: .leading
             ) { tag in
-                Text(tag)
+                Text(tag.formattedCategoryTag())
                     .subActive(color: .defaultPrimary)
                     .padding(8)
                     .background(.primaryGra1)

@@ -43,6 +43,17 @@ extension String {
         displayFormatter.dateFormat = "yyyy/MM/dd"
         return displayFormatter.string(from: date)
     }
+    
+    func formattedCategoryTag() -> String {
+        switch self {
+        case "적음", "평범", "많음":
+            return "혼잡도 \(self)"
+        case "보통":
+            return "교류 \(self)"
+        default:
+            return self
+        }
+    }
 }
 
 extension Int {

@@ -62,7 +62,7 @@ extension RecommendViewModel {
                 return selected.map { option in
                     var text = option.text
                     if category == .congestion {
-                        text = "\(category.title) \(option.text)"
+                        text = "\(category.title) \(option.text)" // formattedCategoryTag() 만들어놨음!
                     }
                     return FilterTagItem(text: text, isActive: true)
                 }
