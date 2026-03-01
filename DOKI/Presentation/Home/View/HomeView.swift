@@ -44,9 +44,9 @@ struct HomeView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 26)
             
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
-                    TotalStatBox(distance: 0.0, totalTime: "00:00:00", count: 0)
+                    TotalWalkStatBox(distance: viewModel.totalDistance, totalTime: viewModel.totalWalkTimeText, count: viewModel.totalWalkCount)
                         .padding(.bottom, 24)
                     
                     HStack(spacing: 0) {
@@ -89,8 +89,14 @@ struct HomeView: View {
                     }
                     
                     Spacer()
+                    
+                    Image(.imgUpperbodydog)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 87, height: 76)
+                        .clipped()
                 }
-                .padding(20)
+                .padding(.horizontal, 16)
                 .background(.defaultPrimary)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 24)
@@ -103,7 +109,7 @@ struct HomeView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
                             ForEach(1...10, id: \.self) { _ in
-                                WalkCourseCell()
+//                                RouteCell()
                             }
                         }
                         .padding(.trailing, 16)
@@ -120,7 +126,7 @@ struct HomeView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
                             ForEach(1...10, id: \.self) { _ in
-                                WalkCourseCell()
+//                                RouteCell()
                             }
                         }
                         .padding(.trailing, 16)
@@ -130,7 +136,6 @@ struct HomeView: View {
                 .padding(.bottom, 100)
             }
         }
-        .scrollIndicators(.hidden)
         .onAppear {
             print("ACCESS TOKEN: ", AuthManager.shared.accessToken ?? "nil")
             print("REFRESH TOKEN: ", AuthManager.shared.refreshToken ?? "nil")

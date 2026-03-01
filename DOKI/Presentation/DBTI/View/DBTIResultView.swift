@@ -26,20 +26,20 @@ struct DBTIResultView: View {
             
             Spacer()
             
-            if viewModel.entryContext == .afterRegister {
+            if viewModel.dbtiEntryContext == .afterRegister {
                 HStack(spacing: 8) {
                     MainButton(
                         text: "다시 테스트하기",
                         buttonState: .active2
                     ) {
-                        viewModel.restartSurvey()
+                        viewModel.restartDBTI()
                     }
                     
                     MainButton(
                         text: "홈으로 가기",
                         buttonState: .active1
                     ) {
-                        viewModel.finish()
+                        viewModel.finishDBTI()
                     }
                 }
                 .padding(.bottom, 12)
@@ -49,7 +49,7 @@ struct DBTIResultView: View {
                     text: "다시 테스트하기",
                     buttonState: .active1
                 ) {
-                    viewModel.restartSurvey()
+                    viewModel.restartDBTI()
                 }
                 .padding(.bottom, 12)
             }
@@ -63,6 +63,11 @@ struct DBTIResultView: View {
         } center: {
             Text("DBTI 결과")
                 .subtitle()
+        }
+        .onAppear {
+            if viewModel.dbtiEntryContext == .myPage {
+                viewModel.fetchDBTIResult(petId: 17)
+            }
         }
     }
 }

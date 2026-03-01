@@ -10,18 +10,15 @@ import Foundation
 import Moya
 
 enum AuthAPI {
-    case appleLogin(request: AppleLoginRequest)
-    case logout(request: LogoutRequest)
-    case withdraw(request: WithdrawRequest)
-    case refreshToken(request: TokenRefreshRequest)
+    case appleLogin(request: AppleLoginRequest) // 애플 로그인
+    case logout(request: LogoutRequest) // 로그아웃
+    case withdraw(request: WithdrawRequest) // 탈퇴
+    case refreshToken(request: RefreshTokenRequest) // 토큰 재발급
 }
 
 extension AuthAPI: BaseTargetType {
     var headerType: HeaderType {
-        switch self {
-        case .appleLogin, .logout, .withdraw, .refreshToken:
-            return .defaultHeader
-        }
+        return .defaultHeader
     }
     
     var path: String {

@@ -30,13 +30,13 @@ struct DBTIStartView: View {
             .padding(.top, 20)
             .padding(.bottom, 82)
             
-            Image(.imgOnboardingdog)
+            Image(.imgWholebodydog)
             
             Spacer()
             
-            if viewModel.entryContext == .afterRegister {
+            if viewModel.dbtiEntryContext == .afterRegister {
                 Button {
-                    viewModel.finish()
+                    viewModel.finishDBTI()
                 } label: {
                     Text("건너뛰기")
                         .subtitle(color: .defaultMiddle)

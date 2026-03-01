@@ -24,7 +24,7 @@ struct RecommendCoordinatorView: View {
          viewModelFactory: AppDIContainer.ViewModelFactory) {
         self._recommendCoordinator = StateObject(wrappedValue: recommendCoordinator)
         self._recommendViewModel = StateObject(wrappedValue: viewModelFactory.makeRecommendViewModel(recommendCoordinator))
-        self._courseDetailViewModel = StateObject(wrappedValue: viewModelFactory.makeCourseDetailViewModel())
+        self._courseDetailViewModel = StateObject(wrappedValue: viewModelFactory.makeRouteDetailViewModel())
         self._filterSettingViewModel = StateObject(wrappedValue: viewModelFactory.makeFilterSettingViewModel())
     }
     

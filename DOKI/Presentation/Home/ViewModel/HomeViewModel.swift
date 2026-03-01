@@ -15,12 +15,15 @@ class HomeViewModel: ObservableObject {
         homeAPIService: HomeAPIServiceProtocol = HomeAPIService()
     ) {
         self.homeAPIService = homeAPIService
+        
         fetchWeather()
+        fetchTotalWalkStat()
     }
     
     // MARK: - Published Properties
     
     @Published var weather: WeatherResponse?
+    @Published var walkInfo: TotalWalkStatResponse?
     
     // MARK: - Computed Properties (UI)
     
@@ -36,6 +39,18 @@ class HomeViewModel: ObservableObject {
         weather?.region ?? "지역 정보 없음"
     }
     
+    var totalDistance: Double {
+        walkInfo?.distance ?? 0
+    }
+    
+    var totalWalkCount: Int {
+        walkInfo?.count ?? 0
+    }
+    
+    var totalWalkTimeText: String {
+        formatSecondsToTime(walkInfo?.totalTime ?? 0)
+    }
+    
     // MARK: - Navigation
     
     var navigationAction: ((HomeAction)->())?
@@ -43,12 +58,22 @@ class HomeViewModel: ObservableObject {
     func navigateToWalkRecord() {
         navigationAction?(.walkRecord)
     }
+    
+    // MARK: - Helper
+    
+    private func formatSecondsToTime(_ seconds: Int) -> String {
+        let hours = seconds / 3600
+        let minutes = (seconds % 3600) / 60
+        let seconds = seconds % 60
+        
+        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+    }
 }
 
 // MARK: - API
 
 extension HomeViewModel {
-    /// 날씨 정보 조회
+    /// 날씨 조회
     func fetchWeather() {
         homeAPIService.fetchWeather { [weak self] result in
             guard let self else { return }
@@ -60,6 +85,23 @@ extension HomeViewModel {
                     
                 default:
                     print("날씨 정보를 불러오지 못했습니다.")
+                }
+            }
+        }
+    }
+    
+    /// 누적 산책 정보 조회
+    func fetchTotalWalkStat() {
+        homeAPIService.fetchTotalWalkStat { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.walkInfo = response?.data
+                    
+                default:
+                    print("산책 정보를 불러오지 못했습니다.")
                 }
             }
         }

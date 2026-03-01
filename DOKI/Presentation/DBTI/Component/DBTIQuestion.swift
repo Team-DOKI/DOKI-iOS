@@ -13,7 +13,7 @@ struct DBTIQuestion: View {
     @Binding var selectedIndex: Int?
     
     var body: some View {
-        VStack(spacing: 68) {
+        VStack(spacing: 0) {
             VStack(spacing: 5) {
                 Text(data.title)
                     .bodyActive(color: .defaultPrimary)
@@ -22,6 +22,7 @@ struct DBTIQuestion: View {
                     .header3()
                     .multilineTextAlignment(.center)
             }
+            .padding(.bottom, spacing)
             
             HStack(spacing: 8) {
                 ForEach(data.options.indices, id: \.self) { index in
@@ -42,4 +43,8 @@ struct DBTIQuestion: View {
         }
         .padding(.top, 69)
     }
+    
+    private var spacing: CGFloat {
+           data.question.contains("\n") ? 44 : 68
+       }
 }

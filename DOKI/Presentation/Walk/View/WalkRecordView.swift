@@ -53,9 +53,9 @@ struct WalkRecordView: View {
                     Spacer().frame(height: 44)
                     
                     HStack(spacing: 0) {
-                        RecordStatItem(title: "거리 (km)", value: viewModel.distanceString)
-                        RecordStatItem(title: "시간 (분)", value: viewModel.elapsedTimeString)
-                        RecordStatItem(title: "걸음 수 (걸음)", value: viewModel.stepString)
+                        WalkStatItem(title: "거리 (km)", value: viewModel.distanceString)
+                        WalkStatItem(title: "시간 (분)", value: viewModel.elapsedTimeString)
+                        WalkStatItem(title: "걸음 수 (걸음)", value: viewModel.stepString)
                     }
                     .padding(.bottom, 20)
                     

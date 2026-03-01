@@ -10,9 +10,9 @@ import Moya
 
 protocol ImageAPIServiceProtocol {
     /// Presigned URL 요청
-    func fetchPresignedURL(
-        request: PresignedUrlRequest,
-        completion: @escaping (NetworkResult<PresignedUrlResponseDTO>) -> Void
+    func presignedURL(
+        request: PresignedURLRequest,
+        completion: @escaping (NetworkResult<PresignedURLResponseDTO>) -> Void
     )
     
     /// 이미지 등록
@@ -23,7 +23,7 @@ protocol ImageAPIServiceProtocol {
 }
 
 extension ImageAPIServiceProtocol {
-    typealias PresignedUrlResponseDTO = BaseDTO<PresignedUrlResponse>
+    typealias PresignedURLResponseDTO = BaseDTO<PresignedURLResponse>
     typealias RegisterImageResponseDTO = BaseDTO<RegisterImageResponse>
 }
 
@@ -34,14 +34,16 @@ final class ImageAPIService: BaseAPIService, ImageAPIServiceProtocol {
         plugins: [MoyaLoggingPlugin()]
     )
     
+    // MARK: - API
+    
     /// Presigned URL 요청
-    func fetchPresignedURL(
-        request: PresignedUrlRequest,
-        completion: @escaping (NetworkResult<PresignedUrlResponseDTO>) -> Void
+    func presignedURL(
+        request: PresignedURLRequest,
+        completion: @escaping (NetworkResult<PresignedURLResponseDTO>) -> Void
     ) {
-        self.request(.presigned(request: request),
+        self.request(.presignedURL(request: request),
                      provider: provider,
-                     responseType: PresignedUrlResponseDTO.self,
+                     responseType: PresignedURLResponseDTO.self,
                      completion: completion)
     }
     
@@ -50,7 +52,7 @@ final class ImageAPIService: BaseAPIService, ImageAPIServiceProtocol {
         request: RegisterImageRequest,
         completion: @escaping (NetworkResult<RegisterImageResponseDTO>) -> Void
     ) {
-        self.request(.register(request: request),
+        self.request(.registerImage(request: request),
                      provider: provider,
                      responseType: RegisterImageResponseDTO.self,
                      completion: completion)

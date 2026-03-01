@@ -26,7 +26,7 @@ struct UserInfoView: View {
             
             Spacer().frame(height: 16)
             
-            selecteGender
+            selectGender
         }
         .padding(.horizontal, 16)
     }
@@ -49,7 +49,11 @@ extension UserInfoView {
             MainTextField(
                 placeholder: "최대 8글자 이내로 입력해주세요",
                 text: $viewModel.nickname
-            )
+            ).onChange(of: viewModel.nickname) { _, newValue in
+                if newValue.count > 8 {
+                    viewModel.nickname = String(newValue.prefix(8))
+                }
+            }
         }
     }
     
@@ -61,16 +65,25 @@ extension UserInfoView {
                 placeholder: "YYYY/MM/DD",
                 text: $viewModel.birthDay
             )
+            .keyboardType(.numberPad)
+            .onChange(of: viewModel.birthDay) { old, new in
+                guard new.count >= old.count else { return }
+                
+                let formatted = new.formattedBirthDate()
+                if formatted != new {
+                    viewModel.birthDay = formatted
+                }
+            }
         }
     }
     
-    private var selecteGender: some View {
+    private var selectGender: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("성별").bodyActive()
             
             HStack(spacing: 4) {
                 ForEach(Gender.allCases) { gender in
-                    CheckBox(
+                    GenderSelectButton(
                         text: gender.rawValue,
                         isChecked: viewModel.gender == gender
                     ) {

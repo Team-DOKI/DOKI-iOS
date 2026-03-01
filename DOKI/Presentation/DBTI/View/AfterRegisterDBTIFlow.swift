@@ -7,6 +7,19 @@
 
 import SwiftUI
 
+enum DBTIEntryContext {
+    case afterRegister
+    case myPage
+}
+
+enum DBTIAction {
+    case dbtiStart
+    case dbtiSurvey
+    case dbtiResult
+    case dbtiRestart
+    case dbtiFinish
+}
+
 struct AfterRegisterDBTIFlow: View {
     @StateObject private var dbtiViewModel = DBTIViewModel(entryContext: .afterRegister)
     

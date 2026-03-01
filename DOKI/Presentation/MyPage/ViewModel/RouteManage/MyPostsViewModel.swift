@@ -1,0 +1,62 @@
+//
+//  MyPostsViewModel.swift
+//  DOKI
+//
+//  Created by 이세민 on 2/28/26.
+//
+
+import SwiftUI
+
+class MyPostsViewModel: ObservableObject {
+    @Published var posts: [RouteData] = []
+    private let routeAPIService: RouteAPIServiceProtocol
+    
+    init(routeAPIService: RouteAPIServiceProtocol = RouteAPIService()) {
+        self.routeAPIService = routeAPIService
+    }
+    
+    func fetchMyPosts() {
+        routeAPIService.fetchMyPosts { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self?.posts = response?.data?.posts.map { post in
+                        RouteData(
+                            id: post.postId,
+                            title: post.title,
+                            address: post.regionName,
+                            date: post.date.formattedToYYMMDD(),
+                            duration: post.durationMinutes.formattedDuration(),
+                            isLiked: post.isLiked,
+                            imageURL: post.imageUrl
+                        )
+                    } ?? []
+                default:
+                    print("내 게시글 불러오기에 실패했습니다.")
+                }
+            }
+        }
+    }
+    
+    func toggleLike(_ postId: Int) {
+        routeAPIService.toggleLike(postId: postId) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    guard let status = response?.data?.status else { return }
+                    if status == "LIKE_SUCCESS" {
+                        if let index = self?.posts.firstIndex(where: { $0.id == postId }) {
+                            self?.posts[index].isLiked = true
+                        }
+                    } else if status == "CANCEL_SUCCESS" {
+                        if let index = self?.posts.firstIndex(where: { $0.id == postId }) {
+                            self?.posts[index].isLiked = false
+                        }
+                    }
+                default:
+                    print("좋아요 실패")
+                }
+            }
+        }
+    }
+}

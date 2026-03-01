@@ -61,7 +61,7 @@ struct OnboardingView: View {
                 .multilineTextAlignment(.center)
             
             TabView(selection: $currentStep) {
-                Image(.imgOnboardingdog)
+                Image(.imgWholebodydog)
                     .tag(OnboardingStep.welcome)
                 
                 Image(.onboardingDummy)

@@ -26,8 +26,8 @@ struct RegisterView: View {
         }
         .overlay(alignment: .top) { progressBar }
         .overlay(alignment: .top, content: {
-            if viewModel.isShowMapView {
-                AreaMapView(viewModel: viewModel)
+            if viewModel.regionFlow == .map {
+                RegionMapView(viewModel: viewModel)
             }
         })
         .ignoresSafeArea(.keyboard)
@@ -57,10 +57,10 @@ extension RegisterView {
             switch viewModel.currentStep {
             case .userProfile:
                 UserInfoView(viewModel: viewModel)
-            case .dogProfile:
-                DogInfoView(viewModel: viewModel)
-            case .activityArea:
-                ActivityAreaView(viewModel: viewModel)
+            case .petProfile:
+                PetInfoView(viewModel: viewModel)
+            case .region:
+                RegionView(viewModel: viewModel)
             }
         }
     }

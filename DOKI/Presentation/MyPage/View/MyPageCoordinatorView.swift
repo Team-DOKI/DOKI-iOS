@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-enum MyPageRoute: Route {
-    case myProfile
+enum MyPageRoute: Route, Hashable {
+    case userProfile
     case petProfile
     
-    case myWalkRecord
-    case savedWalk
-    case review
+    case myPosts
+    case myLikedPosts
+    case myReviews
     
-    case activityAreaSetting
+    case regionSetting
     case appInfo
     
     case dbtiStart
@@ -27,20 +27,23 @@ struct MyPageCoordinatorView: View {
     @EnvironmentObject var tabBarState: TabBarState
     
     @StateObject var myPageCoordinator: Coordinator<MyPageRoute>
+    
     @StateObject var myPageViewModel: MyPageViewModel
-    @StateObject var myProfileViewModel:  MyProfileViewModel
-    @StateObject var petProfileViewModel:  PetProfileViewModel
-    @StateObject var myWalkRecordViewModel: MyWalkRecordViewModel
-    @StateObject var mySavedWalkViewModel: MySavedWalkViewModel
+    
+    @StateObject var myPostsViewModel: MyPostsViewModel
+    @StateObject var myLikedPostsViewModel: MyLikedPostsViewModel
+    @StateObject var myReviewsViewModel: MyReviewsViewModel
+    
     @StateObject var dbtiViewModel = DBTIViewModel(entryContext: .myPage)
     
     init(myPageCoordinator: Coordinator<MyPageRoute> = Coordinator<MyPageRoute>(), viewModelFactory: AppDIContainer.ViewModelFactory) {
         self._myPageCoordinator = StateObject(wrappedValue: myPageCoordinator)
+        
         self._myPageViewModel = StateObject(wrappedValue: viewModelFactory.makeMyPageViewModel())
-        self._myProfileViewModel = StateObject(wrappedValue: viewModelFactory.makeMyProfileViewModel())
-        self._petProfileViewModel = StateObject(wrappedValue: viewModelFactory.makePetProfileViewModel())
-        self._myWalkRecordViewModel = StateObject(wrappedValue: viewModelFactory.makeMyWalkRecordViewModel())
-        self._mySavedWalkViewModel = StateObject(wrappedValue: viewModelFactory.makeMySavedWalkViewModel())
+        
+        self._myPostsViewModel = StateObject(wrappedValue: viewModelFactory.makeMyPostViewModel())
+        self._myLikedPostsViewModel = StateObject(wrappedValue: viewModelFactory.makeMyLikedPostViewModel())
+        self._myReviewsViewModel = StateObject(wrappedValue: viewModelFactory.makeMyReviewsViewModel())
     }
     
     var body: some View {
@@ -48,18 +51,26 @@ struct MyPageCoordinatorView: View {
             MyPageView(viewModel: myPageViewModel)
                 .navigationDestination(for: MyPageRoute.self) { destination in
                     switch destination {
-                    case .myProfile:
-                        MyProfileView(viewModel: myProfileViewModel)
+                    case .userProfile:
+                        if let userProfile = myPageViewModel.userProfile {
+                            UserProfileView(
+                                viewModel: UserProfileViewModel(userProfile: userProfile)
+                            )
+                        }
                     case .petProfile:
-                        PetProfileView(viewModel: petProfileViewModel)
-                    case .myWalkRecord:
-                        MyWalkRecordView(viewModel: myWalkRecordViewModel)
-                    case .savedWalk:
-                        MySavedWalkView(viewModel: mySavedWalkViewModel)
-                    case .review:
-                        MyReviewView()
-                    case .activityAreaSetting:
-                        ActivityAreaSettingView()
+                        if let petProfile = myPageViewModel.petProfile {
+                            PetProfileView(
+                                viewModel: PetProfileViewModel(petProfile: petProfile)
+                            )
+                        }
+                    case .myPosts:
+                        MyPostsView(viewModel: myPostsViewModel)
+                    case .myLikedPosts:
+                        MyLikedPostsView(viewModel: myLikedPostsViewModel)
+                    case .myReviews:
+                        MyReviewsView(viewModel: myReviewsViewModel)
+                    case .regionSetting:
+                        RegionSettingView()
                     case .appInfo:
                         AppInfoView()
                     case .dbtiStart:
@@ -80,18 +91,18 @@ struct MyPageCoordinatorView: View {
     func bindAction() {
         myPageViewModel.navigationAction = { destination in
             switch destination {
-            case .myProfile:
-                myPageCoordinator.push(.myProfile)
+            case .userProfile:
+                myPageCoordinator.push(.userProfile)
             case .petProfile:
                 myPageCoordinator.push(.petProfile)
-            case .myWalkRecord:
-                myPageCoordinator.push(.myWalkRecord)
-            case .savedWalk:
-                myPageCoordinator.push(.savedWalk)
-            case .review:
-                myPageCoordinator.push(.review)
-            case .activityAreaSetting:
-                myPageCoordinator.push(.activityAreaSetting)
+            case .myPosts:
+                myPageCoordinator.push(.myPosts)
+            case .myLikedPosts:
+                myPageCoordinator.push(.myLikedPosts)
+            case .myReviews:
+                myPageCoordinator.push(.myReviews)
+            case .regionSetting:
+                myPageCoordinator.push(.regionSetting)
             case .appInfo:
                 myPageCoordinator.push(.appInfo)
             case .dbtiStart:

@@ -16,10 +16,15 @@ struct DBTIOptionCard: View {
     var body: some View {
         Button(action: action) {
             VStack(spacing: 25) {
-                // 이미지로 변경
-                Rectangle()
-                    .fill(Color.gray.opacity(0.2))
-                    .frame(width: 90, height: 90)
+                let url = URL(string: imageUrl ?? "")
+                
+                AsyncImage(url: url) { image in
+                    image.resizable().scaledToFit()
+                } placeholder: {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                }
+                .frame(width: 90, height: 90)
                 
                 Text(title)
                     .font(isSelected ? .bodyActive : .bodyDefault)

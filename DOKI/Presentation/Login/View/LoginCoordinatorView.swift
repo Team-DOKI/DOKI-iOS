@@ -12,8 +12,8 @@ enum LoginRoute: Route {
 }
 
 struct LoginCoordinatorView: View {
-    @StateObject var loginViewModel: LoginViewModel
     @EnvironmentObject var authManager: AuthManager
+    @StateObject var loginViewModel: LoginViewModel
     
     let viewModelFactory: AppDIContainer.ViewModelFactory
     

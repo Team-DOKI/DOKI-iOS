@@ -7,84 +7,40 @@
 
 import Foundation
 
-enum DBTIEntryContext {
-    case afterRegister
-    case myPage
-}
-
-enum DBTIAction {
-    case dbtiStart
-    case dbtiSurvey
-    case dbtiResult
-    case dbtiRestart
-    case dbtiFinish
-}
-
 final class DBTIViewModel: ObservableObject {
+    private let dbtiAPIService: DBTIAPIServiceProtocol
+    let dbtiEntryContext: DBTIEntryContext
     
-    let entryContext: DBTIEntryContext
-    
-    init(entryContext: DBTIEntryContext) {
-        self.entryContext = entryContext
+    init(
+        dbtiAPIService: DBTIAPIServiceProtocol = DBTIAPIService(),
+        entryContext: DBTIEntryContext
+    ) {
+        self.dbtiAPIService = dbtiAPIService
+        self.dbtiEntryContext = entryContext
         
-        // 임시
-        let dummy = DBTIQuestionData(
-            title: "휴식가 vs 탐험가",
-            question: "산책 나가면 우리 강아지는…",
-            options: [
-                DBTIOptionData(
-                    content: "익숙한 코스에서\n짧게 다녀오는 게 좋아요",
-                    imageUrl: ""
-                ),
-                DBTIOptionData(
-                    content: "동네 구석구석\n새 길을 탐험해야 신나요",
-                    imageUrl: ""
-                )
-            ]
-        )
-        
-        self.questions = Array(repeating: dummy, count: 9)
+        fetchDBTIQuestions()
     }
     
     //MARK: - Survey
     
     @Published var questions: [DBTIQuestionData] = []
+    @Published private var selectedOptionIds: [Int] = []
     
     //MARK: - Result
     
-    @Published var dbtiName: String = "자유로운 꼬리바람"
-    @Published var type: String = "EPF"
-    @Published var resultImageUrl: String?
-    @Published var keywords: [String] = ["자유", "즉흥", "활발"]
-    @Published var description: String =
-    "즉흥적이고 변화를 좋아해요.\n친구들과 매일 산책 코스를 즐기는 자유로운 영혼!"
-    @Published var analysis: [AxisAnalysisData] = [
-        .init(
-            leftLabel: "휴식가",
-            rightLabel: "탐험가",
-            dominantSide: "right",
-            score: 2
-        ),
-        .init(
-            leftLabel: "부끄멍",
-            rightLabel: "적극멍",
-            dominantSide: "left",
-            score: 1
-        ),
-        .init(
-            leftLabel: "루틴러",
-            rightLabel: "자유러",
-            dominantSide: "right",
-            score: 3
-        )
-    ]
+    @Published var dbtiName: String = ""
+    @Published var type: String = ""
+    @Published var resultImageUrl: String? = nil
+    @Published var keywords: [String] = []
+    @Published var description: String = ""
+    @Published var analysis: [AxisAnalysisData] = []
     
-    // MARK: - Step
-    
-    var navigationAction: ((DBTIAction) -> Void)?
+    // MARK: - Navigation & Step
     
     @Published var currentStep: Int = 0
     @Published var selectedIndex: Int? = nil
+    
+    var navigationAction: ((DBTIAction) -> Void)?
     
     var currentQuestion: DBTIQuestionData? {
         guard currentStep < questions.count else { return nil }
@@ -104,16 +60,22 @@ final class DBTIViewModel: ObservableObject {
         selectedIndex == nil
     }
     
-    // MARK: - Actions
+    // MARK: - User Actions
     
-    func goToNextStep() {
-        guard selectedIndex != nil else { return }
+    func goToNextStep(petId: Int) {
+        guard let selectedIndex else { return }
+        
+        if selectedOptionIds.count != questions.count {
+            selectedOptionIds = Array(repeating: 0, count: questions.count)
+        }
+        
+        selectedOptionIds[currentStep] = questions[currentStep].options[selectedIndex].id
         
         if isLastStep {
-            navigationAction?(.dbtiResult)
+            submitDBTI(petId: petId)
         } else {
             currentStep += 1
-            selectedIndex = nil
+            self.selectedIndex = nil
         }
     }
     
@@ -123,13 +85,115 @@ final class DBTIViewModel: ObservableObject {
         selectedIndex = nil
     }
     
-    func restartSurvey() {
+    func restartDBTI() {
         currentStep = 0
         selectedIndex = nil
+        selectedOptionIds.removeAll()
         navigationAction?(.dbtiRestart)
     }
     
-    func finish() {
+    func finishDBTI() {
         navigationAction?(.dbtiFinish)
+    }
+}
+
+// MARK: - API
+
+extension DBTIViewModel {
+    /// DBTI 질문 조회
+    func fetchDBTIQuestions() {
+        dbtiAPIService.fetchDBTIQuestions { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.questions = response?.data?.questions.map { q in
+                        DBTIQuestionData(
+                            title: q.category.name,
+                            question: q.content,
+                            options: q.options.map {
+                                DBTIOptionsData(
+                                    id: $0.id,
+                                    content: $0.content,
+                                    imageUrl: $0.imageUrl
+                                )
+                            }
+                        )
+                    } ?? []
+                default:
+                    print("DBTI 질문 조회에 실패했습니다.")
+                }
+            }
+        }
+    }
+    
+    /// DBTI 검사 제출
+    func submitDBTI(petId: Int) {
+        let request = DBTISurveyRequest(optionIds: selectedOptionIds)
+        
+        dbtiAPIService.submitDBTI(
+            petId: petId,
+            request: request
+        ) { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    guard let data = response?.data else { return }
+                    
+                    self.type = data.type
+                    self.dbtiName = data.name
+                    self.resultImageUrl = data.image
+                    self.keywords = data.keyword
+                    self.description = data.description
+                    self.analysis = data.analysis.map {
+                        AxisAnalysisData(
+                            leftLabel: $0.leftLabel,
+                            rightLabel: $0.rightLabel,
+                            dominantSide: $0.dominantSide,
+                            score: $0.score
+                        )
+                    }
+                    
+                    self.navigationAction?(.dbtiResult)
+                    
+                default:
+                    print("DBTI 검사 제출에 실패했습니다.")
+                }
+            }
+        }
+    }
+    
+    /// DBTI 결과 조회
+    func fetchDBTIResult(petId: Int) {
+        dbtiAPIService.fetchDBTIResult(petId: petId) { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    guard let data = response?.data else { return }
+                    
+                    self.dbtiName = data.name
+                    self.type = data.type
+                    self.resultImageUrl = data.image
+                    self.keywords = data.keyword
+                    self.description = data.description
+                    self.analysis = data.analysis.map {
+                        AxisAnalysisData(
+                            leftLabel: $0.leftLabel,
+                            rightLabel: $0.rightLabel,
+                            dominantSide: $0.dominantSide,
+                            score: $0.score
+                        )
+                    }
+                    
+                default:
+                    print("DBTI 결과 조회에 실패했습니다.")
+                }
+            }
+        }
     }
 }

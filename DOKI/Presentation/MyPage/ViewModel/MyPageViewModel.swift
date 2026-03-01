@@ -11,18 +11,15 @@ import SwiftUI
 import Moya
 
 class MyPageViewModel: ObservableObject {
-    private let userAPIService: UserAPIServiceProtocol
+    private let profileAPIService: ProfileAPIServiceProtocol
     private let authManager: AuthManager
     
     init(
-        userAPIService: UserAPIServiceProtocol = UserAPIService(),
+        profileAPIService: ProfileAPIServiceProtocol = ProfileAPIService(),
         authManager: AuthManager = .shared
     ) {
-        self.userAPIService = userAPIService
+        self.profileAPIService = profileAPIService
         self.authManager = authManager
-        
-        fetchUserProfile()
-//        fetchPetProfile(petId: 14)
     }
     
     @Published var isShowLogoutAlert: Bool = false
@@ -48,11 +45,11 @@ class MyPageViewModel: ObservableObject {
     }
     var petInfoText: String {
         guard let pet = petProfile else { return "" }
-        let genderText = pet.gender == "F" ? "여아" : "남아"
+        let genderText = pet.gender
         return "\(pet.age) / \(genderText) / \(pet.breed)"
     }
     
-    // MARK: - User Action
+    // MARK: - User Actions
     
     /// 로그아웃 모달 표시
     func logoutButtonTapped() {
@@ -97,32 +94,41 @@ class MyPageViewModel: ObservableObject {
     var navigationAction: ((MyPageRoute)->())?
     
     func navigateToPetProfile() {
+        guard petProfile != nil else {
+            return
+        }
         navigationAction?(.petProfile)
     }
     
-    func navigateToMyProfile() {
-        navigationAction?(.myProfile)
+    func navigateToUserProfile() {
+        guard userProfile != nil else {
+            return
+        }
+        navigationAction?(.userProfile)
     }
     
-    // TODO: dbti 데이터 유무에 따라 Start / Result 네비게이션
     func navigateToDbti() {
-        navigationAction?(.dbtiStart)
+        if petProfile?.dbtiName != nil {
+            navigationAction?(.dbtiResult)
+        } else {
+            navigationAction?(.dbtiStart)
+        }
     }
     
     func navigateToWalkRecord() {
-        navigationAction?(.myWalkRecord)
+        navigationAction?(.myPosts)
     }
     
     func navigateToSavedWalk() {
-        navigationAction?(.savedWalk)
+        navigationAction?(.myLikedPosts)
     }
     
     func navigateToReview() {
-        navigationAction?(.review)
+        navigationAction?(.myReviews)
     }
     
     func navigateToActivityAreaSetting() {
-        navigationAction?(.activityAreaSetting)
+        navigationAction?(.regionSetting)
     }
     
     func navigateToAppInfo() {
@@ -135,7 +141,7 @@ class MyPageViewModel: ObservableObject {
 extension MyPageViewModel {
     /// 유저 정보 조회
     func fetchUserProfile() {
-        userAPIService.fetchUserProfile { [weak self] result in
+        profileAPIService.fetchUserProfile { [weak self] result in
             guard let self else { return }
             
             DispatchQueue.main.async {
@@ -151,7 +157,7 @@ extension MyPageViewModel {
     
     /// 반려견 정보 조회
     func fetchPetProfile(petId: Int) {
-        userAPIService.fetchPetProfile(petId: petId) { [weak self] result in
+        profileAPIService.fetchPetProfile(petId: petId) { [weak self] result in
             guard let self else { return }
             
             DispatchQueue.main.async {

@@ -123,7 +123,7 @@ struct RouteRecommendView: View {
         ScrollView(showsIndicators: false) {
             LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(1...10, id: \.self) { _ in
-                    WalkCourseCell()
+//                    RouteCell()
                 }
             }
             .padding(.horizontal, 16)

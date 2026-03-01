@@ -12,47 +12,40 @@ struct PetProfile: View {
     let petInfo: String
     let imageUrl: String?
     let dbti: String
-
     let profileAction: () -> Void
     let dbtiAction: () -> Void
-
+    
     var body: some View {
         VStack(spacing: 16) {
             Button(action: profileAction) {
                 HStack(spacing: 16) {
-                    if let imageUrl, let url = URL(string: imageUrl) {
-                        AsyncImage(url: url) { image in
-                            image.resizable().scaledToFill()
-                        } placeholder: {
-                            Image(.imgDefaultprofile)
-                                .resizable()
-                                .scaledToFill()
-                        }
-                        .frame(width: 60, height: 60)
-                        .clipShape(Circle())
-                    } else {
+                    let url = URL(string: imageUrl ?? "")
+                    
+                    AsyncImage(url: url) { image in
+                        image.resizable().scaledToFill()
+                    } placeholder: {
                         Image(.imgDefaultprofile)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 60, height: 60)
-                            .clipShape(Circle())
                     }
-
+                    .frame(width: 60, height: 60)
+                    .clipShape(Circle())
+                    
                     VStack(alignment: .leading, spacing: 4) {
                         Text(name).subtitle()
                         
                         Text(petInfo).subDefault(color: .defaultMiddle)
                     }
-
+                    
                     Spacer()
                 }
                 .padding(.top, 16)
             }
             .buttonStyle(.plain)
-
+            
             Divider()
                 .background(.defaultButton)
-
+            
             Button(action: dbtiAction) {
                 Text(dbti)
                     .bodyBold(color: .defaultPrimary)

@@ -38,7 +38,6 @@ struct MainTabView: View {
                     )
                 }
             }
-            
             .safeAreaInset(edge: .bottom) {
                 if !tabBarState.isHidden {
                     TabBar(selectedTab: $selectedTab)

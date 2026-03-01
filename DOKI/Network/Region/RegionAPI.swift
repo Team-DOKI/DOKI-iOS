@@ -10,38 +10,31 @@ import Foundation
 import Moya
 
 enum RegionAPI {
-    case getRegions
+    case fetchRegions
 }
 
 extension RegionAPI: BaseTargetType {
-    var validationType: ValidationType {
-        .successCodes
-    }
-    
     var headerType: HeaderType {
-        switch self {
-        case .getRegions:
-            return .defaultHeader
-        }
+        return .defaultHeader
     }
     
     var path: String {
         switch self {
-        case .getRegions:
+        case .fetchRegions:
             return "regions"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .getRegions:
+        case .fetchRegions:
             return .get
         }
     }
     
     var task: Task {
         switch self {
-        case .getRegions:
+        case .fetchRegions:
             return .requestPlain
         }
     }
