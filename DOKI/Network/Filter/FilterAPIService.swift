@@ -9,7 +9,11 @@ import Moya
 
 protocol FilterAPIServiceProtocol {
     // 필터링 카테고리 리스트 조회
-    func fetchFilterCategories() -> Void
+    func fetchFilterCategories() async throws -> [FilterList]
+}
+
+extension FilterAPIServiceProtocol {
+    typealias FilterCategoriesResponseDTO = BaseDTO<FilterCategoryResponse>
 }
 
 final class FilterAPIService: BaseAPIService, FilterAPIServiceProtocol {
@@ -18,5 +22,19 @@ final class FilterAPIService: BaseAPIService, FilterAPIServiceProtocol {
         plugins: [MoyaLoggingPlugin()]
     )
     
-    func fetchFilterCategories() {}
+    func fetchFilterCategories() async throws -> [FilterList] {
+        do {
+            let response: FilterCategoriesResponseDTO = try await provider.async.request(.fetchFilterCategories)
+            guard let data = response.data else {
+                throw APIError.decodingError
+            }
+            return data.toEntities()
+        } catch {
+            throw error
+        }
+    }
+}
+
+enum APIError: Error {
+    case decodingError
 }
