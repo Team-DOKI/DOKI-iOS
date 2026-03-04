@@ -63,13 +63,16 @@ class FilterSettingViewModel: ObservableObject {
         FilteringOption(text: "교류 활발", isActive: false, category: "dogInteraction")
     ]
     
+    private let filterAPIServie: FilterAPIServiceProtocol
+    
     var navigationAction: ((FilterSettingRoute)->())?
     
     func navigateToBack() {
         navigationAction?(.back)
     }
     
-    init() {
+    init(filterAPIService: FilterAPIService) {
+        self.filterAPIServie = filterAPIService
         setDefaultOption()
     }
     
@@ -101,5 +104,17 @@ class FilterSettingViewModel: ObservableObject {
         }
         
         navigationAction?(.saveOption(selectedOption: selectedOption))
+    }
+}
+
+// MARK: - API (필터링 카테고리 리스트 조회)
+
+extension FilterSettingViewModel {
+    func fetchFilterCategories() async {
+        do {
+            try await filterAPIServie.fetchFilterCategories()
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 }

@@ -54,7 +54,8 @@ extension AppDIContainer {
         }
         
         func makeFilterSettingViewModel() -> FilterSettingViewModel {
-            return FilterSettingViewModel()
+            let filterApiServcie = FilterAPIService()
+            return FilterSettingViewModel(filterAPIService: filterApiServcie)
         }
         
         func makeMyPostViewModel() -> MyPostsViewModel {
