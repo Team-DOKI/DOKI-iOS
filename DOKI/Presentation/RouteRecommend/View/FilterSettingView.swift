@@ -51,6 +51,7 @@ struct FilterSettingView: View {
         })
         .task {
             await viewModel.fetchFilterCategories()
+            viewModel.setDefaultOption()
         }
     }
 }

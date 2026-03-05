@@ -49,17 +49,29 @@ struct RouteRecommendView: View {
     
     private var filterSection: some View {
         HStack(spacing: 8) {
-            FilterButton(isActive: !viewModel.selectedFilterOption.isEmpty) {
+            let hasSelectedItemEmpty = viewModel.selectedFilterOption.isEmpty
+            
+            FilterButton(isActive: !hasSelectedItemEmpty) {
                 viewModel.navigateToFilterSetting()
             }
             
+            
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(viewModel.filterTags, id: \.text) { tag in
-                        FilteringTag(text: tag.text, isActive: tag.isActive)
+                if hasSelectedItemEmpty {
+                    HStack(spacing: 8) {
+                        ForEach(viewModel.filterTags, id: \.text) { tag in
+                            FilteringTag(text: tag.text, isActive: tag.isActive)
+                        }
                     }
+                    .padding(.trailing, 16)
+                } else {
+                    HStack(spacing: 8) {
+                        ForEach(viewModel.selectedFilterOption, id: \.text) { tag in
+                            FilteringTag(text: tag.text, isActive: tag.isActive)
+                        }
+                    }
+                    .padding(.trailing, 16)
                 }
-                .padding(.trailing, 16)
             }
         }
     }
