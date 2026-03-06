@@ -12,6 +12,8 @@ struct MainTextField: View {
     
     @Binding var text: String
     
+    var isError: Bool? = nil
+    
     @FocusState private var fieldIsFocused: Bool
     
     var body: some View {
@@ -24,11 +26,11 @@ struct MainTextField: View {
             .cornerRadius(8)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .inset(by: 0.5)
-                    .stroke(
-                        fieldIsFocused ? .defaultPrimary : .defaultMiddle,
-                        lineWidth: 1
-                    )
+                    .stroke(Color.defaultMiddle, lineWidth: 1)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(isError == true ? Color.defaultRed : (fieldIsFocused ? Color.defaultPrimary : .clear), lineWidth: 1)
             )
     }
 }
