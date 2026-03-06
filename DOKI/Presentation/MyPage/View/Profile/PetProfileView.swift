@@ -46,7 +46,7 @@ struct PetProfileView: View {
             MainButton(
                 text: "저장하기",
                 action: {
-                    viewModel.saveButtonTapped(petId: 17)
+                    viewModel.saveButtonTapped(petId: 2)
                 }
             )
             .padding(.horizontal, 16)
