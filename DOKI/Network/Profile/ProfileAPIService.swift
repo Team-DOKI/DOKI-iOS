@@ -33,6 +33,12 @@ protocol ProfileAPIServiceProtocol {
         request: UpdatePetProfileRequest,
         completion: @escaping (NetworkResult<BaseDTO<EmptyResponse>>) -> Void
     )
+    
+    /// 닉네임 중복 검사
+    func checkNicknameDuplicate(
+        nickname: String,
+        completion: @escaping (NetworkResult<BaseDTO<EmptyResponse>>) -> Void
+    )
 }
 
 extension ProfileAPIServiceProtocol {
@@ -104,6 +110,19 @@ final class ProfileAPIService: BaseAPIService, ProfileAPIServiceProtocol {
     ) {
         self.request(
             .updatePetProfile(petId: petId, request: request),
+            provider: provider,
+            responseType: BaseDTO<EmptyResponse>.self,
+            completion: completion
+        )
+    }
+    
+    /// 닉네임 중복 검사
+    func checkNicknameDuplicate(
+        nickname: String,
+        completion: @escaping (NetworkResult<BaseDTO<EmptyResponse>>) -> Void
+    ) {
+        self.request(
+            .checkNicknameDuplicate(nickname: nickname),
             provider: provider,
             responseType: BaseDTO<EmptyResponse>.self,
             completion: completion

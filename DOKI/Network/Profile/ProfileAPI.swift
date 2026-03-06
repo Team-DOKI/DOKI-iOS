@@ -18,6 +18,8 @@ enum ProfileAPI {
     
     case updateUserProfile(request: UpdateUserProfileRequest) // 유저 정보 수정
     case updatePetProfile(petId: Int, request: UpdatePetProfileRequest) // 반려견 프로필 수정
+    
+    case checkNicknameDuplicate(nickname: String) // 닉네임 중복 검사
 }
 
 extension ProfileAPI: BaseTargetType {
@@ -27,7 +29,7 @@ extension ProfileAPI: BaseTargetType {
     
     var path: String {
         switch self {
-        case .register, .updateUserProfile:
+        case .register, .updateUserProfile, .checkNicknameDuplicate:
             return "users"
         case .fetchBreedList:
             return "pets/breeds"
@@ -44,7 +46,7 @@ extension ProfileAPI: BaseTargetType {
         switch self {
         case .register:
             return .post
-        case .fetchBreedList, .fetchUserProfile, .fetchPetProfile:
+        case .fetchBreedList, .fetchUserProfile, .fetchPetProfile, .checkNicknameDuplicate:
             return .get
         case .updateUserProfile, .updatePetProfile:
             return .patch
@@ -61,6 +63,11 @@ extension ProfileAPI: BaseTargetType {
             return .requestJSONEncodable(request)
         case .fetchBreedList, .fetchUserProfile, .fetchPetProfile:
             return .requestPlain
+        case let .checkNicknameDuplicate(nickname):
+            return .requestParameters(
+                parameters: ["nickname": nickname],
+                encoding: URLEncoding.queryString
+            )
         }
     }
 }
