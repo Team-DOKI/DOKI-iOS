@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Moya
+import Combine
 
 final class RegisterViewModel: ObservableObject {
     private let profileAPIService: ProfileAPIServiceProtocol
@@ -21,7 +22,11 @@ final class RegisterViewModel: ObservableObject {
         self.profileAPIService = profileAPIService
         self.imageAPIService = imageAPIService
         self.regionAPIService = regionAPIService
+        
+        observeNickname()
     }
+    
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Published Properties (Register Request DTO)
     
@@ -37,6 +42,9 @@ final class RegisterViewModel: ObservableObject {
     @Published var imageId: Int?
     
     // MARK: - Published Properties (UI)
+    
+    @Published var isNicknameAvailable: Bool?
+    @Published var nicknameMessage: String = ""
     
     @Published var petProfileImage: UIImage?
     
@@ -74,7 +82,7 @@ final class RegisterViewModel: ObservableObject {
     var prev: RegisterStep? { RegisterStep(rawValue: currentStep.rawValue - 1) }
     var buttonDisabled: Bool {
         switch currentStep {
-        case .userProfile: nickname.isEmpty || birthDay.isEmpty || gender == nil
+        case .userProfile: nickname.isEmpty || birthDay.isEmpty || gender == nil || isNicknameAvailable == false
         case .petProfile: dogName.isEmpty || dogBirthDay.isEmpty || dogGender == nil || breedId == nil
         case .region: selectedGuId == nil || selectedDongId == nil
         }
@@ -224,6 +232,39 @@ extension RegisterViewModel {
                 }
             }
         }
+    }
+    
+    func checkNicknameDuplicate() {
+        guard !nickname.isEmpty else { return }
+        
+        profileAPIService.checkNicknameDuplicate(nickname: nickname) { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self.isNicknameAvailable = true
+                    self.nicknameMessage = ""
+                    
+                default:
+                    self.isNicknameAvailable = false
+                    self.nicknameMessage = "* 이미 존재하는 닉네임입니다."
+                }
+            }
+        }
+    }
+    
+    private func observeNickname() {
+        $nickname
+            .dropFirst()
+            .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
+            .sink { [weak self] nickname in
+                guard let self else { return }
+                
+                if nickname.isEmpty { return }
+                self.checkNicknameDuplicate()
+            }
+            .store(in: &cancellables)
     }
 }
 
