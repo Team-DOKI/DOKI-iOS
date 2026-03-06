@@ -45,6 +45,7 @@ struct PetProfileView: View {
         .safeAreaInset(edge: .bottom) {
             MainButton(
                 text: "저장하기",
+                buttonState: viewModel.buttonDisabled ? .disabled : .active1,
                 action: {
                     viewModel.saveButtonTapped(petId: 2)
                 }

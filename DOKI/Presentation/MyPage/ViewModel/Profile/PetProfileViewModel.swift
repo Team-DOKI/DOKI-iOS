@@ -52,6 +52,10 @@ class PetProfileViewModel: ObservableObject {
     
     // MARK: - User Actions
     
+    var buttonDisabled: Bool {
+        dogName.isEmpty || dogBirthDay.isEmpty
+    }
+    
     func selectDogGender(_ gender: Gender) {
         self.dogGender = gender
     }
