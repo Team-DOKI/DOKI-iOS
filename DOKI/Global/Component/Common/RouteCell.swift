@@ -44,6 +44,8 @@ struct RouteCell: View {
                 .bodyBold()
                 .padding(.top, 8)
                 .padding(.horizontal, 2)
+                .lineLimit(1)
+                .truncationMode(.tail)
             
             HStack(spacing: 0) {
                 HStack(spacing: 4) {
