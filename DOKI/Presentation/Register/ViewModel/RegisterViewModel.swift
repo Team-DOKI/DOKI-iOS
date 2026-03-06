@@ -154,6 +154,19 @@ final class RegisterViewModel: ObservableObject {
         previewRegionName = ""
         selectedRegionName = ""
     }
+    
+    private func observeNickname() {
+        $nickname
+            .dropFirst()
+            .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
+            .sink { [weak self] nickname in
+                guard let self else { return }
+                
+                if nickname.isEmpty { return }
+                self.checkNicknameDuplicate()
+            }
+            .store(in: &cancellables)
+    }
 }
 
 // MARK: - API (유저 및 반려견 정보)
@@ -252,19 +265,6 @@ extension RegisterViewModel {
                 }
             }
         }
-    }
-    
-    private func observeNickname() {
-        $nickname
-            .dropFirst()
-            .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
-            .sink { [weak self] nickname in
-                guard let self else { return }
-                
-                if nickname.isEmpty { return }
-                self.checkNicknameDuplicate()
-            }
-            .store(in: &cancellables)
     }
 }
 

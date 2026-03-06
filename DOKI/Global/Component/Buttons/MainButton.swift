@@ -62,21 +62,28 @@ struct MainButton: View {
             }
             .frame(maxWidth: .infinity, minHeight: 56)
         }
-        .background(buttonState.backgroundColor)
-        .overlay {
-            if buttonState == .active2 {
-                RoundedRectangle(cornerRadius: 8)
-                    .inset(by: 0.5)
-                    .stroke(Color.defaultPrimary, lineWidth: 1)
-            }
-        }
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(buttonState.backgroundColor)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .inset(by: 0.5)
+                .strokeBorder(
+                    buttonState == .active2 ? Color.defaultPrimary : Color.clear,
+                    lineWidth: 1
+                )
+        )
+        .background(Color.defaultBackground)
         .disabled(buttonState.isDisabled)
-        .cornerRadius(8)
     }
 }
 
 #Preview {
-    MainButton(text: "TEXT", buttonState: .active1)
-    MainButton(text: "TEXT", buttonState: .active2, font: .subtitle)
-    MainButton(text: "TEXT", buttonState: .disabled)
+    VStack(spacing: 8) {
+        MainButton(text: "TEXT", buttonState: .active1)
+        MainButton(text: "TEXT", buttonState: .active2, font: .subtitle)
+        MainButton(text: "TEXT", buttonState: .disabled)
+    }
+    .padding()
 }
