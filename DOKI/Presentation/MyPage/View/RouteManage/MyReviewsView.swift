@@ -22,7 +22,7 @@ struct MyReviewsView: View {
                         ReviewCell(
                             title: review.title,
                             address: review.address,
-                            recordDate: "review.date",
+                            recordDate: review.date,
                             tags: review.tags
                         )
                     }
