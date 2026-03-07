@@ -49,6 +49,10 @@ struct FilterSettingView: View {
             Text("필터링 선택")
                 .subtitle()
         })
+        .task {
+            await viewModel.fetchFilterCategories()
+            viewModel.setDefaultOption()
+        }
     }
 }
 

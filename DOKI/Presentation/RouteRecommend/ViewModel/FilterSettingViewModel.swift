@@ -14,63 +14,41 @@ enum FilterSettingRoute {
 
 class FilterSettingViewModel: ObservableObject {
     @Published var selectedCongestion: FilteringOption?
+    
     @Published var selectedDogInteraction: FilteringOption?
     
     // 산책 소요 시간
-    @Published var walkTimeOption: [FilteringOption] = [
-        FilteringOption(text: "시간 무관", isActive: false, category: "walkTime"),
-        FilteringOption(text: "30분 미만", isActive: false, category: "walkTime"),
-        FilteringOption(text: "30분~60분", isActive: false, category: "walkTime"),
-        FilteringOption(text: "60분 이상", isActive: false, category: "walkTime")
-    ]
+    @Published var walkTimeOption: [FilteringOption] = []
     
     // 안전
-    @Published var safetyOption: [FilteringOption] = [
-        FilteringOption(text: "차량 적음", isActive: false, category: "safety"),
-        FilteringOption(text: "보도/차도 분리", isActive: false, category: "safety"),
-        FilteringOption(text: "보도 넓음", isActive: false, category: "safety"),
-        FilteringOption(text: "킥보드/자전거 적음", isActive: false, category: "safety"),
-        FilteringOption(text: "야간 밝음", isActive: false, category: "safety")
-    ]
+    @Published var safetyOption: [FilteringOption] = []
     
     // 편의성
-    @Published var convenienceOption: [FilteringOption] = [
-        FilteringOption(text: "벤치", isActive: false, category: "convenience"),
-        FilteringOption(text: "배변 봉투 쓰레기통", isActive: false, category: "convenience"),
-        FilteringOption(text: "편의점", isActive: false, category: "convenience"),
-        FilteringOption(text: "반려견 동반 카페", isActive: false, category: "convenience")
-    ]
+    @Published var convenienceOption: [FilteringOption] = []
     
     // 환경
-    @Published var environmentOption: [FilteringOption] = [
-        FilteringOption(text: "잔디길", isActive: false, category: "environment"),
-        FilteringOption(text: "흙길", isActive: false, category: "environment"),
-        FilteringOption(text: "포장길", isActive: false, category: "environment"),
-        FilteringOption(text: "놀이터/공터", isActive: false, category: "environment")
-    ]
+    @Published var environmentOption: [FilteringOption] = []
     
     // 혼잡도
-    @Published var congestionOption: [FilteringOption] = [
-        FilteringOption(text: "적음", isActive: false, category: "congestion"),
-        FilteringOption(text: "평범", isActive: false, category: "congestion"),
-        FilteringOption(text: "많음", isActive: false, category: "congestion")
-    ]
+    @Published var congestionOption: [FilteringOption] = []
     
     // 강아지 교류 빈도
-    @Published var dogInteractionOption: [FilteringOption] = [
-        FilteringOption(text: "교류 없음", isActive: false, category: "dogInteraction"),
-        FilteringOption(text: "보통", isActive: false, category: "dogInteraction"),
-        FilteringOption(text: "교류 활발", isActive: false, category: "dogInteraction")
-    ]
+    @Published var dogInteractionOption: [FilteringOption] = []
+    
+    private let isFetched: Bool
+    
+    private let filterAPIServie: FilterAPIServiceProtocol
     
     var navigationAction: ((FilterSettingRoute)->())?
     
-    func navigateToBack() {
-        navigationAction?(.back)
+    init(filterAPIService: FilterAPIService, isFetched: Bool = false) {
+        self.filterAPIServie = filterAPIService
+        self.isFetched = isFetched
     }
     
-    init() {
-        setDefaultOption()
+    // 뒤로가기
+    func navigateToBack() {
+        navigationAction?(.back)
     }
     
     // 초기 옵션 설정
@@ -79,6 +57,7 @@ class FilterSettingViewModel: ObservableObject {
         selectedDogInteraction = dogInteractionOption[0]
     }
     
+    // 필터링 설정 완료 카테고리 데이터 전달
     func saveOption() {
         var selectedOption: [FilteringOption] = []
         
@@ -101,5 +80,39 @@ class FilterSettingViewModel: ObservableObject {
         }
         
         navigationAction?(.saveOption(selectedOption: selectedOption))
+    }
+}
+
+// MARK: - API (필터링 카테고리 리스트 조회)
+
+extension FilterSettingViewModel {
+    @MainActor
+    func fetchFilterCategories() async {
+        guard isFetched == false else { return }
+        
+        do {
+            let response = try await filterAPIServie.fetchFilterCategories()            
+            
+            response.forEach {
+                switch $0.filterType {
+                case .duration:
+                    walkTimeOption = $0.options
+                case .congestion:
+                    congestionOption = $0.options
+                case .exchange:
+                    dogInteractionOption = $0.options
+                case .safety:
+                    safetyOption = $0.options
+                case .convenience:
+                    convenienceOption = $0.options
+                case .environment:
+                    environmentOption = $0.options
+                case .unknown:
+                    print("해당 필터의 FilterType이 없음")
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 }

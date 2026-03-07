@@ -54,7 +54,7 @@ struct RecommendCoordinatorView: View {
                 switch destination {
                 case .back:
                     recommendCoordinator.pop()
-                case .saveOption(let selectedOption):
+                case .saveOption(let selectedOption):                    
                     recommendViewModel.selectedFilterOption = selectedOption
                     recommendCoordinator.pop()
                 }

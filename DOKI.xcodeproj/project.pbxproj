@@ -21,7 +21,6 @@
 		007D0E9E2F123D5600BCD675 /* Exceptions for "DOKI" folder in "DOKI" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Config.xcconfig,
 				Info.plist,
 			);
 			target = 76ECCDEC2E05AFCC0056CAF7 /* DOKI */;
