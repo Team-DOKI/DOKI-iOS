@@ -7,12 +7,25 @@
 
 import SwiftUI
 
+enum SortOption: String, CaseIterable {
+    case latest = "최신순"
+    case popular = "인기순"
+}
+
 class RecommendViewModel: ObservableObject {
     private let coordinator: Coordinator<RecommendRoute>
     
     @Published var selectedFilterOption: [FilteringOption] = []
+    @Published var posts: [PostItem] = []
+    @Published var selectedSort: SortOption = .latest
     
-    init(coordinator: Coordinator<RecommendRoute>) {
+    private var nextCursorId: String = ""
+    private var hasNext: Bool = true
+    
+    private let postAPIservice: PostAPIServiceProtocol
+    
+    init(coordinator: Coordinator<RecommendRoute>, postAPIservice: PostAPIServiceProtocol) {
+        self.postAPIservice = postAPIservice
         self.coordinator = coordinator
     }
     
@@ -25,28 +38,18 @@ class RecommendViewModel: ObservableObject {
     }
 }
 
-struct FilterTagItem: Identifiable {
-    let id = UUID()
-    let text: String
-    let isActive: Bool
-}
+// MARK: - API (게시물 조회)
 
-enum FilterCategory: String, CaseIterable {
-    case walkTime
-    case congestion
-    case dogInteraction
-    case safety
-    case convenience
-    case environment
-    
-    var title: String {
-        switch self {
-        case .walkTime: return "산책 소요 시간"
-        case .congestion: return "혼잡도"
-        case .dogInteraction: return "강아지 교류 빈도"
-        case .safety: return "안전"
-        case .convenience: return "편의성"
-        case .environment: return "환경"
+extension RecommendViewModel {
+    @MainActor
+    func fetchPosts() async {
+        do {
+            let response = try await postAPIservice.fetchPosts()
+            posts = response.posts
+            nextCursorId = response.nextCursor
+            hasNext = response.hasNext
+        } catch {
+            print(error.localizedDescription)
         }
     }
 }

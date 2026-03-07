@@ -33,14 +33,14 @@ extension String {
         }
     }
     
-    func formattedToYYMMDD() -> String {
+    func formattedToYYMMDD(_ format: String = "yyyy/MM/dd") -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
         guard let date = formatter.date(from: self) else { return self }
         
         let displayFormatter = DateFormatter()
-        displayFormatter.dateFormat = "yyyy/MM/dd"
+        displayFormatter.dateFormat = format
         return displayFormatter.string(from: date)
     }
     

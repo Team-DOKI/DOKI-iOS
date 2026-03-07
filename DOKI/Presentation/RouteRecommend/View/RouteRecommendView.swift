@@ -11,7 +11,6 @@ struct RouteRecommendView: View {
     @ObservedObject var viewModel: RecommendViewModel
     
     @State private var isSortMenuPresented = false
-    @State private var selectedSort: SortOption = .latest
     
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     
@@ -41,6 +40,9 @@ struct RouteRecommendView: View {
             Text("산책 루트 추천")
                 .subtitle()
         })
+        .task {
+            await viewModel.fetchPosts()
+        }
     }
     
     private var bannerSection: some View {
@@ -78,7 +80,7 @@ struct RouteRecommendView: View {
 
     private var sortSection: some View {
         HStack {
-            Text("000개의 루트")
+            Text("\(viewModel.posts.count)개의 루트")
                 .font(.bodySmall)
                 .foregroundStyle(.defaultDark)
             
@@ -90,7 +92,7 @@ struct RouteRecommendView: View {
                 }
             } label: {
                 HStack(spacing: 0) {
-                    Text(selectedSort.rawValue)
+                    Text(viewModel.selectedSort.rawValue)
                         .subDefault(color: .defaultDark)
                     
                     Image(.btnDown)
@@ -106,7 +108,7 @@ struct RouteRecommendView: View {
         VStack(spacing: 2) {
             ForEach(SortOption.allCases, id: \.self) { option in
                 Button {
-                    selectedSort = option
+                    viewModel.selectedSort = option
                     isSortMenuPresented = false
                 } label: {
                     Text(option.rawValue)
@@ -114,8 +116,8 @@ struct RouteRecommendView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.vertical, 2)
                         .padding(.leading, 8)
-                        .foregroundStyle(option == selectedSort ? .defaultPrimary : .defaultMiddle)
-                        .background(option == selectedSort ? Color.primaryGra1 : Color.clear)
+                        .foregroundStyle(option == viewModel.selectedSort ? .defaultPrimary : .defaultMiddle)
+                        .background(option == viewModel.selectedSort ? Color.primaryGra1 : Color.clear)
                 }
             }
         }
@@ -134,8 +136,11 @@ struct RouteRecommendView: View {
     private var courseGridSection: some View {
         ScrollView(showsIndicators: false) {
             LazyVGrid(columns: columns, spacing: 16) {
-                ForEach(1...10, id: \.self) { _ in
-//                    RouteCell()
+                ForEach(viewModel.posts, id: \.self.postId) { post in
+                    RouteCell(post: post) {
+                        
+                    }
+                    
                 }
             }
             .padding(.horizontal, 16)
@@ -145,7 +150,4 @@ struct RouteRecommendView: View {
     }
 }
 
-enum SortOption: String, CaseIterable {
-    case latest = "최신순"
-    case popular = "인기순"
-}
+

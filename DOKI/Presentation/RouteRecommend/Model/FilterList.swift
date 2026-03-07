@@ -5,6 +5,8 @@
 //  Created by 권석기 on 3/5/26.
 //
 
+import Foundation
+
 enum FilterType {
     case duration
     case congestion
@@ -33,4 +35,30 @@ struct FilterList {
     let selectionType: String
     let options: [FilteringOption]
     let name: String
+}
+
+struct FilterTagItem: Identifiable {
+    let id = UUID()
+    let text: String
+    let isActive: Bool
+}
+
+enum FilterCategory: String, CaseIterable {
+    case walkTime
+    case congestion
+    case dogInteraction
+    case safety
+    case convenience
+    case environment
+    
+    var title: String {
+        switch self {
+        case .walkTime: return "산책 소요 시간"
+        case .congestion: return "혼잡도"
+        case .dogInteraction: return "강아지 교류 빈도"
+        case .safety: return "안전"
+        case .convenience: return "편의성"
+        case .environment: return "환경"
+        }
+    }
 }
