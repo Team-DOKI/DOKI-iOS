@@ -110,7 +110,7 @@ struct WalkPreparationView: View {
                 text: "산책 기록 시작하기",
                 buttonState: .active2,
                 action: {
-                    viewModel.navigateToWalkRecord()
+                    viewModel.startWalk()
                 }
             )
             .padding(.horizontal, 16)

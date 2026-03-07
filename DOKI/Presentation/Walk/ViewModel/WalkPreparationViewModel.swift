@@ -29,6 +29,8 @@ class WalkPreparationViewModel: ObservableObject {
     }
 }
 
+//MARK: - API
+
 extension WalkPreparationViewModel {
     /// 산책 준비 메세지 조회
     func fetchPreparationMessage() {
@@ -81,6 +83,27 @@ extension WalkPreparationViewModel {
                     
                 default:
                     print("산책 준비물 저장에 실패했습니다.")
+                }
+            }
+        }
+    }
+    
+    /// 산책 시작
+    func startWalk() {
+        let request = WalkStartRequest(deviceInfo: "APPLE")
+        
+        walkAPIService.startWalk(request: request) { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    WalkSessionManager.shared.routeId = response?.data?.routeId
+                    
+                    self.navigateToWalkRecord()
+                    
+                default:
+                    print("산책 시작에 실패했습니다.")
                 }
             }
         }
