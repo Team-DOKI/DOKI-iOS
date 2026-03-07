@@ -77,7 +77,7 @@ struct RouteRecommendView: View {
             }
         }
     }
-
+    
     private var sortSection: some View {
         HStack {
             Text("\(viewModel.posts.count)개의 루트")
@@ -92,7 +92,7 @@ struct RouteRecommendView: View {
                 }
             } label: {
                 HStack(spacing: 0) {
-                    Text(viewModel.selectedSort.rawValue)
+                    Text(viewModel.selectedSort.displayText)
                         .subDefault(color: .defaultDark)
                     
                     Image(.btnDown)
@@ -108,10 +108,10 @@ struct RouteRecommendView: View {
         VStack(spacing: 2) {
             ForEach(SortOption.allCases, id: \.self) { option in
                 Button {
-                    viewModel.selectedSort = option
+                    viewModel.selecteSortOption(option)
                     isSortMenuPresented = false
                 } label: {
-                    Text(option.rawValue)
+                    Text(option.displayText)
                         .font(.small)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.vertical, 2)

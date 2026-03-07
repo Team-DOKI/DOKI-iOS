@@ -8,8 +8,17 @@
 import SwiftUI
 
 enum SortOption: String, CaseIterable {
-    case latest = "최신순"
-    case popular = "인기순"
+    case latest = "latest"
+    case popular = "popular"
+    
+    var displayText: String {
+        switch self {
+        case .latest:
+            "최신순"
+        case .popular:
+            "인기순"
+        }
+    }
 }
 
 class RecommendViewModel: ObservableObject {
@@ -36,6 +45,11 @@ class RecommendViewModel: ObservableObject {
     func navigateToFilterSetting() {
         coordinator.push(.filterSetting)
     }
+    
+    func selecteSortOption(_ sort: SortOption) {
+        self.selectedSort = sort
+        Task { await fetchPosts() }
+    }
 }
 
 // MARK: - API (게시물 조회)
@@ -44,7 +58,7 @@ extension RecommendViewModel {
     @MainActor
     func fetchPosts() async {
         do {
-            let response = try await postAPIservice.fetchPosts()
+            let response = try await postAPIservice.fetchPosts(sortOption: selectedSort)
             posts = response.posts
             nextCursorId = response.nextCursor
             hasNext = response.hasNext

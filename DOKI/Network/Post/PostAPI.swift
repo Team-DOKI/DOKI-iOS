@@ -8,7 +8,7 @@
 import Moya
 
 enum PostAPI {
-    case fetchPosts
+    case fetchPosts(sortOption: SortOption)
 }
 
 extension PostAPI: BaseTargetType {
@@ -32,14 +32,14 @@ extension PostAPI: BaseTargetType {
     
     var task: Task {
         switch self {
-        case .fetchPosts:
+        case let .fetchPosts(sortOption):
             return .requestCompositeParameters(
                 bodyParameters: [
                     "selectedOptions" : []
                 ],
                 bodyEncoding: JSONEncoding.default,
                 urlParameters: [
-                    "sortBy": "latest",
+                    "sortBy": sortOption.rawValue,
 //                    "cursor": "0",
                     "size": 10
                 ]
