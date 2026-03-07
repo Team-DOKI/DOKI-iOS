@@ -56,13 +56,34 @@ class RecommendViewModel: ObservableObject {
     
     func selecteSortOption(_ sort: SortOption) {
         self.selectedSort = sort
-        fetchPosts()
+        reloadPosts()
     }
 }
 
 // MARK: - API (게시물 조회)
 
 extension RecommendViewModel {
+    
+    func reloadPosts() {
+        nextCursorId = ""
+        loadingStatus = .loading
+        
+        Task {
+            do {
+                let response = try await postAPIservice.fetchPosts(sortOption: selectedSort, cursor: nextCursorId)
+                await MainActor.run {
+                    
+                    posts = response.posts
+                    loadingStatus = .success
+                }
+                nextCursorId = response.nextCursor
+                hasNext = response.hasNext
+            } catch {
+                print(error.localizedDescription)
+                await MainActor.run { loadingStatus = .failed(error.localizedDescription) }
+            }
+        }
+    }
     
     func fetchPosts() {
         loadingStatus = .loading
