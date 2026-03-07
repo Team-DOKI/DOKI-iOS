@@ -74,7 +74,6 @@ struct MainButton: View {
                     lineWidth: 1
                 )
         )
-        .background(Color.defaultBackground)
         .disabled(buttonState.isDisabled)
     }
 }
