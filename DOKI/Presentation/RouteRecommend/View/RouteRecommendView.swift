@@ -40,8 +40,8 @@ struct RouteRecommendView: View {
             Text("산책 루트 추천")
                 .subtitle()
         })
-        .task {
-            await viewModel.fetchPosts()
+        .onAppear {
+            viewModel.fetchPosts()
         }
     }
     
@@ -140,7 +140,11 @@ struct RouteRecommendView: View {
                     RouteCell(post: post) {
                         
                     }
-                    
+                    .onAppear {
+                        if "\(post.postId)" == viewModel.nextCursorId {
+                            viewModel.fetchPosts()
+                        }
+                    }
                 }
             }
             .padding(.horizontal, 16)

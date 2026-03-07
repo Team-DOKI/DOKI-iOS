@@ -9,7 +9,7 @@ import Moya
 
 protocol PostAPIServiceProtocol {
     // 게시물 리스트 조회
-    func fetchPosts(sortOption: SortOption) async throws -> (nextCursor: String, hasNext: Bool, posts: [PostItem])
+    func fetchPosts(sortOption: SortOption, cursor: String) async throws -> (nextCursor: String, hasNext: Bool, posts: [PostItem])
 }
 
 extension PostAPIServiceProtocol {
@@ -22,9 +22,9 @@ final class PostAPIService: BaseAPIService, PostAPIServiceProtocol {
         plugins: [MoyaLoggingPlugin()]
     )
     
-    func fetchPosts(sortOption: SortOption) async throws -> (nextCursor: String, hasNext: Bool, posts: [PostItem]) {
+    func fetchPosts(sortOption: SortOption, cursor: String) async throws -> (nextCursor: String, hasNext: Bool, posts: [PostItem]) {
         do {
-            let response: PostResponseDTO = try await provider.async.request(.fetchPosts(sortOption: sortOption))
+            let response: PostResponseDTO = try await provider.async.request(.fetchPosts(sortOption: sortOption, cursor: cursor))
             guard let data = response.data else { throw APIError.decodingError }
             return (data.nextCursor, data.hasNext, data.posts.toEntities())
         } catch {

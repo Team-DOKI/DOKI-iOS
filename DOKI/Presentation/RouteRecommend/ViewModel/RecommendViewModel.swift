@@ -21,14 +21,22 @@ enum SortOption: String, CaseIterable {
     }
 }
 
+enum LoadingStatus: Equatable {
+    case failed(String)
+    case loading
+    case success
+    case ready
+}
+
 class RecommendViewModel: ObservableObject {
     private let coordinator: Coordinator<RecommendRoute>
     
     @Published var selectedFilterOption: [FilteringOption] = []
     @Published var posts: [PostItem] = []
     @Published var selectedSort: SortOption = .latest
+    @Published var loadingStatus: LoadingStatus = .ready
     
-    private var nextCursorId: String = ""
+    var nextCursorId: String = ""
     private var hasNext: Bool = true
     
     private let postAPIservice: PostAPIServiceProtocol
@@ -48,22 +56,30 @@ class RecommendViewModel: ObservableObject {
     
     func selecteSortOption(_ sort: SortOption) {
         self.selectedSort = sort
-        Task { await fetchPosts() }
+        fetchPosts()
     }
 }
 
 // MARK: - API (게시물 조회)
 
 extension RecommendViewModel {
-    @MainActor
-    func fetchPosts() async {
-        do {
-            let response = try await postAPIservice.fetchPosts(sortOption: selectedSort)
-            posts = response.posts
-            nextCursorId = response.nextCursor
-            hasNext = response.hasNext
-        } catch {
-            print(error.localizedDescription)
+    
+    func fetchPosts() {
+        loadingStatus = .loading
+        
+        Task {
+            do {
+                let response = try await postAPIservice.fetchPosts(sortOption: selectedSort, cursor: nextCursorId)
+                await MainActor.run {
+                    posts = posts + response.posts
+                    loadingStatus = .success
+                }
+                nextCursorId = response.nextCursor
+                hasNext = response.hasNext
+            } catch {
+                print(error.localizedDescription)
+                await MainActor.run { loadingStatus = .failed(error.localizedDescription) }
+            }
         }
     }
 }
