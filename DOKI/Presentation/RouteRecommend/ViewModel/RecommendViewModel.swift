@@ -89,7 +89,10 @@ extension RecommendViewModel {
                 hasNext = response.hasNext
             } catch {
                 print(error.localizedDescription)
-                await MainActor.run { loadingStatus = .failed(error.localizedDescription) }
+                await MainActor.run {
+                    loadingStatus = .failed(error.localizedDescription)
+                    posts = []
+                }
             }
         }
     }
@@ -113,7 +116,10 @@ extension RecommendViewModel {
                 hasNext = response.hasNext
             } catch {
                 print(error.localizedDescription)
-                await MainActor.run { loadingStatus = .failed(error.localizedDescription) }
+                await MainActor.run {
+                    loadingStatus = .failed(error.localizedDescription)
+                    posts = []
+                }
             }
         }
     }

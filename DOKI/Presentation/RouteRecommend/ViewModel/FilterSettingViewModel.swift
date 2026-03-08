@@ -86,20 +86,22 @@ final class FilterSettingViewModel: ObservableObject {
 
         for index in selectedOption.indices {
             switch selectedOption[index].filterType {
+            // 단일 선택
             case .duration:
                 selectedOption[index].options = duration
             case .congestion:
-                selectedOption[index].options = congestion
+                selectedOption[index].options.reset()
                 if let selectedCongestion,
-                    let optionIndex = selectedOption[index].options.firstIndex(where: { $0.id == selectedCongestion.id }) {
+                   let optionIndex = selectedOption[index].options.firstIndex(where: { $0.id == selectedCongestion.id }) {
                     selectedOption[index].options[optionIndex].isActive = true
                 }
             case .exchange:
-                selectedOption[index].options = exchange
+                selectedOption[index].options.reset()
                 if let selectedExchange,
                     let optionIndex = selectedOption[index].options.firstIndex(where: { $0.id == selectedExchange.id }) {
                     selectedOption[index].options[optionIndex].isActive = true
                 }
+            // 중복 선택
             case .safety:
                 selectedOption[index].options = safety
             case .convenience:

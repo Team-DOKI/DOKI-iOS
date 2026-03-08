@@ -8,7 +8,7 @@
 import Foundation
 
 struct PostRequest: Encodable{
-    let selectedOption: [PostOption]
+    let selectedOptions: [PostOption]
 }
 
 struct PostOption: Encodable {

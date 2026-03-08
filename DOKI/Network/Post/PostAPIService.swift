@@ -23,19 +23,19 @@ final class PostAPIService: BaseAPIService, PostAPIServiceProtocol {
     )
     
     func fetchPosts(sortOption: SortOption, cursor: String, options: [FilterList]) async throws -> (nextCursor: String, hasNext: Bool, posts: [PostItem]) {
-        do {            
+        do {
             let response: PostResponseDTO = try await provider.async.request(
                 .fetchPosts(
                     sortOption: sortOption,
                     cursor: cursor,
                     postRequestDto: options.toDto()
                 )
-            )
+            )            
             
             guard let data = response.data else { throw APIError.decodingError }
             
             return (data.nextCursor, data.hasNext, data.posts.toEntities())
-        } catch {
+        } catch {            
             throw error
         }
     }

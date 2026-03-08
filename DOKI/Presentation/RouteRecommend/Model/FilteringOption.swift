@@ -12,3 +12,13 @@ struct FilteringOption: Identifiable, Hashable {
     let text: String
     var isActive: Bool
 }
+
+extension Array where Element == FilteringOption {
+    mutating func reset() {
+        self = self.map {
+            var option = $0
+            option.isActive = false
+            return option
+        }
+    }
+}
