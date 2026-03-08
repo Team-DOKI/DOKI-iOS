@@ -41,14 +41,22 @@ struct FilterSettingView: View {
             }
             .padding(.horizontal, 16)
         }
-        .topNavigationView(left: {
-            BackButton {
-                viewModel.navigateToBack()
-            }
-        }, center: {
-            Text("필터링 선택")
-                .subtitle()
-        })
+        .topNavigationView(
+            left: {
+                BackButton {
+                    viewModel.navigateToBack()
+                }
+            }, center: {
+                Text("필터링 선택")
+                    .subtitle()
+            }, right: {
+                Button {
+                    viewModel.resetFilterOptions()
+                } label: {
+                    Image(.btnRefresh)
+                }
+                
+            })
         .task {
             await viewModel.fetchFilterCategories()
             viewModel.setFilterOption()

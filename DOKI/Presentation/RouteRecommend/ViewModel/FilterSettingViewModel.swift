@@ -38,6 +38,7 @@ final class FilterSettingViewModel: ObservableObject {
     @Published var environment: [FilteringOption] = []
     
     private let filterAPIServie: FilterAPIServiceProtocol
+    private var selectedOptions: [FilterList] = []
     
     // 선택된 필터 옵션
     var selectedFilterOptions: [FilterList] = []
@@ -112,6 +113,13 @@ final class FilterSettingViewModel: ObservableObject {
         
         navigationAction?(.saveOption(selectedOption: selectedOption))
     }
+    
+    func resetFilterOptions() {
+            selectedFilterOptions = selectedOptions
+            selectedCongestion = selectedFilterOptions.filter { $0.filterType == .congestion }.flatMap { $0.options }[0]
+            selectedExchange = selectedFilterOptions.filter { $0.filterType == .exchange }.flatMap { $0.options }[0]
+            setFilterOption()
+    }
 }
 
 // MARK: - API (필터링 카테고리 리스트 조회)
@@ -124,6 +132,7 @@ extension FilterSettingViewModel {
         do {
             let response = try await filterAPIServie.fetchFilterCategories()
             selectedFilterOptions = response
+            selectedOptions = response
             selectedCongestion = selectedFilterOptions.filter { $0.filterType == .congestion }.flatMap { $0.options }[0]
             selectedExchange = selectedFilterOptions.filter { $0.filterType == .exchange }.flatMap { $0.options }[0]
         } catch {
