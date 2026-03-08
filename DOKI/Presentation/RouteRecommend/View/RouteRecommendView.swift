@@ -28,6 +28,11 @@ struct RouteRecommendView: View {
             
             ZStack(alignment: .topTrailing) {
                 courseGridSection
+                    .overlay {
+                        if viewModel.loadingStatus == .loading {
+                            ProgressView()
+                        }
+                    }
                 
                 if isSortMenuPresented {
                     sortMenu

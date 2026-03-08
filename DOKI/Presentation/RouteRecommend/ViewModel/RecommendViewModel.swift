@@ -70,7 +70,7 @@ class RecommendViewModel: ObservableObject {
 extension RecommendViewModel {
     
     /// 기존 데이터를 제거하고 새로운 게시물을 요청
-    func loadPosts() {
+    func loadPosts() {        
         loadingStatus = .loading
         nextCursorId = ""
         
