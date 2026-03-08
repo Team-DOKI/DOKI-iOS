@@ -55,11 +55,29 @@ class AuthManager: ObservableObject {
             self.accessToken = response.accessToken
             self.refreshToken = response.refreshToken
             
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                
-                self.isNewUser = response.isNewUser
-                self.authStatus = .loggedIn
+            await MainActor.run {
+                isNewUser = response.isNewUser
+                authStatus = .loggedIn
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func loginWithKakao(_ accessToken: String, deviceId: String) async throws {
+        do {
+            let request = KakaoLoginRequest(idToken: accessToken, deviceId: deviceId)
+            let response: KakaoLoginResponse = try await provider.async.request(.kakaoLogin(request: request))
+            
+            try KeychainManager.create(.accessToken, response.accessToken)
+            try KeychainManager.create(.refreshToken, response.refreshToken)
+            
+            self.accessToken = response.accessToken
+            self.refreshToken = response.refreshToken
+            
+            await MainActor.run {
+                isNewUser = response.isNewUser
+                authStatus = .loggedIn
             }
         } catch {
             print(error.localizedDescription)

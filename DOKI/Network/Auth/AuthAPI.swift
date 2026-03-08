@@ -14,6 +14,7 @@ enum AuthAPI {
     case logout(request: LogoutRequest) // 로그아웃
     case withdraw(request: WithdrawRequest) // 탈퇴
     case refreshToken(request: RefreshTokenRequest) // 토큰 재발급
+    case kakaoLogin(request: KakaoLoginRequest)
 }
 
 extension AuthAPI: BaseTargetType {
@@ -31,12 +32,14 @@ extension AuthAPI: BaseTargetType {
             return "auth/withdraw"
         case .refreshToken:
             return "auth/refresh"
+        case .kakaoLogin:
+            return "auth/kakao/login"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .appleLogin, .logout, .refreshToken:
+        case .appleLogin, .logout, .refreshToken, .kakaoLogin:
             return .post
         case .withdraw:
             return .delete
@@ -55,6 +58,8 @@ extension AuthAPI: BaseTargetType {
             return .requestJSONEncodable(request)
             
         case let .refreshToken(request):
+            return .requestJSONEncodable(request)
+        case let .kakaoLogin(request):
             return .requestJSONEncodable(request)
         }
     }
