@@ -38,4 +38,8 @@ class LoginViewModel: ObservableObject {
             print(error.localizedDescription)
         }
     }
+    
+    func loginWithKakao() {
+        
+    }
 }

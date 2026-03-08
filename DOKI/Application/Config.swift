@@ -12,6 +12,7 @@ enum Config {
         enum Plist {
             static let BASE_URL = "BASE_URL"
             static let NAVER_CLIENT_ID = "NAVER_CLIENT_ID"
+            static let KAKAO_NATIVE_APP_KEY = "KAKAO_NATIVE_APP_KEY"
         }
     }
     
@@ -34,6 +35,13 @@ extension Config {
     static let naverClientID: String = {
         guard let id = Config.infoDictionary[Keys.Plist.NAVER_CLIENT_ID] as? String else {
             fatalError("NAVER_CLIENT_ID is not set in plist")
+        }
+        return id
+    }()
+    
+    static let kakaoNativeAppKey: String = {
+        guard let id = Config.infoDictionary[Keys.Plist.KAKAO_NATIVE_APP_KEY] as? String else {
+            fatalError("KAKAO_NATIVE_APP_KEY is not set in plist")
         }
         return id
     }()

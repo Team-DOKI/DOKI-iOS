@@ -310,8 +310,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DOKI/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "위치 권한 요청";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "위치 권한 요청";
-				INFOPLIST_KEY_NSMotionUsageDescription = "걸음 수 측정을 위해 모션 데이터를 사용합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "네이버 지도 표시를 위해 위치 정보가 사용됩니다.";
+				INFOPLIST_KEY_NSMotionUsageDescription = "산책 중 걸음 수를 측정하기 위해 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -346,8 +346,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DOKI/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "위치 권한 요청";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "위치 권한 요청";
-				INFOPLIST_KEY_NSMotionUsageDescription = "걸음 수 측정을 위해 모션 데이터를 사용합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "네이버 지도 표시를 위해 위치 정보가 사용됩니다.";
+				INFOPLIST_KEY_NSMotionUsageDescription = "산책 중 걸음 수를 측정하기 위해 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

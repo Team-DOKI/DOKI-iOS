@@ -6,7 +6,10 @@
 //
 
 import UIKit
+
 import NMapsMap
+import KakaoSDKCommon
+import KakaoSDKAuth
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
@@ -14,7 +17,14 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
         NMFAuthManager.shared().ncpKeyId = Config.naverClientID
- 
+        KakaoSDK.initSDK(appKey: Config.kakaoNativeAppKey)
         return true
+    }
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        if (AuthApi.isKakaoTalkLoginUrl(url)) {
+            return AuthController.handleOpenUrl(url: url)
+        }
+        return false
     }
 }
