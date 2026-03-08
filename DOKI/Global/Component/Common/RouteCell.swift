@@ -17,12 +17,11 @@ struct RouteCell: View {
         VStack(alignment: .leading, spacing: 0) {
             KFImage(URL(string: post.imageUrl))
                 .placeholder {
-                    Color.gray.opacity(0.3)
-                        .overlay(Text("올바르지 않은 imageUrl"))
-                        .font(.caption)
+                    Image(.imgDefaultpost)
+                        .resizable()
                 }
                 .resizable()
-                .frame(width: 167, height: 212)
+                .frame(height: 212)
                 .cornerRadius(8)
                 .overlay(alignment: .top) {
                     HStack(spacing: 0) {

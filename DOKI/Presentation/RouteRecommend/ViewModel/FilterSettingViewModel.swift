@@ -62,8 +62,10 @@ final class FilterSettingViewModel: ObservableObject {
                 self.duration = $0.options
             case .congestion:
                 self.congestion = $0.options
+                if let selectedCongestion = $0.options.first(where: { $0.isActive }) { self.selectedCongestion = selectedCongestion }
             case .exchange:
                 self.exchange = $0.options
+                if let selectedExchange = $0.options.first(where: { $0.isActive }) { self.selectedExchange = selectedExchange }
             case .safety:
                 self.safety = $0.options
             case .convenience:
@@ -87,8 +89,16 @@ final class FilterSettingViewModel: ObservableObject {
                 selectedOption[index].options = duration
             case .congestion:
                 selectedOption[index].options = congestion
+                if let selectedCongestion,
+                    let optionIndex = selectedOption[index].options.firstIndex(where: { $0.id == selectedCongestion.id }) {
+                    selectedOption[index].options[optionIndex].isActive = true
+                }
             case .exchange:
                 selectedOption[index].options = exchange
+                if let selectedExchange,
+                    let optionIndex = selectedOption[index].options.firstIndex(where: { $0.id == selectedExchange.id }) {
+                    selectedOption[index].options[optionIndex].isActive = true
+                }
             case .safety:
                 selectedOption[index].options = safety
             case .convenience:
@@ -112,8 +122,10 @@ extension FilterSettingViewModel {
         if !selectedFilterOptions.isEmpty { return }
         
         do {
-            let response = try await filterAPIServie.fetchFilterCategories()            
-            selectedFilterOptions = response            
+            let response = try await filterAPIServie.fetchFilterCategories()
+            selectedFilterOptions = response
+            selectedCongestion = selectedFilterOptions.filter { $0.filterType == .congestion }.flatMap { $0.options }[0]
+            selectedExchange = selectedFilterOptions.filter { $0.filterType == .exchange }.flatMap { $0.options }[0]
         } catch {
             print(error.localizedDescription)
         }
