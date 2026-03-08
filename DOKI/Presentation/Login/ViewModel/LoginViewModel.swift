@@ -46,7 +46,10 @@ class LoginViewModel: ObservableObject {
         // 카카오톡 설치 여부
         if (UserApi.isKakaoTalkLoginAvailable()) {
             UserApi.shared.loginWithKakaoTalk { [weak self] (oauthToken, error) in
-                guard error == nil else { return }
+                if let error {
+                    print(error.localizedDescription)
+                    return
+                }
                 guard let oauthToken else { return }
                 
                 Task {

@@ -48,6 +48,9 @@ struct RegisterView: View {
             print("REFRESH TOKEN: ", AuthManager.shared.refreshToken ?? "nil")
             print("DEVICE ID: ", DeviceIDManager.shared.getDeviceId())
         }
+        .onTapGesture {
+            UIApplication.shared.hideKeyboard()
+        }
     }
 }
 

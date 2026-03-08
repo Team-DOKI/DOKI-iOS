@@ -79,8 +79,9 @@ class AuthManager: ObservableObject {
                 isNewUser = response.isNewUser
                 authStatus = .loggedIn
             }
-        } catch {
+        } catch {            
             print(error.localizedDescription)
+            throw error
         }
     }
     
