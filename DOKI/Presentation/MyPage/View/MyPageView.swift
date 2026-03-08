@@ -10,6 +10,17 @@ import SwiftUI
 struct MyPageView: View {
     @ObservedObject var viewModel: MyPageViewModel
     
+    // TODO: 임시 더미데이터 API 연동시 제거
+    @State var checkItems: [CheckItem] = [
+        .init(isChecked: false, text: "요즘 산책을 잘 안해요"),
+        .init(isChecked: false, text: "사용을 잘 안하게 돼요"),
+        .init(isChecked: false, text: "기능이 복잡해 사용이 어려워요"),
+        .init(isChecked: false, text: "원하는 기능이 없어요"),
+        .init(isChecked: false, text: "다른 서비스를 사용 중이에요"),
+        .init(isChecked: false, text: "기타"),
+    ]
+    @State var selectedItem: CheckItem?
+    
     var body: some View {
         ZStack {
             Color.defaultBright.ignoresSafeArea()
@@ -90,30 +101,38 @@ struct MyPageView: View {
         })
         .customModal(
             isPresented: $viewModel.isShowLogoutAlert,
-            message: "로그아웃",
-            subMessage: "진짜로 로그아웃 하시게요?",
-            primaryTitle: "로그아웃",
-            secondaryTitle: "취소",
-            primaryAction: {
-                Task {
-                    await viewModel.logoutButtonConfirmed()
-                }
-            },
-            secondaryAction: viewModel.logoutCancelButtonTapped
-        )
+            content: {
+                CustomModalView(
+                    message: "로그아웃",
+                    subMessage: "진짜로 로그아웃 하시게요?",
+                    primaryTitle: "로그아웃",
+                    secondaryTitle: "취소",
+                    primaryAction: { Task { await viewModel.logoutButtonConfirmed() }},
+                    secondaryAction:viewModel.logoutCancelButtonTapped
+                )
+            })
         .customModal(
             isPresented: $viewModel.isShowWithdrawAlert,
-            message: "탈퇴하기",
-            subMessage: "진짜로 탈퇴하시게요?",
-            primaryTitle: "탈퇴하기",
-            secondaryTitle: "취소",
-            primaryAction: {
-                Task {
-                    await viewModel.withdrawButtonConfirmed()
-                }
-            },
-            secondaryAction: viewModel.withdrawCancelButtonTapped
-        )
+            content: {
+                CustomModalView(
+                    message: "탈퇴하기",
+                    subMessage: "진짜로 탈퇴하시게요",
+                    primaryTitle: "탈퇴하기",
+                    secondaryTitle: "취소",
+                    primaryAction: { Task { await viewModel.withdrawButtonConfirmed()} },
+                    secondaryAction:viewModel.withdrawCancelButtonTapped,
+                )
+            })
+        .customModal(
+            isPresented: $viewModel.isShowWithdrawReasonAlert,
+            content: {
+                WithdrawReasonView(
+                    checkItems: checkItems,
+                    selectedItem: $selectedItem,
+                    primaryButtonAction: viewModel.withdrawReasonCancel,
+                    secondaryButtonAction: viewModel.withdrawReasonCompleted
+                )
+        })
         .onAppear {
             viewModel.fetchUserProfile()
             viewModel.fetchPetProfile(petId: 17)

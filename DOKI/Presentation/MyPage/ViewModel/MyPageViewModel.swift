@@ -24,6 +24,7 @@ class MyPageViewModel: ObservableObject {
     
     @Published var isShowLogoutAlert: Bool = false
     @Published var isShowWithdrawAlert: Bool = false
+    @Published var isShowWithdrawReasonAlert: Bool = false
     
     @Published var userProfile: UserProfileResponse?
     @Published var petProfile: PetProfileResponse?
@@ -58,7 +59,7 @@ class MyPageViewModel: ObservableObject {
     
     /// 회원탈퇴 모달 표시
     func withdrawButtonTapped() {
-        isShowWithdrawAlert = true
+        isShowWithdrawReasonAlert = true
     }
     
     /// 로그아웃 처리
@@ -87,6 +88,15 @@ class MyPageViewModel: ObservableObject {
         }
         
         await authManager.withdraw()
+    }
+    
+    func withdrawReasonCompleted() {
+        isShowWithdrawReasonAlert = false
+        isShowWithdrawAlert = true
+    }
+    
+    func withdrawReasonCancel() {
+        isShowWithdrawReasonAlert = false
     }
     
     // MARK: - Navigation
