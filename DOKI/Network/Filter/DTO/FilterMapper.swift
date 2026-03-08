@@ -31,6 +31,6 @@ extension FilterCategoryResponse {
 
 extension Array where Element == CategoryOptionItem {
     func toEntity() -> [FilteringOption] {
-        map { FilteringOption(text: $0.text, isActive: false, category: "") }
+        map { FilteringOption(id: $0.id, text: $0.text, isActive: false) }
     }
 }

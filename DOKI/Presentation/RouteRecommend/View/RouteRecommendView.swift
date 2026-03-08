@@ -41,7 +41,7 @@ struct RouteRecommendView: View {
                 .subtitle()
         })
         .onAppear {
-            viewModel.fetchPosts()
+            viewModel.loadPosts()
         }
     }
     
@@ -61,14 +61,14 @@ struct RouteRecommendView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 if hasSelectedItemEmpty {
                     HStack(spacing: 8) {
-                        ForEach(viewModel.filterTags, id: \.text) { tag in
-                            FilteringTag(text: tag.text, isActive: tag.isActive)
+                        ForEach(FilterCategory.allCases, id: \.self) { tag in
+                            FilteringTag(text: tag.title, isActive: false)
                         }
                     }
                     .padding(.trailing, 16)
                 } else {
                     HStack(spacing: 8) {
-                        ForEach(viewModel.selectedFilterOption, id: \.text) { tag in
+                        ForEach(viewModel.selectedFilterOption.filter { $0.isActive }, id: \.text) { tag in
                             FilteringTag(text: tag.text, isActive: tag.isActive)
                         }
                     }
@@ -137,9 +137,7 @@ struct RouteRecommendView: View {
         ScrollView(showsIndicators: false) {
             LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(viewModel.posts, id: \.self.postId) { post in
-                    RouteCell(post: post) {
-                        
-                    }
+                    RouteCell(post: post) {}
                     .onAppear {
                         if "\(post.postId)" == viewModel.nextCursorId {
                             viewModel.fetchPosts()

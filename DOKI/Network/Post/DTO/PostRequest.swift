@@ -5,12 +5,14 @@
 //  Created by 권석기 on 3/7/26.
 //
 
-struct PostRequest {
+import Foundation
+
+struct PostRequest: Encodable{
     let selectedOption: [PostOption]
 }
 
-struct PostOption {
-    let durationId: Int?
-    let categoryId: Int?
+struct PostOption: Encodable {
+    var durationId: Int?
+    var categoryId: Int?
     let optionsIds: [Int]
 }

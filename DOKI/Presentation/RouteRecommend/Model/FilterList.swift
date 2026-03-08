@@ -7,6 +7,7 @@
 
 import Foundation
 
+// 필터 유형 적용을 위한 FilterType
 enum FilterType {
     case duration
     case congestion
@@ -16,6 +17,7 @@ enum FilterType {
     case environment
     case unknown
     
+    // 서버에서 받아온 name을 기준으로 FilterType 반환 => 추후에 서버와 정해진 값을 논의해봐야 함
     static func matchFilterType(_ string: String) -> Self {
         switch string {
         case "산책 소요 시간": .duration
@@ -29,11 +31,12 @@ enum FilterType {
     }
 }
 
+// 옵션을 포함하는 FilterData
 struct FilterList {
     let id: Int
     let filterType: FilterType
     let selectionType: String
-    let options: [FilteringOption]
+    var options: [FilteringOption]
     let name: String
 }
 

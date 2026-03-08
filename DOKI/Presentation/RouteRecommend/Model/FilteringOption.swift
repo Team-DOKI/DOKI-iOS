@@ -8,8 +8,7 @@
 import Foundation
 
 struct FilteringOption: Identifiable, Hashable {
-    let id = UUID()
+    let id: Int
     let text: String
     var isActive: Bool
-    var category: String?
 }

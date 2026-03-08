@@ -36,10 +36,14 @@ class RecommendViewModel: ObservableObject {
     @Published var selectedSort: SortOption = .latest
     @Published var loadingStatus: LoadingStatus = .ready
     
-    var nextCursorId: String = ""
     private var hasNext: Bool = true
     
     private let postAPIservice: PostAPIServiceProtocol
+    
+    var filterOptions: [FilterList] = []
+    var nextCursorId: String = ""
+    
+    var navigationAction: ((RecommendRoute)->())?
     
     init(coordinator: Coordinator<RecommendRoute>, postAPIservice: PostAPIServiceProtocol) {
         self.postAPIservice = postAPIservice
@@ -52,11 +56,12 @@ class RecommendViewModel: ObservableObject {
     
     func navigateToFilterSetting() {
         coordinator.push(.filterSetting)
+        navigationAction?(.filterSetting)
     }
     
     func selecteSortOption(_ sort: SortOption) {
         self.selectedSort = sort
-        reloadPosts()
+        loadPosts()
     }
 }
 
@@ -64,15 +69,19 @@ class RecommendViewModel: ObservableObject {
 
 extension RecommendViewModel {
     
-    func reloadPosts() {
-        nextCursorId = ""
+    /// 기존 데이터를 제거하고 새로운 게시물을 요청
+    func loadPosts() {
         loadingStatus = .loading
+        nextCursorId = ""
         
         Task {
             do {
-                let response = try await postAPIservice.fetchPosts(sortOption: selectedSort, cursor: nextCursorId)
+                let response = try await postAPIservice.fetchPosts(
+                    sortOption: selectedSort,
+                    cursor: nextCursorId,
+                    options: filterOptions
+                )
                 await MainActor.run {
-                    
                     posts = response.posts
                     loadingStatus = .success
                 }
@@ -85,12 +94,17 @@ extension RecommendViewModel {
         }
     }
     
+    /// 기존 데이터를 유지하고 nextCursorId를 기준으로 새로운 게시물을 요청
     func fetchPosts() {
         loadingStatus = .loading
         
         Task {
             do {
-                let response = try await postAPIservice.fetchPosts(sortOption: selectedSort, cursor: nextCursorId)
+                let response = try await postAPIservice.fetchPosts(
+                    sortOption: selectedSort,
+                    cursor: nextCursorId,
+                    options: filterOptions
+                )
                 await MainActor.run {
                     posts = posts + response.posts
                     loadingStatus = .success
@@ -100,26 +114,6 @@ extension RecommendViewModel {
             } catch {
                 print(error.localizedDescription)
                 await MainActor.run { loadingStatus = .failed(error.localizedDescription) }
-            }
-        }
-    }
-}
-
-extension RecommendViewModel {
-    var filterTags: [FilterTagItem] {
-        FilterCategory.allCases.flatMap { category in
-            let selected = selectedFilterOption.filter { $0.category == category.rawValue }
-            
-            if selected.isEmpty {
-                return [FilterTagItem(text: category.title, isActive: false)]
-            } else {
-                return selected.map { option in
-                    var text = option.text
-                    if category == .congestion {
-                        text = "\(category.title) \(option.text)" // formattedCategoryTag() 만들어놨음!
-                    }
-                    return FilterTagItem(text: text, isActive: true)
-                }
             }
         }
     }

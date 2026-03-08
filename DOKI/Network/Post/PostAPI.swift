@@ -6,9 +6,10 @@
 //
 
 import Moya
+import Foundation
 
 enum PostAPI {
-    case fetchPosts(sortOption: SortOption, cursor: String)
+    case fetchPosts(sortOption: SortOption, cursor: String, postRequestDto: PostRequest)
 }
 
 extension PostAPI: BaseTargetType {
@@ -32,15 +33,23 @@ extension PostAPI: BaseTargetType {
     
     var task: Task {
         switch self {
-        case let .fetchPosts(sortOption, cursor):
+        case let .fetchPosts(sortOption, cursor, postRequestDto):
+            // cursor가 없다면 cursor를 제거하고 요청
+            let urlParameters: [String: Any] = cursor.isEmpty
+            ? ["sortBy": sortOption.rawValue, "size": 20]
+            : ["sortBy": sortOption.rawValue, "cursor": cursor, "size": 20]
             
-            return .requestCompositeParameters(
-                bodyParameters: [
-                    "selectedOptions" : []
-                ],
-                bodyEncoding: JSONEncoding.default,
-                urlParameters: cursor.isEmpty ? ["sortBy": sortOption.rawValue, "size": 20] :
-                    ["sortBy": sortOption.rawValue, "cursor": cursor, "size": 20]
+            let bodyData: Data
+            
+            do {
+                bodyData = try JSONEncoder().encode(postRequestDto)
+            } catch {
+                fatalError("Encoding failed: \(error)")
+            }
+            
+            return .requestCompositeData(
+                bodyData: bodyData,
+                urlParameters: urlParameters
             )
         }
     }
