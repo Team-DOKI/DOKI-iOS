@@ -58,6 +58,7 @@ final class RegisterViewModel: ObservableObject {
     @Published var previewRegionName: String = ""
     @Published var selectedRegionName = ""
     @Published var areaSearchText = ""
+    @Published var regionGeometry: Geometry? = nil
     
     // MARK: - Step
     
@@ -282,7 +283,9 @@ extension RegisterViewModel {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
-                    print(response?.data)
+                    if let geometry = response?.data?.geometry {
+                        self.regionGeometry = geometry
+                    }
                 default:
                     print("폴리곤 좌표 조회에 실패했습니다.")
                 }
