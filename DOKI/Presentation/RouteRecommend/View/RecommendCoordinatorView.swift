@@ -35,7 +35,7 @@ struct RecommendCoordinatorView: View {
                     switch destination {
                     case .courseDetail:
                         RouteDetailView(viewModel: courseDetailViewModel)
-                    case .filterSetting:
+                    case .filterSetting:                        
                         FilterSettingView(viewModel: filterSettingViewModel)
                     }
                 }
@@ -44,6 +44,16 @@ struct RecommendCoordinatorView: View {
             tabBarState.isHidden = !path.isEmpty
         }
         .onAppear {
+            recommendViewModel.navigationAction = { destination in
+                switch destination {
+                case .filterSetting:
+                    if !recommendViewModel.filterOptions.isEmpty {                        
+                        filterSettingViewModel.selectedFilterOptions = recommendViewModel.filterOptions                        
+                    }
+                default:
+                    break
+                }
+            }
             courseDetailViewModel.navigationAction = { destination in
                 switch destination {
                 case .back:
@@ -55,7 +65,8 @@ struct RecommendCoordinatorView: View {
                 case .back:
                     recommendCoordinator.pop()
                 case .saveOption(let selectedOption):                    
-                    recommendViewModel.selectedFilterOption = selectedOption
+                    recommendViewModel.filterOptions = selectedOption
+                    recommendViewModel.selectedFilterOption = selectedOption.flatMap { $0.options }
                     recommendCoordinator.pop()
                 }
             }

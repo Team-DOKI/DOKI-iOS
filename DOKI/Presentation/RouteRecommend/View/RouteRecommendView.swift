@@ -11,7 +11,6 @@ struct RouteRecommendView: View {
     @ObservedObject var viewModel: RecommendViewModel
     
     @State private var isSortMenuPresented = false
-    @State private var selectedSort: SortOption = .latest
     
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     
@@ -29,6 +28,11 @@ struct RouteRecommendView: View {
             
             ZStack(alignment: .topTrailing) {
                 courseGridSection
+                    .overlay {
+                        if viewModel.loadingStatus == .loading {
+                            ProgressView()
+                        }
+                    }
                 
                 if isSortMenuPresented {
                     sortMenu
@@ -41,6 +45,9 @@ struct RouteRecommendView: View {
             Text("산책 루트 추천")
                 .subtitle()
         })
+        .onAppear {
+            viewModel.loadPosts()
+        }
     }
     
     private var bannerSection: some View {
@@ -59,14 +66,14 @@ struct RouteRecommendView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 if hasSelectedItemEmpty {
                     HStack(spacing: 8) {
-                        ForEach(viewModel.filterTags, id: \.text) { tag in
-                            FilteringTag(text: tag.text, isActive: tag.isActive)
+                        ForEach(FilterCategory.allCases, id: \.self) { tag in
+                            FilteringTag(text: tag.title, isActive: false)
                         }
                     }
                     .padding(.trailing, 16)
                 } else {
                     HStack(spacing: 8) {
-                        ForEach(viewModel.selectedFilterOption, id: \.text) { tag in
+                        ForEach(viewModel.selectedFilterOption.filter { $0.isActive }, id: \.text) { tag in
                             FilteringTag(text: tag.text, isActive: tag.isActive)
                         }
                     }
@@ -75,10 +82,10 @@ struct RouteRecommendView: View {
             }
         }
     }
-
+    
     private var sortSection: some View {
         HStack {
-            Text("000개의 루트")
+            Text("\(viewModel.posts.count)개의 루트")
                 .font(.bodySmall)
                 .foregroundStyle(.defaultDark)
             
@@ -90,7 +97,7 @@ struct RouteRecommendView: View {
                 }
             } label: {
                 HStack(spacing: 0) {
-                    Text(selectedSort.rawValue)
+                    Text(viewModel.selectedSort.displayText)
                         .subDefault(color: .defaultDark)
                     
                     Image(.btnDown)
@@ -106,16 +113,16 @@ struct RouteRecommendView: View {
         VStack(spacing: 2) {
             ForEach(SortOption.allCases, id: \.self) { option in
                 Button {
-                    selectedSort = option
+                    viewModel.selecteSortOption(option)
                     isSortMenuPresented = false
                 } label: {
-                    Text(option.rawValue)
+                    Text(option.displayText)
                         .font(.small)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.vertical, 2)
                         .padding(.leading, 8)
-                        .foregroundStyle(option == selectedSort ? .defaultPrimary : .defaultMiddle)
-                        .background(option == selectedSort ? Color.primaryGra1 : Color.clear)
+                        .foregroundStyle(option == viewModel.selectedSort ? .defaultPrimary : .defaultMiddle)
+                        .background(option == viewModel.selectedSort ? Color.primaryGra1 : Color.clear)
                 }
             }
         }
@@ -134,8 +141,13 @@ struct RouteRecommendView: View {
     private var courseGridSection: some View {
         ScrollView(showsIndicators: false) {
             LazyVGrid(columns: columns, spacing: 16) {
-                ForEach(1...10, id: \.self) { _ in
-//                    RouteCell()
+                ForEach(viewModel.posts, id: \.self.postId) { post in
+                    RouteCell(post: post) {}
+                    .onAppear {
+                        if "\(post.postId)" == viewModel.nextCursorId {
+                            viewModel.fetchPosts()
+                        }
+                    }
                 }
             }
             .padding(.horizontal, 16)
@@ -145,7 +157,4 @@ struct RouteRecommendView: View {
     }
 }
 
-enum SortOption: String, CaseIterable {
-    case latest = "최신순"
-    case popular = "인기순"
-}
+

@@ -41,17 +41,25 @@ struct FilterSettingView: View {
             }
             .padding(.horizontal, 16)
         }
-        .topNavigationView(left: {
-            BackButton {
-                viewModel.navigateToBack()
-            }
-        }, center: {
-            Text("필터링 선택")
-                .subtitle()
-        })
+        .topNavigationView(
+            left: {
+                BackButton {
+                    viewModel.navigateToBack()
+                }
+            }, center: {
+                Text("필터링 선택")
+                    .subtitle()
+            }, right: {
+                Button {
+                    viewModel.resetFilterOptions()
+                } label: {
+                    Image(.btnRefresh)
+                }
+                
+            })
         .task {
             await viewModel.fetchFilterCategories()
-            viewModel.setDefaultOption()
+            viewModel.setFilterOption()
         }
     }
 }
@@ -63,7 +71,7 @@ extension FilterSettingView {
             title: "산책 소요 시간",
             subtitle: "(분)",
             selectionMode: .single,
-            items: $viewModel.walkTimeOption
+            items: $viewModel.duration
         )
     }
     
@@ -75,7 +83,7 @@ extension FilterSettingView {
             )
             
             SegmentedButton(
-                items: viewModel.congestionOption,
+                items: viewModel.congestion,
                 selectedItem: $viewModel.selectedCongestion
             )
         }
@@ -89,8 +97,8 @@ extension FilterSettingView {
             )
             
             SegmentedButton(
-                items: viewModel.dogInteractionOption,
-                selectedItem: $viewModel.selectedDogInteraction
+                items: viewModel.exchange,
+                selectedItem: $viewModel.selectedExchange
             )
         }
     }
@@ -100,7 +108,7 @@ extension FilterSettingView {
         SelectableSection(
             title: "안전",
             subtitle: "(복수 선택 가능)",
-            items: $viewModel.safetyOption
+            items: $viewModel.safety
         )
     }
     
@@ -109,7 +117,7 @@ extension FilterSettingView {
         SelectableSection(
             title: "편의성",
             subtitle: "(복수 선택 가능)",
-            items: $viewModel.convenienceOption
+            items: $viewModel.convenience
         )
     }
     
@@ -118,7 +126,7 @@ extension FilterSettingView {
         SelectableSection(
             title: "환경",
             subtitle: "(복수 선택 가능)",
-            items: $viewModel.environmentOption
+            items: $viewModel.environment
         )
     }
 }

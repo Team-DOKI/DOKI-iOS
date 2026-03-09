@@ -18,9 +18,9 @@ struct MyLikedPostsView: View {
         ScrollView(showsIndicators: false) {
             LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(viewModel.posts, id: \.id) { post in
-                    RouteCell(route: post) {
-                        viewModel.toggleLike(post.id)
-                    }
+//                    RouteCell(post: post) {
+//                        viewModel.toggleLike(post.id)
+//                    }
                 }
             }
             .padding(.horizontal, 16)
