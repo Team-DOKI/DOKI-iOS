@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Moya
+import Combine
 
 final class RegisterViewModel: ObservableObject {
     private let profileAPIService: ProfileAPIServiceProtocol
@@ -21,7 +22,11 @@ final class RegisterViewModel: ObservableObject {
         self.profileAPIService = profileAPIService
         self.imageAPIService = imageAPIService
         self.regionAPIService = regionAPIService
+        
+        observeNickname()
     }
+    
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Published Properties (Register Request DTO)
     
@@ -38,6 +43,9 @@ final class RegisterViewModel: ObservableObject {
     
     // MARK: - Published Properties (UI)
     
+    @Published var isNicknameAvailable: Bool?
+    @Published var nicknameMessage: String = ""
+    
     @Published var petProfileImage: UIImage?
     
     @Published var breedList: [BreedList] = []
@@ -49,7 +57,7 @@ final class RegisterViewModel: ObservableObject {
     @Published var selectedGuId: Int?
     @Published var previewRegionName: String = ""
     @Published var selectedRegionName = ""
-    @Published var areaSearchText = ""
+    @Published var regionGeometry: Geometry? = nil
     
     // MARK: - Step
     
@@ -74,19 +82,13 @@ final class RegisterViewModel: ObservableObject {
     var prev: RegisterStep? { RegisterStep(rawValue: currentStep.rawValue - 1) }
     var buttonDisabled: Bool {
         switch currentStep {
-        case .userProfile: nickname.isEmpty || birthDay.isEmpty || gender == nil
+        case .userProfile: nickname.isEmpty || birthDay.isEmpty || gender == nil || isNicknameAvailable == false
         case .petProfile: dogName.isEmpty || dogBirthDay.isEmpty || dogGender == nil || breedId == nil
         case .region: selectedGuId == nil || selectedDongId == nil
         }
     }
     var isLastStep: Bool { next == nil }
     var isFirstStep: Bool { prev == nil }
-    
-    enum RegionFlow {
-        case none
-        case search
-        case map
-    }
     
     // MARK: - User Actions
     
@@ -124,7 +126,7 @@ final class RegisterViewModel: ObservableObject {
         selectedDongId = nil
     }
     
-    func seletDongId(_ id: Int) {
+    func selectDongId(_ id: Int) {
         selectedDongId = id
         
         guard let guId = selectedGuId,
@@ -134,6 +136,7 @@ final class RegisterViewModel: ObservableObject {
         
         previewRegionName = "\(region.gu.name) \(dong.name)"
         regionFlow = .map
+        fetchRegionGeometry()
     }
     
     func selectRegion() {
@@ -145,6 +148,19 @@ final class RegisterViewModel: ObservableObject {
         selectedDongId = nil
         previewRegionName = ""
         selectedRegionName = ""
+    }
+    
+    private func observeNickname() {
+        $nickname
+            .dropFirst()
+            .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
+            .sink { [weak self] nickname in
+                guard let self else { return }
+                
+                if nickname.isEmpty { return }
+                self.checkNicknameDuplicate()
+            }
+            .store(in: &cancellables)
     }
 }
 
@@ -209,6 +225,30 @@ extension RegisterViewModel {
         }
     }
     
+    func checkNicknameDuplicate() {
+        guard !nickname.isEmpty else { return }
+        
+        profileAPIService.checkNicknameDuplicate(nickname: nickname) { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self.isNicknameAvailable = true
+                    self.nicknameMessage = ""
+                    
+                default:
+                    self.isNicknameAvailable = false
+                    self.nicknameMessage = "* 이미 존재하는 닉네임입니다"
+                }
+            }
+        }
+    }
+}
+
+// MARK: - API (지역)
+
+extension RegisterViewModel {
     /// 지역구 조회
     func fetchRegions() {
         regionAPIService.fetchRegions { [weak self] result in
@@ -221,6 +261,26 @@ extension RegisterViewModel {
                     
                 default:
                     print("지역 정보를 불러오지 못했습니다.")
+                }
+            }
+        }
+    }
+    
+    /// 지역 폴리곤 좌표 조회
+    func fetchRegionGeometry() {
+        guard let dongId = selectedDongId else { return }
+        
+        regionAPIService.fetchRegionGeometry(regionId: dongId) { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    if let geometry = response?.data?.geometry {
+                        self.regionGeometry = geometry
+                    }
+                default:
+                    print("폴리곤 좌표 조회에 실패했습니다.")
                 }
             }
         }

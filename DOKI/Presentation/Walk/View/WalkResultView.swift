@@ -14,21 +14,22 @@ struct WalkResultView: View {
         VStack(spacing: 0) {
             VStack(spacing: 0) {
                 HStack(spacing: 8) {
-                    Circle()
-                        .frame(width: 36, height: 36)
+                    AsyncImage(url: URL(string: viewModel.petImageUrl)) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    } placeholder: {
+                        Color.gray
+                    }
+                    .frame(width: 36, height: 36)
+                    .clipShape(Circle())
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("단지")
+                        Text(viewModel.petName)
                             .subtitle()
                         
-                        HStack(spacing: 4) {
-                            Text("2025.06.26(금)")
-                            
-                            Text("|")
-                            
-                            Text("2025.06.26(금)")
-                        }
-                        .font(.subDefault)
+                        Text(viewModel.startedAt)
+                            .font(.subDefault)
                     }
                     
                     Spacer()

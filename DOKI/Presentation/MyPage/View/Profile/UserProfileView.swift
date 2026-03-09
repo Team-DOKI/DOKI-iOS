@@ -30,6 +30,7 @@ struct UserProfileView: View {
             
             MainButton(
                 text: "저장하기",
+                buttonState: viewModel.buttonDisabled ? .disabled : .active1,
                 action: viewModel.saveButtonTapped
             )
         }
@@ -46,6 +47,7 @@ struct UserProfileView: View {
         .onChange(of: viewModel.isSaveCompleted) { _, completed in
             if completed {
                 dismiss()
+                viewModel.isSaveCompleted = false
             }
         }
     }
@@ -54,11 +56,20 @@ struct UserProfileView: View {
 extension UserProfileView {
     private var nickname: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("닉네임").bodyActive()
+            HStack(spacing: 0) {
+                Text("닉네임").bodyActive()
+                
+                Spacer()
+                
+                Text(viewModel.nicknameMessage)
+                    .font(.small)
+                    .foregroundColor(.defaultRed)
+            }
             
             MainTextField(
                 placeholder: "최대 8글자 이내로 입력해주세요",
-                text: $viewModel.nickname
+                text: $viewModel.nickname,
+                isError: viewModel.isNicknameAvailable == false
             )
             .onChange(of: viewModel.nickname) { _, newValue in
                 if newValue.count > 8 {

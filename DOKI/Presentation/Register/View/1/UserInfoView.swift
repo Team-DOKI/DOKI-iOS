@@ -44,11 +44,20 @@ extension UserInfoView {
     
     private var nickname: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("닉네임").bodyActive()
+            HStack(spacing: 0) {
+                Text("닉네임").bodyActive()
+                
+                Spacer()
+                
+                Text(viewModel.nicknameMessage)
+                    .font(.small)
+                    .foregroundColor(.defaultRed)
+            }
             
             MainTextField(
                 placeholder: "최대 8글자 이내로 입력해주세요",
-                text: $viewModel.nickname
+                text: $viewModel.nickname,
+                isError: viewModel.isNicknameAvailable == false
             ).onChange(of: viewModel.nickname) { _, newValue in
                 if newValue.count > 8 {
                     viewModel.nickname = String(newValue.prefix(8))

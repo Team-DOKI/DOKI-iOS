@@ -20,11 +20,32 @@ protocol WalkAPIServiceProtocol {
         request: PreparationRequest,
         completion: @escaping (NetworkResult<PreparationResponseDTO>) -> Void
     )
+    
+    /// 산책 시작
+    func startWalk(
+        request: WalkStartRequest,
+        completion: @escaping (NetworkResult<WalkStartResponseDTO>) -> Void
+    )
+    
+    /// 산책 스트리밍
+    func streamWalk(
+        request: WalkStreamRequest,
+        completion: @escaping (NetworkResult<BaseDTO<EmptyResponse>>) -> Void
+    )
+    
+    /// 산책 종료
+    func finishWalk(
+        routeId: String,
+        request: WalkFinishRequest,
+        completion: @escaping (NetworkResult<WalkFinishResponseDTO>) -> Void
+    )
 }
 
 extension WalkAPIServiceProtocol {
     typealias PreparationMessageResponseDTO = BaseDTO<PreparationMessageResponse>
     typealias PreparationResponseDTO = BaseDTO<PreparationResponse>
+    typealias WalkStartResponseDTO = BaseDTO<WalkStartResponse>
+    typealias WalkFinishResponseDTO = BaseDTO<WalkFinishResponse>
 }
 
 final class WalkAPIService: BaseAPIService, WalkAPIServiceProtocol {
@@ -67,6 +88,46 @@ final class WalkAPIService: BaseAPIService, WalkAPIServiceProtocol {
             .savePreparation(request),
             provider: provider,
             responseType: PreparationResponseDTO.self,
+            completion: completion
+        )
+    }
+    
+    /// 산책 시작
+    func startWalk(
+        request: WalkStartRequest,
+        completion: @escaping (NetworkResult<WalkStartResponseDTO>) -> Void
+    ) {
+        self.request(
+            .startWalk(request),
+            provider: provider,
+            responseType: WalkStartResponseDTO.self,
+            completion: completion
+        )
+    }
+    
+    /// 산책 스트리밍
+    func streamWalk(
+        request: WalkStreamRequest,
+        completion: @escaping (NetworkResult<BaseDTO<EmptyResponse>>) -> Void
+    ) {
+        self.request(
+            .streamWalk(request),
+            provider: provider,
+            responseType: BaseDTO<EmptyResponse>.self,
+            completion: completion
+        )
+    }
+    
+    /// 산책 종료
+    func finishWalk(
+        routeId: String,
+        request: WalkFinishRequest,
+        completion: @escaping (NetworkResult<WalkFinishResponseDTO>) -> Void
+    ) {
+        self.request(
+            .finishWalk(routeId, request),
+            provider: provider,
+            responseType: WalkFinishResponseDTO.self,
             completion: completion
         )
     }

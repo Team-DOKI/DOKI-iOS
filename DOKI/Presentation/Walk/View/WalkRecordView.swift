@@ -95,7 +95,7 @@ struct WalkRecordView: View {
                         }
                     },
                     onRightAction: {
-                        viewModel.navigateToWalkResult()
+                        viewModel.finishWalk()
                     }
                 )
             }
@@ -103,6 +103,7 @@ struct WalkRecordView: View {
         .onAppear {
             viewModel.reset()
             viewModel.startTimer()
+            WalkSessionManager.shared.startStreaming()
         }
     }
 }

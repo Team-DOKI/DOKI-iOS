@@ -24,11 +24,17 @@ protocol RouteAPIServiceProtocol {
         postId: Int,
         completion: @escaping (NetworkResult<LikeResponseDTO>) -> Void
     )
+    
+    func fetchWalkSummary(
+        routeId: Int,
+        completion: @escaping (NetworkResult<WalkSummaryResponseDTO>) -> Void
+    )
 }
 
 extension RouteAPIServiceProtocol {
     typealias RouteInfoResponseDTO = BaseDTO<RouteInfoResponse>
     typealias LikeResponseDTO = BaseDTO<LikeResponse>
+    typealias WalkSummaryResponseDTO = BaseDTO<WalkSummaryResponse>
 }
 
 final class RouteAPIService: BaseAPIService, RouteAPIServiceProtocol {
@@ -70,6 +76,19 @@ final class RouteAPIService: BaseAPIService, RouteAPIServiceProtocol {
             .toggleLike(postId: postId),
             provider: provider,
             responseType: LikeResponseDTO.self,
+            completion: completion
+        )
+    }
+    
+    /// 산책 후 산책 정보 조회
+    func fetchWalkSummary(
+        routeId: Int,
+        completion: @escaping (NetworkResult<WalkSummaryResponseDTO>) -> Void
+    ) {
+        self.request(
+            .fetchWalkSummary(routeId: routeId),
+            provider: provider,
+            responseType: WalkSummaryResponseDTO.self,
             completion: completion
         )
     }

@@ -13,6 +13,6 @@ struct ReviewPosts: Codable {
     let postId: Int
     let title: String
     let regionName: String
-//    let date: String
+    let date: String
     let categoryOptionSummary: [String]
 }

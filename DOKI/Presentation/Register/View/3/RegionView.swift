@@ -25,14 +25,30 @@ struct RegionView: View {
             searchTextField
         }
         .padding(.horizontal, 16)
+        .onAppear {
+            viewModel.fetchRegions()
+        }
         .sheet(
             isPresented: Binding(
                 get: { viewModel.regionFlow == .search },
                 set: { _ in }
             )
         ) {
-            RegionSearchView(viewModel: viewModel)
-                .presentationDetents([.height(600)])
+            RegionSearchView(
+                regions: viewModel.regionList,
+                selectedGuId: viewModel.selectedGuId,
+                selectedDongId: viewModel.selectedDongId,
+                onSelectGu: { guId in
+                    viewModel.selectGuID(guId)
+                },
+                onSelectDong: { dongId in
+                    viewModel.selectDongId(dongId)
+                },
+                onDismiss: {
+                    viewModel.regionFlow = .map
+                }
+            )
+            .presentationDetents([.height(600)])
         }
     }
     

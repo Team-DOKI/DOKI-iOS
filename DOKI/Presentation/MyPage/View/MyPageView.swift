@@ -68,9 +68,9 @@ struct MyPageView: View {
                     MenuSection(title: "설정") {
                         Group {
                             MenuItem(
-                                title: "활동 범위 설정",
+                                title: "산책 지역 설정",
                                 icon:  Image(.icLocation),
-                                action: viewModel.navigateToActivityAreaSetting
+                                action: viewModel.navigateToRegionSetting
                             )
                             MenuItem(
                                 title: "앱 정보",
@@ -135,7 +135,7 @@ struct MyPageView: View {
         })
         .onAppear {
             viewModel.fetchUserProfile()
-            viewModel.fetchPetProfile(petId: 17)
+            viewModel.fetchPetProfile(petId: 4)
         }
     }
 }

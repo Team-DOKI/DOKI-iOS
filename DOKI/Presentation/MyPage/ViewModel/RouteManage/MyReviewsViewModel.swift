@@ -26,7 +26,7 @@ final class MyReviewsViewModel: ObservableObject {
                             id: $0.postId,
                             title: $0.title,
                             address: $0.regionName,
-                            date: "$0.date.formattedToYYMMDD()",
+                            date: $0.date.formattedToYYMMDD(),
                             tags: $0.categoryOptionSummary
                         )
                     } ?? []

@@ -50,6 +50,10 @@ extension AppDIContainer {
             return MyReviewsViewModel()
         }
         
+        func makeRegionSettingViewModel() -> RegionSettingViewModel {
+            return RegionSettingViewModel()
+        }
+        
         func makeRegisterViewModel() -> RegisterViewModel {
             return RegisterViewModel()
         }

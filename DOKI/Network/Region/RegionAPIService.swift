@@ -11,10 +11,21 @@ import Moya
 protocol RegionAPIServiceProtocol {
     /// 지역구 조회
     func fetchRegions(completion: @escaping (NetworkResult<RegionListResponseDTO>) -> Void)
+    
+    /// 지역 폴리곤 좌표 조회
+    func fetchRegionGeometry(regionId: Int, completion: @escaping (NetworkResult<RegionGeometryResponseDTO>) -> Void)
+    
+    /// 내 현재 지역 조회
+    func fetchMyRegion(completion: @escaping (NetworkResult<MyRegionResponseDTO>) -> Void)
+    
+    /// 내 지역 수정
+    func updateMyRegion(request: UpdateMyRegionRequest, completion: @escaping (NetworkResult<BaseDTO<EmptyResponse>>) -> Void)
 }
 
 extension RegionAPIServiceProtocol {
     typealias RegionListResponseDTO = BaseDTO<RegionListResponse>
+    typealias RegionGeometryResponseDTO = BaseDTO<RegionGeometryResponse>
+    typealias MyRegionResponseDTO = BaseDTO<MyRegionResponse>
 }
 
 final class RegionAPIService: BaseAPIService, RegionAPIServiceProtocol {
@@ -32,5 +43,34 @@ final class RegionAPIService: BaseAPIService, RegionAPIServiceProtocol {
                 provider: provider,
                 responseType: RegionListResponseDTO.self,
                 completion: completion)
+    }
+    
+    /// 지역 폴리곤 좌표 조회
+    func fetchRegionGeometry(regionId: Int, completion: @escaping (NetworkResult<RegionGeometryResponseDTO>) -> Void) {
+        request(.fetchRegionGeometry(regionId: regionId),
+                provider: provider,
+                responseType: RegionGeometryResponseDTO.self,
+                completion: completion)
+    }
+    
+    /// 내 현재 지역 조회
+    func fetchMyRegion(completion: @escaping (NetworkResult<MyRegionResponseDTO>) -> Void) {
+        request(.fetchMyRegion,
+                provider: provider,
+                responseType: MyRegionResponseDTO.self,
+                completion: completion)
+    }
+    
+    /// 내 지역 수정
+    func updateMyRegion(
+        request: UpdateMyRegionRequest,
+        completion: @escaping (NetworkResult<BaseDTO<EmptyResponse>>) -> Void
+    ) {
+        self.request(
+            .updateMyRegion(request: request),
+            provider: provider,
+            responseType: BaseDTO<EmptyResponse>.self,
+            completion: completion
+        )
     }
 }

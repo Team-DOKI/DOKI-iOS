@@ -82,13 +82,16 @@ struct HomeCoordinatorView: View {
             }
         }
         
-        walkRecordViewModel.navigationAction = { destination, resultData in
+        walkRecordViewModel.navigationAction = { destination, resultData, finishResponse in
             switch destination {
             case .walkRecord:
                 walkRecordCoordinator.push(.walkRecord)
             case .walkResult:
                 if let data = resultData {
                     walkResultViewModel.update(with: data)
+                }
+                if let finishResponse {
+                    walkResultViewModel.updateFinishResponse(finishResponse)
                 }
                 walkRecordCoordinator.push(.walkResult)
             case .walkReview:

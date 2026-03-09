@@ -1,5 +1,5 @@
 //
-//  StartWalkViewModel.swift
+//  WalkRecordViewModel.swift
 //  DOKI
 //
 //  Created by a on 10/26/25.
@@ -11,6 +11,12 @@ import CoreLocation
 import CoreMotion
 
 class WalkRecordViewModel: ObservableObject {
+    
+    private let walkAPIService: WalkAPIServiceProtocol
+    
+    init(walkAPIService: WalkAPIServiceProtocol = WalkAPIService()) {
+        self.walkAPIService = walkAPIService
+    }
     
     @Published var pathCoordinates: [CLLocationCoordinate2D] = []
     @Published var currentLocation: CLLocation?
@@ -44,9 +50,9 @@ class WalkRecordViewModel: ObservableObject {
         "\(stepCount)"
     }
     
-    var navigationAction: ((WalkRecordRoute, WalkResultData?) -> Void)?
+    var navigationAction: ((WalkRecordRoute, WalkResultData?, WalkFinishResponse?) -> Void)?
     
-    func navigateToWalkResult() {
+    func navigateToWalkResult(response: WalkFinishResponse?) {
         stopTimer()
         
         let resultData = WalkResultData(
@@ -55,7 +61,7 @@ class WalkRecordViewModel: ObservableObject {
             stepCount: stepCount
         )
         
-        navigationAction?(.walkResult, resultData)
+        navigationAction?(.walkResult, resultData, response)
     }
     
     func reset() {
@@ -68,19 +74,19 @@ class WalkRecordViewModel: ObservableObject {
     
     func updateLocation(_ newLocation: CLLocation) {
         guard !isPaused else { return }
-
+        
         if let last = lastLocation {
             let delta = newLocation.distance(from: last)
-
+            
             guard delta > 1 else { return }
-
+            
             distance += delta
         }
-
+        
         lastLocation = newLocation
         currentLocation = newLocation
     }
-
+    
     
     // MARK: - 시간 (타이머)
     
@@ -110,10 +116,10 @@ class WalkRecordViewModel: ObservableObject {
     func stopTimer() {
         timer?.invalidate()
         timer = nil
-
+        
         stopStepCounting()
         lastLocation = nil
-
+        
         print("🕒 최종 산책 시간: \(elapsedTimeString)")
         print("📏 최종 거리: \(distanceString)m")
         print("👣 최종 걸음 수: \(stepCount)")
@@ -146,5 +152,39 @@ class WalkRecordViewModel: ObservableObject {
     func stopStepCounting() {
         pedometer.stopUpdates()
         isPedometerRunning = false
+    }
+}
+
+//MARK: - API
+
+extension WalkRecordViewModel {
+    /// 산책 종료
+    func finishWalk() {
+        
+        guard let routeId = WalkSessionManager.shared.sRouteId else { return }
+        
+        WalkSessionManager.shared.stopStreaming()
+        
+        let formatter = ISO8601DateFormatter()
+        
+        let request = WalkFinishRequest(
+            distance: distance,
+            duration: elapsedSeconds,
+            stepCount: stepCount,
+            endedAt: formatter.string(from: Date())
+        )
+        
+        walkAPIService.finishWalk(routeId: routeId, request: request) { [weak self] result in
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    self?.navigateToWalkResult(response: response?.data)
+                    WalkSessionManager.shared.nRouteId = response?.data?.routeId
+                }
+                
+            default:
+                print("산책 종료 실패")
+            }
+        }
     }
 }
