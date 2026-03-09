@@ -10,7 +10,8 @@ import Foundation
 import Moya
 
 enum RegionAPI {
-    case fetchRegions
+    case fetchRegions //  지역구 조회
+    case fetchRegionGeometry(regionId: Int) // 지역 폴리곤 좌표 조회
 }
 
 extension RegionAPI: BaseTargetType {
@@ -22,19 +23,21 @@ extension RegionAPI: BaseTargetType {
         switch self {
         case .fetchRegions:
             return "regions"
+        case .fetchRegionGeometry(let regionId):
+            return "regions/\(regionId)/geometry"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .fetchRegions:
+        case .fetchRegions, .fetchRegionGeometry:
             return .get
         }
     }
     
     var task: Task {
         switch self {
-        case .fetchRegions:
+        case .fetchRegions, .fetchRegionGeometry:
             return .requestPlain
         }
     }

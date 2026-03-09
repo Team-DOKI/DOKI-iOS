@@ -142,6 +142,7 @@ final class RegisterViewModel: ObservableObject {
         
         previewRegionName = "\(region.gu.name) \(dong.name)"
         regionFlow = .map
+        fetchRegionGeometry()
     }
     
     func selectRegion() {
@@ -230,6 +231,30 @@ extension RegisterViewModel {
         }
     }
     
+    func checkNicknameDuplicate() {
+        guard !nickname.isEmpty else { return }
+        
+        profileAPIService.checkNicknameDuplicate(nickname: nickname) { [weak self] result in
+            guard let self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self.isNicknameAvailable = true
+                    self.nicknameMessage = ""
+                    
+                default:
+                    self.isNicknameAvailable = false
+                    self.nicknameMessage = "* 이미 존재하는 닉네임입니다"
+                }
+            }
+        }
+    }
+}
+
+// MARK: - API (지역)
+
+extension RegisterViewModel {
     /// 지역구 조회
     func fetchRegions() {
         regionAPIService.fetchRegions { [weak self] result in
@@ -247,21 +272,19 @@ extension RegisterViewModel {
         }
     }
     
-    func checkNicknameDuplicate() {
-        guard !nickname.isEmpty else { return }
+    /// 지역 폴리곤 좌표 조회
+    func fetchRegionGeometry() {
+        guard let dongId = selectedDongId else { return }
         
-        profileAPIService.checkNicknameDuplicate(nickname: nickname) { [weak self] result in
+        regionAPIService.fetchRegionGeometry(regionId: dongId) { [weak self] result in
             guard let self else { return }
             
             DispatchQueue.main.async {
                 switch result {
-                case .success:
-                    self.isNicknameAvailable = true
-                    self.nicknameMessage = ""
-                    
+                case .success(let response):
+                    print(response?.data)
                 default:
-                    self.isNicknameAvailable = false
-                    self.nicknameMessage = "* 이미 존재하는 닉네임입니다"
+                    print("폴리곤 좌표 조회에 실패했습니다.")
                 }
             }
         }
