@@ -9,12 +9,6 @@ import SwiftUI
 import Moya
 import Combine
 
-enum RegionFlow {
-    case none
-    case search
-    case map
-}
-
 final class RegisterViewModel: ObservableObject {
     private let profileAPIService: ProfileAPIServiceProtocol
     private let imageAPIService: ImageAPIServiceProtocol
