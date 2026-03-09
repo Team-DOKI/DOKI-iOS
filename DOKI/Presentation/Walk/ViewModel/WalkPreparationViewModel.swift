@@ -98,7 +98,7 @@ extension WalkPreparationViewModel {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
-                    WalkSessionManager.shared.routeId = response?.data?.routeId
+                    WalkSessionManager.shared.sRouteId = response?.data?.routeId
                     
                     self.navigateToWalkRecord()
                     

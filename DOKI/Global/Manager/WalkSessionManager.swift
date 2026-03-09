@@ -14,7 +14,8 @@ final class WalkSessionManager {
     
     private init() {}
     
-    var routeId: String?
+    var sRouteId: String?
+    var nRouteId: Int?
     
     private let walkAPIService: WalkAPIServiceProtocol = WalkAPIService()
     
@@ -38,7 +39,7 @@ final class WalkSessionManager {
     // MARK: - 좌표 전송 (API)
     
     func sendPoint() {
-        guard let routeId = routeId else { return }
+        guard let routeId = sRouteId else { return }
         guard let location = LocationManager.shared.currentLocation else { return }
         
         let request = WalkStreamRequest(

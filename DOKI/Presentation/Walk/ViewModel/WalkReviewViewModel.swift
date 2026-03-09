@@ -8,6 +8,8 @@
 import SwiftUI
 
 class WalkReviewViewModel: ObservableObject {
+    private let routeAPIService: RouteAPIServiceProtocol = RouteAPIService()
+    
     var navigationAction: ((WalkReviewRoute)->())?
     
     @Published var isShowReviewCompleted: Bool = false
@@ -63,5 +65,30 @@ class WalkReviewViewModel: ObservableObject {
     
     func showReviewComplete() {
         isShowReviewCompleted = true
+    }
+}
+
+extension WalkReviewViewModel {
+    func fetchWalkSummary() {
+        
+        guard let routeId = WalkSessionManager.shared.nRouteId else { return }
+        
+        routeAPIService.fetchWalkSummary(routeId: routeId) { [weak self] result in
+            switch result {
+            case .success(let response):
+                guard
+                    let data = response?.data?.routeDisplay
+                else { return }
+                
+                DispatchQueue.main.async {
+                    self?.address = data.locationText
+                    self?.recordDate = data.dateTimeText
+                    self?.walkRecord = data.metaTagTexts.joined(separator: " | ")
+                }
+                
+            default:
+                print("산책 요약 정보 조회에 실패했습니다.")
+            }
+        }
     }
 }

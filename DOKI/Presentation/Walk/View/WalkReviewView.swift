@@ -22,7 +22,7 @@ struct WalkReviewView: View {
                 
                 Spacer().frame(height: 12)
                 
-                WalkInfoSection
+                walkInfoSection
                 
                 Spacer().frame(height: 40)
                 
@@ -79,11 +79,14 @@ struct WalkReviewView: View {
             primaryAction: viewModel.navigateToDetail
         )
         .ignoresSafeArea(.container, edges: .bottom)
+        .onAppear {
+            viewModel.fetchWalkSummary()
+        }
     }
 }
 
 extension WalkReviewView {
-    private var WalkInfoSection: some View {
+    private var walkInfoSection: some View {
         VStack(alignment: .leading, spacing: 4) {
             Label(title: {Text(viewModel.address)}, icon: {Image(.icMarker)})
                 .font(.bodyActive)

@@ -161,7 +161,7 @@ extension WalkRecordViewModel {
     /// 산책 종료
     func finishWalk() {
         
-        guard let routeId = WalkSessionManager.shared.routeId else { return }
+        guard let routeId = WalkSessionManager.shared.sRouteId else { return }
         
         WalkSessionManager.shared.stopStreaming()
         
@@ -179,7 +179,7 @@ extension WalkRecordViewModel {
             case .success(let response):
                 DispatchQueue.main.async {
                     self?.navigateToWalkResult(response: response?.data)
-                    WalkSessionManager.shared.routeId = nil
+                    WalkSessionManager.shared.nRouteId = response?.data?.routeId
                 }
                 
             default:
