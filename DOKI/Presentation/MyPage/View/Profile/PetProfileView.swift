@@ -47,7 +47,7 @@ struct PetProfileView: View {
                 text: "저장하기",
                 buttonState: viewModel.buttonDisabled ? .disabled : .active1,
                 action: {
-                    viewModel.saveButtonTapped(petId: 2)
+                    viewModel.saveButtonTapped(petId: 4)
                 }
             )
             .padding(.horizontal, 16)
@@ -57,6 +57,7 @@ struct PetProfileView: View {
         .onChange(of: viewModel.isSaveCompleted) { _, completed in
             if completed {
                 dismiss()
+                viewModel.isSaveCompleted = false
             }
         }
         .sheet(isPresented: $viewModel.isShowBreedSearch) {

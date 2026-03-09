@@ -47,6 +47,7 @@ struct UserProfileView: View {
         .onChange(of: viewModel.isSaveCompleted) { _, completed in
             if completed {
                 dismiss()
+                viewModel.isSaveCompleted = false
             }
         }
     }
