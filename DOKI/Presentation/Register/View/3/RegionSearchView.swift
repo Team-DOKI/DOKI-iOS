@@ -1,5 +1,5 @@
 //
-//  AreaSearchView.swift
+//  RegionSearchView.swift
 //  DOKI
 //
 //  Created by a on 10/31/25.
@@ -8,7 +8,15 @@
 import SwiftUI
 
 struct RegionSearchView: View {
-    @ObservedObject var viewModel: RegisterViewModel
+    let regions: [DistrictDTOs]
+    let selectedGuId: Int?
+    let selectedDongId: Int?
+    
+    @Binding var searchText: String
+    
+    let onSelectGu: (Int) -> Void
+    let onSelectDong: (Int) -> Void
+    let onDismiss: () -> Void
     
     var body: some View {
         VStack(spacing: 0) {
@@ -16,16 +24,22 @@ struct RegionSearchView: View {
                 .subtitle()
                 .padding(.vertical, 25)
             
-            SearchField(placeholder: "지역을 검색해보세요", text: $viewModel.areaSearchText)
-                .padding(.horizontal, 16)
-                .padding(.bottom, 8)
+            SearchField(
+                placeholder: "지역을 검색해보세요",
+                text: $searchText
+            )
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
             
             HStack(spacing: 0) {
                 ScrollView {
                     LazyVStack {
-                        ForEach(viewModel.regionList, id: \.self.gu.id) { district in
-                            OptionItem(text: district.gu.name, isChecked: district.gu.id == viewModel.selectedGuId) {
-                                viewModel.selectGuID(district.gu.id)
+                        ForEach(regions, id: \.gu.id) { district in
+                            OptionItem(
+                                text: district.gu.name,
+                                isChecked: district.gu.id == selectedGuId
+                            ) {
+                                onSelectGu(district.gu.id)
                             }
                         }
                     }
@@ -36,18 +50,18 @@ struct RegionSearchView: View {
                 
                 ScrollView {
                     LazyVStack {
-                        ForEach(viewModel.regionList.first {$0.gu.id == viewModel.selectedGuId}?.dongs ?? [], id: \.self.id) { dong in
-                            OptionItem(text: dong.name, isChecked: dong.id == viewModel.selectedDongId) {
-                                viewModel.seletDongId(dong.id)
+                        ForEach(regions.first { $0.gu.id == selectedGuId }?.dongs ?? [], id: \.id) { dong in
+                            OptionItem(
+                                text: dong.name,
+                                isChecked: dong.id == selectedDongId
+                            ) {
+                                onSelectDong(dong.id)
                             }
                         }
                     }
                 }
             }
             .padding(.horizontal, 16)
-        }
-        .onAppear {
-            viewModel.fetchRegions()
         }
     }
 }

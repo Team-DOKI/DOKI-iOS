@@ -127,7 +127,7 @@ class MyPageViewModel: ObservableObject {
         navigationAction?(.myReviews)
     }
     
-    func navigateToActivityAreaSetting() {
+    func navigateToRegionSetting() {
         navigationAction?(.regionSetting)
     }
     

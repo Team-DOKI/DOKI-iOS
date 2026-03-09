@@ -14,11 +14,15 @@ protocol RegionAPIServiceProtocol {
     
     /// 지역 폴리곤 좌표 조회
     func fetchRegionGeometry(regionId: Int, completion: @escaping (NetworkResult<RegionGeometryResponseDTO>) -> Void)
+    
+    /// 내 현재 지역 조회
+    func fetchMyRegion(completion: @escaping (NetworkResult<MyRegionResponseDTO>) -> Void)
 }
 
 extension RegionAPIServiceProtocol {
     typealias RegionListResponseDTO = BaseDTO<RegionListResponse>
     typealias RegionGeometryResponseDTO = BaseDTO<RegionGeometryResponse>
+    typealias MyRegionResponseDTO = BaseDTO<MyRegionResponse>
 }
 
 final class RegionAPIService: BaseAPIService, RegionAPIServiceProtocol {
@@ -43,6 +47,14 @@ final class RegionAPIService: BaseAPIService, RegionAPIServiceProtocol {
         request(.fetchRegionGeometry(regionId: regionId),
                 provider: provider,
                 responseType: RegionGeometryResponseDTO.self,
+                completion: completion)
+    }
+    
+    /// 내 현재 지역 조회
+    func fetchMyRegion(completion: @escaping (NetworkResult<MyRegionResponseDTO>) -> Void) {
+        request(.fetchMyRegion,
+                provider: provider,
+                responseType: MyRegionResponseDTO.self,
                 completion: completion)
     }
 }
