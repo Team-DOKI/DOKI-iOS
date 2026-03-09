@@ -28,10 +28,8 @@ struct LoginView: View {
             VStack(alignment: .center, spacing: 0) {
                 Image(.imgSignmessage)
                     .padding(.bottom, 10)
-                
-                KakaoLoginButton {
-                  
-                }
+                                
+                KakaoLoginButton(action: viewModel.loginWithKakao)
                 .padding(.horizontal, 16)
                 
                 AppleLoginButton {}

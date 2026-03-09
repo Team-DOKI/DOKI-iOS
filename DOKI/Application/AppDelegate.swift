@@ -6,7 +6,10 @@
 //
 
 import UIKit
+
 import NMapsMap
+import KakaoSDKCommon
+import KakaoSDKAuth
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
@@ -14,7 +17,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
         NMFAuthManager.shared().ncpKeyId = Config.naverClientID
- 
+        KakaoSDK.initSDK(appKey: Config.kakaoNativeAppKey)
         return true
-    }
+    }        
 }

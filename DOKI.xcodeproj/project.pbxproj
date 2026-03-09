@@ -11,6 +11,9 @@
 		76C154E62EE46DDF00A8ED40 /* NMapsMap in Frameworks */ = {isa = PBXBuildFile; productRef = 76C154E52EE46DDF00A8ED40 /* NMapsMap */; };
 		76ECCF2D2E05C4820056CAF7 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 76ECCF2C2E05C4820056CAF7 /* Kingfisher */; };
 		76ECCF302E05C4CC0056CAF7 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 76ECCF2F2E05C4CC0056CAF7 /* Lottie */; };
+		E7F385B02F5DB24A001ABBC9 /* KakaoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = E7F385AF2F5DB24A001ABBC9 /* KakaoSDK */; };
+		E7F385B22F5DB24A001ABBC9 /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E7F385B12F5DB24A001ABBC9 /* KakaoSDKAuth */; };
+		E7F385B42F5DB24A001ABBC9 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = E7F385B32F5DB24A001ABBC9 /* KakaoSDKUser */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,9 +47,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				76ECCF2D2E05C4820056CAF7 /* Kingfisher in Frameworks */,
+				E7F385B02F5DB24A001ABBC9 /* KakaoSDK in Frameworks */,
 				76C154E62EE46DDF00A8ED40 /* NMapsMap in Frameworks */,
+				E7F385B42F5DB24A001ABBC9 /* KakaoSDKUser in Frameworks */,
 				76ECCF302E05C4CC0056CAF7 /* Lottie in Frameworks */,
 				766B2E492E254BD600F3A668 /* Moya in Frameworks */,
+				E7F385B22F5DB24A001ABBC9 /* KakaoSDKAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +99,9 @@
 				76ECCF2F2E05C4CC0056CAF7 /* Lottie */,
 				766B2E482E254BD600F3A668 /* Moya */,
 				76C154E52EE46DDF00A8ED40 /* NMapsMap */,
+				E7F385AF2F5DB24A001ABBC9 /* KakaoSDK */,
+				E7F385B12F5DB24A001ABBC9 /* KakaoSDKAuth */,
+				E7F385B32F5DB24A001ABBC9 /* KakaoSDKUser */,
 			);
 			productName = DoggyWalker;
 			productReference = 76ECCDED2E05AFCC0056CAF7 /* DOKI.app */;
@@ -127,6 +136,7 @@
 				76ECCF2E2E05C4CC0056CAF7 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 				766B2E472E254BD600F3A668 /* XCRemoteSwiftPackageReference "Moya" */,
 				76C154E42EE46DDF00A8ED40 /* XCRemoteSwiftPackageReference "SPM-NMapsMap" */,
+				E7F385AE2F5DB24A001ABBC9 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 76ECCDEE2E05AFCC0056CAF7 /* Products */;
@@ -294,14 +304,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DOKI/DOKI.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = Z9PQC69UPK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DOKI/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "위치 권한 요청";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "위치 권한 요청";
-				INFOPLIST_KEY_NSMotionUsageDescription = "걸음 수 측정을 위해 모션 데이터를 사용합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "네이버 지도 표시를 위해 위치 정보가 사용됩니다.";
+				INFOPLIST_KEY_NSMotionUsageDescription = "산책 중 걸음 수를 측정하기 위해 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -316,6 +330,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sopt.DOKI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = DOKI;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -330,14 +346,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DOKI/DOKI.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DOKI/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "위치 권한 요청";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "위치 권한 요청";
-				INFOPLIST_KEY_NSMotionUsageDescription = "걸음 수 측정을 위해 모션 데이터를 사용합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "네이버 지도 표시를 위해 위치 정보가 사용됩니다.";
+				INFOPLIST_KEY_NSMotionUsageDescription = "산책 중 걸음 수를 측정하기 위해 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -352,6 +370,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sopt.DOKI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -414,6 +433,14 @@
 				minimumVersion = 4.5.2;
 			};
 		};
+		E7F385AE2F5DB24A001ABBC9 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kakao/kakao-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.27.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -436,6 +463,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 76ECCF2E2E05C4CC0056CAF7 /* XCRemoteSwiftPackageReference "lottie-ios" */;
 			productName = Lottie;
+		};
+		E7F385AF2F5DB24A001ABBC9 /* KakaoSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E7F385AE2F5DB24A001ABBC9 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDK;
+		};
+		E7F385B12F5DB24A001ABBC9 /* KakaoSDKAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E7F385AE2F5DB24A001ABBC9 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKAuth;
+		};
+		E7F385B32F5DB24A001ABBC9 /* KakaoSDKUser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E7F385AE2F5DB24A001ABBC9 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKUser;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
