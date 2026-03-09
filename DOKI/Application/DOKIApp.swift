@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import KakaoSDKAuth
+
 @main
 struct DOKIApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -23,6 +25,11 @@ struct DOKIApp: App {
 //                    try? KeychainManager.delete(.refreshToken)
 //                    try? KeychainManager.delete(.deviceId)
 //                }
+                .onOpenURL(perform: { url in
+                    if AuthApi.isKakaoTalkLoginUrl(url) {
+                        _ = AuthController.handleOpenUrl(url: url)
+                    }
+                })
         }
     }
 }

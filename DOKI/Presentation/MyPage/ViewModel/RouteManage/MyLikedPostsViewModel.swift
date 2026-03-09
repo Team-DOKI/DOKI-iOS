@@ -25,7 +25,7 @@ class MyLikedPostsViewModel: ObservableObject {
                             id: post.postId,
                             title: post.title,
                             address: post.regionName,
-                            date: post.date.formattedToYYYYMMDD(),
+                            date: post.date,
                             duration: post.durationMinutes.formattedDuration(),
                             isLiked: post.isLiked,
                             imageURL: post.imageUrl

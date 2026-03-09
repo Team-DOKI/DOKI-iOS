@@ -7,40 +7,43 @@
 
 import SwiftUI
 
+import Kingfisher
+
 struct RouteCell: View {
-    let route: RouteData
+    let post: PostItem
     let likeAction: () -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            AsyncImage(url: URL(string: route.imageURL)) { image in
-                image.resizable()
-            } placeholder: {
-                Color(.systemGray5)
-            }
-            .frame(width: 167, height: 212)
-            .cornerRadius(8)
-            .overlay(alignment: .top) {
-                HStack(spacing: 0) {
-                    AddressTag(text: route.address)
-                    
-                    Spacer()
-                    
-                    Button {
-                        likeAction()
-                    } label: {
-                        if route.isLiked {
-                            Image(.btnRedheart)
-                        } else {
-                            Image(.btnGrayheart)
-                        }
-                    }
-                    .buttonStyle(.plain)
+            KFImage(URL(string: post.imageUrl))
+                .placeholder {
+                    Image(.imgDefaultpost)
+                        .resizable()
                 }
-                .padding(8)
-            }
+                .resizable()
+                .frame(height: 212)
+                .cornerRadius(8)
+                .overlay(alignment: .top) {
+                    HStack(spacing: 0) {
+                        AddressTag(text: post.regionName)
+                        
+                        Spacer()
+                        
+                        Button {
+                            likeAction()
+                        } label: {
+                            if post.isLiked {
+                                Image(.btnRedheart)
+                            } else {
+                                Image(.btnGrayheart)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .padding(8)
+                }
             
-            Text(route.title)
+            Text(post.title)
                 .bodyBold()
                 .padding(.top, 8)
                 .padding(.horizontal, 2)
@@ -51,7 +54,7 @@ struct RouteCell: View {
                 HStack(spacing: 4) {
                     Image(.icCalendar)
                     
-                    Text(route.date)
+                    Text(post.date.formattedToYYMMDD("yy/MM/dd"))
                         .small(color: .defaultMiddle)
                 }
                 
@@ -60,7 +63,7 @@ struct RouteCell: View {
                 HStack(spacing: 4) {
                     Image(.icClock)
                     
-                    Text(route.duration)
+                    Text(post.durationText)
                         .small(color: .defaultMiddle)
                 }
             }

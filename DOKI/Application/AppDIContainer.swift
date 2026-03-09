@@ -34,7 +34,8 @@ extension AppDIContainer {
         }
         
         func makeRecommendViewModel(_ coordinator: Coordinator<RecommendRoute>) -> RecommendViewModel {
-            return RecommendViewModel(coordinator: coordinator)
+            let postAPIService = PostAPIService()
+            return RecommendViewModel(coordinator: coordinator, postAPIservice: postAPIService)
         }
         
         func makeRouteDetailViewModel() -> RouteDetailViewModel {
@@ -58,7 +59,8 @@ extension AppDIContainer {
         }
         
         func makeFilterSettingViewModel() -> FilterSettingViewModel {
-            return FilterSettingViewModel()
+            let filterApiServcie = FilterAPIService()
+            return FilterSettingViewModel(filterAPIService: filterApiServcie)
         }
         
         func makeMyPostViewModel() -> MyPostsViewModel {

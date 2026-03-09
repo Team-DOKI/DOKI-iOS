@@ -7,12 +7,46 @@
 
 import SwiftUI
 
+enum SortOption: String, CaseIterable {
+    case latest = "latest"
+    case popular = "popular"
+    
+    var displayText: String {
+        switch self {
+        case .latest:
+            "최신순"
+        case .popular:
+            "인기순"
+        }
+    }
+}
+
+enum LoadingStatus: Equatable {
+    case failed(String)
+    case loading
+    case success
+    case ready
+}
+
 class RecommendViewModel: ObservableObject {
     private let coordinator: Coordinator<RecommendRoute>
     
     @Published var selectedFilterOption: [FilteringOption] = []
+    @Published var posts: [PostItem] = []
+    @Published var selectedSort: SortOption = .latest
+    @Published var loadingStatus: LoadingStatus = .ready
     
-    init(coordinator: Coordinator<RecommendRoute>) {
+    private var hasNext: Bool = true
+    
+    private let postAPIservice: PostAPIServiceProtocol
+    
+    var filterOptions: [FilterList] = []
+    var nextCursorId: String = ""
+    
+    var navigationAction: ((RecommendRoute)->())?
+    
+    init(coordinator: Coordinator<RecommendRoute>, postAPIservice: PostAPIServiceProtocol) {
+        self.postAPIservice = postAPIservice
         self.coordinator = coordinator
     }
     
@@ -22,49 +56,69 @@ class RecommendViewModel: ObservableObject {
     
     func navigateToFilterSetting() {
         coordinator.push(.filterSetting)
+        navigationAction?(.filterSetting)
     }
-}
-
-struct FilterTagItem: Identifiable {
-    let id = UUID()
-    let text: String
-    let isActive: Bool
-}
-
-enum FilterCategory: String, CaseIterable {
-    case walkTime
-    case congestion
-    case dogInteraction
-    case safety
-    case convenience
-    case environment
     
-    var title: String {
-        switch self {
-        case .walkTime: return "산책 소요 시간"
-        case .congestion: return "혼잡도"
-        case .dogInteraction: return "강아지 교류 빈도"
-        case .safety: return "안전"
-        case .convenience: return "편의성"
-        case .environment: return "환경"
-        }
+    func selecteSortOption(_ sort: SortOption) {
+        self.selectedSort = sort
+        loadPosts()
     }
 }
+
+// MARK: - API (게시물 조회)
 
 extension RecommendViewModel {
-    var filterTags: [FilterTagItem] {
-        FilterCategory.allCases.flatMap { category in
-            let selected = selectedFilterOption.filter { $0.category == category.rawValue }
-            
-            if selected.isEmpty {
-                return [FilterTagItem(text: category.title, isActive: false)]
-            } else {
-                return selected.map { option in
-                    var text = option.text
-                    if category == .congestion {
-                        text = "\(category.title) \(option.text)" // formattedCategoryTag() 만들어놨음!
-                    }
-                    return FilterTagItem(text: text, isActive: true)
+    
+    /// 기존 데이터를 제거하고 새로운 게시물을 요청
+    func loadPosts() {        
+        loadingStatus = .loading
+        nextCursorId = ""
+        
+        Task {
+            do {
+                let response = try await postAPIservice.fetchPosts(
+                    sortOption: selectedSort,
+                    cursor: nextCursorId,
+                    options: filterOptions
+                )
+                await MainActor.run {
+                    posts = response.posts
+                    loadingStatus = .success
+                }
+                nextCursorId = response.nextCursor
+                hasNext = response.hasNext
+            } catch {
+                print(error.localizedDescription)
+                await MainActor.run {
+                    loadingStatus = .failed(error.localizedDescription)
+                    posts = []
+                }
+            }
+        }
+    }
+    
+    /// 기존 데이터를 유지하고 nextCursorId를 기준으로 새로운 게시물을 요청
+    func fetchPosts() {
+        loadingStatus = .loading
+        
+        Task {
+            do {
+                let response = try await postAPIservice.fetchPosts(
+                    sortOption: selectedSort,
+                    cursor: nextCursorId,
+                    options: filterOptions
+                )
+                await MainActor.run {
+                    posts = posts + response.posts
+                    loadingStatus = .success
+                }
+                nextCursorId = response.nextCursor
+                hasNext = response.hasNext
+            } catch {
+                print(error.localizedDescription)
+                await MainActor.run {
+                    loadingStatus = .failed(error.localizedDescription)
+                    posts = []
                 }
             }
         }

@@ -7,15 +7,9 @@
 
 import SwiftUI
 
-struct CustomModalModifier: ViewModifier {
-    let message: String
-    let subMessage: String?
-    let primaryTitle: String
-    let secondaryTitle: String
-    let primaryAction: () -> Void
-    let secondaryAction: () -> Void
-    
+struct CustomModalModifier<ModalContent: View>: ViewModifier {
     @Binding var isPresented: Bool
+    let modalContent: () -> ModalContent
     
     func body(content: Content) -> some View {
         ZStack {
@@ -23,87 +17,24 @@ struct CustomModalModifier: ViewModifier {
             
             if isPresented {
                 Color.black.opacity(0.8)
-                    .ignoresSafeArea()
+                    .ignoresSafeArea(.all)
                     .transition(.opacity)
                 
-                CustomModalView(
-                    message: message,
-                    subMessage: subMessage,
-                    primaryTitle: primaryTitle,
-                    secondaryTitle: secondaryTitle,
-                    primaryAction: primaryAction,
-                    secondaryAction: secondaryAction
-                )
+                modalContent()
             }
         }
-    }
-}
-
-struct CustomModalView: View {
-    let message: String
-    let subMessage: String?
-    let primaryTitle: String
-    let secondaryTitle: String
-    let primaryAction: () -> Void
-    let secondaryAction: () -> Void
-    
-    var body: some View {
-        VStack(spacing: 0) {
-            Spacer().frame(height: 16)
-            
-            Text(message)
-                .mainActive()
-            
-            Spacer().frame(height: 8)
-            
-            if let subMessage {
-                Text(subMessage)
-                    .bodyDefault(color: .defaultMiddle)
-            }
-            
-            Spacer().frame(height: 16)
-            
-            HStack(spacing: 9) {
-                MainButton(
-                    text: primaryTitle,
-                    buttonState: .disabled,
-                    action: primaryAction,
-                )
-                .onTapGesture(perform: primaryAction)
-                
-                MainButton(
-                    text: secondaryTitle,
-                    action: secondaryAction,
-                )
-            }
-        }
-        .padding(16)
-        .background(.defaultBackground)
-        .cornerRadius(16)
-        .padding(.horizontal, 16)
     }
 }
 
 extension View {
-    func customModal(
+    func customModal<Content: View>(
         isPresented: Binding<Bool>,
-        image: Image? = nil,
-        message: String,
-        subMessage: String? = nil,
-        primaryTitle: String,
-        secondaryTitle: String,
-        primaryAction: @escaping () -> Void,
-        secondaryAction: @escaping () -> Void
+        @ViewBuilder content: @escaping () -> Content
     ) -> some View {
         modifier(
             CustomModalModifier(
-                message: message,
-                subMessage: subMessage,
-                primaryTitle: primaryTitle,
-                secondaryTitle: secondaryTitle,
-                primaryAction: primaryAction,
-                secondaryAction: secondaryAction,
-                isPresented: isPresented
+                isPresented: isPresented,
+                modalContent: content
             )
         )
     }
