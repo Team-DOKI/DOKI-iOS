@@ -54,7 +54,6 @@ struct RegionSettingView: View {
                 regions: viewModel.regionList,
                 selectedGuId: viewModel.selectedGuId,
                 selectedDongId: viewModel.selectedDongId,
-                searchText: $viewModel.regionSearchText,
                 onSelectGu: { guId in
                     viewModel.selectGuID(guId)
                 },

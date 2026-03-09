@@ -11,9 +11,7 @@ struct RegionSearchView: View {
     let regions: [DistrictDTOs]
     let selectedGuId: Int?
     let selectedDongId: Int?
-    
-    @Binding var searchText: String
-    
+
     let onSelectGu: (Int) -> Void
     let onSelectDong: (Int) -> Void
     let onDismiss: () -> Void
@@ -23,13 +21,6 @@ struct RegionSearchView: View {
             Text("산책 지역")
                 .subtitle()
                 .padding(.vertical, 25)
-            
-            SearchField(
-                placeholder: "지역을 검색해보세요",
-                text: $searchText
-            )
-            .padding(.horizontal, 16)
-            .padding(.bottom, 8)
             
             HStack(spacing: 0) {
                 ScrollView {

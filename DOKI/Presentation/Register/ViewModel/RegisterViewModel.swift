@@ -57,7 +57,6 @@ final class RegisterViewModel: ObservableObject {
     @Published var selectedGuId: Int?
     @Published var previewRegionName: String = ""
     @Published var selectedRegionName = ""
-    @Published var regionSearchText = ""
     @Published var regionGeometry: Geometry? = nil
     
     // MARK: - Step

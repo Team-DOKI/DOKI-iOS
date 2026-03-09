@@ -23,7 +23,6 @@ class RegionSettingViewModel: ObservableObject {
     @Published var selectedDongId: Int?
     @Published var previewRegionName: String = ""
     @Published var selectedRegionName: String = ""
-    @Published var regionSearchText: String = ""
     @Published var regionFlow: RegionFlow = .none
     @Published var regionGeometry: Geometry? = nil
     @Published private(set) var originalRegionName: String = ""
