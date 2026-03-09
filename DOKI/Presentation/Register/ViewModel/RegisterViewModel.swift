@@ -9,6 +9,12 @@ import SwiftUI
 import Moya
 import Combine
 
+enum RegionFlow {
+    case none
+    case search
+    case map
+}
+
 final class RegisterViewModel: ObservableObject {
     private let profileAPIService: ProfileAPIServiceProtocol
     private let imageAPIService: ImageAPIServiceProtocol
@@ -57,7 +63,7 @@ final class RegisterViewModel: ObservableObject {
     @Published var selectedGuId: Int?
     @Published var previewRegionName: String = ""
     @Published var selectedRegionName = ""
-    @Published var areaSearchText = ""
+    @Published var regionSearchText = ""
     @Published var regionGeometry: Geometry? = nil
     
     // MARK: - Step
@@ -90,12 +96,6 @@ final class RegisterViewModel: ObservableObject {
     }
     var isLastStep: Bool { next == nil }
     var isFirstStep: Bool { prev == nil }
-    
-    enum RegionFlow {
-        case none
-        case search
-        case map
-    }
     
     // MARK: - User Actions
     
@@ -133,7 +133,7 @@ final class RegisterViewModel: ObservableObject {
         selectedDongId = nil
     }
     
-    func seletDongId(_ id: Int) {
+    func selectDongId(_ id: Int) {
         selectedDongId = id
         
         guard let guId = selectedGuId,

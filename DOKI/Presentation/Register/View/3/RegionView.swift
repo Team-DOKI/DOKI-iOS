@@ -38,12 +38,12 @@ struct RegionView: View {
                 regions: viewModel.regionList,
                 selectedGuId: viewModel.selectedGuId,
                 selectedDongId: viewModel.selectedDongId,
-                searchText: $viewModel.areaSearchText,
+                searchText: $viewModel.regionSearchText,
                 onSelectGu: { guId in
                     viewModel.selectGuID(guId)
                 },
                 onSelectDong: { dongId in
-                    viewModel.seletDongId(dongId)
+                    viewModel.selectDongId(dongId)
                 },
                 onDismiss: {
                     viewModel.regionFlow = .map

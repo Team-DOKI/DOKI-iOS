@@ -34,6 +34,8 @@ struct MyPageCoordinatorView: View {
     @StateObject var myLikedPostsViewModel: MyLikedPostsViewModel
     @StateObject var myReviewsViewModel: MyReviewsViewModel
     
+    @StateObject var regionSettingViewModel: RegionSettingViewModel
+    
     @StateObject var dbtiViewModel = DBTIViewModel(entryContext: .myPage)
     
     init(myPageCoordinator: Coordinator<MyPageRoute> = Coordinator<MyPageRoute>(), viewModelFactory: AppDIContainer.ViewModelFactory) {
@@ -44,6 +46,7 @@ struct MyPageCoordinatorView: View {
         self._myPostsViewModel = StateObject(wrappedValue: viewModelFactory.makeMyPostViewModel())
         self._myLikedPostsViewModel = StateObject(wrappedValue: viewModelFactory.makeMyLikedPostViewModel())
         self._myReviewsViewModel = StateObject(wrappedValue: viewModelFactory.makeMyReviewsViewModel())
+        self._regionSettingViewModel = StateObject(wrappedValue: viewModelFactory.makeRegionSettingViewModel())
     }
     
     var body: some View {
@@ -70,7 +73,7 @@ struct MyPageCoordinatorView: View {
                     case .myReviews:
                         MyReviewsView(viewModel: myReviewsViewModel)
                     case .regionSetting:
-                        RegionSettingView()
+                        RegionSettingView(viewModel: regionSettingViewModel)
                     case .appInfo:
                         AppInfoView()
                     case .dbtiStart:

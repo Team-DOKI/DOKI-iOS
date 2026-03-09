@@ -17,6 +17,9 @@ protocol RegionAPIServiceProtocol {
     
     /// 내 현재 지역 조회
     func fetchMyRegion(completion: @escaping (NetworkResult<MyRegionResponseDTO>) -> Void)
+    
+    /// 내 지역 수정
+    func updateMyRegion(request: UpdateMyRegionRequest, completion: @escaping (NetworkResult<BaseDTO<EmptyResponse>>) -> Void)
 }
 
 extension RegionAPIServiceProtocol {
@@ -56,5 +59,18 @@ final class RegionAPIService: BaseAPIService, RegionAPIServiceProtocol {
                 provider: provider,
                 responseType: MyRegionResponseDTO.self,
                 completion: completion)
+    }
+    
+    /// 내 지역 수정
+    func updateMyRegion(
+        request: UpdateMyRegionRequest,
+        completion: @escaping (NetworkResult<BaseDTO<EmptyResponse>>) -> Void
+    ) {
+        self.request(
+            .updateMyRegion(request: request),
+            provider: provider,
+            responseType: BaseDTO<EmptyResponse>.self,
+            completion: completion
+        )
     }
 }

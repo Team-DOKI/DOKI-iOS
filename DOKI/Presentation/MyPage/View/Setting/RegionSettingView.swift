@@ -22,6 +22,12 @@ struct RegionSettingView: View {
             searchTextField
             
             Spacer()
+            
+            MainButton(
+                text: "저장하기",
+                buttonState: viewModel.isSaveButtonDisabled ? .disabled : .active1,
+                action: viewModel.saveButtonTapped
+            )
         }
         .padding(.horizontal, 16)
         .topNavigationView(left: {
@@ -29,9 +35,15 @@ struct RegionSettingView: View {
         }, center: {
             Text("산책 지역 설정").subtitle()
         })
+        .onChange(of: viewModel.isSaveCompleted) { _, completed in
+            if completed {
+                dismiss()
+                viewModel.isSaveCompleted = false
+            }
+        }
         .onAppear {
-                    viewModel.fetchRegions()
-                }
+            viewModel.fetchRegions()
+        }
         .sheet(
             isPresented: Binding(
                 get: { viewModel.regionFlow == .search },
@@ -42,12 +54,12 @@ struct RegionSettingView: View {
                 regions: viewModel.regionList,
                 selectedGuId: viewModel.selectedGuId,
                 selectedDongId: viewModel.selectedDongId,
-                searchText: $viewModel.areaSearchText,
+                searchText: $viewModel.regionSearchText,
                 onSelectGu: { guId in
                     viewModel.selectGuID(guId)
                 },
                 onSelectDong: { dongId in
-                    viewModel.seletDongId(dongId)
+                    viewModel.selectDongId(dongId)
                 },
                 onDismiss: {
                     viewModel.regionFlow = .map
@@ -55,6 +67,17 @@ struct RegionSettingView: View {
             )
             .presentationDetents([.height(600)])
             
+        }
+        .overlay {
+            if viewModel.regionFlow == .map {
+                RegionMapView(
+                    regionFlow: $viewModel.regionFlow,
+                    previewRegionName: $viewModel.previewRegionName,
+                    regionGeometry: viewModel.regionGeometry,
+                    onSelectRegion: { viewModel.selectRegion() },
+                    onResetSelection: { viewModel.resetRegionSelection() }
+                )
+            }
         }
     }
     

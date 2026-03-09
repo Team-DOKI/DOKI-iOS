@@ -27,7 +27,13 @@ struct RegisterView: View {
         .overlay(alignment: .top) { progressBar }
         .overlay(alignment: .top, content: {
             if viewModel.regionFlow == .map {
-                RegionMapView(viewModel: viewModel)
+                RegionMapView(
+                    regionFlow: $viewModel.regionFlow,
+                    previewRegionName: $viewModel.previewRegionName,
+                    regionGeometry: viewModel.regionGeometry,
+                    onSelectRegion: { viewModel.selectRegion() },
+                    onResetSelection: { viewModel.resetRegionSelection() }
+                )
             }
         })
         .ignoresSafeArea(.keyboard)
