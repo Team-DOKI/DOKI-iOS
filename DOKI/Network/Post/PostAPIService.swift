@@ -6,10 +6,13 @@
 //
 
 import Moya
+import SwiftUI
 
 protocol PostAPIServiceProtocol {
     // 게시물 리스트 조회
     func fetchPosts(sortOption: SortOption, cursor: String, options: [FilterList]) async throws -> (nextCursor: String, hasNext: Bool, posts: [PostItem])
+    func uploadPost(isPublic: Bool, request: PostRegisterRequest)
+    
 }
 
 extension PostAPIServiceProtocol {
@@ -30,14 +33,29 @@ final class PostAPIService: BaseAPIService, PostAPIServiceProtocol {
                     cursor: cursor,
                     postRequestDto: options.toDto()
                 )
-            )            
+            )
             
             guard let data = response.data else { throw APIError.decodingError }
             
             return (data.nextCursor, data.hasNext, data.posts.toEntities())
-        } catch {            
+        } catch {
             throw error
         }
+    }
+    
+    func uploadPost(isPublic: Bool, request: PostRegisterRequest)  {
+        
+        self.request(.uploadPost(request: request),
+                     provider: provider,
+                     responseType: PostRegisterResponse.self,
+                     completion: { result in
+            switch result {
+            case .success(let response):
+                print("게시물 등록 성공: \(response)")
+            default:
+                break
+            }
+        })
     }
 }
 

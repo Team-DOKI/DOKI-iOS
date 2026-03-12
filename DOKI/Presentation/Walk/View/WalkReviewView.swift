@@ -79,8 +79,10 @@ struct WalkReviewView: View {
             primaryAction: viewModel.navigateToDetail
         )
         .ignoresSafeArea(.container, edges: .bottom)
-        .onAppear {
+        .task {
             viewModel.fetchWalkSummary()
+            await viewModel.fetchFilterCategories()
+            viewModel.bindData()
         }
     }
 }
@@ -107,7 +109,7 @@ extension WalkReviewView {
             maxSelectionCount: 3,
             matching: .images
         ) {
-            if viewModel.reviewImages.isEmpty {
+            if viewModel.walkImages.isEmpty {
                 Rectangle()
                     .frame(width: 160, height: 160)
                     .foregroundStyle(.defaultButton)
@@ -116,7 +118,7 @@ extension WalkReviewView {
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 12) {
-                        ForEach(viewModel.reviewImages, id: \.self) {
+                        ForEach(viewModel.walkImages, id: \.self) {
                             Image(uiImage: $0)
                                 .resizable()
                                 .frame(width: 160, height: 160)
@@ -138,7 +140,7 @@ extension WalkReviewView {
             )
             
             SegmentedButton(
-                items: viewModel.congestionOption,
+                items: viewModel.congestion,
                 selectedItem: $viewModel.selectedCongestion
             )
         }
@@ -152,8 +154,8 @@ extension WalkReviewView {
             )
             
             SegmentedButton(
-                items: viewModel.dogInteractionOption,
-                selectedItem: $viewModel.selectedDogInteraction
+                items: viewModel.exchange,
+                selectedItem: $viewModel.selectedExchange
             )
         }
     }
@@ -163,7 +165,7 @@ extension WalkReviewView {
         SelectableSection(
             title: "안전",
             subtitle: "(복수 선택 가능)",
-            items: $viewModel.safetyOption
+            items: $viewModel.safety
         )
     }
     
@@ -172,7 +174,7 @@ extension WalkReviewView {
         SelectableSection(
             title: "편의성",
             subtitle: "(복수 선택 가능)",
-            items: $viewModel.convenienceOption
+            items: $viewModel.convenience
         )
     }
     
@@ -181,7 +183,7 @@ extension WalkReviewView {
         SelectableSection(
             title: "환경",
             subtitle: "(복수 선택 가능)",
-            items: $viewModel.environmentOption
+            items: $viewModel.environment
         )
     }
     private var reviewSection: some View {
@@ -190,7 +192,7 @@ extension WalkReviewView {
             
             Spacer().frame(height: 16)
             
-            TextField("후기 제목을 입력해주세요", text: $viewModel.reviewTitle)
+            TextField("후기 제목을 입력해주세요", text: $viewModel.title)
                 .font(.bodyDefault)
                 .padding(17)
                 .background(.defaultBright)
@@ -198,15 +200,22 @@ extension WalkReviewView {
             
             Spacer().frame(height: 8)
             
-            TextArea(placeholder: "산책에 대한 내용을 작성해주세요", text: $viewModel.reviewContent)
+            TextArea(placeholder: "산책에 대한 내용을 작성해주세요", text: $viewModel.description)
         }
     }
     
     private var buttonSection: some View {
         VStack(spacing: 16) {
-            MainButton(text: "산책 기록 나만보기", buttonState: .active2, action: viewModel.showReviewComplete)
+            MainButton(
+                text: "산책 기록 나만보기",
+                buttonState: .active2,
+                action: { viewModel.uploadPost(isPublic: false) }
+            )
             
-            MainButton(text: "산책 기록 공유하기", action: viewModel.showReviewComplete)
+            MainButton(
+                text: "산책 기록 공유하기",
+                action: { viewModel.uploadPost(isPublic: true) }
+            )
         }
     }
 }
@@ -219,9 +228,9 @@ extension WalkReviewView {
                 case .success(let data):
                     if let data,
                        let newImage = UIImage(data: data),
-                       !viewModel.reviewImages.contains(where: { $0.pngData() == newImage.pngData() }) {
+                       !viewModel.walkImages.contains(where: { $0.pngData() == newImage.pngData() }) {
                         DispatchQueue.main.async {
-                            viewModel.reviewImages.append(newImage)
+                            viewModel.walkImages.append(newImage)
                         }
                     }
                 case .failure:

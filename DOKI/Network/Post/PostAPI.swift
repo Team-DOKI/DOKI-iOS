@@ -10,6 +10,7 @@ import Foundation
 
 enum PostAPI {
     case fetchPosts(sortOption: SortOption, cursor: String, postRequestDto: PostRequest)
+    case uploadPost(request: PostRegisterRequest)
 }
 
 extension PostAPI: BaseTargetType {
@@ -21,12 +22,14 @@ extension PostAPI: BaseTargetType {
         switch self {
         case .fetchPosts:
             return "posts/filter"
+        case .uploadPost:
+            return "posts"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .fetchPosts:
+        case .fetchPosts, .uploadPost:
             return .post
         }
     }
@@ -51,6 +54,8 @@ extension PostAPI: BaseTargetType {
                 bodyData: bodyData,
                 urlParameters: urlParameters
             )
+        case let .uploadPost(request):
+            return .requestJSONEncodable(request)
         }
     }
 }

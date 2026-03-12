@@ -22,7 +22,11 @@ extension AppDIContainer {
         }
         
         func makeWalkReviewViewModel() -> WalkReviewViewModel {
-            return WalkReviewViewModel()
+            return WalkReviewViewModel(
+                filterAPIService: FilterAPIService(),
+                postAPIService: PostAPIService(),
+                imageAPIService: ImageAPIService()
+            )
         }
         
         func makeWalkResultViewModel() -> WalkResultViewModel {
