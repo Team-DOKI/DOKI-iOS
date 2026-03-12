@@ -35,7 +35,8 @@ extension AppDIContainer {
         
         func makeRecommendViewModel(_ coordinator: Coordinator<RecommendRoute>) -> RecommendViewModel {
             let postAPIService = PostAPIService()
-            return RecommendViewModel(coordinator: coordinator, postAPIservice: postAPIService)
+            let routeAPIService = RouteAPIService()
+            return RecommendViewModel(coordinator: coordinator, postAPIservice: postAPIService, routeAPIService: routeAPIService)
         }
         
         func makeRouteDetailViewModel() -> RouteDetailViewModel {

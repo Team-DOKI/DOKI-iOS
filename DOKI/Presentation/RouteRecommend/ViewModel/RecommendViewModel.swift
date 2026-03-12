@@ -36,18 +36,28 @@ class RecommendViewModel: ObservableObject {
     @Published var selectedSort: SortOption = .latest
     @Published var loadingStatus: LoadingStatus = .ready
     
+    @Published var routeCoordinates: [[Double]] = []
+    
     private var hasNext: Bool = true
     
     private let postAPIservice: PostAPIServiceProtocol
+    private let routeAPIService: RouteAPIServiceProtocol
     
     var filterOptions: [FilterList] = []
     var nextCursorId: String = ""
     
     var navigationAction: ((RecommendRoute)->())?
     
-    init(coordinator: Coordinator<RecommendRoute>, postAPIservice: PostAPIServiceProtocol) {
+    init(
+        coordinator: Coordinator<RecommendRoute>,
+        postAPIservice: PostAPIServiceProtocol,
+        routeAPIService: RouteAPIServiceProtocol
+    ) {
         self.postAPIservice = postAPIservice
+        self.routeAPIService = routeAPIService
         self.coordinator = coordinator
+        
+        fetchRouteGeometry(routeId: 105)
     }
     
     func navigateToDetail(id: Int) {
@@ -70,7 +80,7 @@ class RecommendViewModel: ObservableObject {
 extension RecommendViewModel {
     
     /// 기존 데이터를 제거하고 새로운 게시물을 요청
-    func loadPosts() {        
+    func loadPosts() {
         loadingStatus = .loading
         nextCursorId = ""
         
@@ -120,6 +130,20 @@ extension RecommendViewModel {
                     loadingStatus = .failed(error.localizedDescription)
                     posts = []
                 }
+            }
+        }
+    }
+    
+    func fetchRouteGeometry(routeId: Int) {
+        routeAPIService.fetchRouteGeometry(routeId: routeId) { [weak self] result in
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    self?.routeCoordinates = response?.data?.geometry.coordinates ?? []
+                }
+                
+            default:
+                print("geometry fetch 실패")
             }
         }
     }
