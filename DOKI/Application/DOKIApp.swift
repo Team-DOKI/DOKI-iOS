@@ -17,7 +17,6 @@ struct DOKIApp: App {
     
     var body: some Scene {
         WindowGroup {
-
             RootView()
                 .environmentObject(authManager)
                 .environmentObject(appDIContainer)
