@@ -208,12 +208,13 @@ extension WalkReviewView {
         VStack(spacing: 16) {
             MainButton(
                 text: "산책 기록 나만보기",
-                buttonState: .active2,
+                buttonState: viewModel.loadingStatus == .loading ? .loading : .active2,
                 action: { viewModel.uploadPost(isPublic: false) }
             )
             
             MainButton(
                 text: "산책 기록 공유하기",
+                buttonState: viewModel.loadingStatus == .loading ? .loading : .active1,
                 action: { viewModel.uploadPost(isPublic: true) }
             )
         }

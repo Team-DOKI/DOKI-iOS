@@ -10,6 +10,7 @@ import SwiftUI
 // TODO: routeImage -> 임시 이미지로 대체
 
 class WalkReviewViewModel: ObservableObject {
+    
     private let routeAPIService: RouteAPIServiceProtocol = RouteAPIService()
     private let filterAPIServie: FilterAPIService
     private let postAPIService: PostAPIService
@@ -45,13 +46,13 @@ class WalkReviewViewModel: ObservableObject {
     @Published var congestion: [FilteringOption] = []
     
     @Published var exchange: [FilteringOption] = []
-
+    @Published var loadingStatus: LoadingStatus = .ready
     
-    private var routeId = 0
-    private var routeImageId = 0
-    private var walkImageIds: [Int] = []
-    
-    init(filterAPIService: FilterAPIService, postAPIService: PostAPIService, imageAPIService: ImageAPIService) {
+    init(
+        filterAPIService: FilterAPIService,
+        postAPIService: PostAPIService,
+        imageAPIService: ImageAPIService
+    ) {
         self.filterAPIServie = filterAPIService
         self.postAPIService = postAPIService
         self.imageAPIService = imageAPIService
@@ -133,152 +134,145 @@ extension WalkReviewViewModel {
     
     func uploadPost(isPublic: Bool) {
         Task {
+            await MainActor.run { loadingStatus = .loading }
             do {
-                // 필터 데이터 처리
-                var selectedOption: [FilterList] = selectedFilterOptions
 
-                for index in selectedOption.indices {
-                    switch selectedOption[index].filterType {
-                    // 단일 선택
-                    case .congestion:
-                        selectedOption[index].options.reset()
-                        if let selectedCongestion,
-                           let optionIndex = selectedOption[index].options.firstIndex(where: { $0.id == selectedCongestion.id }) {
-                            selectedOption[index].options[optionIndex].isActive = true
-                        }
-                    case .exchange:
-                        selectedOption[index].options.reset()
-                        if let selectedExchange,
-                            let optionIndex = selectedOption[index].options.firstIndex(where: { $0.id == selectedExchange.id }) {
-                            selectedOption[index].options[optionIndex].isActive = true
-                        }
-                    // 중복 선택
-                    case .safety:
-                        selectedOption[index].options = safety
-                    case .convenience:
-                        selectedOption[index].options = convenience
-                    case .environment:
-                        selectedOption[index].options = environment
-                    default:
-                        break
-                    }
-                }
-                
-
-                let selectedOptionsForCategories = selectedOption.map { SelectedOption(categoryId: $0.id, selectedOptionIds: $0.options.filter {$0.isActive}.map { $0.id}) }
-                
-                // 경로 이미지 등록
+                let selectedOptionsForCategories = createSelectedOptions(selectedOption: selectedFilterOptions)
+                                
+                // 경로이미지 요청 도메인
                 let presignedURLRequest = PresignedURLRequest(
-                    domain: "PET_PROFILE",
+                    domain: "ROUTE",
                     contentType: "image/jpeg"
                 )
                 
+                // 경로이미지 데이터 추출
                 guard let routeCgImage = routeImage.cgImage,
                       let routeImageData = UIImage(cgImage: routeCgImage).jpegData(compressionQuality: 0.8) else { return }
                 
-                // presignedURL 요청
-                imageAPIService.presignedURL(request: presignedURLRequest) { [weak self] result in
-                    
-                    switch result {
-                    case .success(let response):
-                        guard let data = response?.data, let uploadURL = URL(string: data.uploadUrl) else { return }
-                        
-                        self?.uploadToS3(url: uploadURL, data: routeImageData) { [weak self] isSuccess in
-                            guard let self else { return }
-                            let routeImageRequest = RegisterImageRequest(
-                                imageUrl: data.imageUrl,
-                                contentType: "image/jpeg",
-                                width: Int(routeImage.size.width),
-                                height: Int(routeImage.size.height),
-                                domain: "PET_PROFILE"
-                            )
-                                                        
-                            imageAPIService.registerImage(request: routeImageRequest) { [weak self] result in
-                                switch result {
-                                case let .success(response):
-                                    guard let data = response?.data else { return }
-                                    self?.routeImageId = data.imageId
-                                default:
-                                    print("Route Image 등록 실패")
-                                }
-                            }
-                        }
-                        
-                    default:
-                        print("presignedURL 오류")
-                    }
-                }                
+                // 경로이미지 presignedURL 발급
+                guard let presignedURLResponse = try await imageAPIService.asyncPresignedURL(request: presignedURLRequest).data,
+                      let uploadURL = URL(string: presignedURLResponse.uploadUrl) else { return }
                 
-                // 산책 이미지 등록
-                walkImages.forEach { walkImage in
+                // S3 업로드
+                try await uploadToS3(url: uploadURL, data: routeImageData)
                 
+                
+                let routeImageRequest = RegisterImageRequest(
+                           imageUrl: presignedURLResponse.imageUrl,
+                           contentType: "image/jpeg",
+                           width: Int(routeImage.size.width),
+                           height: Int(routeImage.size.height),
+                           domain: "ROUTE"
+                       )
+                
+                // 경로이미지 ID 발급
+                guard let routeImageId = try await imageAPIService.asyncRegisterImage(request: routeImageRequest).data?.imageId else { return }
+                
+                var walkImageIds: [Int] = []
+                
+                for walkImage in walkImages {
                     guard let cgImage = walkImage.cgImage,
-                    let imageData = UIImage(cgImage: cgImage).jpegData(compressionQuality: 0.8) else { return }
+                        let imageData = UIImage(cgImage: cgImage).jpegData(compressionQuality: 0.8) else { return }
                     
-                    imageAPIService.presignedURL(request: presignedURLRequest) { [weak self] result in
-                        switch result {
-                        case .success(let response):
-                            guard let data = response?.data, let uploadURL = URL(string: data.uploadUrl) else { return }
-                            
-                            self?.uploadToS3(url: uploadURL, data: imageData) { [weak self] isSuccess in
-                                guard let self else { return }
-                                let imageRequest = RegisterImageRequest(
-                                    imageUrl: data.imageUrl,
-                                    contentType: "image/jpeg",
-                                    width: Int(walkImage.size.width),
-                                    height: Int(walkImage.size.height),
-                                    domain: "PET_PROFILE"
-                                )
-                                                            
-                                imageAPIService.registerImage(request: imageRequest) { [weak self] result in
-                                    guard let self else { return }
-                                    switch result {
-                                    case let .success(response):
-                                        guard let data = response?.data else { return }
-                                        walkImageIds.append(data.imageId)
-                                        
-                                        let request = PostRegisterRequest(
-                                            title: title,
-                                            description: description,
-                                            isPublic: isPublic,
-                                            selectedOptionsForCategories: selectedOptionsForCategories,
-                                            routeId: routeId,
-                                            routeImageId: routeImageId,
-                                            walkImageIds: walkImageIds
-                                        )
-                                        
-                                        postAPIService.uploadPost(isPublic: isPublic, request: request)
-                                    default:
-                                        print("Route Image 등록 실패")
-                                    }
-                                }
-                            }
-                            
-                        default:
-                            print("presignedURL 등록 실패")
-                        }
+                    let presignedURLRequest = PresignedURLRequest(
+                        domain: "ROUTE",
+                        contentType: "image/jpeg"
+                    )
+                    
+                    guard let presignedURLResponse = try await imageAPIService.asyncPresignedURL(request: presignedURLRequest).data,
+                          let uploadURL = URL(string: presignedURLResponse.uploadUrl) else { return }
+                    
+                    try await uploadToS3(url: uploadURL, data: imageData)
+                    
+                    let imageRequest = RegisterImageRequest(
+                        imageUrl: presignedURLResponse.imageUrl,
+                        contentType: "image/jpeg",
+                        width: Int(walkImage.size.width),
+                        height: Int(walkImage.size.height),
+                        domain: "ROUTE"
+                    )
+                    
+                    guard let walkImageId = try await imageAPIService.asyncRegisterImage(request: imageRequest).data?.imageId else {
+                        await MainActor.run { loadingStatus = .failed("산책 이미지 등록에 실패했습니다.") }
+                        return
                     }
+                    walkImageIds.append(walkImageId)
                 }
-                                                
+                
+                guard let nRouteId = WalkSessionManager.shared.nRouteId else {
+                    await MainActor.run { loadingStatus = .failed("산책 루트 ID가 없습니다.") }
+                    return
+                }
+                
+                let request = PostRegisterRequest(
+                    title: title,
+                    description: description,
+                    isPublic: isPublic,
+                    selectedOptionsForCategories: selectedOptionsForCategories,
+                    routeId: nRouteId,
+                    routeImageId: routeImageId,
+                    walkImageIds: walkImageIds
+                )
+                                               
+                let _ = try await postAPIService.uploadPost(request: request)
+                
+                await MainActor.run { loadingStatus = .success }
             } catch {
-                print(error.localizedDescription)
+                await MainActor.run { loadingStatus = .failed(error.localizedDescription) }
             }
         }
     }
     
-    private func uploadToS3(url: URL, data: Data, completion: @escaping (Bool) -> Void) {
+    private func createSelectedOptions(selectedOption: [FilterList]) -> [SelectedOption] {
+        var selectedOption: [FilterList] = selectedOption
+
+        for index in selectedOption.indices {
+            switch selectedOption[index].filterType {
+            // 단일 선택
+            case .congestion:
+                selectedOption[index].options.reset()
+                if let selectedCongestion,
+                   let optionIndex = selectedOption[index].options.firstIndex(where: { $0.id == selectedCongestion.id }) {
+                    selectedOption[index].options[optionIndex].isActive = true
+                }
+            case .exchange:
+                selectedOption[index].options.reset()
+                if let selectedExchange,
+                    let optionIndex = selectedOption[index].options.firstIndex(where: { $0.id == selectedExchange.id }) {
+                    selectedOption[index].options[optionIndex].isActive = true
+                }
+            // 중복 선택
+            case .safety:
+                selectedOption[index].options = safety
+            case .convenience:
+                selectedOption[index].options = convenience
+            case .environment:
+                selectedOption[index].options = environment
+            default:
+                break
+            }
+        }
+
+        let selectedOptionsForCategories = selectedOption.map {
+            SelectedOption(
+                categoryId: $0.id,
+                selectedOptionIds: $0.options.filter { $0.isActive}.map { $0.id }
+            )
+        }
+        
+        return selectedOptionsForCategories
+    }
+    
+    private func uploadToS3(url: URL, data: Data) async throws {
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
         request.setValue("image/jpeg", forHTTPHeaderField: "Content-Type")
         request.httpBody = data
         
-        URLSession.shared.dataTask(with: request) { _, response, _ in
-            if let httpResponse = response as? HTTPURLResponse,
-               200..<300 ~= httpResponse.statusCode {
-                completion(true)
-            } else {
-                completion(false)
-            }
-        }.resume()
+        do {
+           let _ = try await URLSession.shared.data(for: request)
+        } catch {
+            throw error
+        }
     }
 }

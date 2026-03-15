@@ -20,6 +20,9 @@ protocol ImageAPIServiceProtocol {
         request: RegisterImageRequest,
         completion: @escaping (NetworkResult<RegisterImageResponseDTO>) -> Void
     )
+    
+    func asyncPresignedURL(request: PresignedURLRequest) async throws -> PresignedURLResponseDTO
+    func asyncRegisterImage(request: RegisterImageRequest) async throws -> RegisterImageResponseDTO
 }
 
 extension ImageAPIServiceProtocol {
@@ -56,5 +59,23 @@ final class ImageAPIService: BaseAPIService, ImageAPIServiceProtocol {
                      provider: provider,
                      responseType: RegisterImageResponseDTO.self,
                      completion: completion)
+    }
+    
+    func asyncPresignedURL(request: PresignedURLRequest) async throws -> PresignedURLResponseDTO {
+        do {
+            let response: PresignedURLResponseDTO = try await provider.async.request(.presignedURL(request: request))
+            return response
+        } catch {
+            throw error
+        }
+    }
+    
+    func asyncRegisterImage(request: RegisterImageRequest) async throws -> RegisterImageResponseDTO {
+        do {
+            let response: RegisterImageResponseDTO = try await provider.async.request(.registerImage(request: request))
+            return response
+        } catch {
+            throw error
+        }
     }
 }
