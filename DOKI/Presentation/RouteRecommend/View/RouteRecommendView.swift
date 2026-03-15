@@ -142,7 +142,9 @@ struct RouteRecommendView: View {
         ScrollView(showsIndicators: false) {
             LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(viewModel.posts, id: \.self.postId) { post in
-                    RouteCell(post: post) {}
+                    RouteCell(post: post)
+                        {}
+                        .onTapGesture { viewModel.navigateToDetail(id: post.postId) }
                     .onAppear {
                         if "\(post.postId)" == viewModel.nextCursorId {
                             viewModel.fetchPosts()

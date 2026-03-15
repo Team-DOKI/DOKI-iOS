@@ -11,6 +11,7 @@ import Foundation
 enum PostAPI {
     case fetchPosts(sortOption: SortOption, cursor: String, postRequestDto: PostRequest)
     case uploadPost(request: PostRegisterRequest)
+    case fetchPost(postId: Int)
 }
 
 extension PostAPI: BaseTargetType {
@@ -24,6 +25,8 @@ extension PostAPI: BaseTargetType {
             return "posts/filter"
         case .uploadPost:
             return "posts"
+        case .fetchPost(let postId):
+            return "posts/\(postId)"
         }
     }
     
@@ -31,6 +34,8 @@ extension PostAPI: BaseTargetType {
         switch self {
         case .fetchPosts, .uploadPost:
             return .post
+        case .fetchPost:
+            return .get
         }
     }
     
@@ -56,6 +61,8 @@ extension PostAPI: BaseTargetType {
             )
         case let .uploadPost(request):
             return .requestJSONEncodable(request)
+        case .fetchPost:
+            return .requestPlain
         }
     }
 }

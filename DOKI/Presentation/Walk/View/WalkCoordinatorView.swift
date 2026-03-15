@@ -36,7 +36,7 @@ struct WalkCoordinatorView: View {
     @StateObject var walkResultViewModel: WalkResultViewModel
     @StateObject var walkReviewViewModel: WalkReviewViewModel
     
-    @StateObject var routeDetailViewModel = RouteDetailViewModel()
+    @StateObject var routeDetailViewModel = RouteDetailViewModel(postAPIService: PostAPIService())
     
     private let viewModelFactory: AppDIContainer.ViewModelFactory
     
