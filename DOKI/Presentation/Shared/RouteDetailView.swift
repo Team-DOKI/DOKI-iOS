@@ -60,6 +60,11 @@ struct RouteDetailView: View {
         .onAppear {
             viewModel.fetchPost()
         }
+        .onChange(of: viewModel.isPublic) { isPublic in
+            if isPublic {
+                viewModel.fetchReview()
+            }
+        }
         .ignoresSafeArea(.container, edges: [.bottom])
     }
 }
@@ -196,7 +201,7 @@ extension RouteDetailView {
                     .mainActive()
                 
                 Label(title: {
-                    Text("후기숫자")
+                    Text("\(viewModel.totalReviewCount)개의 후기")
                 }, icon: {
                     Image(.icEdit)
                 })
@@ -209,8 +214,10 @@ extension RouteDetailView {
             
             VStack(spacing: 10) {
                 if viewModel.isPublic {
-                    ForEach(1...3, id: \.self) { rank in
-                        ReviewChart(text: "후기 옵션", rank: rank)
+                    VStack {
+                        ForEach(viewModel.reviews, id: \.self.rank) { review in
+                            ReviewChart(text: review.optionText, rank: review.rank)
+                        }
                     }
                 } else {
                     Text("현재는 비공개 상태에요.\n공개로 전환해 산책 루트를 공유해보세요.")

@@ -13,7 +13,8 @@ enum RouteDetailRoute {
 
 class RouteDetailViewModel: ObservableObject {
     var postID: Int?
-    
+    var userId: Int?
+    var routeId: Int?
     var navigationAction: ((RouteDetailRoute)->())?
     
     @Published var title = "            "
@@ -30,6 +31,8 @@ class RouteDetailViewModel: ObservableObject {
     @Published var isPublic = false
     @Published var isMine = false
     @Published var loadingStatus: LoadingStatus = .ready
+    @Published var reviews: [ReviewResponse.CategoryTop] = []
+    @Published var totalReviewCount = 0
     
     private let postAPIService: PostAPIService
     
@@ -65,10 +68,26 @@ class RouteDetailViewModel: ObservableObject {
                 walkImageUrls = data.walkImages.map { $0.imageUrl }
                 isPublic = data.isPublic
                 isMine = data.isMine
-                
+                userId = data.authorInfo.authorId
+                routeId = data.routeDisplay.routeId
                 loadingStatus = .success
             } catch {
                 loadingStatus = .failed(error.localizedDescription)
+            }
+        }
+    }
+    
+    @MainActor
+    func fetchReview() {
+        Task {
+            do {
+                guard let userId, let routeId else { return }
+                let response = try await postAPIService.fetchReview(userId: userId, routeId: routeId)
+                reviews = response.categoryTop3.sorted(by: {$0.rank < $1.rank})
+                totalReviewCount = response.totalReviewCount
+            }
+            catch {
+                print(error.localizedDescription)
             }
         }
     }
