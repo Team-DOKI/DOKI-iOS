@@ -9,7 +9,7 @@ import Foundation
 
 struct PostResponse: Codable {
     let posts: [Post]
-    let nextCursor: String
+    let nextCursor: String?
     let hasNext: Bool
 }
 
