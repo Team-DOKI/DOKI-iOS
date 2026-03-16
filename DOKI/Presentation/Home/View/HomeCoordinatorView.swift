@@ -22,7 +22,7 @@ struct HomeCoordinatorView: View {
     @StateObject var walkRecordCoordinator: Coordinator<WalkRecordRoute>
     
     @StateObject var homeViewModel = HomeViewModel()
-    @StateObject var routeDetailViewModel = RouteDetailViewModel()
+    @StateObject var routeDetailViewModel = RouteDetailViewModel(postAPIService: PostAPIService())
     
     @StateObject var walkRecordViewModel: WalkRecordViewModel
     @StateObject var walkResultViewModel: WalkResultViewModel

@@ -12,11 +12,14 @@ protocol PostAPIServiceProtocol {
     // 게시물 리스트 조회
     func fetchPosts(sortOption: SortOption, cursor: String, options: [FilterList]) async throws -> (nextCursor: String, hasNext: Bool, posts: [PostItem])
     func uploadPost(request: PostRegisterRequest) async throws -> PostResponseDTO
-    
+    func fetchPost(postId: Int) async throws -> PostDetailResponseDTO
+    func fetchReview(userId: Int, routeId: Int) async throws -> ReviewResponse
 }
 
 extension PostAPIServiceProtocol {
     typealias PostResponseDTO = BaseDTO<PostResponse>
+    typealias PostDetailResponseDTO = BaseDTO<PostDetailResponse>
+    typealias ReviewResponseDTO = BaseDTO<ReviewResponse>
 }
 
 final class PostAPIService: BaseAPIService, PostAPIServiceProtocol {
@@ -48,6 +51,25 @@ final class PostAPIService: BaseAPIService, PostAPIServiceProtocol {
         do {
             let response: PostResponseDTO = try await provider.async.request(.uploadPost(request: request))
             return response
+        } catch {
+            throw error
+        }
+    }
+    
+    func fetchPost(postId: Int) async throws -> PostDetailResponseDTO {
+        do {
+            let response: PostDetailResponseDTO = try await provider.async.request(.fetchPost(postId: postId))
+            return response
+        } catch {
+            throw error
+        }
+    }
+    
+    func fetchReview(userId: Int, routeId: Int) async throws -> ReviewResponse {
+        do {
+            let response: ReviewResponseDTO = try await provider.async.request(.fetchReview(userId: userId, routeId: routeId))
+            guard let reviewResponse = response.data else { throw APIError.decodingError }
+            return reviewResponse
         } catch {
             throw error
         }

@@ -33,9 +33,9 @@ struct RecommendCoordinatorView: View {
             RouteRecommendView(viewModel: recommendViewModel)
                 .navigationDestination(for: RecommendRoute.self) { destination in
                     switch destination {
-                    case .courseDetail:
-                        RouteDetailView(viewModel: courseDetailViewModel)
-                    case .filterSetting:                        
+                    case .courseDetail(let postID):
+                        RouteDetailView(viewModel: makeCourseDetailViewModel(postID))
+                    case .filterSetting:
                         FilterSettingView(viewModel: filterSettingViewModel)
                     }
                 }
@@ -71,5 +71,21 @@ struct RecommendCoordinatorView: View {
                 }
             }
         }
+    }
+    
+    private func makeCourseDetailViewModel(_ postID: Int) -> RouteDetailViewModel {
+        let viewModel = RouteDetailViewModel(
+            postAPIService: PostAPIService(),
+            postId: postID
+        )
+
+        viewModel.navigationAction = { destination in
+            switch destination {
+            case .back:
+                recommendCoordinator.pop()
+            }
+        }
+
+        return viewModel
     }
 }

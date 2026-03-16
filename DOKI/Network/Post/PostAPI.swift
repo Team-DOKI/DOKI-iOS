@@ -11,6 +11,8 @@ import Foundation
 enum PostAPI {
     case fetchPosts(sortOption: SortOption, cursor: String, postRequestDto: PostRequest)
     case uploadPost(request: PostRegisterRequest)
+    case fetchPost(postId: Int)
+    case fetchReview(userId: Int, routeId: Int)
 }
 
 extension PostAPI: BaseTargetType {
@@ -24,6 +26,10 @@ extension PostAPI: BaseTargetType {
             return "posts/filter"
         case .uploadPost:
             return "posts"
+        case .fetchPost(let postId):
+            return "posts/\(postId)"
+        case .fetchReview(let userId, let routeId):
+            return "posts/\(routeId)/reviews/top"
         }
     }
     
@@ -31,6 +37,8 @@ extension PostAPI: BaseTargetType {
         switch self {
         case .fetchPosts, .uploadPost:
             return .post
+        case .fetchPost, .fetchReview:
+            return .get
         }
     }
     
@@ -56,6 +64,10 @@ extension PostAPI: BaseTargetType {
             )
         case let .uploadPost(request):
             return .requestJSONEncodable(request)
+        case .fetchPost:
+            return .requestPlain
+        case .fetchReview(let userId, let routeId):
+            return .requestParameters(parameters: ["userId": userId, "routeId": routeId], encoding: URLEncoding.queryString)
         }
     }
 }

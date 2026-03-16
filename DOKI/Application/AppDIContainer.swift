@@ -43,7 +43,7 @@ extension AppDIContainer {
         }
         
         func makeRouteDetailViewModel() -> RouteDetailViewModel {
-            return RouteDetailViewModel()
+            return RouteDetailViewModel(postAPIService: PostAPIService())
         }
         
         func makeMyPageViewModel() -> MyPageViewModel {

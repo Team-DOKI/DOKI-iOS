@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct RouteDetailView: View {
     @ObservedObject var viewModel: RouteDetailViewModel
@@ -17,6 +18,7 @@ struct RouteDetailView: View {
                 mapView
                 
                 titleSection
+                    .redacted(reason: viewModel.loadingStatus == .loading ? .placeholder : [])
             }
             
             VStack(alignment: .leading, spacing: 0) {
@@ -42,6 +44,7 @@ struct RouteDetailView: View {
                 
                 Spacer().frame(height: 40)
             }
+            .redacted(reason: viewModel.loadingStatus == .loading ? .placeholder : [])
         }
         .overlay(alignment: .top, content: {
             Rectangle()
@@ -54,19 +57,29 @@ struct RouteDetailView: View {
             Text("루트 상세 정보")
                 .subtitle()
         }
+        .onAppear {
+            viewModel.fetchPost()
+        }
+        .onChange(of: viewModel.isPublic) { isPublic in
+            if isPublic {
+                viewModel.fetchReview()
+            }
+        }
         .ignoresSafeArea(.container, edges: [.bottom])
     }
 }
 
 extension RouteDetailView {
     private var mapView: some View {
-        Image(.mapView)
+        KFImage(URL(string: viewModel.routeImageURL))
+            .placeholder { Color.gray.opacity(0.3) }
+            .onFailure { _ in }
             .resizable()
-            .frame(maxWidth: .infinity, maxHeight: 292)
+            .frame(height: 292)
     }
     
     private var titleSection: some View {
-        Text("단지와의 룰루랄라")
+        Text(viewModel.title)
             .header3()
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -76,13 +89,16 @@ extension RouteDetailView {
     
     private var profileSection: some View {
         HStack(spacing: 10) {
-            Image("")
+                       
+            KFImage(URL(string: viewModel.petProfileImageURL))
+                .placeholder {
+                    Color.gray.opacity(0.3)
+                }
                 .resizable()
                 .frame(width: 43, height: 43)
-                .background(.gray)
                 .clipShape(Circle())
             
-            Text("단지")
+            Text(viewModel.petName)
                 .subtitle(color: .defaultDark)
             
             Spacer()
@@ -163,8 +179,8 @@ extension RouteDetailView {
         VStack(alignment: .leading, spacing: 12) {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 6) {
-                    ForEach(1...3, id: \.self) { _ in
-                        Image("")
+                    ForEach(viewModel.walkImageUrls, id: \.self) { url in
+                        KFImage(URL(string: url))
                             .resizable()
                             .frame(width: 110, height: 110)
                             .background(.gray)
@@ -172,7 +188,7 @@ extension RouteDetailView {
                 }
             }
             
-            Text("후기 글 본문 후기 글 본문 후기 글 본문ㅇ 후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ후기 글 본문 후기 글 본문 후기 글 본문ㅇ")
+            Text(viewModel.description)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 20)
@@ -185,7 +201,7 @@ extension RouteDetailView {
                     .mainActive()
                 
                 Label(title: {
-                    Text("후기숫자")
+                    Text("\(viewModel.totalReviewCount)개의 후기")
                 }, icon: {
                     Image(.icEdit)
                 })
@@ -197,8 +213,15 @@ extension RouteDetailView {
             .padding(.vertical, 16)
             
             VStack(spacing: 10) {
-                ForEach(1...3, id: \.self) { rank in
-                    ReviewChart(text: "후기 옵션", rank: rank)
+                if viewModel.isPublic {
+                    VStack {
+                        ForEach(viewModel.reviews, id: \.self.rank) { review in
+                            ReviewChart(text: review.optionText, rank: review.rank)
+                        }
+                    }
+                } else {
+                    Text("현재는 비공개 상태에요.\n공개로 전환해 산책 루트를 공유해보세요.")
+                        .subtitle(color: .defaultMiddle)
                 }
             }
             .padding(.vertical, 12)
@@ -208,19 +231,23 @@ extension RouteDetailView {
     
     private var buttonSection: some View {
         HStack(spacing: 8) {
-            Button {
+            if viewModel.isMine {
+                Button {
+                    
+                } label: {
+                    Text("삭제하기")
+                        .subtitle(color: .defaultRed)
+                        .frame(maxWidth: .infinity, maxHeight: 56)
+                }
+                .overlay(
+                    RoundedCorner(radius: 8)
+                        .stroke(.defaultRed, lineWidth: 1)
+                )
                 
-            } label: {
-                Text("삭제하기")
-                    .subtitle(color: .defaultRed)
-                    .frame(maxWidth: .infinity, maxHeight: 56)
+                MainButton(text: "수정하기")
+            } else {
+                MainButton(text: "해당 루트로 산책하기")
             }
-            .overlay(
-                RoundedCorner(radius: 8)
-                    .stroke(.defaultRed, lineWidth: 1)
-            )
-            
-            MainButton(text: "수정하기")
         }
         .padding(.top, 40)
         .padding(.horizontal, 16)
