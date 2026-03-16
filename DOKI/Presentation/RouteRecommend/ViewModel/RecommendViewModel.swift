@@ -57,7 +57,7 @@ class RecommendViewModel: ObservableObject {
         self.routeAPIService = routeAPIService
         self.coordinator = coordinator
         
-        fetchRouteGeometry(routeId: 105)
+        fetchRouteGeometry(routeId: 102)
     }
     
     func navigateToDetail(id: Int) {
