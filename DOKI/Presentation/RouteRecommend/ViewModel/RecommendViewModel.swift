@@ -60,8 +60,8 @@ class RecommendViewModel: ObservableObject {
         fetchRouteGeometry(routeId: 102)
     }
     
-    func navigateToDetail(id: Int) {
-        coordinator.push(.courseDetail(id: id))
+    func navigateToRouteDetail(routeId: Int) {
+        coordinator.push(.routeDetail(routeId: routeId))
     }
     
     func navigateToFilterSetting() {

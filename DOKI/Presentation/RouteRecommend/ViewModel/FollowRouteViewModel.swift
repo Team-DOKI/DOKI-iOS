@@ -61,7 +61,7 @@ class FollowRouteViewModel: ObservableObject {
     }
     
     func navigateToFollowReview() {
-        navigationAction?(.followReview)
+        navigationAction?(.followRouteReview)
     }
     
     func reset() {

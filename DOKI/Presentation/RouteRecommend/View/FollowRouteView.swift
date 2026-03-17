@@ -107,7 +107,7 @@ struct FollowRouteView: View {
         }
         .onAppear {
             viewModel.startTimer()
-            viewModel.loadRouteGeometry()
+            viewModel.fetchRouteGeometry()
         }
     }
 }
