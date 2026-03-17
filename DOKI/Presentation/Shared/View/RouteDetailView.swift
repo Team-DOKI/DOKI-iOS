@@ -89,7 +89,7 @@ extension RouteDetailView {
     
     private var profileSection: some View {
         HStack(spacing: 10) {
-                       
+            
             KFImage(URL(string: viewModel.petProfileImageURL))
                 .placeholder {
                     Color.gray.opacity(0.3)
@@ -130,7 +130,7 @@ extension RouteDetailView {
                              alignment: .leading) { tagName in
                     RouteTag(text: tagName)
                 }
-                .padding(.vertical, 10)
+                             .padding(.vertical, 10)
             } else {
                 HStack(spacing: 8) {
                     ForEach(viewModel.tagList.prefix(4), id: \.self) { tagName in
@@ -246,7 +246,9 @@ extension RouteDetailView {
                 
                 MainButton(text: "수정하기")
             } else {
-                MainButton(text: "해당 루트로 산책하기")
+                MainButton(text: "해당 루트로 산책하기") {
+                    viewModel.navigateToFollowRouteFollowRoute()
+                }
             }
         }
         .padding(.top, 40)

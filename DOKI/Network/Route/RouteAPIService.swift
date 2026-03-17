@@ -25,9 +25,16 @@ protocol RouteAPIServiceProtocol {
         completion: @escaping (NetworkResult<LikeResponseDTO>) -> Void
     )
     
+    /// 산책 후 산책 정보 조회
     func fetchWalkSummary(
         routeId: Int,
         completion: @escaping (NetworkResult<WalkSummaryResponseDTO>) -> Void
+    )
+    
+    /// 루트 좌표 조회
+    func fetchRouteGeometry(
+        routeId: Int,
+        completion: @escaping (NetworkResult<RouteGeometryResponseDTO>) -> Void
     )
 }
 
@@ -35,6 +42,7 @@ extension RouteAPIServiceProtocol {
     typealias RouteInfoResponseDTO = BaseDTO<RouteInfoResponse>
     typealias LikeResponseDTO = BaseDTO<LikeResponse>
     typealias WalkSummaryResponseDTO = BaseDTO<WalkSummaryResponse>
+    typealias RouteGeometryResponseDTO = BaseDTO<RouteGeometryResponse>
 }
 
 final class RouteAPIService: BaseAPIService, RouteAPIServiceProtocol {
@@ -89,6 +97,19 @@ final class RouteAPIService: BaseAPIService, RouteAPIServiceProtocol {
             .fetchWalkSummary(routeId: routeId),
             provider: provider,
             responseType: WalkSummaryResponseDTO.self,
+            completion: completion
+        )
+    }
+    
+    /// 루트 좌표 조회
+    func fetchRouteGeometry(
+        routeId: Int,
+        completion: @escaping (NetworkResult<RouteGeometryResponseDTO>) -> Void
+    ) {
+        self.request(
+            .fetchRouteGeometry(routeId: routeId),
+            provider: provider,
+            responseType: RouteGeometryResponseDTO.self,
             completion: completion
         )
     }

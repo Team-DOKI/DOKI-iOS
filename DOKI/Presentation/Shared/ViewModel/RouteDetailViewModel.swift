@@ -7,15 +7,16 @@
 
 import SwiftUI
 
+// TODO: - 위치 고민
 enum RouteDetailRoute {
     case back
+    case followRoute(routeId: Int)
 }
 
 class RouteDetailViewModel: ObservableObject {
-    var postID: Int?
+    var postId: Int?
     var userId: Int?
     var routeId: Int?
-    var navigationAction: ((RouteDetailRoute)->())?
     
     @Published var title = "            "
     @Published var address: String = "          "
@@ -38,9 +39,16 @@ class RouteDetailViewModel: ObservableObject {
     
     init(postAPIService: PostAPIService, postId: Int? = nil) {
         self.postAPIService = postAPIService
-        self.postID = postId
+        self.postId = postId
     }
-        
+    
+    //MARK: - Navigation
+    
+    var navigationAction: ((RouteDetailRoute)->())?
+    
+    func setRouteId(routeId: Int) {
+        self.routeId = routeId
+    }
     
     func navigateToBack() {
         navigationAction?(.back)
@@ -52,8 +60,8 @@ class RouteDetailViewModel: ObservableObject {
         Task {
             loadingStatus = .loading
             do {
-                guard let postID else { return }
-                let response = try await postAPIService.fetchPost(postId: postID)
+                guard let postId else { return }
+                let response = try await postAPIService.fetchPost(postId: postId)
                 guard let data = response.data else { return }
                 
                 address = data.routeDisplay.locationText
@@ -90,5 +98,9 @@ class RouteDetailViewModel: ObservableObject {
                 print(error.localizedDescription)
             }
         }
+    }
+    
+    func navigateToFollowRouteFollowRoute() {
+        navigationAction?(.followRoute(routeId: routeId ?? 0))
     }
 }

@@ -14,6 +14,7 @@ enum RouteAPI {
     case toggleLike(postId: Int) // 게시글 좋아요/취소
     
     case fetchWalkSummary(routeId: Int) // 산책 후 산책 정보 조회
+    case fetchRouteGeometry(routeId: Int) // 루트 좌표 조회
 }
 
 extension RouteAPI: BaseTargetType {
@@ -32,6 +33,8 @@ extension RouteAPI: BaseTargetType {
             return "posts/\(postId)/likes"
         case .fetchWalkSummary(let routeId):
             return "routes/\(routeId)/summary"
+        case .fetchRouteGeometry(let routeId):
+                return "routes/\(routeId)/geometry"
         }
     }
     

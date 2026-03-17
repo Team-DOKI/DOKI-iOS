@@ -135,7 +135,7 @@ struct MyPageView: View {
         })
         .onAppear {
             viewModel.fetchUserProfile()
-            viewModel.fetchPetProfile(petId: 4)
+            viewModel.fetchPetProfile(petId: 14)
         }
     }
 }

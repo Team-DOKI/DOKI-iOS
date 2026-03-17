@@ -66,7 +66,7 @@ struct DBTIResultView: View {
         }
         .onAppear {
             if viewModel.dbtiEntryContext == .myPage {
-                viewModel.fetchDBTIResult(petId: 2)
+                viewModel.fetchDBTIResult(petId: 14)
             }
         }
     }
