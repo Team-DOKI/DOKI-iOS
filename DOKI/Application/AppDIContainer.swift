@@ -71,5 +71,13 @@ extension AppDIContainer {
         func makeMyLikedPostViewModel() -> MyLikedPostsViewModel {
             return MyLikedPostsViewModel()
         }
+        
+        func makeFollowRouteViewModel() -> FollowRouteViewModel {
+            return FollowRouteViewModel()
+        }
+        
+        func makeFollowRouteReviewViewModel() -> FollowRouteReviewViewModel {
+            return FollowRouteReviewViewModel()
+        }
     }
 }

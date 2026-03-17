@@ -89,14 +89,17 @@ struct WalkCoordinatorView: View {
             switch destination {
             case .walkRecord:
                 walkRecordCoordinator.push(.walkRecord)
+                
             case .walkResult:
-                if let data = resultData {
-                    walkResultViewModel.update(with: data)
+                if let resultData {
+                    walkResultViewModel.update(with: resultData)
                 }
                 if let finishResponse {
                     walkResultViewModel.updateFinishResponse(finishResponse)
                 }
+                
                 walkRecordCoordinator.push(.walkResult)
+                
             case .walkReview:
                 walkRecordCoordinator.push(.walkReview)
             }
@@ -113,6 +116,7 @@ struct WalkCoordinatorView: View {
             switch destination {
             case .backToRoot:
                 walkRecordCoordinator.dismiss()
+                
             case .routeDetail:
                 walkRecordCoordinator.dismiss()
                 walkPreparationCoordinator.push(.routeDetail)
@@ -123,6 +127,9 @@ struct WalkCoordinatorView: View {
             switch destination {
             case .back:
                 walkPreparationCoordinator.pop()
+                
+            default:
+                break
             }
         }
     }
