@@ -220,7 +220,10 @@ extension RouteDetailView {
                     .stroke(.defaultRed, lineWidth: 1)
             )
             
-            MainButton(text: "수정하기")
+            // TODO: - 우선 임시로 수정하기 버튼에 다른 사람 루트 따라 걷기 연결 (isPublic에 따라 버튼 표시 분기 처리 필요)
+            MainButton(text: "수정하기") {
+                viewModel.navigateToFollowRouteFollowRoute()
+            }
         }
         .padding(.top, 40)
         .padding(.horizontal, 16)
