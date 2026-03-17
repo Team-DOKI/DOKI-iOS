@@ -18,7 +18,7 @@ struct RouteRecommendView: View {
         VStack(spacing: 0) {
             // TODO: - 임시 (다른 사람 루트 따라 걷기 연결 용도)
             bannerSection.onTapGesture {
-                viewModel.navigationAction?(.routeDetail(routeId: 102))
+                viewModel.navigationAction?(.routeDetail(postId: 102))
             }
             
             filterSection
@@ -145,7 +145,9 @@ struct RouteRecommendView: View {
         ScrollView(showsIndicators: false) {
             LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(viewModel.posts, id: \.self.postId) { post in
-                    RouteCell(post: post) {}
+                    RouteCell(post: post)
+                        {}
+                        .onTapGesture { viewModel.navigateToRouteDetail(postId: post.postId) }
                     .onAppear {
                         if "\(post.postId)" == viewModel.nextCursorId {
                             viewModel.fetchPosts()

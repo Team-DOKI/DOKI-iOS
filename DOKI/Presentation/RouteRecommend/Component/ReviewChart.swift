@@ -15,19 +15,33 @@ struct ReviewChart: View {
         switch rank {
         case 1: .primaryGra5
         case 2: .primaryGra2
-        case 3: .primaryGra2
+        case 3: .primaryGra1
         default: Color.red
-            
+        }
+    }
+    
+    var widthRatio: CGFloat {
+        switch rank {
+        case 1: return 1.0
+        case 2: return 0.7
+        case 3: return 0.4
+        default: return 0.3
         }
     }
     
     var body: some View {
-        Text(text)
-            .bodySmall()
-            .padding(12)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(chartColor)
-            .cornerRadius(6)
+        GeometryReader { geo in
+            Text(text)
+                .subActive()
+                .padding(12)
+                .frame(
+                    width: geo.size.width * widthRatio,
+                    alignment: .leading
+                )
+                .background(chartColor)
+                .cornerRadius(6)
+        }
+        .frame(height: 37)
     }
 }
 

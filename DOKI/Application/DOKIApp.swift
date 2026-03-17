@@ -16,7 +16,7 @@ struct DOKIApp: App {
     @StateObject var authManager = AuthManager.shared
     
     var body: some Scene {
-        WindowGroup {
+        WindowGroup {            
             RootView()
                 .environmentObject(authManager)
                 .environmentObject(appDIContainer)

@@ -24,7 +24,7 @@ final class FilterAPIService: BaseAPIService, FilterAPIServiceProtocol {
     
     func fetchFilterCategories() async throws -> [FilterList] {
         do {
-            let response: FilterCategoriesResponseDTO = try await provider.async.request(.fetchFilterCategories)
+            let response: FilterCategoriesResponseDTO = try await provider.async.request(.fetchFilterCategories)            
             guard let data = response.data else {
                 throw APIError.decodingError
             }

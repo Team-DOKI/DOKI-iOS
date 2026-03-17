@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum RecommendRoute: Route {
-    case routeDetail(routeId: Int)
+    case routeDetail(postId: Int)
     case filterSetting
 }
 
@@ -68,11 +68,8 @@ struct RecommendCoordinatorView: View {
             RouteRecommendView(viewModel: recommendViewModel)
                 .navigationDestination(for: RecommendRoute.self) { destination in
                     switch destination {
-                    case .routeDetail(let routeId):
-                        RouteDetailView(viewModel: routeDetailViewModel)
-                            .onAppear {
-                                routeDetailViewModel.setRouteId(routeId: routeId)
-                            }
+                    case .routeDetail(let postId):
+                        RouteDetailView(viewModel: makeRouteDetailViewModel(postId))
                         
                     case .filterSetting:
                         FilterSettingView(viewModel: filterSettingViewModel)
@@ -118,7 +115,7 @@ private extension RecommendCoordinatorView {
                 }
                 
             case .routeDetail(let routeId):
-                recommendCoordinator.push(.routeDetail(routeId: routeId))
+                recommendCoordinator.push(.routeDetail(postId: routeId))
             }
         }
         
@@ -159,10 +156,30 @@ private extension RecommendCoordinatorView {
         }
         
         followRouteReviewViewModel.navigationAction = { destination in
-            switch destination {   
+            switch destination {
             case .backToRoot:
                 followRouteCoordinator.dismiss()
             }
         }
+    }
+    
+    private func makeRouteDetailViewModel(_ postId: Int) -> RouteDetailViewModel {
+        let viewModel = RouteDetailViewModel(
+            postAPIService: PostAPIService(),
+            postId: postId
+        )
+        
+        viewModel.navigationAction = { destination in
+            switch destination {
+            case .back:
+                recommendCoordinator.pop()
+            case .followRoute(let routeId):
+                followRouteViewModel.setRoute(routeId)
+                
+                followRouteCoordinator.presentFullScreen(.followRoute)
+            }
+        }
+        
+        return viewModel
     }
 }

@@ -7,29 +7,56 @@
 
 import SwiftUI
 
+// TODO: routeImage -> 임시 이미지로 대체
+
 class WalkReviewViewModel: ObservableObject {
+    
     private let routeAPIService: RouteAPIServiceProtocol = RouteAPIService()
+    private let filterAPIServie: FilterAPIService
+    private let postAPIService: PostAPIService
+    private let imageAPIService: ImageAPIServiceProtocol
     
     var navigationAction: ((WalkReviewRoute)->())?
+    var selectedFilterOptions: [FilterList] = []
     
     @Published var isShowReviewCompleted: Bool = false
-    @Published var reviewTitle: String = ""
-    @Published var reviewContent: String = ""
+    
+    // 산책 게시물 제목
+    @Published var title: String = ""
+    
+    // 산책 게시물 내용
+    @Published var description: String = ""
     @Published var address: String = "상세 주소"
     @Published var recordDate: String = "YY.MM.DD | 오후 00:00"
     @Published var walkRecord: String = "거리 | 시간 | 걸음수"
-    @Published var reviewImages: [UIImage] = []
+    
+    
+    @Published var walkImages: [UIImage] = []
+    @Published var routeImage: UIImage = UIImage(resource: .imgUpperbodydog)
+    
     @Published var selectedCongestion: FilteringOption?
-    @Published var selectedDogInteraction: FilteringOption?
-    @Published var safetyOption: [FilteringOption] = []
+    @Published var selectedExchange: FilteringOption?
     
-    @Published var convenienceOption: [FilteringOption] = []
+    @Published var safety: [FilteringOption] = []
     
-    @Published var environmentOption: [FilteringOption] = []
+    @Published var convenience: [FilteringOption] = []
     
-    @Published var congestionOption: [FilteringOption] = []
+    @Published var environment: [FilteringOption] = []
     
-    @Published var dogInteractionOption: [FilteringOption] = []
+    @Published var congestion: [FilteringOption] = []
+    
+    @Published var exchange: [FilteringOption] = []
+    @Published var loadingStatus: LoadingStatus = .ready
+    
+    init(
+        filterAPIService: FilterAPIService,
+        postAPIService: PostAPIService,
+        imageAPIService: ImageAPIService
+    ) {
+        self.filterAPIServie = filterAPIService
+        self.postAPIService = postAPIService
+        self.imageAPIService = imageAPIService
+    }
     
     func navigateBackToRoot() {
         navigationAction?(.backToRoot)
@@ -41,6 +68,29 @@ class WalkReviewViewModel: ObservableObject {
     
     func showReviewComplete() {
         isShowReviewCompleted = true
+    }
+}
+
+extension WalkReviewViewModel {
+    func bindData() {
+        selectedFilterOptions.forEach {
+            switch $0.filterType {
+            case .congestion:
+                self.congestion = $0.options
+                if let selectedCongestion = $0.options.first(where: { $0.isActive }) { self.selectedCongestion = selectedCongestion }
+            case .exchange:
+                self.exchange = $0.options
+                if let selectedExchange = $0.options.first(where: { $0.isActive }) { self.selectedExchange = selectedExchange }
+            case .safety:
+                self.safety = $0.options
+            case .convenience:
+                self.convenience = $0.options
+            case .environment:
+                self.environment = $0.options
+            default:
+                break
+            }
+        }
     }
 }
 
@@ -65,6 +115,164 @@ extension WalkReviewViewModel {
             default:
                 print("산책 요약 정보 조회에 실패했습니다.")
             }
+        }
+    }
+    
+    @MainActor
+    func fetchFilterCategories() async {
+        if !selectedFilterOptions.isEmpty { return }
+        
+        do {
+            let response = try await filterAPIServie.fetchFilterCategories()
+            selectedFilterOptions = response
+            selectedCongestion = selectedFilterOptions.filter { $0.filterType == .congestion }.flatMap { $0.options }[0]
+            selectedExchange = selectedFilterOptions.filter { $0.filterType == .exchange }.flatMap { $0.options }[0]
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func uploadPost(isPublic: Bool) {
+        Task {
+            await MainActor.run { loadingStatus = .loading }
+            do {
+
+                let selectedOptionsForCategories = createSelectedOptions(selectedOption: selectedFilterOptions)
+                                
+                // 경로이미지 요청 도메인
+                let presignedURLRequest = PresignedURLRequest(
+                    domain: "ROUTE",
+                    contentType: "image/jpeg"
+                )
+                
+                // 경로이미지 데이터 추출
+                guard let routeCgImage = routeImage.cgImage,
+                      let routeImageData = UIImage(cgImage: routeCgImage).jpegData(compressionQuality: 0.8) else { return }
+                
+                // 경로이미지 presignedURL 발급
+                guard let presignedURLResponse = try await imageAPIService.asyncPresignedURL(request: presignedURLRequest).data,
+                      let uploadURL = URL(string: presignedURLResponse.uploadUrl) else { return }
+                
+                // S3 업로드
+                try await uploadToS3(url: uploadURL, data: routeImageData)
+                
+                
+                let routeImageRequest = RegisterImageRequest(
+                           imageUrl: presignedURLResponse.imageUrl,
+                           contentType: "image/jpeg",
+                           width: Int(routeImage.size.width),
+                           height: Int(routeImage.size.height),
+                           domain: "ROUTE"
+                       )
+                
+                // 경로이미지 ID 발급
+                guard let routeImageId = try await imageAPIService.asyncRegisterImage(request: routeImageRequest).data?.imageId else { return }
+                
+                var walkImageIds: [Int] = []
+                
+                for walkImage in walkImages {
+                    guard let cgImage = walkImage.cgImage,
+                        let imageData = UIImage(cgImage: cgImage).jpegData(compressionQuality: 0.8) else { return }
+                    
+                    let presignedURLRequest = PresignedURLRequest(
+                        domain: "ROUTE",
+                        contentType: "image/jpeg"
+                    )
+                    
+                    guard let presignedURLResponse = try await imageAPIService.asyncPresignedURL(request: presignedURLRequest).data,
+                          let uploadURL = URL(string: presignedURLResponse.uploadUrl) else { return }
+                    
+                    try await uploadToS3(url: uploadURL, data: imageData)
+                    
+                    let imageRequest = RegisterImageRequest(
+                        imageUrl: presignedURLResponse.imageUrl,
+                        contentType: "image/jpeg",
+                        width: Int(walkImage.size.width),
+                        height: Int(walkImage.size.height),
+                        domain: "ROUTE"
+                    )
+                    
+                    guard let walkImageId = try await imageAPIService.asyncRegisterImage(request: imageRequest).data?.imageId else {
+                        await MainActor.run { loadingStatus = .failed("산책 이미지 등록에 실패했습니다.") }
+                        return
+                    }
+                    walkImageIds.append(walkImageId)
+                }
+                
+                guard let nRouteId = WalkSessionManager.shared.nRouteId else {
+                    await MainActor.run { loadingStatus = .failed("산책 루트 ID가 없습니다.") }
+                    return
+                }
+                
+                let request = PostRegisterRequest(
+                    title: title,
+                    description: description,
+                    isPublic: isPublic,
+                    selectedOptionsForCategories: selectedOptionsForCategories,
+                    routeId: nRouteId,
+                    routeImageId: routeImageId,
+                    walkImageIds: walkImageIds
+                )
+                                               
+                let _ = try await postAPIService.uploadPost(request: request)
+                
+                await MainActor.run { loadingStatus = .success }
+            } catch {
+                await MainActor.run { loadingStatus = .failed(error.localizedDescription) }
+            }
+        }
+    }
+    
+    private func createSelectedOptions(selectedOption: [FilterList]) -> [SelectedOption] {
+        var selectedOption: [FilterList] = selectedOption
+
+        for index in selectedOption.indices {
+            switch selectedOption[index].filterType {
+            // 단일 선택
+            case .congestion:
+                selectedOption[index].options.reset()
+                if let selectedCongestion,
+                   let optionIndex = selectedOption[index].options.firstIndex(where: { $0.id == selectedCongestion.id }) {
+                    selectedOption[index].options[optionIndex].isActive = true
+                }
+            case .exchange:
+                selectedOption[index].options.reset()
+                if let selectedExchange,
+                    let optionIndex = selectedOption[index].options.firstIndex(where: { $0.id == selectedExchange.id }) {
+                    selectedOption[index].options[optionIndex].isActive = true
+                }
+            // 중복 선택
+            case .safety:
+                selectedOption[index].options = safety
+            case .convenience:
+                selectedOption[index].options = convenience
+            case .environment:
+                selectedOption[index].options = environment
+            default:
+                break
+            }
+        }
+
+        let selectedOptionsForCategories = selectedOption.map {
+            SelectedOption(
+                categoryId: $0.id,
+                selectedOptionIds: $0.options.filter { $0.isActive}.map { $0.id }
+            )
+        }
+        
+        return selectedOptionsForCategories
+    }
+    
+    private func uploadToS3(url: URL, data: Data) async throws {
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("image/jpeg", forHTTPHeaderField: "Content-Type")
+        request.httpBody = data
+        
+        do {
+           let _ = try await URLSession.shared.data(for: request)
+        } catch {
+            throw error
         }
     }
 }

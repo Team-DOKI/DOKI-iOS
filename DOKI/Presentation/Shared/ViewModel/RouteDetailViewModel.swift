@@ -14,13 +14,33 @@ enum RouteDetailRoute {
 }
 
 class RouteDetailViewModel: ObservableObject {
-    var routeId: Int = 0
+    var postId: Int?
+    var userId: Int?
+    var routeId: Int?
     
-    @Published var address: String = "상세 주소"
-    @Published var recordDate: String = "YY.MM.DD | 오후 00:00"
-    @Published var walkRecord: String = "거리 | 시간 | 걸음수"
-    @Published var tagList: [String] = ["혼잡도 보통", "교류 활발", "보도/차도 분리", "보도 넓음", "킥보드/자전거 적음", "야간 밝음", "벤치", "배변 봉투 쓰레기통", "편의점", "반려견 동반 카페", "잔디길", "흙길", "포장길", "놀이터/공터"]
+    @Published var title = "            "
+    @Published var address: String = "          "
+    @Published var petProfileImageURL = "           "
+    @Published var recordDate: String = "           "
+    @Published var walkRecord: String = "           "
+    @Published var tagList: [String] = []
     @Published var isExpanded: Bool = false
+    @Published var petName = "          "
+    @Published var routeImageURL = "            "
+    @Published var description = "          "
+    @Published var walkImageUrls: [String] = []
+    @Published var isPublic = false
+    @Published var isMine = false
+    @Published var loadingStatus: LoadingStatus = .ready
+    @Published var reviews: [ReviewResponse.CategoryTop] = []
+    @Published var totalReviewCount = 0
+    
+    private let postAPIService: PostAPIService
+    
+    init(postAPIService: PostAPIService, postId: Int? = nil) {
+        self.postAPIService = postAPIService
+        self.postId = postId
+    }
     
     //MARK: - Navigation
     
@@ -32,9 +52,55 @@ class RouteDetailViewModel: ObservableObject {
     
     func navigateToBack() {
         navigationAction?(.back)
+        isExpanded = false
+    }
+    
+    @MainActor
+    func fetchPost() {
+        Task {
+            loadingStatus = .loading
+            do {
+                guard let postId else { return }
+                let response = try await postAPIService.fetchPost(postId: postId)
+                guard let data = response.data else { return }
+                
+                address = data.routeDisplay.locationText
+                petProfileImageURL = data.authorInfo.petProfileImage
+                tagList = data.categoryTagTexts
+                walkRecord = data.routeDisplay.metaTagTexts.joined(separator: " | ")
+                petName = data.authorInfo.petName
+                routeImageURL = data.routeDisplay.routeImageUrl
+                recordDate = data.routeDisplay.dateTimeText
+                title = data.title
+                description = data.description
+                walkImageUrls = data.walkImages.map { $0.imageUrl }
+                isPublic = data.isPublic
+                isMine = data.isMine
+                userId = data.authorInfo.authorId
+                routeId = data.routeDisplay.routeId
+                loadingStatus = .success
+            } catch {
+                loadingStatus = .failed(error.localizedDescription)
+            }
+        }
+    }
+    
+    @MainActor
+    func fetchReview() {
+        Task {
+            do {
+                guard let userId, let routeId else { return }
+                let response = try await postAPIService.fetchReview(userId: userId, routeId: routeId)
+                reviews = response.categoryTop3.sorted(by: {$0.rank < $1.rank})
+                totalReviewCount = response.totalReviewCount
+            }
+            catch {
+                print(error.localizedDescription)
+            }
+        }
     }
     
     func navigateToFollowRouteFollowRoute() {
-        navigationAction?(.followRoute(routeId: routeId))
+        navigationAction?(.followRoute(routeId: routeId ?? 0))
     }
 }
