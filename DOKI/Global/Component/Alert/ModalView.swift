@@ -35,12 +35,14 @@ struct CustomModalView: View {
                 MainButton(
                     text: primaryTitle,
                     buttonState: .normal,
+                    size: .medium,
                     action: primaryAction,
                 )
                 .onTapGesture(perform: primaryAction)
                 
                 MainButton(
                     text: secondaryTitle,
+                    size: .medium,
                     action: secondaryAction,
                 )
             }
