@@ -109,15 +109,26 @@ struct HomeView: View {
                         .font(.header3)
                         .padding(.horizontal, 16)
                     
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(1...10, id: \.self) { _ in
-                                //                                RouteCell()
-                            }
-                        }
-                        .padding(.trailing, 16)
+                    VStack(spacing: 16) {
+                        Image(.imgSaddog)
+                        
+                        Text("곧 추천 루트가 채워질 예정이에요\n추후에 인기루트를 확인하실 수 있어요!")
+                            .font(.subtitle)
+                            .foregroundStyle(.defaultDark)
+                            .multilineTextAlignment(.center)
                     }
-                    .padding(.leading, 16)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 8)
+                    
+                    //                    ScrollView(.horizontal, showsIndicators: false) {
+                    //                        HStack(spacing: 8) {
+                    //                            ForEach(1...10, id: \.self) { _ in
+                    //                                  RouteCell()
+                    //                            }
+                    //                        }
+                    //                        .padding(.trailing, 16)
+                    //                    }
+                    //                    .padding(.leading, 16)
                 }
                 .padding(.bottom, 24)
                 
@@ -126,15 +137,26 @@ struct HomeView: View {
                         .font(.header3)
                         .padding(.horizontal, 16)
                     
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(1...10, id: \.self) { _ in
-                                //                                RouteCell()
-                            }
-                        }
-                        .padding(.trailing, 16)
+                    VStack(spacing: 16) {
+                        Image(.imgSaddog)
+                        
+                        Text("곧 추천 루트가 채워질 예정이에요\n추후에 맞춤루트를 확인하실 수 있어요!")
+                            .font(.subtitle)
+                            .foregroundStyle(.defaultDark)
+                            .multilineTextAlignment(.center)
                     }
-                    .padding(.leading, 16)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 8)
+                    
+                    //                    ScrollView(.horizontal, showsIndicators: false) {
+                    //                        HStack(spacing: 8) {
+                    //                            ForEach(1...10, id: \.self) { _ in
+                    //                                  RouteCell()
+                    //                            }
+                    //                        }
+                    //                        .padding(.trailing, 16)
+                    //                    }
+                    //                    .padding(.leading, 16)
                 }
                 .padding(.bottom, 100)
             }
