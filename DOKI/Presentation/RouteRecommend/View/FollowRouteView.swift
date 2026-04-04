@@ -65,12 +65,12 @@ struct FollowRouteView: View {
                     .padding(.bottom, 20)
                     
                     HStack(spacing: 8) {
-                        MainButton(text: "산책 중단하기", buttonState: .active2, font: .subtitle) {
+                        MainButton(text: "산책 중단하기", buttonState: .active2, size: .medium) {
                             viewModel.pauseTimer()
                             confirmType = .pause
                         }
                         
-                        MainButton(text: "산책 종료하기", buttonState: .active1, font: .subtitle) {
+                        MainButton(text: "산책 종료하기", buttonState: .active1, size: .medium) {
                             viewModel.pauseTimer()
                             confirmType = .finish
                         }

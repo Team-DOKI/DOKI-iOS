@@ -34,7 +34,7 @@ struct CustomModalView: View {
             HStack(spacing: 9) {
                 MainButton(
                     text: primaryTitle,
-                    buttonState: .disabled,
+                    buttonState: .normal,
                     action: primaryAction,
                 )
                 .onTapGesture(perform: primaryAction)

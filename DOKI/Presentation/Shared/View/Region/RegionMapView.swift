@@ -43,7 +43,7 @@ struct RegionMapView: View {
                         MainButton(
                             text: "위치 수정하기",
                             buttonState: .active2,
-                            font: .subtitle
+                            size: .medium
                         ) {
                             onResetSelection()
                             regionFlow = .search
@@ -51,7 +51,7 @@ struct RegionMapView: View {
                         
                         MainButton(
                             text: "선택하기",
-                            font: .subtitle
+                            size: .medium
                         ) {
                             onSelectRegion()
                             regionFlow = .none

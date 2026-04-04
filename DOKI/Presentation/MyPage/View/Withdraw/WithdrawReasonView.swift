@@ -40,10 +40,10 @@ struct WithdrawReasonView: View {
                 .padding(.top, 16)
                 
                 HStack(spacing: 9) {
-                    MainButton(text: "다음 단계로", buttonState: .disabled, font: .subtitle, action: secondaryButtonAction)
+                    MainButton(text: "다음 단계로", buttonState: .normal, size: .medium, action: secondaryButtonAction)
                         .onTapGesture(perform: secondaryButtonAction)
                     
-                    MainButton(text: "더 써볼래요", action: primaryButtonAction)
+                    MainButton(text: "더 써볼래요", size: .medium, action: primaryButtonAction)
                 }
                 .padding(.top, 16)
             }

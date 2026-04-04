@@ -232,19 +232,9 @@ extension RouteDetailView {
     private var buttonSection: some View {
         HStack(spacing: 8) {
             if viewModel.isMine {
-                Button {
-                    
-                } label: {
-                    Text("삭제하기")
-                        .subtitle(color: .defaultRed)
-                        .frame(maxWidth: .infinity, maxHeight: 56)
-                }
-                .overlay(
-                    RoundedCorner(radius: 8)
-                        .stroke(.defaultRed, lineWidth: 1)
-                )
+                MainButton(text: "삭제하기", buttonState: .danger, size: .medium)
                 
-                MainButton(text: "수정하기")
+                MainButton(text: "수정하기", size: .medium)
             } else {
                 MainButton(text: "해당 루트로 산책하기") {
                     viewModel.navigateToFollowRouteFollowRoute()

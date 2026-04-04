@@ -10,28 +10,47 @@ import SwiftUI
 enum MainButtonState {
     case active1
     case active2
+    case danger
     case disabled
     case loading
+    case normal
     
     var backgroundColor: Color {
         switch self {
         case .active1, .loading:
-                .defaultPrimary
+            return .defaultPrimary
         case .active2:
-                .defaultBackground
-        case .disabled:
-                .defaultButton
+            return .defaultBackground
+        case .danger:
+            return .clear
+        case .disabled, .normal:
+            return .defaultButton
         }
     }
     
     var textColor: Color {
         switch self {
         case .active1, .loading:
-                .defaultBackground
+            return .defaultBackground
         case .active2:
-                .defaultPrimary
+            return .defaultPrimary
+        case .danger:
+            return .defaultRed
         case .disabled:
-                .defaultMiddle
+            return .defaultMiddle
+        case .normal:
+            return .defaultDark
+        }
+    }
+    
+    var borderColor: Color {
+        switch self {
+        case .active2:
+            return .defaultPrimary
+        case .danger:
+            return .defaultRed
+        default:
+            return .clear
         }
     }
     
@@ -40,10 +59,24 @@ enum MainButtonState {
     }
 }
 
+enum MainButtonSize {
+    case large
+    case medium
+    
+    var font: Font {
+        switch self {
+        case .large:
+            return .mainActive
+        case .medium:
+            return .subtitle
+        }
+    }
+}
+
 struct MainButton: View {
     let text: String
     var buttonState: MainButtonState = .active1
-    var font: Font = .mainActive
+    var size: MainButtonSize = .large
     var action: (() -> Void)? = nil
     
     var body: some View {
@@ -53,11 +86,13 @@ struct MainButton: View {
             ZStack {
                 if buttonState == .loading {
                     ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        .progressViewStyle(
+                            CircularProgressViewStyle(tint: buttonState.textColor)
+                        )
                 } else {
                     Text(text)
                         .foregroundStyle(buttonState.textColor)
-                        .font(font)
+                        .font(size.font)
                 }
             }
             .frame(maxWidth: .infinity, minHeight: 56)
@@ -70,7 +105,7 @@ struct MainButton: View {
             RoundedRectangle(cornerRadius: 8)
                 .inset(by: 0.5)
                 .strokeBorder(
-                    buttonState == .active2 ? Color.defaultPrimary : Color.clear,
+                    buttonState.borderColor,
                     lineWidth: 1
                 )
         )
@@ -79,10 +114,26 @@ struct MainButton: View {
 }
 
 #Preview {
-    VStack(spacing: 8) {
-        MainButton(text: "TEXT", buttonState: .active1)
-        MainButton(text: "TEXT", buttonState: .active2, font: .subtitle)
-        MainButton(text: "TEXT", buttonState: .disabled)
+    VStack(spacing: 12) {
+        Text("Large")
+            .frame(maxWidth: .infinity, alignment: .leading)
+        
+        MainButton(text: "Active1", buttonState: .active1)
+        MainButton(text: "Active2", buttonState: .active2)
+        MainButton(text: "Danger", buttonState: .danger)
+        MainButton(text: "Disabled", buttonState: .disabled)
+        MainButton(text: "Normal", buttonState: .normal)
+        MainButton(text: "Loading", buttonState: .loading)
+        
+        Text("Medium")
+            .frame(maxWidth: .infinity, alignment: .leading)
+        
+        MainButton(text: "Active1", buttonState: .active1, size: .medium)
+        MainButton(text: "Active2", buttonState: .active2, size: .medium)
+        MainButton(text: "Danger", buttonState: .danger, size: .medium)
+        MainButton(text: "Disabled", buttonState: .disabled, size: .medium)
+        MainButton(text: "Normal", buttonState: .normal, size: .medium)
+        MainButton(text: "Loading", buttonState: .loading, size: .medium)
     }
     .padding()
 }
