@@ -12,39 +12,55 @@ struct PetInfoView: View {
     @ObservedObject var viewModel: RegisterViewModel
     
     @State private var selectedItem: PhotosPickerItem?
+    @State private var isShowPhotoSheet = false
     
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 0) {
-                Spacer().frame(height: 20)
-                
-                infoViewTitle
-                
-                Spacer().frame(height: 50)
-                
-                photoPicker
-                
-                Spacer().frame(height: 30)
-                
-                nickname
-                
-                Spacer().frame(height: 16)
-                
-                birth
-                
-                Spacer().frame(height: 16)
-                
-                selectGender
-                
-                Spacer().frame(height: 16)
-                
-                selectBreed
-                
-                Spacer().frame(height: 36)
+        ZStack {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Spacer().frame(height: 20)
+                    
+                    infoViewTitle
+                    
+                    Spacer().frame(height: 50)
+                    
+                    photoPicker
+                    
+                    Spacer().frame(height: 30)
+                    
+                    nickname
+                    
+                    Spacer().frame(height: 16)
+                    
+                    birth
+                    
+                    Spacer().frame(height: 16)
+                    
+                    selectGender
+                    
+                    Spacer().frame(height: 16)
+                    
+                    selectBreed
+                    
+                    Spacer().frame(height: 36)
+                }
+                .padding(.horizontal, 16)
             }
-            .padding(.horizontal, 16)
+            
+            if isShowPhotoSheet {
+                photoBottomSheet
+            }
         }
         .onAppear{ viewModel.fetchBreedList() }
+        .onChange(of: selectedItem) { _, newItem in
+            guard let newItem else { return }
+            
+            withAnimation {
+                isShowPhotoSheet = false
+            }
+            
+            handleSelectedPhoto(newItem)
+        }
         .sheet(isPresented: $viewModel.isShowBreedSearch) {
             BreedSearchView(
                 breeds: viewModel.breedList,
@@ -73,23 +89,28 @@ extension PetInfoView {
     }
     
     private var photoPicker: some View {
-        PhotosPicker(
-            selection: $selectedItem,
-            matching: .images
-        ) {
-            if let profileImage = viewModel.petProfileImage {
-                Image(uiImage: profileImage)
-                    .resizable()
-                    .frame(width: 94, height: 94)
-                    .aspectRatio(contentMode: .fill)
-                    .clipShape(Circle())
-            } else {
-                Image(.btnDogprofile)
+        Button {
+            withAnimation {
+                isShowPhotoSheet = true
             }
-        }
-        .onChange(of: selectedItem) { _, newItem in
-            guard let newItem else { return }
-            handleSelectedPhoto(newItem)
+        } label: {
+            ZStack(alignment: .bottomTrailing) {
+                if let profileImage = viewModel.petProfileImage {
+                    Image(uiImage: profileImage)
+                        .resizable()
+                        .frame(width: 94, height: 94)
+                        .aspectRatio(contentMode: .fill)
+                        .clipShape(Circle())
+                } else {
+                    Image(.imgDefaultprofile)
+                        .resizable()
+                        .frame(width: 94, height: 94)
+                        .aspectRatio(contentMode: .fill)
+                        .clipShape(Circle())
+                }
+                
+                Image(.btnEditprofile)
+            }
         }
     }
     
@@ -173,6 +194,63 @@ extension PetInfoView {
                     }
             }
         }
+    }
+}
+
+extension PetInfoView {
+    private var photoBottomSheet: some View {
+        ZStack {
+            Color.black.opacity(0.3)
+                .ignoresSafeArea()
+                .onTapGesture {
+                    isShowPhotoSheet = false
+                }
+            
+            VStack {
+                Spacer()
+                
+                VStack(spacing: 10) {
+                    VStack(spacing: 0) {
+                        PhotosPicker(
+                            selection: $selectedItem,
+                            matching: .images
+                        ) {
+                            Text("갤러리")
+                                .mainDefault(color: .defaultPrimary)
+                                .frame(maxWidth: .infinity, minHeight: 56)
+                        }
+                        
+                        Divider()
+                        
+                        Button {
+                            isShowPhotoSheet = false
+                            viewModel.petProfileImage = nil
+                        } label: {
+                            Text("기본 이미지")
+                                .mainDefault(color: .defaultPrimary)
+                                .frame(maxWidth: .infinity, minHeight: 56)
+                        }
+                    }
+                    .background(Color.white)
+                    .cornerRadius(16)
+                    
+                    Button {
+                        withAnimation {
+                            isShowPhotoSheet = false
+                        }
+                    } label: {
+                        Text("취소")
+                            .frame(maxWidth: .infinity, minHeight: 56)
+                            .background(Color.defaultPrimary)
+                            .foregroundStyle(.white)
+                            .cornerRadius(8)
+                    }
+                }
+                .padding(.horizontal, 16)
+                .transition(.move(edge: .bottom))
+            }
+        }
+        .animation(.easeInOut, value: isShowPhotoSheet)
     }
 }
 

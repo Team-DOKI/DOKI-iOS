@@ -21,8 +21,10 @@ struct PetProfile: View {
                 HStack(spacing: 16) {
                     let url = URL(string: imageUrl ?? "")
                     
-                    AsyncImage(url: url) { image in
-                        image.resizable().scaledToFill()
+                    AsyncImage(url: (imageUrl?.isEmpty == false) ? URL(string: imageUrl!) : nil) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
                     } placeholder: {
                         Image(.imgDefaultprofile)
                             .resizable()

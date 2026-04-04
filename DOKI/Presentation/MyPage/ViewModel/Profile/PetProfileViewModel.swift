@@ -76,6 +76,12 @@ class PetProfileViewModel: ObservableObject {
     func saveButtonTapped(petId: Int) {
         updatePetProfile(petId: petId)
     }
+    
+    func setDefaultImage() {
+        newPetProfileImage = nil
+        petProfileImageUrl = nil
+        imageId = 0
+    }
 }
 
 // MARK: - API
