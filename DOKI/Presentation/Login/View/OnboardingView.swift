@@ -87,19 +87,43 @@ struct OnboardingView: View {
             .padding(.bottom, 24)
             
             Button {
-                
+                hasSeenOnboarding = true
             } label: {
                 Text("건너뛰기")
                     .font(.small)
                     .foregroundColor(.defaultMiddle)
-            }.padding(.bottom, 14)
+            }
+            .padding(.bottom, 14)
             
-            MainButton(text: "시작하기") {
-                hasSeenOnboarding = true
+            MainButton(text: buttonTitle) {
+                handleNext()
             }
         }
         .padding(.horizontal, 16)
         .background(onboardingBackground)
+    }
+    
+    private var buttonTitle: String {
+        currentStep == .explore ? "시작하기" : "다음으로"
+    }
+    
+    private func handleNext() {
+        switch currentStep {
+        case .welcome:
+            withAnimation {
+                currentStep = .record
+            }
+        case .record:
+            withAnimation {
+                currentStep = .share
+            }
+        case .share:
+            withAnimation {
+                currentStep = .explore
+            }
+        case .explore:
+            hasSeenOnboarding = true
+        }
     }
     
     private var onboardingBackground: some View {
