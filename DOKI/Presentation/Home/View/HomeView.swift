@@ -90,11 +90,14 @@ struct HomeView: View {
                     
                     Spacer()
                     
-                    Image(.imgUpperbodydog)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 87, height: 76)
-                        .clipped()
+                    VStack(spacing: 0) {
+                        Spacer()
+                        
+                        Image(.imgUpperbodydog)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 87, height: 76)
+                    }
                 }
                 .padding(.horizontal, 16)
                 .background(.defaultPrimary)
@@ -109,7 +112,7 @@ struct HomeView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
                             ForEach(1...10, id: \.self) { _ in
-//                                RouteCell()
+                                //                                RouteCell()
                             }
                         }
                         .padding(.trailing, 16)
@@ -126,7 +129,7 @@ struct HomeView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
                             ForEach(1...10, id: \.self) { _ in
-//                                RouteCell()
+                                //                                RouteCell()
                             }
                         }
                         .padding(.trailing, 16)
