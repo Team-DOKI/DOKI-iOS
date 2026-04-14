@@ -18,7 +18,7 @@ struct RouteRecommendView: View {
         VStack(spacing: 0) {
             // TODO: - 임시 (다른 사람 루트 따라 걷기 연결 용도)
             bannerSection.onTapGesture {
-                viewModel.navigationAction?(.routeDetail(postId: 102))
+//                viewModel.navigationAction?(.routeDetail(postId: 102))
             }
             
             filterSection
@@ -54,7 +54,7 @@ struct RouteRecommendView: View {
     }
     
     private var bannerSection: some View {
-        Banner(imageName: ["", "", "", ""])
+        Banner(imageName: ["img_banner_1", "img_banner_2", "img_banner_3", "img_banner_4", "img_banner_5", "img_banner_6"])
     }
     
     private var filterSection: some View {
