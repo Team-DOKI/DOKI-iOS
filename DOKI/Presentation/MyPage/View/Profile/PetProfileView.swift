@@ -99,7 +99,7 @@ extension PetProfileView {
                 text: "저장하기",
                 buttonState: viewModel.buttonDisabled ? .disabled : .active1,
                 action: {
-                    viewModel.saveButtonTapped(petId: 19)
+                    viewModel.saveButtonTapped(petId: AuthManager.shared.petId)
                 }
             )
             .padding(.horizontal, 16)

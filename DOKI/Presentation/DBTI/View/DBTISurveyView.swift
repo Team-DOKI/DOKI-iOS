@@ -27,7 +27,7 @@ struct DBTISurveyView: View {
                 text: viewModel.isLastStep ? "완료" : "다음으로",
                 buttonState: viewModel.buttonDisabled ? .disabled : .active1
             ) {
-                viewModel.goToNextStep(petId: 19)
+                viewModel.goToNextStep()
             }
             .padding(.horizontal, 16)
         }

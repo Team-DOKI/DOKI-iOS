@@ -62,17 +62,17 @@ final class DBTIViewModel: ObservableObject {
     
     // MARK: - User Actions
     
-    func goToNextStep(petId: Int) {
+    func goToNextStep() {
         guard let selectedIndex else { return }
-        
+
         if selectedOptionIds.count != questions.count {
             selectedOptionIds = Array(repeating: 0, count: questions.count)
         }
-        
+
         selectedOptionIds[currentStep] = questions[currentStep].options[selectedIndex].id
-        
+
         if isLastStep {
-            submitDBTI(petId: petId)
+            submitDBTI()
         } else {
             currentStep += 1
             self.selectedIndex = nil
@@ -129,9 +129,10 @@ extension DBTIViewModel {
     }
     
     /// DBTI 검사 제출
-    func submitDBTI(petId: Int) {
+    func submitDBTI() {
+        let petId = AuthManager.shared.petId
         let request = DBTISurveyRequest(optionIds: selectedOptionIds)
-        
+
         dbtiAPIService.submitDBTI(
             petId: petId,
             request: request
@@ -167,7 +168,8 @@ extension DBTIViewModel {
     }
     
     /// DBTI 결과 조회
-    func fetchDBTIResult(petId: Int) {
+    func fetchDBTIResult() {
+        let petId = AuthManager.shared.petId
         dbtiAPIService.fetchDBTIResult(petId: petId) { [weak self] result in
             guard let self else { return }
             
