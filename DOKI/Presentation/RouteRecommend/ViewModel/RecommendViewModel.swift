@@ -62,9 +62,8 @@ class RecommendViewModel: ObservableObject {
     
     func navigateToRouteDetail(postId: Int) {
         coordinator.push(.routeDetail(postId: postId))
-        navigationAction?(.routeDetail(postId: postId))
     }
-    
+
     func navigateToFilterSetting() {
         coordinator.push(.filterSetting)
         navigationAction?(.filterSetting)
