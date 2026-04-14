@@ -11,7 +11,7 @@ import SwiftUI
 protocol PostAPIServiceProtocol {
     // 게시물 리스트 조회
     func fetchPosts(sortOption: SortOption, cursor: String, options: [FilterList]) async throws -> (nextCursor: String, hasNext: Bool, posts: [PostItem])
-    func uploadPost(request: PostRegisterRequest) async throws -> PostResponseDTO
+    func uploadPost(request: PostRegisterRequest) async throws -> BaseDTO<PostRegisterResponse>
     func fetchPost(postId: Int) async throws -> PostDetailResponseDTO
     func fetchReview(userId: Int, routeId: Int) async throws -> ReviewResponse
 }
@@ -47,9 +47,9 @@ final class PostAPIService: BaseAPIService, PostAPIServiceProtocol {
         }
     }
     
-    func uploadPost(request: PostRegisterRequest) async throws -> PostResponseDTO  {
+    func uploadPost(request: PostRegisterRequest) async throws -> BaseDTO<PostRegisterResponse> {
         do {
-            let response: PostResponseDTO = try await provider.async.request(.uploadPost(request: request))
+            let response: BaseDTO<PostRegisterResponse> = try await provider.async.request(.uploadPost(request: request))
             return response
         } catch {
             throw error

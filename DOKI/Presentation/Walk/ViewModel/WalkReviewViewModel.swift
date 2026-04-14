@@ -20,6 +20,7 @@ class WalkReviewViewModel: ObservableObject {
     var selectedFilterOptions: [FilterList] = []
     
     @Published var isShowReviewCompleted: Bool = false
+    private var uploadedPostId: Int = 0
     
     // 산책 게시물 제목
     @Published var title: String = ""
@@ -32,6 +33,7 @@ class WalkReviewViewModel: ObservableObject {
     
     
     @Published var walkImages: [UIImage] = []
+    @Published var walkImageIds: [Int] = []
     @Published var routeImage: UIImage = UIImage(resource: .imgUpperbodydog)
     
     @Published var selectedCongestion: FilteringOption?
@@ -63,11 +65,43 @@ class WalkReviewViewModel: ObservableObject {
     }
     
     func navigateToDetail() {
-        navigationAction?(.routeDetail)
+        navigationAction?(.routeDetail(postId: uploadedPostId))
     }
     
     func showReviewComplete() {
         isShowReviewCompleted = true
+    }
+
+    func uploadWalkImage(_ image: UIImage) {
+        Task {
+            guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
+
+            do {
+                let presignedURLRequest = PresignedURLRequest(domain: "WALK", contentType: "image/jpeg")
+
+                guard let presignedData = try await imageAPIService.asyncPresignedURL(request: presignedURLRequest).data,
+                      let uploadURL = URL(string: presignedData.uploadUrl) else { return }
+
+                try await uploadToS3(url: uploadURL, data: imageData)
+
+                let imageRequest = RegisterImageRequest(
+                    imageUrl: presignedData.imageUrl,
+                    contentType: "image/jpeg",
+                    width: Int(image.size.width),
+                    height: Int(image.size.height),
+                    domain: "WALK"
+                )
+
+                if let imageId = try await imageAPIService.asyncRegisterImage(request: imageRequest).data?.imageId {
+                    await MainActor.run {
+                        walkImages.append(image)
+                        walkImageIds.append(imageId)
+                    }
+                }
+            } catch {
+                print("산책 이미지 업로드 실패:", error.localizedDescription)
+            }
+        }
     }
 }
 
@@ -139,84 +173,54 @@ extension WalkReviewViewModel {
 
                 let selectedOptionsForCategories = createSelectedOptions(selectedOption: selectedFilterOptions)
                                 
-                // 경로이미지 요청 도메인
+                // ❌ 경로 이미지 업로드 관련 로직 주석 처리
+                /*
                 let presignedURLRequest = PresignedURLRequest(
                     domain: "ROUTE",
                     contentType: "image/jpeg"
                 )
                 
-                // 경로이미지 데이터 추출
                 guard let routeCgImage = routeImage.cgImage,
                       let routeImageData = UIImage(cgImage: routeCgImage).jpegData(compressionQuality: 0.8) else { return }
                 
-                // 경로이미지 presignedURL 발급
                 guard let presignedURLResponse = try await imageAPIService.asyncPresignedURL(request: presignedURLRequest).data,
                       let uploadURL = URL(string: presignedURLResponse.uploadUrl) else { return }
                 
-                // S3 업로드
                 try await uploadToS3(url: uploadURL, data: routeImageData)
                 
-                
                 let routeImageRequest = RegisterImageRequest(
-                           imageUrl: presignedURLResponse.imageUrl,
-                           contentType: "image/jpeg",
-                           width: Int(routeImage.size.width),
-                           height: Int(routeImage.size.height),
-                           domain: "ROUTE"
-                       )
+                    imageUrl: presignedURLResponse.imageUrl,
+                    contentType: "image/jpeg",
+                    width: Int(routeImage.size.width),
+                    height: Int(routeImage.size.height),
+                    domain: "ROUTE"
+                )
                 
-                // 경로이미지 ID 발급
                 guard let routeImageId = try await imageAPIService.asyncRegisterImage(request: routeImageRequest).data?.imageId else { return }
-                
-                var walkImageIds: [Int] = []
-                
-                for walkImage in walkImages {
-                    guard let cgImage = walkImage.cgImage,
-                        let imageData = UIImage(cgImage: cgImage).jpegData(compressionQuality: 0.8) else { return }
-                    
-                    let presignedURLRequest = PresignedURLRequest(
-                        domain: "ROUTE",
-                        contentType: "image/jpeg"
-                    )
-                    
-                    guard let presignedURLResponse = try await imageAPIService.asyncPresignedURL(request: presignedURLRequest).data,
-                          let uploadURL = URL(string: presignedURLResponse.uploadUrl) else { return }
-                    
-                    try await uploadToS3(url: uploadURL, data: imageData)
-                    
-                    let imageRequest = RegisterImageRequest(
-                        imageUrl: presignedURLResponse.imageUrl,
-                        contentType: "image/jpeg",
-                        width: Int(walkImage.size.width),
-                        height: Int(walkImage.size.height),
-                        domain: "ROUTE"
-                    )
-                    
-                    guard let walkImageId = try await imageAPIService.asyncRegisterImage(request: imageRequest).data?.imageId else {
-                        await MainActor.run { loadingStatus = .failed("산책 이미지 등록에 실패했습니다.") }
-                        return
-                    }
-                    walkImageIds.append(walkImageId)
-                }
-                
+                */
+
                 guard let nRouteId = WalkSessionManager.shared.nRouteId else {
                     await MainActor.run { loadingStatus = .failed("산책 루트 ID가 없습니다.") }
                     return
                 }
-                
+
                 let request = PostRegisterRequest(
                     title: title,
                     description: description,
                     isPublic: isPublic,
                     selectedOptionsForCategories: selectedOptionsForCategories,
                     routeId: nRouteId,
-                    routeImageId: routeImageId,
+                    routeImageId: 3,
                     walkImageIds: walkImageIds
                 )
                                                
-                let _ = try await postAPIService.uploadPost(request: request)
-                
-                await MainActor.run { loadingStatus = .success }
+                let response = try await postAPIService.uploadPost(request: request)
+
+                await MainActor.run {
+                    uploadedPostId = response.data?.postId ?? 0
+                    loadingStatus = .success
+                    showReviewComplete()
+                }
             } catch {
                 await MainActor.run { loadingStatus = .failed(error.localizedDescription) }
             }

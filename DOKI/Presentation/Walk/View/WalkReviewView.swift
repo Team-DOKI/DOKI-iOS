@@ -230,9 +230,7 @@ extension WalkReviewView {
                     if let data,
                        let newImage = UIImage(data: data),
                        !viewModel.walkImages.contains(where: { $0.pngData() == newImage.pngData() }) {
-                        DispatchQueue.main.async {
-                            viewModel.walkImages.append(newImage)
-                        }
+                        viewModel.uploadWalkImage(newImage)
                     }
                 case .failure:
                     break

@@ -23,7 +23,7 @@ enum WalkResultRoute: Route {
 
 enum WalkReviewRoute {
     case backToRoot
-    case routeDetail
+    case routeDetail(postId: Int)
 }
 
 struct WalkCoordinatorView: View {
@@ -116,8 +116,9 @@ struct WalkCoordinatorView: View {
             switch destination {
             case .backToRoot:
                 walkRecordCoordinator.dismiss()
-                
-            case .routeDetail:
+
+            case .routeDetail(let postId):
+                routeDetailViewModel.postId = postId
                 walkRecordCoordinator.dismiss()
                 walkPreparationCoordinator.push(.routeDetail)
             }
