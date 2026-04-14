@@ -17,10 +17,13 @@ struct MyPostsView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             LazyVGrid(columns: columns, spacing: 16) {
-                ForEach(viewModel.posts, id: \.id) { post in
-//                    RouteCell(route: post) {
-//                        viewModel.toggleLike(post.id)
-//                    }
+                ForEach(viewModel.posts, id: \.postId) { post in
+                    RouteCell(post: post) {
+                        viewModel.toggleLike(post.postId)
+                    }
+                    .onTapGesture {
+                        viewModel.navigationAction?(post.postId)
+                    }
                 }
             }
             .padding(.horizontal, 16)
