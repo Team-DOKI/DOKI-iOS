@@ -14,7 +14,7 @@ struct WalkPreparationView: View {
     
     @State private var isAddingItem: Bool = false
     @State private var newItemText: String = ""
-    @State private var itemListHeight: CGFloat = 0
+    private let itemListMaxHeight: CGFloat = 240
     
     @FocusState private var isTextFieldFocused: Bool
     
@@ -59,18 +59,7 @@ struct WalkPreparationView: View {
                     ScrollView(showsIndicators: false) {
                         itemList
                     }
-                    .frame(maxHeight: itemListHeight == 0 ? .infinity : itemListHeight)
-                    .background(
-                        GeometryReader { geo in
-                            Color.clear
-                                .preference(key: HeightKey.self, value: geo.size.height)
-                        }
-                    )
-                    .onPreferenceChange(HeightKey.self) { height in
-                        if itemListHeight == 0 {
-                            itemListHeight = height
-                        }
-                    }
+                    .frame(maxHeight: itemListMaxHeight)
                     
                     Button {
                         isAddingItem = true
@@ -97,9 +86,13 @@ struct WalkPreparationView: View {
             }
         }
         .onChange(of: viewModel.preparationItems) { _, newValue in
+            let checkedNames = loadCheckedNames()
             items = newValue.map {
-                WalkPreparationData(name: $0, isChecked: false)
+                WalkPreparationData(name: $0, isChecked: checkedNames.contains($0))
             }
+        }
+        .onChange(of: items) { _, newValue in
+            saveCheckedNames(newValue.filter { $0.isChecked }.map { $0.name })
         }
         .onDisappear {
             viewModel.preparationItems = items.map { $0.name }
@@ -187,10 +180,14 @@ struct WalkPreparationView: View {
     }
 }
 
-private struct HeightKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = max(value, nextValue())
+extension WalkPreparationView {
+    private func saveCheckedNames(_ names: [String]) {
+        UserDefaults.standard.set(names, forKey: "walkPreparation.checkedItems")
+    }
+
+    private func loadCheckedNames() -> Set<String> {
+        let saved = UserDefaults.standard.stringArray(forKey: "walkPreparation.checkedItems") ?? []
+        return Set(saved)
     }
 }
 
