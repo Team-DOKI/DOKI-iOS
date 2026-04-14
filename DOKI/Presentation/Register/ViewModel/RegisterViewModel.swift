@@ -60,9 +60,10 @@ final class RegisterViewModel: ObservableObject {
     @Published var regionGeometry: Geometry? = nil
     
     // MARK: - Step
-    
+
     @Published var currentStep: RegisterStep = .userProfile
     @Published var regionFlow: RegionFlow = .none
+    @Published var registerCompleted = false
     
     enum RegisterStep: Int {
         case userProfile
@@ -173,7 +174,6 @@ extension RegisterViewModel {
             let gender,
             let dogGender,
             let breedId,
-            let imageId,
             let selectedDongId
         else { return }
         
@@ -191,19 +191,23 @@ extension RegisterViewModel {
                 birth: formattedDogBirthDay,
                 isNeutered: isNeutered,
                 breedId: breedId,
-                imageId: imageId
+                imageId: imageId ?? 0
             )
         )
         
-        profileAPIService.register(request: request) { result in
+        profileAPIService.register(request: request) { [weak self] result in
             switch result {
             case .success(let response):
                 guard
                     let userId = response?.data?.userId,
                     let petId  = response?.data?.petId
                 else { return }
-                
-                // TODO: petId 관리 (반려견 정보 조회 등에서 사용)
+
+                AuthManager.shared.saveUserSession(userId: userId, petId: petId)
+
+                DispatchQueue.main.async {
+                    self?.registerCompleted = true
+                }
             default:
                 print("회원가입 정보를 불러오지 못했습니다.")
             }

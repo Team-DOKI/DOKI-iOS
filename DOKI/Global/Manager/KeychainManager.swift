@@ -25,6 +25,9 @@ enum KeychainName: String {
     case accessToken
     case refreshToken
     case deviceId
+    case petId
+    case userId
+    case provider
 }
 
 struct KeychainManager {
