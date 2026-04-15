@@ -43,6 +43,7 @@ final class FilterSettingViewModel: ObservableObject {
     // 선택된 필터 옵션
     var selectedFilterOptions: [FilterList] = []
     var navigationAction: ((FilterSettingRoute)->())?
+    var focusedFilterType: FilterType? = nil
     
     init(filterAPIService: FilterAPIService) {
         self.filterAPIServie = filterAPIService

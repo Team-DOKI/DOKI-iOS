@@ -59,30 +59,49 @@ struct RouteRecommendView: View {
     
     private var filterSection: some View {
         HStack(spacing: 8) {
-            let hasSelectedItemEmpty = viewModel.selectedFilterOption.isEmpty
-            
-            FilterButton(isActive: !hasSelectedItemEmpty) {
+            let hasFilter = !viewModel.filterOptions.isEmpty
+
+            FilterButton(isActive: hasFilter) {
                 viewModel.navigateToFilterSetting()
             }
-            
-            
+
+
             ScrollView(.horizontal, showsIndicators: false) {
-                if hasSelectedItemEmpty {
-                    HStack(spacing: 8) {
-                        ForEach(FilterCategory.allCases, id: \.self) { tag in
-                            FilteringTag(text: tag.title, isActive: false)
+                HStack(spacing: 8) {
+                    if !hasFilter {
+                        ForEach(FilterCategory.allCases, id: \.self) { category in
+                            FilteringTag(text: category.title, isActive: false)
+                        }
+                    } else {
+                        // 카테고리 원래 순서 그대로 표시
+                        ForEach(viewModel.filterOptions, id: \.id) { filterList in
+                            let activeOptions = filterList.options.filter { $0.isActive }
+                            if !activeOptions.isEmpty {
+                                ForEach(activeOptions, id: \.id) { option in
+                                    FilteringTag(text: displayText(for: option, in: filterList), isActive: true)
+                                }
+                            } else {
+                                FilteringTag(text: filterList.name, isActive: false)
+                                    .onTapGesture {
+                                        viewModel.navigateToFilterSetting(focusedType: filterList.filterType)
+                                    }
+                            }
                         }
                     }
-                    .padding(.trailing, 16)
-                } else {
-                    HStack(spacing: 8) {
-                        ForEach(viewModel.selectedFilterOption.filter { $0.isActive }, id: \.text) { tag in
-                            FilteringTag(text: tag.text, isActive: tag.isActive)
-                        }
-                    }
-                    .padding(.trailing, 16)
                 }
+                .padding(.trailing, 16)
             }
+        }
+    }
+
+    private func displayText(for option: FilteringOption, in filterList: FilterList) -> String {
+        switch filterList.filterType {
+        case .congestion:
+            return "혼잡도 \(option.text)"
+        case .exchange:
+            return option.text.hasPrefix("교류") ? option.text : "교류 \(option.text)"
+        default:
+            return option.text
         }
     }
     
@@ -145,9 +164,10 @@ struct RouteRecommendView: View {
         ScrollView(showsIndicators: false) {
             LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(viewModel.posts, id: \.self.postId) { post in
-                    RouteCell(post: post)
-                        {}
-                        .onTapGesture { viewModel.navigateToRouteDetail(postId: post.postId) }
+                    RouteCell(post: post) {
+                        viewModel.toggleLike(postId: post.postId)
+                    }
+                    .onTapGesture { viewModel.navigateToRouteDetail(postId: post.postId) }
                     .onAppear {
                         if "\(post.postId)" == viewModel.nextCursorId {
                             viewModel.fetchPosts()

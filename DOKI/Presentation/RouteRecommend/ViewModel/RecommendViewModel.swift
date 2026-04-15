@@ -43,7 +43,7 @@ class RecommendViewModel: ObservableObject {
     private let postAPIservice: PostAPIServiceProtocol
     private let routeAPIService: RouteAPIServiceProtocol
     
-    var filterOptions: [FilterList] = []
+    @Published var filterOptions: [FilterList] = []
     var nextCursorId: String = ""
     
     var navigationAction: ((RecommendRoute)->())?
@@ -64,10 +64,29 @@ class RecommendViewModel: ObservableObject {
         coordinator.push(.routeDetail(postId: postId))
     }
 
-    func navigateToFilterSetting() {
+    func toggleLike(postId: Int) {
+        routeAPIService.toggleLike(postId: postId) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    guard let status = response?.data?.status else { return }
+                    if let index = self?.posts.firstIndex(where: { $0.postId == postId }) {
+                        self?.posts[index].isLiked = status == "LIKE_SUCCESS"
+                    }
+                default:
+                    print("좋아요 실패")
+                }
+            }
+        }
+    }
+
+    func navigateToFilterSetting(focusedType: FilterType? = nil) {
+        pendingFocusedFilterType = focusedType
         coordinator.push(.filterSetting)
         navigationAction?(.filterSetting)
     }
+
+    var pendingFocusedFilterType: FilterType? = nil
     
     func selecteSortOption(_ sort: SortOption) {
         self.selectedSort = sort
