@@ -12,12 +12,12 @@ enum MainButtonState {
     case active2
     case danger
     case disabled
-    case loading
+    case loading(base: MainButtonBase)
     case normal
-    
+
     var backgroundColor: Color {
         switch self {
-        case .active1, .loading:
+        case .active1:
             return .defaultPrimary
         case .active2:
             return .defaultBackground
@@ -25,12 +25,14 @@ enum MainButtonState {
             return .clear
         case .disabled, .normal:
             return .defaultButton
+        case .loading(let base):
+            return base.backgroundColor
         }
     }
-    
+
     var textColor: Color {
         switch self {
-        case .active1, .loading:
+        case .active1:
             return .defaultBackground
         case .active2:
             return .defaultPrimary
@@ -40,22 +42,66 @@ enum MainButtonState {
             return .defaultMiddle
         case .normal:
             return .defaultDark
+        case .loading(let base):
+            return base.textColor
         }
     }
-    
+
     var borderColor: Color {
         switch self {
         case .active2:
             return .defaultPrimary
         case .danger:
             return .defaultRed
+        case .loading(let base):
+            return base.borderColor
         default:
             return .clear
         }
     }
-    
+
+    var isLoading: Bool {
+        if case .loading = self { return true }
+        return false
+    }
+
     var isDisabled: Bool {
-        self == .disabled || self == .loading
+        if case .disabled = self { return true }
+        if case .loading = self { return true }
+        return false
+    }
+}
+
+enum MainButtonBase {
+    case active1
+    case active2
+    case danger
+    case normal
+
+    var backgroundColor: Color {
+        switch self {
+        case .active1: return .defaultPrimary
+        case .active2: return .defaultBackground
+        case .danger: return .clear
+        case .normal: return .defaultButton
+        }
+    }
+
+    var textColor: Color {
+        switch self {
+        case .active1: return .defaultBackground
+        case .active2: return .defaultPrimary
+        case .danger: return .defaultRed
+        case .normal: return .defaultDark
+        }
+    }
+
+    var borderColor: Color {
+        switch self {
+        case .active2: return .defaultPrimary
+        case .danger: return .defaultRed
+        default: return .clear
+        }
     }
 }
 
@@ -84,15 +130,15 @@ struct MainButton: View {
             action?()
         } label: {
             ZStack {
-                if buttonState == .loading {
+                Text(text)
+                    .foregroundStyle(buttonState.isLoading ? Color.clear : buttonState.textColor)
+                    .font(size.font)
+
+                if buttonState.isLoading {
                     ProgressView()
                         .progressViewStyle(
                             CircularProgressViewStyle(tint: buttonState.textColor)
                         )
-                } else {
-                    Text(text)
-                        .foregroundStyle(buttonState.textColor)
-                        .font(size.font)
                 }
             }
             .frame(maxWidth: .infinity, minHeight: 56)
@@ -123,7 +169,7 @@ struct MainButton: View {
         MainButton(text: "Danger", buttonState: .danger)
         MainButton(text: "Disabled", buttonState: .disabled)
         MainButton(text: "Normal", buttonState: .normal)
-        MainButton(text: "Loading", buttonState: .loading)
+        MainButton(text: "Loading", buttonState: .loading(base: .active1))
         
         Text("Medium")
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -133,7 +179,7 @@ struct MainButton: View {
         MainButton(text: "Danger", buttonState: .danger, size: .medium)
         MainButton(text: "Disabled", buttonState: .disabled, size: .medium)
         MainButton(text: "Normal", buttonState: .normal, size: .medium)
-        MainButton(text: "Loading", buttonState: .loading, size: .medium)
+        MainButton(text: "Loading", buttonState: .loading(base: .active1), size: .medium)
     }
     .padding()
 }
