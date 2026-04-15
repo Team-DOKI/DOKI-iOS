@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-// TODO: routeImage -> 임시 이미지로 대체
-
 class WalkReviewViewModel: ObservableObject {
     
     private let routeAPIService: RouteAPIServiceProtocol = RouteAPIService()
@@ -49,6 +47,17 @@ class WalkReviewViewModel: ObservableObject {
     
     @Published var exchange: [FilteringOption] = []
     @Published var loadingStatus: LoadingStatus = .ready
+    @Published var tappedButton: Bool? = nil  // false = 나만보기, true = 공유하기
+
+    var isFormValid: Bool {
+        selectedCongestion != nil &&
+        selectedExchange != nil &&
+        safety.contains(where: { $0.isActive }) &&
+        convenience.contains(where: { $0.isActive }) &&
+        environment.contains(where: { $0.isActive }) &&
+        !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
     
     init(
         filterAPIService: FilterAPIService,
@@ -159,8 +168,6 @@ extension WalkReviewViewModel {
         do {
             let response = try await filterAPIServie.fetchFilterCategories()
             selectedFilterOptions = response
-            selectedCongestion = selectedFilterOptions.filter { $0.filterType == .congestion }.flatMap { $0.options }[0]
-            selectedExchange = selectedFilterOptions.filter { $0.filterType == .exchange }.flatMap { $0.options }[0]
         } catch {
             print(error.localizedDescription)
         }
@@ -168,41 +175,19 @@ extension WalkReviewViewModel {
     
     func uploadPost(isPublic: Bool) {
         Task {
-            await MainActor.run { loadingStatus = .loading }
+            await MainActor.run {
+                loadingStatus = .loading
+                tappedButton = isPublic
+            }
             do {
-
                 let selectedOptionsForCategories = createSelectedOptions(selectedOption: selectedFilterOptions)
-                                
-                // ❌ 경로 이미지 업로드 관련 로직 주석 처리
-                /*
-                let presignedURLRequest = PresignedURLRequest(
-                    domain: "ROUTE",
-                    contentType: "image/jpeg"
-                )
-                
-                guard let routeCgImage = routeImage.cgImage,
-                      let routeImageData = UIImage(cgImage: routeCgImage).jpegData(compressionQuality: 0.8) else { return }
-                
-                guard let presignedURLResponse = try await imageAPIService.asyncPresignedURL(request: presignedURLRequest).data,
-                      let uploadURL = URL(string: presignedURLResponse.uploadUrl) else { return }
-                
-                try await uploadToS3(url: uploadURL, data: routeImageData)
-                
-                let routeImageRequest = RegisterImageRequest(
-                    imageUrl: presignedURLResponse.imageUrl,
-                    contentType: "image/jpeg",
-                    width: Int(routeImage.size.width),
-                    height: Int(routeImage.size.height),
-                    domain: "ROUTE"
-                )
-                
-                guard let routeImageId = try await imageAPIService.asyncRegisterImage(request: routeImageRequest).data?.imageId else { return }
-                */
 
                 guard let nRouteId = WalkSessionManager.shared.nRouteId else {
                     await MainActor.run { loadingStatus = .failed("산책 루트 ID가 없습니다.") }
                     return
                 }
+
+                let routeImageId = WalkSessionManager.shared.routeImageId ?? 0
 
                 let request = PostRegisterRequest(
                     title: title,
@@ -210,7 +195,7 @@ extension WalkReviewViewModel {
                     isPublic: isPublic,
                     selectedOptionsForCategories: selectedOptionsForCategories,
                     routeId: nRouteId,
-                    routeImageId: 3,
+                    routeImageId: routeImageId,
                     walkImageIds: walkImageIds
                 )
                                                
@@ -219,10 +204,14 @@ extension WalkReviewViewModel {
                 await MainActor.run {
                     uploadedPostId = response.data?.postId ?? 0
                     loadingStatus = .success
+                    tappedButton = nil
                     showReviewComplete()
                 }
             } catch {
-                await MainActor.run { loadingStatus = .failed(error.localizedDescription) }
+                await MainActor.run {
+                    loadingStatus = .failed(error.localizedDescription)
+                    tappedButton = nil
+                }
             }
         }
     }

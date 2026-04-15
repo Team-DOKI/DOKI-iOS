@@ -136,23 +136,25 @@ extension WalkReviewView {
     private var congestionSection: some View {
         VStack(spacing: 16) {
             SectionHeader(
-                title: "혼잡도"
+                title: "혼잡도",
+                subtitle: "(필수 선택)"
             )
-            
+
             SegmentedButton(
                 items: viewModel.congestion,
                 selectedItem: $viewModel.selectedCongestion
             )
         }
     }
-    
+
     // 강아지 교류 빈도
     private var dogInteractionSection: some View {
         VStack(spacing: 16) {
             SectionHeader(
-                title: "강아지 교류 빈도"
+                title: "강아지 교류 빈도",
+                subtitle: "(필수 선택)"
             )
-            
+
             SegmentedButton(
                 items: viewModel.exchange,
                 selectedItem: $viewModel.selectedExchange
@@ -205,16 +207,17 @@ extension WalkReviewView {
     }
     
     private var buttonSection: some View {
-        VStack(spacing: 16) {
+        let isLoading = viewModel.loadingStatus == .loading
+        return VStack(spacing: 16) {
             MainButton(
                 text: "산책 기록 나만보기",
-                buttonState: viewModel.loadingStatus == .loading ? .loading : .active2,
+                buttonState: (isLoading && viewModel.tappedButton == false) ? .loading(base: .active2) : (viewModel.isFormValid && !isLoading ? .active2 : .disabled),
                 action: { viewModel.uploadPost(isPublic: false) }
             )
-            
+
             MainButton(
                 text: "산책 기록 공유하기",
-                buttonState: viewModel.loadingStatus == .loading ? .loading : .active1,
+                buttonState: (isLoading && viewModel.tappedButton == true) ? .loading(base: .active1) : (viewModel.isFormValid && !isLoading ? .active1 : .disabled),
                 action: { viewModel.uploadPost(isPublic: true) }
             )
         }
