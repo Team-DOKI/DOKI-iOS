@@ -21,35 +21,47 @@ enum FollowRouteReviewRoute {
     case backToRoot
 }
 
+// MARK: - RouteDetail 컨테이너 뷰
+// navigationDestination이 리렌더링될 때마다 makeRouteDetailViewModel이 호출되어
+// ViewModel이 초기화되는 버그를 방지하기 위해 @StateObject로 ViewModel을 소유하는 컨테이너 사용
+private struct RouteDetailContainerView: View {
+    @StateObject var viewModel: RouteDetailViewModel
+
+    init(postId: Int, navigationAction: @escaping (RouteDetailRoute) -> Void) {
+        let vm = RouteDetailViewModel(postAPIService: PostAPIService(), postId: postId)
+        vm.navigationAction = navigationAction
+        self._viewModel = StateObject(wrappedValue: vm)
+    }
+
+    var body: some View {
+        RouteDetailView(viewModel: viewModel)
+    }
+}
+
 struct RecommendCoordinatorView: View {
-    
+
     @EnvironmentObject var tabBarState: TabBarState
-    
+
     @StateObject var recommendCoordinator: Coordinator<RecommendRoute>
     @StateObject var followRouteCoordinator: Coordinator<FollowRouteRoute>
-    
+
     @StateObject var recommendViewModel: RecommendViewModel
-    
-    @StateObject var routeDetailViewModel: RouteDetailViewModel
+
     @StateObject var filterSettingViewModel: FilterSettingViewModel
-    
+
     @StateObject var followRouteViewModel: FollowRouteViewModel
     @StateObject var followRouteReviewViewModel: FollowRouteReviewViewModel
-    
-    
+
+
     init(
         recommendCoordinator: Coordinator<RecommendRoute> = Coordinator(),
         followCoordinator: Coordinator<FollowRouteRoute> = Coordinator(),
         viewModelFactory: AppDIContainer.ViewModelFactory
     ) {
-        
         self._recommendCoordinator = StateObject(wrappedValue: recommendCoordinator)
         self._followRouteCoordinator = StateObject(wrappedValue: followCoordinator)
         self._recommendViewModel = StateObject(
             wrappedValue: viewModelFactory.makeRecommendViewModel(recommendCoordinator)
-        )
-        self._routeDetailViewModel = StateObject(
-            wrappedValue: viewModelFactory.makeRouteDetailViewModel()
         )
         self._filterSettingViewModel = StateObject(
             wrappedValue: viewModelFactory.makeFilterSettingViewModel()
@@ -61,16 +73,27 @@ struct RecommendCoordinatorView: View {
             wrappedValue: viewModelFactory.makeFollowRouteReviewViewModel()
         )
     }
-    
-    
+
+
     var body: some View {
         NavigationStack(path: $recommendCoordinator.path) {
             RouteRecommendView(viewModel: recommendViewModel)
                 .navigationDestination(for: RecommendRoute.self) { destination in
                     switch destination {
                     case .routeDetail(let postId):
-                        RouteDetailView(viewModel: makeRouteDetailViewModel(postId))
-                        
+                        RouteDetailContainerView(
+                            postId: postId,
+                            navigationAction: { [self] route in
+                                switch route {
+                                case .back:
+                                    recommendCoordinator.pop()
+                                case .followRoute(let routeId):
+                                    followRouteViewModel.setRoute(routeId)
+                                    followRouteCoordinator.presentFullScreen(.followRoute)
+                                }
+                            }
+                        )
+
                     case .filterSetting:
                         FilterSettingView(viewModel: filterSettingViewModel)
                     }
@@ -87,7 +110,7 @@ struct RecommendCoordinatorView: View {
                                 switch destination {
                                 case .followRoute:
                                     FollowRouteView(viewModel: followRouteViewModel)
-                                    
+
                                 case .followRouteReview:
                                     FollowRouteReviewView(viewModel: followRouteReviewViewModel)
                                 }
@@ -113,73 +136,43 @@ private extension RecommendCoordinatorView {
                     filterSettingViewModel.selectedFilterOptions =
                     recommendViewModel.filterOptions
                 }
-                
+                filterSettingViewModel.focusedFilterType = recommendViewModel.pendingFocusedFilterType
+                recommendViewModel.pendingFocusedFilterType = nil
+
             case .routeDetail(let routeId):
                 recommendCoordinator.push(.routeDetail(postId: routeId))
             }
         }
-        
+
         filterSettingViewModel.navigationAction = { destination in
             switch destination {
             case .back:
                 recommendCoordinator.pop()
-                
+
             case .saveOption(let selectedOption):
-                recommendViewModel.filterOptions = selectedOption
-                recommendViewModel.selectedFilterOption =
-                selectedOption.flatMap { $0.options }
-                
+                let hasAnyActive = selectedOption.contains { $0.options.contains { $0.isActive } }
+
+                recommendViewModel.filterOptions = hasAnyActive ? selectedOption : []
                 recommendCoordinator.pop()
             }
         }
-        
-        routeDetailViewModel.navigationAction = { destination in
-            switch destination {
-            case .back:
-                recommendCoordinator.pop()
-                
-            case .followRoute(let routeId):
-                followRouteViewModel.setRoute(routeId)
-                
-                followRouteCoordinator.presentFullScreen(.followRoute)
-            }
-        }
-        
+
         followRouteViewModel.navigationAction = { destination in
             switch destination {
             case .followRouteReview:
                 followRouteCoordinator.push(.followRouteReview)
-                
+
             default:
                 break
             }
         }
-        
+
         followRouteReviewViewModel.navigationAction = { destination in
             switch destination {
             case .backToRoot:
+                // fullScreenCover만 닫으면 RouteDetailView로 돌아옴
                 followRouteCoordinator.dismiss()
             }
         }
-    }
-    
-    private func makeRouteDetailViewModel(_ postId: Int) -> RouteDetailViewModel {
-        let viewModel = RouteDetailViewModel(
-            postAPIService: PostAPIService(),
-            postId: postId
-        )
-        
-        viewModel.navigationAction = { destination in
-            switch destination {
-            case .back:
-                recommendCoordinator.pop()
-            case .followRoute(let routeId):
-                followRouteViewModel.setRoute(routeId)
-                
-                followRouteCoordinator.presentFullScreen(.followRoute)
-            }
-        }
-        
-        return viewModel
     }
 }
