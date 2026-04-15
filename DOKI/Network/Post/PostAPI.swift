@@ -13,6 +13,8 @@ enum PostAPI {
     case uploadPost(request: PostRegisterRequest)
     case fetchPost(postId: Int)
     case fetchReview(userId: Int, routeId: Int)
+    case deletePost(postId: Int)
+    case updatePost(postId: Int, request: PostUpdateRequest)
 }
 
 extension PostAPI: BaseTargetType {
@@ -30,6 +32,10 @@ extension PostAPI: BaseTargetType {
             return "posts/\(postId)"
         case .fetchReview(let userId, let routeId):
             return "posts/\(routeId)/reviews/top"
+        case .deletePost(let postId):
+            return "posts/\(postId)"
+        case .updatePost(let postId, _):
+            return "posts/\(postId)"
         }
     }
     
@@ -39,6 +45,10 @@ extension PostAPI: BaseTargetType {
             return .post
         case .fetchPost, .fetchReview:
             return .get
+        case .deletePost:
+            return .delete
+        case .updatePost:
+            return .patch
         }
     }
     
@@ -68,6 +78,10 @@ extension PostAPI: BaseTargetType {
             return .requestPlain
         case .fetchReview(let userId, let routeId):
             return .requestParameters(parameters: ["userId": userId, "routeId": routeId], encoding: URLEncoding.queryString)
+        case .deletePost:
+            return .requestPlain
+        case .updatePost(_, let request):
+            return .requestJSONEncodable(request)
         }
     }
 }

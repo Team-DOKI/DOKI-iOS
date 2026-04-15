@@ -14,6 +14,8 @@ protocol PostAPIServiceProtocol {
     func uploadPost(request: PostRegisterRequest) async throws -> BaseDTO<PostRegisterResponse>
     func fetchPost(postId: Int) async throws -> PostDetailResponseDTO
     func fetchReview(userId: Int, routeId: Int) async throws -> ReviewResponse
+    func deletePost(postId: Int) async throws
+    func updatePost(postId: Int, request: PostUpdateRequest) async throws
 }
 
 extension PostAPIServiceProtocol {
@@ -70,6 +72,22 @@ final class PostAPIService: BaseAPIService, PostAPIServiceProtocol {
             let response: ReviewResponseDTO = try await provider.async.request(.fetchReview(userId: userId, routeId: routeId))
             guard let reviewResponse = response.data else { throw APIError.decodingError }
             return reviewResponse
+        } catch {
+            throw error
+        }
+    }
+
+    func deletePost(postId: Int) async throws {
+        do {
+            try await provider.async.requestPlain(.deletePost(postId: postId))
+        } catch {
+            throw error
+        }
+    }
+
+    func updatePost(postId: Int, request: PostUpdateRequest) async throws {
+        do {
+            try await provider.async.requestPlain(.updatePost(postId: postId, request: request))
         } catch {
             throw error
         }
