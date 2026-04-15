@@ -45,6 +45,6 @@ struct DBTIQuestion: View {
     }
     
     private var spacing: CGFloat {
-           data.question.contains("\r\n") ? 44 : 68
-       }
+        data.question.rangeOfCharacter(from: .newlines) != nil ? 44 : 68
+    }
 }

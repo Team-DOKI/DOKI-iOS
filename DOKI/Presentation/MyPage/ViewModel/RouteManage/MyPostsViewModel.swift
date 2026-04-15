@@ -22,7 +22,8 @@ class MyPostsViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self?.posts = response?.data?.posts.map { post in
-                        PostItem(
+                        print("📷 post \(post.postId) imageUrl: \(post.imageUrl ?? "nil")")
+                        return PostItem(
                             postId: post.postId,
                             regionName: post.regionName,
                             title: post.title,
