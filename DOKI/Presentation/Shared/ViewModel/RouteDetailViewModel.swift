@@ -34,7 +34,14 @@ class RouteDetailViewModel: ObservableObject {
     @Published var loadingStatus: LoadingStatus = .ready
     @Published var reviews: [ReviewResponse.CategoryTop] = []
     @Published var totalReviewCount = 0
-    
+    @Published var isShowEditSheet = false
+    @Published var isShowDeleteAlert = false
+
+    // 수정 시 전달할 원본 데이터
+    var walkImageIds: [Int] = []
+    var rawWalkImages: [PostDetailResponse.WalkImage] = []
+    var rawCategoryTexts: [String] = []
+
     private let postAPIService: PostAPIService
     
     init(postAPIService: PostAPIService, postId: Int? = nil) {
@@ -66,7 +73,16 @@ class RouteDetailViewModel: ObservableObject {
                 
                 address = data.routeDisplay.locationText
                 petProfileImageURL = data.authorInfo.petProfileImage
-                tagList = data.categoryTagTexts
+                tagList = data.categoryTagTexts.map { text in
+                    switch text {
+                    case "적음", "평범", "많음":
+                        return "혼잡도 \(text)"
+                    case "보통":
+                        return "교류 \(text)"
+                    default:
+                        return text
+                    }
+                }
                 walkRecord = data.routeDisplay.metaTagTexts.joined(separator: " | ")
                 petName = data.authorInfo.petName
                 routeImageURL = data.routeDisplay.routeImageUrl
@@ -74,6 +90,9 @@ class RouteDetailViewModel: ObservableObject {
                 title = data.title
                 description = data.description
                 walkImageUrls = data.walkImages.map { $0.imageUrl }
+                walkImageIds = data.walkImages.map { $0.imageId }
+                rawWalkImages = data.walkImages
+                rawCategoryTexts = data.categoryTagTexts
                 isPublic = data.isPublic
                 isMine = data.isMine
                 userId = data.authorInfo.authorId
@@ -102,5 +121,26 @@ class RouteDetailViewModel: ObservableObject {
     
     func navigateToFollowRouteFollowRoute() {
         navigationAction?(.followRoute(routeId: routeId ?? 0))
+    }
+
+    func deletePostTapped() {
+        isShowDeleteAlert = true
+    }
+
+    func editPostTapped() {
+        isShowEditSheet = true
+    }
+
+    @MainActor
+    func deletePost() {
+        Task {
+            guard let postId else { return }
+            do {
+                try await postAPIService.deletePost(postId: postId)
+                navigateToBack()
+            } catch {
+                print("게시글 삭제 실패:", error.localizedDescription)
+            }
+        }
     }
 }
