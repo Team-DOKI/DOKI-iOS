@@ -39,6 +39,14 @@ struct WalkResultView: View {
                 Rectangle()
                     .foregroundColor(.defaultMiddle)
                     .cornerRadius(4)
+                    .overlay {
+                        if let mapImage = viewModel.routeMapImage {
+                            Image(uiImage: mapImage)
+                                .resizable()
+                                .scaledToFill()
+                        }
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
                 
                 HStack(spacing: 0) {
                     WalkStatItem(title: "거리 (km)", value: viewModel.distanceString)

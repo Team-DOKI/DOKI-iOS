@@ -8,14 +8,16 @@
 import SwiftUI
 
 class WalkResultViewModel: ObservableObject {
-    
+
     @Published var distance: Double = 0
     @Published var elapsedSeconds: Int = 0
     @Published var stepCount: Int = 0
-    
+
     @Published var petName: String = ""
     @Published var petImageUrl: String = ""
     @Published var startedAt: String = ""
+
+    @Published var routeMapImage: UIImage?
     
     var distanceString: String {
         String(format: "%.2f", distance / 1000)
@@ -35,6 +37,7 @@ class WalkResultViewModel: ObservableObject {
         self.distance = data.distance
         self.elapsedSeconds = data.elapsedSeconds
         self.stepCount = data.stepCount
+        self.routeMapImage = data.routeMapImage
     }
     
     func updateFinishResponse(_ response: WalkFinishResponse) {
