@@ -51,7 +51,7 @@ struct HomeView: View {
                     
                     HStack(spacing: 0) {
                         VStack(alignment: .leading, spacing: 0) {
-                            Text("\(viewModel.petName)와 함께")
+                            Text("\(viewModel.petName)\(viewModel.petName.josaWaGwa) 함께")
                                 .font(.subtitle)
                                 .foregroundStyle(.contents)
                             
