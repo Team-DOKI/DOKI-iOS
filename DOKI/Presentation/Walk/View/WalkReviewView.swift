@@ -154,7 +154,7 @@ extension WalkReviewView {
                 }
             }
         }
-        .photosPicker(isPresented: $isReplacingPhoto, selection: $replaceItem, maxSelectionCount: 1, matching: .images)
+        .photosPicker(isPresented: $isReplacingPhoto, selection: $replaceItem, matching: .images)
         .onChange(of: replaceItem) { _, item in
             guard let item, let index = replacingIndex else { return }
             item.loadTransferable(type: Data.self) { result in

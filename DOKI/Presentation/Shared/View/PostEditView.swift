@@ -136,7 +136,7 @@ extension PostEditView {
                 }
             }
         }
-        .photosPicker(isPresented: $isReplacingPhoto, selection: $replaceItem, maxSelectionCount: 1, matching: .images)
+        .photosPicker(isPresented: $isReplacingPhoto, selection: $replaceItem, matching: .images)
         .onChange(of: replaceItem) { _, item in
             guard let item, let target = replacingTarget else { return }
             item.loadTransferable(type: Data.self) { result in
