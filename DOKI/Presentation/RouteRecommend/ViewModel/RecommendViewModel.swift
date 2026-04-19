@@ -36,7 +36,6 @@ class RecommendViewModel: ObservableObject {
     @Published var selectedSort: SortOption = .latest
     @Published var loadingStatus: LoadingStatus = .ready
     
-    @Published var routeCoordinates: [[Double]] = []
     
     private var hasNext: Bool = true
     
@@ -57,7 +56,6 @@ class RecommendViewModel: ObservableObject {
         self.routeAPIService = routeAPIService
         self.coordinator = coordinator
         
-        fetchRouteGeometry(routeId: 102)
     }
     
     func navigateToRouteDetail(postId: Int) {
@@ -153,17 +151,4 @@ extension RecommendViewModel {
         }
     }
     
-    func fetchRouteGeometry(routeId: Int) {
-        routeAPIService.fetchRouteGeometry(routeId: routeId) { [weak self] result in
-            switch result {
-            case .success(let response):
-                DispatchQueue.main.async {
-                    self?.routeCoordinates = response?.data?.geometry.coordinates ?? []
-                }
-                
-            default:
-                print("geometry fetch 실패")
-            }
-        }
-    }
 }
