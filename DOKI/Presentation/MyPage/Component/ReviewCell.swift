@@ -13,65 +13,37 @@ struct ReviewCell: View {
     let recordDate: String
     let tags: [String]
     
-    @State private var isExpanded: Bool = false
-    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
                 Text(title)
                     .mainActive()
-                
+
                 Spacer()
             }
             .padding(.bottom, 12)
-            
+
             Label(title: {Text(address)}, icon: {Image(.icMarker)})
                 .font(.bodyActive)
                 .foregroundStyle(.defaultDark)
                 .padding(.bottom, 4)
- 
+
             Label(title: {Text(recordDate)}, icon: {Image(.icTimeclock)})
                 .font(.bodyActive)
                 .foregroundStyle(.defaultDark)
-            
+
             Spacer().frame(height: 18)
-            
-            // TODO: 코드 병합 후 컴포넌트 교체
-            FlexibleGrid(
+
+            CollapsibleTagGrid(
                 availableWidth: UIScreen.main.bounds.width - 70,
-                data: isExpanded ? tags : tags.prefix(4).map{ $0 },
-                spacing: 8,
-                alignment: .leading
+                data: tags,
+                spacing: 8
             ) { tag in
                 Text(tag.formattedCategoryTag())
                     .subActive(color: .defaultPrimary)
                     .padding(8)
                     .background(.primaryGra1)
                     .cornerRadius(8)
-            }
-            
-            if !isExpanded && tags.count > 4 {
-                Spacer().frame(height: 11)
-                
-                HStack(spacing: 5) {
-                    Rectangle()
-                        .frame(height: 1.5)
-                        .foregroundStyle(.defaultButton)
-                    
-                    Text("+\(tags.count - 4)")
-                        .bodySmall(color: .defaultMiddle)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 4)
-                        .background(.defaultButton)
-                        .clipShape(Capsule())
-                        .onTapGesture {
-                            isExpanded = true
-                        }
-                    
-                    Rectangle()
-                        .frame(height: 1.5)
-                        .foregroundStyle(.defaultButton)
-                }
             }
         }
         .padding(.vertical, 16)

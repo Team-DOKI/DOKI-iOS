@@ -13,7 +13,6 @@ struct RouteDetailView: View {
     
     var body: some View {
         ScrollView(showsIndicators: false) {
-            // TODO: 임시 지도 영역
             ZStack(alignment: .bottom) {
                 mapView
                 
@@ -151,47 +150,14 @@ extension RouteDetailView {
                     .foregroundStyle(.defaultDark)
             }
             
-            if viewModel.isExpanded {
-                FlexibleGrid(availableWidth: UIScreen.main.bounds.width - 70,
-                             data: viewModel.tagList,
-                             spacing: 8,
-                             alignment: .leading) { tagName in
-                    RouteTag(text: tagName)
-                }
-                             .padding(.vertical, 10)
-            } else {
-                HStack(spacing: 8) {
-                    ForEach(viewModel.tagList.prefix(4), id: \.self) { tagName in
-                        RouteTag(text: tagName)
-                    }
-                    
-                    Spacer()
-                }
-                .padding(.vertical, 10)
+            CollapsibleTagGrid(
+                availableWidth: UIScreen.main.bounds.width - 70,
+                data: viewModel.tagList,
+                spacing: 8
+            ) { tagName in
+                RouteTag(text: tagName)
             }
-            
-            if viewModel.tagList.count > 4 && !viewModel.isExpanded {
-                HStack(spacing: 5) {
-                    Rectangle()
-                        .frame(height: 1.5)
-                        .foregroundStyle(.defaultButton)
-                    
-                    Text("+ \(viewModel.tagList.count - 4)")
-                        .bodySmall(color: .defaultMiddle)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 4)
-                        .clipShape(Capsule())
-                        .background(.defaultButton)
-                        .clipShape(Capsule())
-                    
-                    Rectangle()
-                        .frame(height: 1.5)
-                        .foregroundStyle(.defaultButton)
-                }
-                .onTapGesture {
-                    viewModel.isExpanded = true
-                }
-            }
+            .padding(.vertical, 10)
         }
         .padding(.vertical, 12)
         .padding(.horizontal, 16)
