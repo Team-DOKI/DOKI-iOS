@@ -160,7 +160,7 @@ class AuthManager: ObservableObject {
     func withdraw() async {
         do {
             let request = WithdrawRequest(provider: provider)
-            try await authProvider.async.requestPlain(.withdraw(request: request))
+            try await authProvider.async.requestPlainChecked(.withdraw(request: request))
             
             await MainActor.run {
                 UserDefaults.standard.removeObject(forKey: "hasSeenOnboarding")
