@@ -158,10 +158,10 @@ extension WalkReviewView {
         .onChange(of: replaceItem) { _, item in
             guard let item, let index = replacingIndex else { return }
             item.loadTransferable(type: Data.self) { result in
-                if case .success(let data) = result, let data, let image = UIImage(data: data) {
-                    viewModel.replaceWalkImage(at: index, with: image)
-                }
                 DispatchQueue.main.async {
+                    if case .success(let data) = result, let data, let image = UIImage(data: data) {
+                        viewModel.replaceWalkImage(at: index, with: image)
+                    }
                     replaceItem = nil
                     replacingIndex = nil
                 }

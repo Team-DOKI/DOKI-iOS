@@ -140,13 +140,13 @@ extension PostEditView {
         .onChange(of: replaceItem) { _, item in
             guard let item, let target = replacingTarget else { return }
             item.loadTransferable(type: Data.self) { result in
-                if case .success(let data) = result, let data, let image = UIImage(data: data) {
-                    switch target {
-                    case .existing(let index): viewModel.replaceExistingImage(at: index, with: image)
-                    case .new(let index):      viewModel.replaceNewImage(at: index, with: image)
-                    }
-                }
                 DispatchQueue.main.async {
+                    if case .success(let data) = result, let data, let image = UIImage(data: data) {
+                        switch target {
+                        case .existing(let index): viewModel.replaceExistingImage(at: index, with: image)
+                        case .new(let index):      viewModel.replaceNewImage(at: index, with: image)
+                        }
+                    }
                     replaceItem = nil
                     replacingTarget = nil
                 }
