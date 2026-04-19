@@ -104,32 +104,46 @@ extension WalkReviewView {
         }
     }
     private var photoPicker: some View {
-        PhotosPicker(
-            selection: $selectedItems,
-            maxSelectionCount: 3,
-            matching: .images
-        ) {
-            if viewModel.walkImages.isEmpty {
-                Rectangle()
-                    .frame(width: 160, height: 160)
-                    .foregroundStyle(.defaultButton)
-                    .cornerRadius(8)
-                    .overlay(Image(.btnAddimg))
-            } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 12) {
-                        ForEach(viewModel.walkImages, id: \.self) {
-                            Image(uiImage: $0)
-                                .resizable()
-                                .frame(width: 160, height: 160)
-                                .cornerRadius(8)
-                        }
+        let remainingSlots = max(0, 3 - viewModel.walkImages.count)
+
+        return ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                if remainingSlots > 0 {
+                    PhotosPicker(
+                        selection: $selectedItems,
+                        maxSelectionCount: remainingSlots,
+                        matching: .images
+                    ) {
+                        Rectangle()
+                            .frame(width: 160, height: 160)
+                            .foregroundStyle(.defaultButton)
+                            .cornerRadius(8)
+                            .overlay(Image(.btnAddimg))
+                    }
+                    .onChange(of: selectedItems) { _, selectedPhoto in
+                        handleSelectedPhotos(selectedPhoto)
                     }
                 }
+
+                ForEach(Array(viewModel.walkImages.enumerated()), id: \.offset) { index, image in
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 160, height: 160)
+                        .cornerRadius(8)
+                        .clipped()
+                        .overlay(alignment: .topTrailing) {
+                            Button {
+                                viewModel.removeWalkImage(at: index)
+                            } label: {
+                                Image(.btnReviewdelete)
+                                    .padding(6)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                        }
+                }
             }
-        }
-        .onChange(of: selectedItems) { _, selectedPhoto in
-            handleSelectedPhotos(selectedPhoto)
         }
     }
     

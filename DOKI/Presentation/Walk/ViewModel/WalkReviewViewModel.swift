@@ -81,6 +81,14 @@ class WalkReviewViewModel: ObservableObject {
         isShowReviewCompleted = true
     }
 
+    func removeWalkImage(at index: Int) {
+        guard index < walkImages.count else { return }
+        walkImages.remove(at: index)
+        if index < walkImageIds.count {
+            walkImageIds.remove(at: index)
+        }
+    }
+
     func uploadWalkImage(_ image: UIImage) {
         Task {
             guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }

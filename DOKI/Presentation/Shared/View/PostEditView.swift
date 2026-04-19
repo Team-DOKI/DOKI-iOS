@@ -81,6 +81,24 @@ extension PostEditView {
 
         return ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 12) {
+                // 3장 미만이면 추가 버튼 (왼쪽 고정)
+                if remainingSlots > 0 {
+                    PhotosPicker(
+                        selection: $selectedItems,
+                        maxSelectionCount: remainingSlots,
+                        matching: .images
+                    ) {
+                        Rectangle()
+                            .frame(width: 160, height: 160)
+                            .foregroundStyle(.defaultButton)
+                            .cornerRadius(8)
+                            .overlay(Image(.btnAddimg))
+                    }
+                    .onChange(of: selectedItems) { _, selectedPhoto in
+                        handleSelectedPhotos(selectedPhoto)
+                    }
+                }
+
                 // 기존 이미지 (X 버튼 포함)
                 ForEach(Array(viewModel.existingImageURLs.enumerated()), id: \.offset) { index, url in
                     imageCell {
@@ -102,24 +120,6 @@ extension PostEditView {
                         viewModel.removeNewImage(at: index)
                     }
                 }
-
-                // 3장 미만이면 추가 버튼
-                if remainingSlots > 0 {
-                    PhotosPicker(
-                        selection: $selectedItems,
-                        maxSelectionCount: remainingSlots,
-                        matching: .images
-                    ) {
-                        Rectangle()
-                            .frame(width: 160, height: 160)
-                            .foregroundStyle(.defaultButton)
-                            .cornerRadius(8)
-                            .overlay(Image(.btnAddimg))
-                    }
-                    .onChange(of: selectedItems) { _, selectedPhoto in
-                        handleSelectedPhotos(selectedPhoto)
-                    }
-                }
             }
         }
     }
@@ -134,10 +134,7 @@ extension PostEditView {
             .clipped()
             .overlay(alignment: .topTrailing) {
                 Button(action: onDelete) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 22))
-                        .foregroundStyle(.white)
-                        .shadow(radius: 2)
+                    Image(.btnReviewdelete)
                         .padding(6)
                         .contentShape(Rectangle())
                 }
