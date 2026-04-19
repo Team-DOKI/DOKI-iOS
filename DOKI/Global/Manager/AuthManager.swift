@@ -88,13 +88,14 @@ class AuthManager: ObservableObject {
             self.refreshToken = response.refreshToken
             self.provider = "APPLE"
 
-            saveUserSession(userId: response.userId, petId: response.petId)
+            saveUserSession(userId: response.userId, petId: response.petId ?? 0)
 
             await MainActor.run {
                 isNewUser = response.isNewUser
-                if response.petId > 0 {
-                    UserDefaults.standard.set(true, forKey: "hasCompletedRegister")
-                }
+                // 기존 유저이고 petId가 있는 경우에만 등록 완료로 처리
+                // isNewUser이거나 petId가 없으면 명시적으로 false → RegisterView 진입 보장
+                let registered = !response.isNewUser && (response.petId ?? 0) > 0
+                UserDefaults.standard.set(registered, forKey: "hasCompletedRegister")
                 authStatus = .loggedIn
             }
         } catch {
@@ -115,13 +116,14 @@ class AuthManager: ObservableObject {
             self.refreshToken = response.refreshToken
             self.provider = "KAKAO"
 
-            saveUserSession(userId: response.userId, petId: response.petId)
+            saveUserSession(userId: response.userId, petId: response.petId ?? 0)
 
             await MainActor.run {
                 isNewUser = response.isNewUser
-                if response.petId > 0 {
-                    UserDefaults.standard.set(true, forKey: "hasCompletedRegister")
-                }
+                // 기존 유저이고 petId가 있는 경우에만 등록 완료로 처리
+                // isNewUser이거나 petId가 없으면 명시적으로 false → RegisterView 진입 보장
+                let registered = !response.isNewUser && (response.petId ?? 0) > 0
+                UserDefaults.standard.set(registered, forKey: "hasCompletedRegister")
                 authStatus = .loggedIn
             }
         } catch {
@@ -162,6 +164,7 @@ class AuthManager: ObservableObject {
         self.provider = ""
 
         DispatchQueue.main.async {
+            UserDefaults.standard.removeObject(forKey: "hasCompletedRegister")
             self.authStatus = .loggedOut
         }
     }
