@@ -9,73 +9,55 @@ import SwiftUI
 import NMapsMap
 import CoreLocation
 
-// TODO: - 점검 필요
 struct FollowRouteNaverMapView: UIViewRepresentable {
-    
-    @ObservedObject var locationManager = LocationManager.shared
-    
+
     var pathCoordinates: [CLLocationCoordinate2D]
-    @Binding var userTrackingMode: Bool
-    
+
     func makeCoordinator() -> Coordinator {
-        Coordinator(self)
+        Coordinator()
     }
-    
+
     func makeUIView(context: Context) -> NMFMapView {
-        let mapView = NMFMapView()
-        
-        mapView.positionMode = .direction
-        
+        let mapView = NMFMapView(frame: .zero)
+        mapView.mapType = .basic
+        mapView.zoomLevel = 14
         context.coordinator.mapView = mapView
-        
         return mapView
     }
-    
+
     func updateUIView(_ mapView: NMFMapView, context: Context) {
-        context.coordinator.drawPath(pathCoordinates)
+        guard pathCoordinates.count > 1 else { return }
+        let coord = context.coordinator
+        guard coord.lastDrawnCount != pathCoordinates.count else { return }
+        coord.lastDrawnCount = pathCoordinates.count
+        coord.drawPath(pathCoordinates)
     }
-    
+
     class Coordinator: NSObject {
-        let parent: FollowRouteNaverMapView
         weak var mapView: NMFMapView?
-        
+        var lastDrawnCount: Int = 0
         private var pathOverlay: NMFPath?
-        
-        init(_ parent: FollowRouteNaverMapView) {
-            self.parent = parent
-        }
-        
+
         func drawPath(_ coordinates: [CLLocationCoordinate2D]) {
-            
-            guard let mapView = mapView else { return }
-            guard coordinates.count > 1 else { return }
-            
+            guard let mapView else { return }
+
+            let latLngs = coordinates.map { NMGLatLng(lat: $0.latitude, lng: $0.longitude) }
+
             pathOverlay?.mapView = nil
-            
-            let latLngs = coordinates.map {
-                NMGLatLng(lat: $0.latitude, lng: $0.longitude)
-            }
-            
             let path = NMFPath(points: latLngs)
             path?.width = 6
             path?.color = .defaultPrimary
             path?.outlineWidth = 0
             path?.mapView = mapView
-            
             pathOverlay = path
-            
-            moveCameraToRoute(latLngs)
-        }
-        
-        private func moveCameraToRoute(_ latLngs: [NMGLatLng]) {
-            
-            guard let mapView = mapView else { return }
-            
-            let bounds = NMGLatLngBounds(latLngs: latLngs)
-            
-            let cameraUpdate = NMFCameraUpdate(fit: bounds, padding: 40)
-            
-            mapView.moveCamera(cameraUpdate)
+
+            DispatchQueue.main.async { [weak mapView] in
+                guard let mapView else { return }
+                let bounds = NMGLatLngBounds(latLngs: latLngs)
+                let cameraUpdate = NMFCameraUpdate(fit: bounds, padding: 60)
+                cameraUpdate.animation = .none
+                mapView.moveCamera(cameraUpdate)
+            }
         }
     }
 }

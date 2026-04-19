@@ -12,47 +12,17 @@ import CoreLocation
 struct FollowRouteView: View {
     @StateObject var viewModel: FollowRouteViewModel
     
-    @State private var isLocationOn = false // 추후 위치 공유
     @State private var confirmType: WalkConfirmType?
     
     var body: some View {
         ZStack() {
-            FollowRouteNaverMapView(
-                pathCoordinates: viewModel.pathCoordinates,
-                userTrackingMode: $viewModel.userTrackingMode
-            )
-            .ignoresSafeArea()
+            FollowRouteNaverMapView(pathCoordinates: viewModel.pathCoordinates)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .ignoresSafeArea()
             
             VStack(spacing: 0) {
                 
-                // 추후 위치 공유
-                HStack(spacing: 0) {
-                    Spacer()
-                    
-                    Toggle("", isOn: $isLocationOn)
-                        .labelsHidden()
-                        .padding(.trailing, 16)
-                }
-                .padding(.top, 20)
-                .opacity(0)
-                
                 Spacer()
-                
-                HStack {
-                    Spacer()
-                    
-                    VStack(spacing: 12) {
-                        PinButton(icon: "ic_trash", action: {}).opacity(0) // 추후 스팟 태그
-                        
-                        PinButton(icon: "ic_photo", action: {}).opacity(0) // 추후 스팟 태그
-                        
-                        PinButton(icon: "ic_gps", action: {
-                            viewModel.userTrackingMode.toggle()
-                        })
-                    }
-                    .padding(.trailing, 16)
-                }
-                .padding(.bottom, 14)
                 
                 VStack(spacing: 12) {
                     Spacer().frame(height: 44)
@@ -109,5 +79,7 @@ struct FollowRouteView: View {
             viewModel.startTimer()
             viewModel.fetchRouteGeometry()
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
     }
 }
