@@ -252,7 +252,7 @@ extension RouteDetailView {
 //                .padding(.vertical, 12)
 //            }
 
-            if !viewModel.isPublic {
+            if viewModel.loadingStatus == .success && !viewModel.isPublic {
                 Text("현재는 비공개 상태에요.\n공개로 전환해 산책 루트를 공유해보세요.")
                     .subtitle(color: .defaultMiddle)
                     .multilineTextAlignment(.center)

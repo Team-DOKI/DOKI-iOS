@@ -23,6 +23,7 @@ enum MyPageRoute: Route, Hashable {
     case dbtiResult
 
     case routeDetail(postId: Int)
+    case myReviewsDetail(postId: Int)
 }
 
 struct MyPageCoordinatorView: View {
@@ -93,7 +94,9 @@ struct MyPageCoordinatorView: View {
                     case .dbtiResult:
                         DBTIResultView(viewModel: dbtiViewModel)
                     case .routeDetail(let postId):
-                        RouteDetailView(viewModel: makeRouteDetailViewModel(postId))
+                        RouteDetailView(viewModel: makeRouteDetailViewModel(postId, skipReview: false))
+                    case .myReviewsDetail(let postId):
+                        RouteDetailView(viewModel: makeRouteDetailViewModel(postId, skipReview: true))
                     }
                 }
         }
@@ -101,6 +104,7 @@ struct MyPageCoordinatorView: View {
             item: $followRouteCoordinator.fullScreenCover,
             onDismiss: {
                 followRouteCoordinator.clearStack()
+                followRouteViewModel.skipReview = false
             }
         ) { _ in
             NavigationStack(path: $followRouteCoordinator.fullScreenPath) {
@@ -146,6 +150,8 @@ struct MyPageCoordinatorView: View {
                 myPageCoordinator.push(.dbtiResult)
             case .routeDetail(postId: let postId):
                 myPageCoordinator.push(.routeDetail(postId: postId))
+            case .myReviewsDetail:
+                break
             }
         }
         
@@ -174,19 +180,23 @@ struct MyPageCoordinatorView: View {
         }
 
         myReviewsViewModel.navigationAction = { postId in
-            myPageCoordinator.push(.routeDetail(postId: postId))
+            myPageCoordinator.push(.myReviewsDetail(postId: postId))
         }
 
         followRouteViewModel.navigationAction = { destination in
             switch destination {
             case .followRouteReview:
-                followRouteReviewViewModel.setWalkData(
-                    distanceString: followRouteViewModel.distanceString,
-                    elapsedTimeString: followRouteViewModel.elapsedTimeString,
-                    stepString: followRouteViewModel.stepString,
-                    startDate: followRouteViewModel.startDate
-                )
-                followRouteCoordinator.push(.followRouteReview)
+                if followRouteViewModel.skipReview {
+                    followRouteCoordinator.dismiss()
+                } else {
+                    followRouteReviewViewModel.setWalkData(
+                        distanceString: followRouteViewModel.distanceString,
+                        elapsedTimeString: followRouteViewModel.elapsedTimeString,
+                        stepString: followRouteViewModel.stepString,
+                        startDate: followRouteViewModel.startDate
+                    )
+                    followRouteCoordinator.push(.followRouteReview)
+                }
             default:
                 break
             }
@@ -200,7 +210,7 @@ struct MyPageCoordinatorView: View {
         }
     }
 
-    private func makeRouteDetailViewModel(_ postId: Int) -> RouteDetailViewModel {
+    private func makeRouteDetailViewModel(_ postId: Int, skipReview: Bool = false) -> RouteDetailViewModel {
         let viewModel = RouteDetailViewModel(postAPIService: PostAPIService(), postId: postId)
 
         viewModel.navigationAction = { destination in
@@ -208,6 +218,7 @@ struct MyPageCoordinatorView: View {
             case .back:
                 myPageCoordinator.pop()
             case .followRoute(let routeId, let postId, let address):
+                followRouteViewModel.skipReview = skipReview
                 followRouteViewModel.setRoute(routeId)
                 followRouteReviewViewModel.setup(postId: postId, routeId: routeId, address: address)
                 followRouteCoordinator.presentFullScreen(.followRoute)

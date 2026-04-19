@@ -56,6 +56,7 @@ class FollowRouteViewModel: ObservableObject {
     }
     
     var navigationAction: ((FollowRouteRoute) -> Void)?
+    var skipReview: Bool = false
     
     func finishFollow() {
         navigateToFollowReview()
