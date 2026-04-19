@@ -19,5 +19,5 @@ struct PetProfileRequest: Codable {
     let birth: String
     let isNeutered: Bool
     let breedId: Int
-    let imageId: Int
+    let imageId: Int?
 }
