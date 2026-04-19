@@ -65,17 +65,27 @@ struct FollowRouteReviewView: View {
         .ignoresSafeArea(.container, edges: .bottom)
         .navigationBarBackButtonHidden(true)
         .task {
+            await viewModel.fetchReviewHeader()
             await viewModel.fetchFilterCategories()
         }
+        .customAlert(
+            isPresented: $viewModel.isShowCompleteAlert,
+            image: Image(.imgFoot),
+            message: "후기가 등록이 완료되었어요!",
+            subMessage: "덕분에 DOKI가 보호자님을 더 잘 알게 됐어요.\n이 정보로 다음엔 더 완벽한 경로를 추천해 드릴게요.",
+            primaryTitle: "확인",
+            primaryAction: { viewModel.dismissAfterAlert() }
+        )
     }
 }
 
 extension FollowRouteReviewView {
     // 루트 제목 + 내 강아지 프로필
     private var routeHeaderSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 0) {
             Text(viewModel.routeTitle)
                 .header3()
+                .padding(.vertical, 16)
 
             HStack(spacing: 10) {
                 KFImage(URL(string: viewModel.petProfileImageURL))
@@ -88,6 +98,7 @@ extension FollowRouteReviewView {
                 Text(viewModel.petName)
                     .subtitle(color: .defaultDark)
             }
+            .padding(.vertical, 12)
         }
         .redacted(reason: viewModel.loadingStatus == .loading ? .placeholder : [])
     }
@@ -162,7 +173,7 @@ extension FollowRouteReviewView {
     private var buttonSection: some View {
         MainButton(
             text: "산책 후기 남기기",
-            buttonState: .active1
+            buttonState: viewModel.isFormValid ? .active1 : .disabled
         ) {
             viewModel.completeReview()
         }
