@@ -88,8 +88,13 @@ class AuthManager: ObservableObject {
             self.refreshToken = response.refreshToken
             self.provider = "APPLE"
 
+            saveUserSession(userId: response.userId, petId: response.petId)
+
             await MainActor.run {
                 isNewUser = response.isNewUser
+                if response.petId > 0 {
+                    UserDefaults.standard.set(true, forKey: "hasCompletedRegister")
+                }
                 authStatus = .loggedIn
             }
         } catch {
@@ -110,8 +115,13 @@ class AuthManager: ObservableObject {
             self.refreshToken = response.refreshToken
             self.provider = "KAKAO"
 
+            saveUserSession(userId: response.userId, petId: response.petId)
+
             await MainActor.run {
                 isNewUser = response.isNewUser
+                if response.petId > 0 {
+                    UserDefaults.standard.set(true, forKey: "hasCompletedRegister")
+                }
                 authStatus = .loggedIn
             }
         } catch {
