@@ -87,8 +87,9 @@ struct RecommendCoordinatorView: View {
                                 switch route {
                                 case .back:
                                     recommendCoordinator.pop()
-                                case .followRoute(let routeId):
+                                case .followRoute(let routeId, let postId, let address):
                                     followRouteViewModel.setRoute(routeId)
+                                    followRouteReviewViewModel.setup(postId: postId, routeId: routeId, address: address)
                                     followRouteCoordinator.presentFullScreen(.followRoute)
                                 }
                             }
@@ -160,6 +161,12 @@ private extension RecommendCoordinatorView {
         followRouteViewModel.navigationAction = { destination in
             switch destination {
             case .followRouteReview:
+                followRouteReviewViewModel.setWalkData(
+                    distanceString: followRouteViewModel.distanceString,
+                    elapsedTimeString: followRouteViewModel.elapsedTimeString,
+                    stepString: followRouteViewModel.stepString,
+                    startDate: followRouteViewModel.startDate
+                )
                 followRouteCoordinator.push(.followRouteReview)
 
             default:

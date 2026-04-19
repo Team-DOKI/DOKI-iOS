@@ -10,7 +10,7 @@ import SwiftUI
 // TODO: - 위치 고민
 enum RouteDetailRoute {
     case back
-    case followRoute(routeId: Int)
+    case followRoute(routeId: Int, postId: Int, address: String)
 }
 
 class RouteDetailViewModel: ObservableObject {
@@ -120,7 +120,7 @@ class RouteDetailViewModel: ObservableObject {
     }
     
     func navigateToFollowRouteFollowRoute() {
-        navigationAction?(.followRoute(routeId: routeId ?? 0))
+        navigationAction?(.followRoute(routeId: routeId ?? 0, postId: postId ?? 0, address: address))
     }
 
     func deletePostTapped() {

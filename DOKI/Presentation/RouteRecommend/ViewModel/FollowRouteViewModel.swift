@@ -30,6 +30,7 @@ class FollowRouteViewModel: ObservableObject {
     @Published var distance: Double = 0.0
     @Published var elapsedSeconds: Int = 0
     @Published var stepCount: Int = 0
+    private(set) var startDate: Date = Date()
     
     private var isPaused: Bool = false
     
@@ -90,6 +91,7 @@ class FollowRouteViewModel: ObservableObject {
     // MARK: - 시간 (타이머)
     
     func startTimer() {
+        startDate = Date()
         isPaused = false
         timer?.invalidate()
         
