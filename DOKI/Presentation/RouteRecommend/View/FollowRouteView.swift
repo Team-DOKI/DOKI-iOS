@@ -16,13 +16,22 @@ struct FollowRouteView: View {
     
     var body: some View {
         ZStack() {
-            FollowRouteNaverMapView(pathCoordinates: viewModel.pathCoordinates)
+            FollowRouteNaverMapView(pathCoordinates: viewModel.pathCoordinates, userTrackingMode: $viewModel.userTrackingMode)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .ignoresSafeArea()
-            
+
             VStack(spacing: 0) {
-                
+
                 Spacer()
+
+                HStack(spacing: 0) {
+                    Spacer()
+                    PinButton(icon: "ic_gps", action: {
+                        viewModel.userTrackingMode.toggle()
+                    })
+                    .padding(.trailing, 16)
+                }
+                .padding(.bottom, 14)
                 
                 VStack(spacing: 12) {
                     Spacer().frame(height: 44)
