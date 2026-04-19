@@ -140,32 +140,73 @@ class PostEditViewModel: ObservableObject {
 
     func uploadWalkImage(_ image: UIImage) {
         Task {
-            guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
             do {
-                let presignedURLRequest = PresignedURLRequest(domain: "WALK", contentType: "image/jpeg")
-                guard let presignedData = try await imageAPIService.asyncPresignedURL(request: presignedURLRequest).data,
-                      let uploadURL = URL(string: presignedData.uploadUrl) else { return }
-
-                try await uploadToS3(url: uploadURL, data: imageData)
-
-                let imageRequest = RegisterImageRequest(
-                    imageUrl: presignedData.imageUrl,
-                    contentType: "image/jpeg",
-                    width: Int(image.size.width),
-                    height: Int(image.size.height),
-                    domain: "WALK"
-                )
-
-                if let imageId = try await imageAPIService.asyncRegisterImage(request: imageRequest).data?.imageId {
-                    await MainActor.run {
-                        newWalkImages.append(image)
-                        newWalkImageIds.append(imageId)
-                    }
+                let imageId = try await uploadImageAndGetId(image)
+                await MainActor.run {
+                    newWalkImages.append(image)
+                    newWalkImageIds.append(imageId)
                 }
             } catch {
                 print("이미지 업로드 실패:", error.localizedDescription)
             }
         }
+    }
+
+    func replaceExistingImage(at index: Int, with image: UIImage) {
+        guard existingImageURLs.indices.contains(index) else { return }
+        existingImageURLs.remove(at: index)
+        existingWalkImageIds.remove(at: index)
+        Task {
+            do {
+                let imageId = try await uploadImageAndGetId(image)
+                await MainActor.run {
+                    self.newWalkImages.insert(image, at: 0)
+                    self.newWalkImageIds.insert(imageId, at: 0)
+                }
+            } catch {
+                print("이미지 교체 실패:", error.localizedDescription)
+            }
+        }
+    }
+
+    func replaceNewImage(at index: Int, with image: UIImage) {
+        Task {
+            do {
+                let imageId = try await uploadImageAndGetId(image)
+                await MainActor.run {
+                    guard self.newWalkImages.indices.contains(index) else { return }
+                    self.newWalkImages[index] = image
+                    if self.newWalkImageIds.indices.contains(index) {
+                        self.newWalkImageIds[index] = imageId
+                    }
+                }
+            } catch {
+                print("이미지 교체 실패:", error.localizedDescription)
+            }
+        }
+    }
+
+    private func uploadImageAndGetId(_ image: UIImage) async throws -> Int {
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            throw NSError(domain: "ImageError", code: -1)
+        }
+        let presignedURLRequest = PresignedURLRequest(domain: "WALK", contentType: "image/jpeg")
+        guard let presignedData = try await imageAPIService.asyncPresignedURL(request: presignedURLRequest).data,
+              let uploadURL = URL(string: presignedData.uploadUrl) else {
+            throw NSError(domain: "PresignedError", code: -1)
+        }
+        try await uploadToS3(url: uploadURL, data: imageData)
+        let imageRequest = RegisterImageRequest(
+            imageUrl: presignedData.imageUrl,
+            contentType: "image/jpeg",
+            width: Int(image.size.width),
+            height: Int(image.size.height),
+            domain: "WALK"
+        )
+        guard let imageId = try await imageAPIService.asyncRegisterImage(request: imageRequest).data?.imageId else {
+            throw NSError(domain: "RegisterError", code: -1)
+        }
+        return imageId
     }
 
     // MARK: - Update Post

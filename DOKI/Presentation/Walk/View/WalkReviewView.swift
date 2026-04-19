@@ -12,6 +12,9 @@ struct WalkReviewView: View {
     @StateObject var viewModel: WalkReviewViewModel
     
     @State private var selectedItems: [PhotosPickerItem] = []
+    @State private var isReplacingPhoto = false
+    @State private var replacingIndex: Int? = nil
+    @State private var replaceItem: PhotosPickerItem? = nil
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -126,22 +129,41 @@ extension WalkReviewView {
                 }
 
                 ForEach(Array(viewModel.walkImages.enumerated()), id: \.offset) { index, image in
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 160, height: 160)
-                        .cornerRadius(8)
-                        .clipped()
-                        .overlay(alignment: .topTrailing) {
-                            Button {
-                                viewModel.removeWalkImage(at: index)
-                            } label: {
-                                Image(.btnReviewdelete)
-                                    .padding(6)
-                                    .contentShape(Rectangle())
+                    Button {
+                        replacingIndex = index
+                        isReplacingPhoto = true
+                    } label: {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 160, height: 160)
+                            .cornerRadius(8)
+                            .clipped()
+                            .overlay(alignment: .topTrailing) {
+                                Button {
+                                    viewModel.removeWalkImage(at: index)
+                                } label: {
+                                    Image(.btnReviewdelete)
+                                        .padding(6)
+                                        .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
-                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+        .photosPicker(isPresented: $isReplacingPhoto, selection: $replaceItem, maxSelectionCount: 1, matching: .images)
+        .onChange(of: replaceItem) { _, item in
+            guard let item, let index = replacingIndex else { return }
+            item.loadTransferable(type: Data.self) { result in
+                if case .success(let data) = result, let data, let image = UIImage(data: data) {
+                    viewModel.replaceWalkImage(at: index, with: image)
+                }
+                DispatchQueue.main.async {
+                    replaceItem = nil
+                    replacingIndex = nil
                 }
             }
         }

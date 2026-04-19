@@ -12,6 +12,14 @@ struct PostEditView: View {
     let onSuccess: () -> Void
 
     @State private var selectedItems: [PhotosPickerItem] = []
+    @State private var isReplacingPhoto = false
+    @State private var replacingTarget: ImageReplaceTarget? = nil
+    @State private var replaceItem: PhotosPickerItem? = nil
+
+    private enum ImageReplaceTarget {
+        case existing(Int)
+        case new(Int)
+    }
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -99,26 +107,48 @@ extension PostEditView {
                     }
                 }
 
-                // 기존 이미지 (X 버튼 포함)
+                // 기존 이미지 (탭: 교체, X: 삭제)
                 ForEach(Array(viewModel.existingImageURLs.enumerated()), id: \.offset) { index, url in
                     imageCell {
                         KFImage(URL(string: url))
                             .resizable()
                             .scaledToFill()
+                    } onTap: {
+                        replacingTarget = .existing(index)
+                        isReplacingPhoto = true
                     } onDelete: {
                         viewModel.removeExistingImage(at: index)
                     }
                 }
 
-                // 새로 추가한 이미지 (X 버튼 포함)
+                // 새로 추가한 이미지 (탭: 교체, X: 삭제)
                 ForEach(Array(viewModel.newWalkImages.enumerated()), id: \.offset) { index, image in
                     imageCell {
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFill()
+                    } onTap: {
+                        replacingTarget = .new(index)
+                        isReplacingPhoto = true
                     } onDelete: {
                         viewModel.removeNewImage(at: index)
                     }
+                }
+            }
+        }
+        .photosPicker(isPresented: $isReplacingPhoto, selection: $replaceItem, maxSelectionCount: 1, matching: .images)
+        .onChange(of: replaceItem) { _, item in
+            guard let item, let target = replacingTarget else { return }
+            item.loadTransferable(type: Data.self) { result in
+                if case .success(let data) = result, let data, let image = UIImage(data: data) {
+                    switch target {
+                    case .existing(let index): viewModel.replaceExistingImage(at: index, with: image)
+                    case .new(let index):      viewModel.replaceNewImage(at: index, with: image)
+                    }
+                }
+                DispatchQueue.main.async {
+                    replaceItem = nil
+                    replacingTarget = nil
                 }
             }
         }
@@ -126,20 +156,24 @@ extension PostEditView {
 
     private func imageCell<Content: View>(
         @ViewBuilder content: () -> Content,
+        onTap: @escaping () -> Void,
         onDelete: @escaping () -> Void
     ) -> some View {
-        content()
-            .frame(width: 160, height: 160)
-            .cornerRadius(8)
-            .clipped()
-            .overlay(alignment: .topTrailing) {
-                Button(action: onDelete) {
-                    Image(.btnReviewdelete)
-                        .padding(6)
-                        .contentShape(Rectangle())
+        Button(action: onTap) {
+            content()
+                .frame(width: 160, height: 160)
+                .cornerRadius(8)
+                .clipped()
+                .overlay(alignment: .topTrailing) {
+                    Button(action: onDelete) {
+                        Image(.btnReviewdelete)
+                            .padding(4)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
-            }
+        }
+        .buttonStyle(.plain)
     }
 
     private var walkInfoSection: some View {
