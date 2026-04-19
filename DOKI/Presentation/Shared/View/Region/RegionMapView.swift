@@ -72,6 +72,10 @@ struct RegionMapView: View {
 struct RegionNaverMapView: UIViewRepresentable {
     let geometry: Geometry?
 
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
     func makeUIView(context: Context) -> NMFMapView {
         let mapView = NMFMapView(frame: .zero)
         mapView.mapType = .basic
@@ -80,7 +84,10 @@ struct RegionNaverMapView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: NMFMapView, context: Context) {
-        
+        // 이전 폴리곤 제거
+        context.coordinator.polygonOverlay?.mapView = nil
+        context.coordinator.polygonOverlay = nil
+
         guard
             let geometry = geometry,
             geometry.type == "MultiPolygon"
@@ -88,7 +95,7 @@ struct RegionNaverMapView: UIViewRepresentable {
 
         let multiPolygon = geometry.coordinates
         guard !multiPolygon.isEmpty else { return }
-        
+
         let firstPolygonCoordinates = multiPolygon[0][0]
         var latLngs: [NMGLatLng] = firstPolygonCoordinates.map { coord in
             NMGLatLng(lat: coord[1], lng: coord[0])
@@ -100,14 +107,19 @@ struct RegionNaverMapView: UIViewRepresentable {
         }
 
         let polygonOverlay = NMFPolygonOverlay(latLngs)
-        polygonOverlay?.fillColor = UIColor.green.withAlphaComponent(0.3)
-        polygonOverlay?.outlineColor = UIColor.green
+        polygonOverlay?.fillColor = UIColor(named: "Opacity25") ?? UIColor(named: "DefaultPrimary")!.withAlphaComponent(0.25)
+        polygonOverlay?.outlineColor = UIColor(named: "DefaultPrimary") ?? .systemGreen
         polygonOverlay?.outlineWidth = 2
         polygonOverlay?.mapView = uiView
+        context.coordinator.polygonOverlay = polygonOverlay
 
         if let firstPoint = latLngs.first {
             let cameraUpdate = NMFCameraUpdate(scrollTo: firstPoint)
             uiView.moveCamera(cameraUpdate)
         }
+    }
+
+    class Coordinator: NSObject {
+        var polygonOverlay: NMFPolygonOverlay?
     }
 }
