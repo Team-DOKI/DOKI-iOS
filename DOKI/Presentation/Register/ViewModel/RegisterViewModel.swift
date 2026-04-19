@@ -64,6 +64,8 @@ final class RegisterViewModel: ObservableObject {
     @Published var currentStep: RegisterStep = .userProfile
     @Published var regionFlow: RegionFlow = .none
     @Published var registerCompleted = false
+    @Published var registerError: String?
+    @Published var isRegistering = false
     
     enum RegisterStep: Int {
         case userProfile
@@ -191,17 +193,26 @@ extension RegisterViewModel {
                 birth: formattedDogBirthDay,
                 isNeutered: isNeutered,
                 breedId: breedId,
-                imageId: imageId ?? 0
+                imageId: imageId
             )
         )
         
+        DispatchQueue.main.async { self.isRegistering = true }
+
         profileAPIService.register(request: request) { [weak self] result in
+            DispatchQueue.main.async { self?.isRegistering = false }
+
             switch result {
             case .success(let response):
                 guard
                     let userId = response?.data?.userId,
                     let petId  = response?.data?.petId
-                else { return }
+                else {
+                    DispatchQueue.main.async {
+                        self?.registerError = "회원가입에 실패했습니다. 잠시 후 다시 시도해주세요."
+                    }
+                    return
+                }
 
                 AuthManager.shared.saveUserSession(userId: userId, petId: petId)
 
@@ -209,6 +220,9 @@ extension RegisterViewModel {
                     self?.registerCompleted = true
                 }
             default:
+                DispatchQueue.main.async {
+                    self?.registerError = "회원가입에 실패했습니다. 다시 시도해주세요."
+                }
                 print("회원가입 정보를 불러오지 못했습니다.")
             }
         }

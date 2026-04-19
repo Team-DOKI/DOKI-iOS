@@ -49,7 +49,7 @@ struct RegisterView: View {
         .topNavigationView {
             BackButton {
                 if viewModel.isFirstStep {
-                    dismiss()
+                    authManager.logoutLocal()
                 } else {
                     viewModel.goToPrevStep()
                 }
@@ -97,7 +97,10 @@ extension RegisterView {
     }
 
     private var mainButton: some View {
-        MainButton(text: viewModel.isLastStep ? "완료" : "다음", buttonState: viewModel.buttonDisabled ? .disabled : .active1) {
+        MainButton(
+            text: viewModel.isLastStep ? "완료" : "다음",
+            buttonState: viewModel.buttonDisabled ? .disabled : (viewModel.isRegistering ? .loading(base: .active1) : .active1)
+        ) {
             if viewModel.isLastStep {
                 viewModel.registerUser()
             } else {
@@ -109,6 +112,14 @@ extension RegisterView {
             guard completed else { return }
             hasCompletedRegister = true
             showDBTIStart = true
+        }
+        .alert("오류", isPresented: Binding(
+            get: { viewModel.registerError != nil },
+            set: { if !$0 { viewModel.registerError = nil } }
+        )) {
+            Button("확인", role: .cancel) { viewModel.registerError = nil }
+        } message: {
+            Text(viewModel.registerError ?? "")
         }
     }
 
