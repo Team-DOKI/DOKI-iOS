@@ -173,6 +173,10 @@ struct MyPageCoordinatorView: View {
             myPageCoordinator.push(.routeDetail(postId: postId))
         }
 
+        myReviewsViewModel.navigationAction = { postId in
+            myPageCoordinator.push(.routeDetail(postId: postId))
+        }
+
         followRouteViewModel.navigationAction = { destination in
             switch destination {
             case .followRouteReview:
