@@ -12,5 +12,5 @@ struct KakaoLoginResponse: Codable {
     let refreshToken: String
     let isNewUser: Bool
     let userId: Int
-    let petId: Int
+    let petId: Int?
 }
