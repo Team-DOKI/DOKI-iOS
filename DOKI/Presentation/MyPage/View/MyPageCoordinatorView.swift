@@ -43,6 +43,8 @@ struct MyPageCoordinatorView: View {
     @StateObject var followRouteViewModel: FollowRouteViewModel
     @StateObject var followRouteReviewViewModel: FollowRouteReviewViewModel
 
+    @StateObject var routeDetailViewModel = RouteDetailViewModel(postAPIService: PostAPIService())
+
     @StateObject var dbtiViewModel = DBTIViewModel(entryContext: .myPage)
 
     init(myPageCoordinator: Coordinator<MyPageRoute> = Coordinator<MyPageRoute>(), viewModelFactory: AppDIContainer.ViewModelFactory) {
@@ -93,10 +95,10 @@ struct MyPageCoordinatorView: View {
                         DBTISurveyView(viewModel: dbtiViewModel)
                     case .dbtiResult:
                         DBTIResultView(viewModel: dbtiViewModel)
-                    case .routeDetail(let postId):
-                        RouteDetailView(viewModel: makeRouteDetailViewModel(postId, skipReview: false))
-                    case .myReviewsDetail(let postId):
-                        RouteDetailView(viewModel: makeRouteDetailViewModel(postId, skipReview: true))
+                    case .routeDetail:
+                        RouteDetailView(viewModel: routeDetailViewModel)
+                    case .myReviewsDetail:
+                        RouteDetailView(viewModel: routeDetailViewModel)
                     }
                 }
         }
@@ -149,9 +151,23 @@ struct MyPageCoordinatorView: View {
             case .dbtiResult:
                 myPageCoordinator.push(.dbtiResult)
             case .routeDetail(postId: let postId):
+                routeDetailViewModel.postId = postId
+                routeDetailViewModel.skipReviewAfterWalk = false
                 myPageCoordinator.push(.routeDetail(postId: postId))
             case .myReviewsDetail:
                 break
+            }
+        }
+
+        routeDetailViewModel.navigationAction = { destination in
+            switch destination {
+            case .back:
+                myPageCoordinator.pop()
+            case .followRoute(let routeId, let postId, let address):
+                followRouteViewModel.skipReview = routeDetailViewModel.skipReviewAfterWalk
+                followRouteViewModel.setRoute(routeId)
+                followRouteReviewViewModel.setup(postId: postId, routeId: routeId, address: address)
+                followRouteCoordinator.presentFullScreen(.followRoute)
             }
         }
         
@@ -172,14 +188,20 @@ struct MyPageCoordinatorView: View {
         }
 
         myPostsViewModel.navigationAction = { postId in
+            routeDetailViewModel.postId = postId
+            routeDetailViewModel.skipReviewAfterWalk = false
             myPageCoordinator.push(.routeDetail(postId: postId))
         }
 
         myLikedPostsViewModel.navigationAction = { postId in
+            routeDetailViewModel.postId = postId
+            routeDetailViewModel.skipReviewAfterWalk = false
             myPageCoordinator.push(.routeDetail(postId: postId))
         }
 
         myReviewsViewModel.navigationAction = { postId in
+            routeDetailViewModel.postId = postId
+            routeDetailViewModel.skipReviewAfterWalk = true
             myPageCoordinator.push(.myReviewsDetail(postId: postId))
         }
 
@@ -188,6 +210,7 @@ struct MyPageCoordinatorView: View {
             case .followRouteReview:
                 if followRouteViewModel.skipReview {
                     followRouteCoordinator.dismiss()
+                    followRouteViewModel.skipReview = false
                 } else {
                     followRouteReviewViewModel.setWalkData(
                         distanceString: followRouteViewModel.distanceString,
@@ -210,22 +233,5 @@ struct MyPageCoordinatorView: View {
         }
     }
 
-    private func makeRouteDetailViewModel(_ postId: Int, skipReview: Bool = false) -> RouteDetailViewModel {
-        let viewModel = RouteDetailViewModel(postAPIService: PostAPIService(), postId: postId)
-
-        viewModel.navigationAction = { destination in
-            switch destination {
-            case .back:
-                myPageCoordinator.pop()
-            case .followRoute(let routeId, let postId, let address):
-                followRouteViewModel.skipReview = skipReview
-                followRouteViewModel.setRoute(routeId)
-                followRouteReviewViewModel.setup(postId: postId, routeId: routeId, address: address)
-                followRouteCoordinator.presentFullScreen(.followRoute)
-            }
-        }
-
-        return viewModel
-    }
 }
 

@@ -50,8 +50,9 @@ class RouteDetailViewModel: ObservableObject {
     }
     
     //MARK: - Navigation
-    
+
     var navigationAction: ((RouteDetailRoute)->())?
+    var skipReviewAfterWalk: Bool = false
     
     func setRouteId(routeId: Int) {
         self.routeId = routeId
