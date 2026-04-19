@@ -32,15 +32,22 @@ class AuthManager: ObservableObject {
         plugins: [MoyaLoggingPlugin()]
     )
     
-    private init() {}
+    private init() {
+        if !UserDefaults.standard.bool(forKey: "hasLaunchedBefore") {
+            try? KeychainManager.delete(.accessToken)
+            try? KeychainManager.delete(.refreshToken)
+            UserDefaults.standard.set(true, forKey: "hasLaunchedBefore")
+        }
+    }
     
     func checkLogin() {
         do {
             self.accessToken = try KeychainManager.read(.accessToken)
             self.refreshToken = try KeychainManager.read(.refreshToken)
 
-            if let petIdString = try? KeychainManager.read(.petId), let id = Int(petIdString ?? "") {
+            if let petIdString = try? KeychainManager.read(.petId), let id = Int(petIdString ?? ""), id > 0 {
                 self.petId = id
+                UserDefaults.standard.set(true, forKey: "hasCompletedRegister")
             }
             if let userIdString = try? KeychainManager.read(.userId), let id = Int(userIdString ?? "") {
                 self.userId = id
@@ -89,7 +96,7 @@ class AuthManager: ObservableObject {
             print(error.localizedDescription)
         }
     }
-    
+
     func loginWithKakao(_ accessToken: String, deviceId: String) async throws {
         do {
             let request = KakaoLoginRequest(idToken: accessToken, deviceId: deviceId)
