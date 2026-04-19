@@ -26,7 +26,7 @@ struct BreedSearchView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 8)
             
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 LazyVStack {
                     ForEach(filteredBreeds, id: \.id) { breed in
                         OptionItem(text: breed.name, isChecked: selectedBreedName == breed.name) {

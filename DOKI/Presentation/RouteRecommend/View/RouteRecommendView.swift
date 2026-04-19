@@ -16,10 +16,7 @@ struct RouteRecommendView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // TODO: - 임시 (다른 사람 루트 따라 걷기 연결 용도)
-            bannerSection.onTapGesture {
-//                viewModel.navigationAction?(.routeDetail(postId: 102))
-            }
+            bannerSection
             
             filterSection
                 .padding(.leading, 16)
