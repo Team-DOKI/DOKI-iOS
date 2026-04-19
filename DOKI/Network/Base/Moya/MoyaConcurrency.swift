@@ -39,7 +39,25 @@ extension MoyaProvider {
             return try await withCheckedThrowingContinuation { continuation in
                 provider.request(target) { result in
                     switch result {
+                    case .success:
+                        continuation.resume(returning: ())
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+        }
+
+        /// 2xx 응답이 아니면 throw
+        func requestPlainChecked(_ target: Target) async throws {
+            return try await withCheckedThrowingContinuation { continuation in
+                provider.request(target) { result in
+                    switch result {
                     case .success(let response):
+                        guard (200..<300).contains(response.statusCode) else {
+                            continuation.resume(throwing: MoyaError.statusCode(response))
+                            return
+                        }
                         continuation.resume(returning: ())
                     case .failure(let error):
                         continuation.resume(throwing: error)

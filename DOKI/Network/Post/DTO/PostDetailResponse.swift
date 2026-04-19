@@ -11,6 +11,7 @@ struct PostDetailResponse: Codable {
     let description: String
     let isPublic: Bool
     let isMine: Bool
+    let hasReviewed: Bool
     let authorInfo: AuthorInfo
     let routeDisplay: RouteDisplay
     let categoryTagTexts: [String]

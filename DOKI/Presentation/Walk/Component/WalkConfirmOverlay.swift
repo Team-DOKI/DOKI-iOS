@@ -45,14 +45,14 @@ struct WalkConfirmOverlay: View {
                     MainButton(
                         text: leftButtonText,
                         buttonState: .active2,
-                        font: .subtitle,
+                        size: .medium,
                         action: onLeftAction
                     )
                     
                     MainButton(
                         text: rightButtonText,
                         buttonState: .active1,
-                        font: .subtitle,
+                        size: .medium,
                         action: onRightAction
                     )
                 }

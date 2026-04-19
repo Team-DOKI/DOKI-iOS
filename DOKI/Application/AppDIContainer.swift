@@ -18,7 +18,7 @@ final class AppDIContainer: ObservableObject {
 extension AppDIContainer {
     struct ViewModelFactory {
         func makeWalkRecordViewModel() -> WalkRecordViewModel {
-            return WalkRecordViewModel()
+            return WalkRecordViewModel(imageAPIService: ImageAPIService())
         }
         
         func makeWalkReviewViewModel() -> WalkReviewViewModel {

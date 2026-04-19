@@ -8,7 +8,8 @@
 import SwiftUI
 
 class MyPostsViewModel: ObservableObject {
-    @Published var posts: [RouteData] = []
+    @Published var posts: [PostItem] = []
+    var navigationAction: ((Int) -> ())?
     private let routeAPIService: RouteAPIServiceProtocol
     
     init(routeAPIService: RouteAPIServiceProtocol = RouteAPIService()) {
@@ -21,14 +22,15 @@ class MyPostsViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self?.posts = response?.data?.posts.map { post in
-                        RouteData(
-                            id: post.postId,
+                        print("📷 post \(post.postId) imageUrl: \(post.imageUrl ?? "nil")")
+                        return PostItem(
+                            postId: post.postId,
+                            regionName: post.regionName,
                             title: post.title,
-                            address: post.regionName,
                             date: post.date,
-                            duration: post.durationMinutes.formattedDuration(),
                             isLiked: post.isLiked,
-                            imageURL: post.imageUrl
+                            imageUrl: post.imageUrl,
+                            durationMinutes: post.durationMinutes
                         )
                     } ?? []
                 default:
@@ -45,11 +47,11 @@ class MyPostsViewModel: ObservableObject {
                 case .success(let response):
                     guard let status = response?.data?.status else { return }
                     if status == "LIKE_SUCCESS" {
-                        if let index = self?.posts.firstIndex(where: { $0.id == postId }) {
+                        if let index = self?.posts.firstIndex(where: { $0.postId == postId }) {
                             self?.posts[index].isLiked = true
                         }
                     } else if status == "CANCEL_SUCCESS" {
-                        if let index = self?.posts.firstIndex(where: { $0.id == postId }) {
+                        if let index = self?.posts.firstIndex(where: { $0.postId == postId }) {
                             self?.posts[index].isLiked = false
                         }
                     }

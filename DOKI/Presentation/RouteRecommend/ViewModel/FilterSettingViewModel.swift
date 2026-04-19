@@ -43,6 +43,7 @@ final class FilterSettingViewModel: ObservableObject {
     // 선택된 필터 옵션
     var selectedFilterOptions: [FilterList] = []
     var navigationAction: ((FilterSettingRoute)->())?
+    var focusedFilterType: FilterType? = nil
     
     init(filterAPIService: FilterAPIService) {
         self.filterAPIServie = filterAPIService
@@ -117,10 +118,10 @@ final class FilterSettingViewModel: ObservableObject {
     }
     
     func resetFilterOptions() {
-            selectedFilterOptions = selectedOptions
-            selectedCongestion = selectedFilterOptions.filter { $0.filterType == .congestion }.flatMap { $0.options }[0]
-            selectedExchange = selectedFilterOptions.filter { $0.filterType == .exchange }.flatMap { $0.options }[0]
-            setFilterOption()
+        selectedFilterOptions = selectedOptions
+        selectedCongestion = nil
+        selectedExchange = nil
+        setFilterOption()
     }
 }
 
@@ -135,8 +136,6 @@ extension FilterSettingViewModel {
             let response = try await filterAPIServie.fetchFilterCategories()
             selectedFilterOptions = response
             selectedOptions = response
-            selectedCongestion = selectedFilterOptions.filter { $0.filterType == .congestion }.flatMap { $0.options }[0]
-            selectedExchange = selectedFilterOptions.filter { $0.filterType == .exchange }.flatMap { $0.options }[0]
         } catch {
             print(error.localizedDescription)
         }

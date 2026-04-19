@@ -10,20 +10,25 @@ import Moya
 
 class HomeViewModel: ObservableObject {
     private let homeAPIService: HomeAPIServiceProtocol
-    
+    private let profileAPIService: ProfileAPIServiceProtocol
+
     init(
-        homeAPIService: HomeAPIServiceProtocol = HomeAPIService()
+        homeAPIService: HomeAPIServiceProtocol = HomeAPIService(),
+        profileAPIService: ProfileAPIServiceProtocol = ProfileAPIService()
     ) {
         self.homeAPIService = homeAPIService
-        
+        self.profileAPIService = profileAPIService
+
         fetchWeather()
         fetchTotalWalkStat()
+        fetchPetName()
     }
-    
+
     // MARK: - Published Properties
-    
+
     @Published var weather: WeatherResponse?
     @Published var walkInfo: TotalWalkStatResponse?
+    @Published var petName: String = ""
     
     // MARK: - Computed Properties (UI)
     
@@ -90,6 +95,24 @@ extension HomeViewModel {
         }
     }
     
+    /// 반려견 이름 조회
+    func fetchPetName() {
+        let petId = AuthManager.shared.petId
+        guard petId > 0 else { return }
+
+        profileAPIService.fetchPetProfile(petId: petId) { [weak self] result in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.petName = response?.data?.name ?? ""
+                default:
+                    print("반려견 이름 조회에 실패했습니다.")
+                }
+            }
+        }
+    }
+
     /// 누적 산책 정보 조회
     func fetchTotalWalkStat() {
         homeAPIService.fetchTotalWalkStat { [weak self] result in

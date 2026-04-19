@@ -11,9 +11,11 @@ import SwiftUI
 protocol PostAPIServiceProtocol {
     // 게시물 리스트 조회
     func fetchPosts(sortOption: SortOption, cursor: String, options: [FilterList]) async throws -> (nextCursor: String, hasNext: Bool, posts: [PostItem])
-    func uploadPost(request: PostRegisterRequest) async throws -> PostResponseDTO
+    func uploadPost(request: PostRegisterRequest) async throws -> BaseDTO<PostRegisterResponse>
     func fetchPost(postId: Int) async throws -> PostDetailResponseDTO
     func fetchReview(userId: Int, routeId: Int) async throws -> ReviewResponse
+    func deletePost(postId: Int) async throws
+    func updatePost(postId: Int, request: PostUpdateRequest) async throws
 }
 
 extension PostAPIServiceProtocol {
@@ -47,9 +49,9 @@ final class PostAPIService: BaseAPIService, PostAPIServiceProtocol {
         }
     }
     
-    func uploadPost(request: PostRegisterRequest) async throws -> PostResponseDTO  {
+    func uploadPost(request: PostRegisterRequest) async throws -> BaseDTO<PostRegisterResponse> {
         do {
-            let response: PostResponseDTO = try await provider.async.request(.uploadPost(request: request))
+            let response: BaseDTO<PostRegisterResponse> = try await provider.async.request(.uploadPost(request: request))
             return response
         } catch {
             throw error
@@ -70,6 +72,22 @@ final class PostAPIService: BaseAPIService, PostAPIServiceProtocol {
             let response: ReviewResponseDTO = try await provider.async.request(.fetchReview(userId: userId, routeId: routeId))
             guard let reviewResponse = response.data else { throw APIError.decodingError }
             return reviewResponse
+        } catch {
+            throw error
+        }
+    }
+
+    func deletePost(postId: Int) async throws {
+        do {
+            try await provider.async.requestPlain(.deletePost(postId: postId))
+        } catch {
+            throw error
+        }
+    }
+
+    func updatePost(postId: Int, request: PostUpdateRequest) async throws {
+        do {
+            try await provider.async.requestPlain(.updatePost(postId: postId, request: request))
         } catch {
             throw error
         }

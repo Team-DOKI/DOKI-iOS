@@ -9,9 +9,11 @@ import SwiftUI
 
 final class MyReviewsViewModel: ObservableObject {
     @Published var reviews: [ReviewData] = []
-    
+
+    var navigationAction: ((Int) -> Void)?
+
     private let reviewAPIService: ReviewAPIServiceProtocol
-    
+
     init(reviewAPIService: ReviewAPIServiceProtocol = ReviewAPIService()) {
         self.reviewAPIService = reviewAPIService
     }

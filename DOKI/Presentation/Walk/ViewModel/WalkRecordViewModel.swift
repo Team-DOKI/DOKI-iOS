@@ -11,12 +11,20 @@ import CoreLocation
 import CoreMotion
 
 class WalkRecordViewModel: ObservableObject {
-    
+
     private let walkAPIService: WalkAPIServiceProtocol
-    
-    init(walkAPIService: WalkAPIServiceProtocol = WalkAPIService()) {
+    private let imageAPIService: ImageAPIServiceProtocol
+
+    init(
+        walkAPIService: WalkAPIServiceProtocol = WalkAPIService(),
+        imageAPIService: ImageAPIServiceProtocol = ImageAPIService()
+    ) {
         self.walkAPIService = walkAPIService
+        self.imageAPIService = imageAPIService
     }
+
+    /// WalkNaverMapView가 설정하는 지도 캡처 클로저 (Metal re-render 대기 후 completion)
+    var captureMapAction: ((@escaping (UIImage?) -> Void) -> Void)?
     
     @Published var pathCoordinates: [CLLocationCoordinate2D] = []
     @Published var currentLocation: CLLocation?
@@ -52,15 +60,16 @@ class WalkRecordViewModel: ObservableObject {
     
     var navigationAction: ((WalkRecordRoute, WalkResultData?, WalkFinishResponse?) -> Void)?
     
-    func navigateToWalkResult(response: WalkFinishResponse?) {
+    func navigateToWalkResult(response: WalkFinishResponse?, routeMapImage: UIImage?) {
         stopTimer()
-        
+
         let resultData = WalkResultData(
             distance: distance,
             elapsedSeconds: elapsedSeconds,
-            stepCount: stepCount
+            stepCount: stepCount,
+            routeMapImage: routeMapImage
         )
-        
+
         navigationAction?(.walkResult, resultData, response)
     }
     
@@ -160,30 +169,71 @@ class WalkRecordViewModel: ObservableObject {
 extension WalkRecordViewModel {
     /// 산책 종료
     func finishWalk() {
-        
         guard let routeId = WalkSessionManager.shared.sRouteId else { return }
-        
+
         WalkSessionManager.shared.stopStreaming()
-        
+
         let formatter = ISO8601DateFormatter()
-        
         let request = WalkFinishRequest(
             distance: distance,
             duration: elapsedSeconds,
             stepCount: stepCount,
             endedAt: formatter.string(from: Date())
         )
-        
+
         walkAPIService.finishWalk(routeId: routeId, request: request) { [weak self] result in
+            guard let self else { return }
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
-                    self?.navigateToWalkResult(response: response?.data)
                     WalkSessionManager.shared.nRouteId = response?.data?.routeId
+
+                    // Metal re-render 대기 후 캡처 → 완료되면 navigate
+                    if let captureMapAction = self.captureMapAction {
+                        captureMapAction { capturedImage in
+                            self.navigateToWalkResult(response: response?.data, routeMapImage: capturedImage)
+                            if let image = capturedImage {
+                                self.uploadRouteImage(image)
+                            }
+                        }
+                    } else {
+                        self.navigateToWalkResult(response: response?.data, routeMapImage: nil)
+                    }
                 }
-                
             default:
                 print("산책 종료 실패")
+            }
+        }
+    }
+
+    private func uploadRouteImage(_ image: UIImage) {
+        Task {
+            guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
+
+            do {
+                let presignedRequest = PresignedURLRequest(domain: "ROUTE", contentType: "image/jpeg")
+                guard let presignedData = try await imageAPIService.asyncPresignedURL(request: presignedRequest).data,
+                      let uploadURL = URL(string: presignedData.uploadUrl) else { return }
+
+                var urlRequest = URLRequest(url: uploadURL)
+                urlRequest.httpMethod = "PUT"
+                urlRequest.setValue("image/jpeg", forHTTPHeaderField: "Content-Type")
+                urlRequest.httpBody = imageData
+                _ = try await URLSession.shared.data(for: urlRequest)
+
+                let registerRequest = RegisterImageRequest(
+                    imageUrl: presignedData.imageUrl,
+                    contentType: "image/jpeg",
+                    width: Int(image.size.width),
+                    height: Int(image.size.height),
+                    domain: "ROUTE"
+                )
+
+                if let imageId = try await imageAPIService.asyncRegisterImage(request: registerRequest).data?.imageId {
+                    WalkSessionManager.shared.routeImageId = imageId
+                }
+            } catch {
+                print("경로 이미지 업로드 실패:", error.localizedDescription)
             }
         }
     }

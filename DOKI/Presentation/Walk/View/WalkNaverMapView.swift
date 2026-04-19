@@ -24,29 +24,34 @@ struct WalkNaverMapView: UIViewRepresentable {
     
     func makeUIView(context: Context) -> NMFMapView {
         let mapView = NMFMapView()
-        
+
         if let location = locationManager.currentLocation {
             let latLng = NMGLatLng(
                 lat: location.coordinate.latitude,
                 lng: location.coordinate.longitude
             )
-            
+
             let cameraUpdate = NMFCameraUpdate(scrollTo: latLng)
             cameraUpdate.animation = .none
             mapView.moveCamera(cameraUpdate)
         }
-        
+
         mapView.positionMode = .normal
-        
+
         let overlay = mapView.locationOverlay
         overlay.hidden = false
-        
+
         if let image = UIImage(named: "ic_mylocation") {
             overlay.icon = NMFOverlayImage(image: image)
         }
-        
+
         mapView.addCameraDelegate(delegate: context.coordinator)
         context.coordinator.mapView = mapView
+
+        viewModel.captureMapAction = { [weak coordinator = context.coordinator] completion in
+            coordinator?.captureSnapshotAsync(completion: completion)
+        }
+
         return mapView
     }
     
@@ -67,10 +72,49 @@ struct WalkNaverMapView: UIViewRepresentable {
     class Coordinator: NSObject, NMFMapViewCameraDelegate {
         let parent: WalkNaverMapView
         weak var mapView: NMFMapView?
-        
+
         private var pathOverlay: NMFPath?
         private var lastLocation: CLLocation?
         private var cancellables = Set<AnyCancellable>()
+
+        func captureSnapshotAsync(completion: @escaping (UIImage?) -> Void) {
+            guard let mapView = mapView, !mapView.bounds.isEmpty else {
+                completion(nil)
+                return
+            }
+
+            // 전체 경로가 보이도록 카메라 이동
+            let coordinates = parent.pathCoordinates
+            if coordinates.count > 1 {
+                var minLat = coordinates[0].latitude, maxLat = coordinates[0].latitude
+                var minLng = coordinates[0].longitude, maxLng = coordinates[0].longitude
+                for coord in coordinates {
+                    minLat = min(minLat, coord.latitude)
+                    maxLat = max(maxLat, coord.latitude)
+                    minLng = min(minLng, coord.longitude)
+                    maxLng = max(maxLng, coord.longitude)
+                }
+                let sw = NMGLatLng(lat: minLat, lng: minLng)
+                let ne = NMGLatLng(lat: maxLat, lng: maxLng)
+                let bounds = NMGLatLngBounds(southWest: sw, northEast: ne)
+                let cameraUpdate = NMFCameraUpdate(fit: bounds, padding: 60)
+                cameraUpdate.animation = .none
+                mapView.moveCamera(cameraUpdate)
+            }
+
+            // Metal이 re-render할 시간을 준 뒤 캡처
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak mapView] in
+                guard let mapView = mapView, !mapView.bounds.isEmpty else {
+                    completion(nil)
+                    return
+                }
+                let renderer = UIGraphicsImageRenderer(size: mapView.bounds.size)
+                let image = renderer.image { _ in
+                    mapView.drawHierarchy(in: mapView.bounds, afterScreenUpdates: true)
+                }
+                completion(image)
+            }
+        }
         
         init(_ parent: WalkNaverMapView) {
             self.parent = parent

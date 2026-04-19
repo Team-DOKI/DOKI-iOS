@@ -55,6 +55,15 @@ extension String {
         return displayFormatter.string(from: date)
     }
     
+    /// 마지막 글자 받침 여부에 따라 "와" 또는 "과" 반환
+    var josaWaGwa: String {
+        guard let last = self.last,
+              let scalar = last.unicodeScalars.first else { return "와" }
+        let code = scalar.value
+        guard code >= 0xAC00, code <= 0xD7A3 else { return "와" }
+        return (code - 0xAC00) % 28 == 0 ? "와" : "과"
+    }
+
     func formattedCategoryTag() -> String {
         switch self {
         case "적음", "평범", "많음":

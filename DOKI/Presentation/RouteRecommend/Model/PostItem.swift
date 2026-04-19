@@ -10,8 +10,8 @@ struct PostItem {
     let regionName: String
     let title: String
     let date: String
-    let isLiked: Bool
-    let imageUrl: String
+    var isLiked: Bool
+    let imageUrl: String?
     let durationMinutes: Int
     
     var durationText: String {

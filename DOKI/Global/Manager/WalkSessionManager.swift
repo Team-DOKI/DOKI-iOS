@@ -16,6 +16,7 @@ final class WalkSessionManager {
     
     var sRouteId: String?
     var nRouteId: Int?
+    var routeImageId: Int?
     
     private let walkAPIService: WalkAPIServiceProtocol = WalkAPIService()
     

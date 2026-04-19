@@ -10,7 +10,7 @@ import SwiftUI
 // TODO: - 위치 고민
 enum RouteDetailRoute {
     case back
-    case followRoute(routeId: Int)
+    case followRoute(routeId: Int, postId: Int, address: String, hasReviewed: Bool)
 }
 
 class RouteDetailViewModel: ObservableObject {
@@ -24,7 +24,6 @@ class RouteDetailViewModel: ObservableObject {
     @Published var recordDate: String = "           "
     @Published var walkRecord: String = "           "
     @Published var tagList: [String] = []
-    @Published var isExpanded: Bool = false
     @Published var petName = "          "
     @Published var routeImageURL = "            "
     @Published var description = "          "
@@ -34,7 +33,15 @@ class RouteDetailViewModel: ObservableObject {
     @Published var loadingStatus: LoadingStatus = .ready
     @Published var reviews: [ReviewResponse.CategoryTop] = []
     @Published var totalReviewCount = 0
-    
+    @Published var hasReviewed: Bool = false
+    @Published var isShowEditSheet = false
+    @Published var isShowDeleteAlert = false
+
+    // 수정 시 전달할 원본 데이터
+    var walkImageIds: [Int] = []
+    var rawWalkImages: [PostDetailResponse.WalkImage] = []
+    var rawCategoryTexts: [String] = []
+
     private let postAPIService: PostAPIService
     
     init(postAPIService: PostAPIService, postId: Int? = nil) {
@@ -43,16 +50,15 @@ class RouteDetailViewModel: ObservableObject {
     }
     
     //MARK: - Navigation
-    
+
     var navigationAction: ((RouteDetailRoute)->())?
-    
+
     func setRouteId(routeId: Int) {
         self.routeId = routeId
     }
     
     func navigateToBack() {
         navigationAction?(.back)
-        isExpanded = false
     }
     
     @MainActor
@@ -66,7 +72,16 @@ class RouteDetailViewModel: ObservableObject {
                 
                 address = data.routeDisplay.locationText
                 petProfileImageURL = data.authorInfo.petProfileImage
-                tagList = data.categoryTagTexts
+                tagList = data.categoryTagTexts.map { text in
+                    switch text {
+                    case "적음", "평범", "많음":
+                        return "혼잡도 \(text)"
+                    case "보통":
+                        return "교류 \(text)"
+                    default:
+                        return text
+                    }
+                }
                 walkRecord = data.routeDisplay.metaTagTexts.joined(separator: " | ")
                 petName = data.authorInfo.petName
                 routeImageURL = data.routeDisplay.routeImageUrl
@@ -74,8 +89,12 @@ class RouteDetailViewModel: ObservableObject {
                 title = data.title
                 description = data.description
                 walkImageUrls = data.walkImages.map { $0.imageUrl }
+                walkImageIds = data.walkImages.map { $0.imageId }
+                rawWalkImages = data.walkImages
+                rawCategoryTexts = data.categoryTagTexts
                 isPublic = data.isPublic
                 isMine = data.isMine
+                hasReviewed = data.hasReviewed
                 userId = data.authorInfo.authorId
                 routeId = data.routeDisplay.routeId
                 loadingStatus = .success
@@ -101,6 +120,27 @@ class RouteDetailViewModel: ObservableObject {
     }
     
     func navigateToFollowRouteFollowRoute() {
-        navigationAction?(.followRoute(routeId: routeId ?? 0))
+        navigationAction?(.followRoute(routeId: routeId ?? 0, postId: postId ?? 0, address: address, hasReviewed: hasReviewed))
+    }
+
+    func deletePostTapped() {
+        isShowDeleteAlert = true
+    }
+
+    func editPostTapped() {
+        isShowEditSheet = true
+    }
+
+    @MainActor
+    func deletePost() {
+        Task {
+            guard let postId else { return }
+            do {
+                try await postAPIService.deletePost(postId: postId)
+                navigateToBack()
+            } catch {
+                print("게시글 삭제 실패:", error.localizedDescription)
+            }
+        }
     }
 }

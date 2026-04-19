@@ -12,6 +12,9 @@ struct WalkReviewView: View {
     @StateObject var viewModel: WalkReviewViewModel
     
     @State private var selectedItems: [PhotosPickerItem] = []
+    @State private var isReplacingPhoto = false
+    @State private var replacingIndex: Int? = nil
+    @State private var replaceItem: PhotosPickerItem? = nil
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -104,55 +107,90 @@ extension WalkReviewView {
         }
     }
     private var photoPicker: some View {
-        PhotosPicker(
-            selection: $selectedItems,
-            maxSelectionCount: 3,
-            matching: .images
-        ) {
-            if viewModel.walkImages.isEmpty {
-                Rectangle()
-                    .frame(width: 160, height: 160)
-                    .foregroundStyle(.defaultButton)
-                    .cornerRadius(8)
-                    .overlay(Image(.btnAddimg))
-            } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 12) {
-                        ForEach(viewModel.walkImages, id: \.self) {
-                            Image(uiImage: $0)
-                                .resizable()
-                                .frame(width: 160, height: 160)
-                                .cornerRadius(8)
-                        }
+        let remainingSlots = max(0, 3 - viewModel.walkImages.count)
+
+        return ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                if remainingSlots > 0 {
+                    PhotosPicker(
+                        selection: $selectedItems,
+                        maxSelectionCount: remainingSlots,
+                        matching: .images
+                    ) {
+                        Rectangle()
+                            .frame(width: 160, height: 160)
+                            .foregroundStyle(.defaultButton)
+                            .cornerRadius(8)
+                            .overlay(Image(.btnAddimg))
                     }
+                    .onChange(of: selectedItems) { _, selectedPhoto in
+                        handleSelectedPhotos(selectedPhoto)
+                    }
+                }
+
+                ForEach(Array(viewModel.walkImages.enumerated()), id: \.offset) { index, image in
+                    Button {
+                        replacingIndex = index
+                        isReplacingPhoto = true
+                    } label: {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 160, height: 160)
+                            .cornerRadius(8)
+                            .clipped()
+                            .overlay(alignment: .topTrailing) {
+                                Button {
+                                    viewModel.removeWalkImage(at: index)
+                                } label: {
+                                    Image(.btnReviewdelete)
+                                        .padding(6)
+                                        .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.plain)
+                            }
+                    }
+                    .buttonStyle(.plain)
                 }
             }
         }
-        .onChange(of: selectedItems) { _, selectedPhoto in
-            handleSelectedPhotos(selectedPhoto)
+        .photosPicker(isPresented: $isReplacingPhoto, selection: $replaceItem, matching: .images)
+        .onChange(of: replaceItem) { _, item in
+            guard let item, let index = replacingIndex else { return }
+            item.loadTransferable(type: Data.self) { result in
+                DispatchQueue.main.async {
+                    if case .success(let data) = result, let data, let image = UIImage(data: data) {
+                        viewModel.replaceWalkImage(at: index, with: image)
+                    }
+                    replaceItem = nil
+                    replacingIndex = nil
+                }
+            }
         }
     }
     
     private var congestionSection: some View {
         VStack(spacing: 16) {
             SectionHeader(
-                title: "혼잡도"
+                title: "혼잡도",
+                subtitle: "(필수 선택)"
             )
-            
+
             SegmentedButton(
                 items: viewModel.congestion,
                 selectedItem: $viewModel.selectedCongestion
             )
         }
     }
-    
+
     // 강아지 교류 빈도
     private var dogInteractionSection: some View {
         VStack(spacing: 16) {
             SectionHeader(
-                title: "강아지 교류 빈도"
+                title: "강아지 교류 빈도",
+                subtitle: "(필수 선택)"
             )
-            
+
             SegmentedButton(
                 items: viewModel.exchange,
                 selectedItem: $viewModel.selectedExchange
@@ -205,16 +243,17 @@ extension WalkReviewView {
     }
     
     private var buttonSection: some View {
-        VStack(spacing: 16) {
+        let isLoading = viewModel.loadingStatus == .loading
+        return VStack(spacing: 16) {
             MainButton(
                 text: "산책 기록 나만보기",
-                buttonState: viewModel.loadingStatus == .loading ? .loading : .active2,
+                buttonState: (isLoading && viewModel.tappedButton == false) ? .loading(base: .active2) : (viewModel.isFormValid && !isLoading ? .active2 : .disabled),
                 action: { viewModel.uploadPost(isPublic: false) }
             )
-            
+
             MainButton(
                 text: "산책 기록 공유하기",
-                buttonState: viewModel.loadingStatus == .loading ? .loading : .active1,
+                buttonState: (isLoading && viewModel.tappedButton == true) ? .loading(base: .active1) : (viewModel.isFormValid && !isLoading ? .active1 : .disabled),
                 action: { viewModel.uploadPost(isPublic: true) }
             )
         }
@@ -230,9 +269,7 @@ extension WalkReviewView {
                     if let data,
                        let newImage = UIImage(data: data),
                        !viewModel.walkImages.contains(where: { $0.pngData() == newImage.pngData() }) {
-                        DispatchQueue.main.async {
-                            viewModel.walkImages.append(newImage)
-                        }
+                        viewModel.uploadWalkImage(newImage)
                     }
                 case .failure:
                     break

@@ -23,23 +23,54 @@ class AuthManager: ObservableObject {
     
     private(set) var accessToken: String?
     private(set) var refreshToken: String?
+    private(set) var petId: Int = 0
+    private(set) var userId: Int = 0
+    private(set) var provider: String = ""
     
-    private let provider = MoyaProvider<AuthAPI>(
+    private let authProvider = MoyaProvider<AuthAPI>(
         session: MoyaSession.shared,
         plugins: [MoyaLoggingPlugin()]
     )
     
-    private init() {}
+    private init() {
+        if !UserDefaults.standard.bool(forKey: "hasLaunchedBefore") {
+            try? KeychainManager.delete(.accessToken)
+            try? KeychainManager.delete(.refreshToken)
+            UserDefaults.standard.set(true, forKey: "hasLaunchedBefore")
+        }
+    }
     
     func checkLogin() {
         do {
             self.accessToken = try KeychainManager.read(.accessToken)
             self.refreshToken = try KeychainManager.read(.refreshToken)
-            
+
+            if let petIdString = try? KeychainManager.read(.petId), let id = Int(petIdString ?? ""), id > 0 {
+                self.petId = id
+                UserDefaults.standard.set(true, forKey: "hasCompletedRegister")
+            }
+            if let userIdString = try? KeychainManager.read(.userId), let id = Int(userIdString ?? "") {
+                self.userId = id
+            }
+            if let savedProvider = try? KeychainManager.read(.provider) {
+                self.provider = savedProvider ?? ""
+            }
+
             authStatus = .loggedIn
         } catch {
             authStatus = .loggedOut
             print(error.localizedDescription)
+        }
+    }
+
+    func saveUserSession(userId: Int, petId: Int) {
+        do {
+            try KeychainManager.create(.userId, String(userId))
+            try KeychainManager.create(.petId, String(petId))
+            self.userId = userId
+            self.petId = petId
+        } catch {
+            print("유저 세션 저장 실패:", error.localizedDescription)
         }
     }
     
@@ -47,39 +78,53 @@ class AuthManager: ObservableObject {
     func loginWithApple(_ idToken: String, deviceId: String) async {
         do {
             let request = AppleLoginRequest(authorizationCode: idToken, deviceId: deviceId)
-            let response: AppleLoginResponse = try await provider.async.request(.appleLogin(request: request))
-            
+            let response: AppleLoginResponse = try await authProvider.async.request(.appleLogin(request: request))
+
             try KeychainManager.create(.accessToken, response.accessToken)
             try KeychainManager.create(.refreshToken, response.refreshToken)
-            
+            try KeychainManager.create(.provider, "APPLE")
+
             self.accessToken = response.accessToken
             self.refreshToken = response.refreshToken
-            
+            self.provider = "APPLE"
+
+            saveUserSession(userId: response.userId, petId: response.petId)
+
             await MainActor.run {
                 isNewUser = response.isNewUser
+                if response.petId > 0 {
+                    UserDefaults.standard.set(true, forKey: "hasCompletedRegister")
+                }
                 authStatus = .loggedIn
             }
         } catch {
             print(error.localizedDescription)
         }
     }
-    
+
     func loginWithKakao(_ accessToken: String, deviceId: String) async throws {
         do {
             let request = KakaoLoginRequest(idToken: accessToken, deviceId: deviceId)
-            let response: KakaoLoginResponse = try await provider.async.request(.kakaoLogin(request: request))
-            
+            let response: KakaoLoginResponse = try await authProvider.async.request(.kakaoLogin(request: request))
+
             try KeychainManager.create(.accessToken, response.accessToken)
             try KeychainManager.create(.refreshToken, response.refreshToken)
-            
+            try KeychainManager.create(.provider, "KAKAO")
+
             self.accessToken = response.accessToken
             self.refreshToken = response.refreshToken
-            
+            self.provider = "KAKAO"
+
+            saveUserSession(userId: response.userId, petId: response.petId)
+
             await MainActor.run {
                 isNewUser = response.isNewUser
+                if response.petId > 0 {
+                    UserDefaults.standard.set(true, forKey: "hasCompletedRegister")
+                }
                 authStatus = .loggedIn
             }
-        } catch {            
+        } catch {
             print(error.localizedDescription)
             throw error
         }
@@ -91,7 +136,7 @@ class AuthManager: ObservableObject {
             let deviceId = DeviceIDManager.shared.getDeviceId()
             let request = LogoutRequest(deviceId: deviceId)
             
-            try await provider.async.requestPlain(
+            try await authProvider.async.requestPlain(
                 .logout(request: request)
             )
             
@@ -105,10 +150,17 @@ class AuthManager: ObservableObject {
         do {
             try KeychainManager.delete(.accessToken)
             try KeychainManager.delete(.refreshToken)
+            try? KeychainManager.delete(.petId)
+            try? KeychainManager.delete(.userId)
+            try? KeychainManager.delete(.provider)
         } catch {
             print(error.localizedDescription)
         }
-        
+
+        self.petId = 0
+        self.userId = 0
+        self.provider = ""
+
         DispatchQueue.main.async {
             self.authStatus = .loggedOut
         }
@@ -117,8 +169,8 @@ class AuthManager: ObservableObject {
     /// 탈퇴 API
     func withdraw() async {
         do {
-            let request = WithdrawRequest(provider: "APPLE")
-            try await provider.async.requestPlain(.withdraw(request: request))
+            let request = WithdrawRequest(provider: provider)
+            try await authProvider.async.requestPlainChecked(.withdraw(request: request))
             
             await MainActor.run {
                 UserDefaults.standard.removeObject(forKey: "hasSeenOnboarding")
@@ -148,7 +200,7 @@ extension AuthManager {
             deviceId: DeviceIDManager.shared.getDeviceId()
         )
         
-        provider.request(.refreshToken(request: request)) { result in
+        authProvider.request(.refreshToken(request: request)) { result in
             switch result {
             case .success(let response):
                 guard (200..<300).contains(response.statusCode),

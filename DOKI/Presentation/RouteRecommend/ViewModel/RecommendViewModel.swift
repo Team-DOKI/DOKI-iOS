@@ -36,14 +36,13 @@ class RecommendViewModel: ObservableObject {
     @Published var selectedSort: SortOption = .latest
     @Published var loadingStatus: LoadingStatus = .ready
     
-    @Published var routeCoordinates: [[Double]] = []
     
     private var hasNext: Bool = true
     
     private let postAPIservice: PostAPIServiceProtocol
     private let routeAPIService: RouteAPIServiceProtocol
     
-    var filterOptions: [FilterList] = []
+    @Published var filterOptions: [FilterList] = []
     var nextCursorId: String = ""
     
     var navigationAction: ((RecommendRoute)->())?
@@ -57,18 +56,35 @@ class RecommendViewModel: ObservableObject {
         self.routeAPIService = routeAPIService
         self.coordinator = coordinator
         
-        fetchRouteGeometry(routeId: 102)
     }
     
     func navigateToRouteDetail(postId: Int) {
         coordinator.push(.routeDetail(postId: postId))
-        navigationAction?(.routeDetail(postId: postId))
     }
-    
-    func navigateToFilterSetting() {
+
+    func toggleLike(postId: Int) {
+        routeAPIService.toggleLike(postId: postId) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    guard let status = response?.data?.status else { return }
+                    if let index = self?.posts.firstIndex(where: { $0.postId == postId }) {
+                        self?.posts[index].isLiked = status == "LIKE_SUCCESS"
+                    }
+                default:
+                    print("좋아요 실패")
+                }
+            }
+        }
+    }
+
+    func navigateToFilterSetting(focusedType: FilterType? = nil) {
+        pendingFocusedFilterType = focusedType
         coordinator.push(.filterSetting)
         navigationAction?(.filterSetting)
     }
+
+    var pendingFocusedFilterType: FilterType? = nil
     
     func selecteSortOption(_ sort: SortOption) {
         self.selectedSort = sort
@@ -135,17 +151,4 @@ extension RecommendViewModel {
         }
     }
     
-    func fetchRouteGeometry(routeId: Int) {
-        routeAPIService.fetchRouteGeometry(routeId: routeId) { [weak self] result in
-            switch result {
-            case .success(let response):
-                DispatchQueue.main.async {
-                    self?.routeCoordinates = response?.data?.geometry.coordinates ?? []
-                }
-                
-            default:
-                print("geometry fetch 실패")
-            }
-        }
-    }
 }

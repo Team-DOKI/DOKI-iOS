@@ -20,7 +20,7 @@ struct Post: Codable {
     let date: String
     let durationMinutes: Int
     let isLiked: Bool
-    let imageUrl: String
+    let imageUrl: String?
 }
 
 struct ReviewResponse: Codable {

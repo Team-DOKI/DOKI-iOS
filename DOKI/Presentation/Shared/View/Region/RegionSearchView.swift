@@ -23,7 +23,7 @@ struct RegionSearchView: View {
                 .padding(.vertical, 25)
             
             HStack(spacing: 0) {
-                ScrollView {
+                ScrollView(showsIndicators: false) {
                     LazyVStack {
                         ForEach(regions, id: \.gu.id) { district in
                             OptionItem(
@@ -39,7 +39,7 @@ struct RegionSearchView: View {
                 
                 Divider().frame(maxWidth: 1, maxHeight: .infinity)
                 
-                ScrollView {
+                ScrollView(showsIndicators: false) {
                     LazyVStack {
                         ForEach(regions.first { $0.gu.id == selectedGuId }?.dongs ?? [], id: \.id) { dong in
                             OptionItem(

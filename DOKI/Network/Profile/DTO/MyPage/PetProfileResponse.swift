@@ -7,7 +7,7 @@
 
 struct PetProfileResponse: Codable {
     let petId: Int
-    let imageUrl: String
+    let imageUrl: String?
     let name: String
     let birth: String
     let age: String

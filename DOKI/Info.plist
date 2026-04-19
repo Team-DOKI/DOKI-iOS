@@ -24,6 +24,8 @@
 	</array>
 	<key>NAVER_CLIENT_ID</key>
 	<string>$(NAVER_CLIENT_ID)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

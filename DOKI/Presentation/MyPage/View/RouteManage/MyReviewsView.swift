@@ -19,12 +19,17 @@ struct MyReviewsView: View {
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 16) {
                     ForEach(viewModel.reviews) { review in
-                        ReviewCell(
-                            title: review.title,
-                            address: review.address,
-                            recordDate: review.date,
-                            tags: review.tags
-                        )
+                        Button {
+                            viewModel.navigationAction?(review.id)
+                        } label: {
+                            ReviewCell(
+                                title: review.title,
+                                address: review.address,
+                                recordDate: review.date,
+                                tags: review.tags
+                            )
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(.horizontal, 16)

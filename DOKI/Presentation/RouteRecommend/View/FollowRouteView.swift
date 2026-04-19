@@ -12,44 +12,23 @@ import CoreLocation
 struct FollowRouteView: View {
     @StateObject var viewModel: FollowRouteViewModel
     
-    @State private var isLocationOn = false // 추후 위치 공유
     @State private var confirmType: WalkConfirmType?
     
     var body: some View {
         ZStack() {
-            FollowRouteNaverMapView(
-                pathCoordinates: viewModel.pathCoordinates,
-                userTrackingMode: $viewModel.userTrackingMode
-            )
-            .ignoresSafeArea()
-            
+            FollowRouteNaverMapView(pathCoordinates: viewModel.pathCoordinates, userTrackingMode: $viewModel.userTrackingMode)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .ignoresSafeArea()
+
             VStack(spacing: 0) {
-                
-                // 추후 위치 공유
+
+                Spacer()
+
                 HStack(spacing: 0) {
                     Spacer()
-                    
-                    Toggle("", isOn: $isLocationOn)
-                        .labelsHidden()
-                        .padding(.trailing, 16)
-                }
-                .padding(.top, 20)
-                .opacity(0)
-                
-                Spacer()
-                
-                HStack {
-                    Spacer()
-                    
-                    VStack(spacing: 12) {
-                        PinButton(icon: "ic_trash", action: {}).opacity(0) // 추후 스팟 태그
-                        
-                        PinButton(icon: "ic_photo", action: {}).opacity(0) // 추후 스팟 태그
-                        
-                        PinButton(icon: "ic_gps", action: {
-                            viewModel.userTrackingMode.toggle()
-                        })
-                    }
+                    PinButton(icon: "ic_gps", action: {
+                        viewModel.userTrackingMode.toggle()
+                    })
                     .padding(.trailing, 16)
                 }
                 .padding(.bottom, 14)
@@ -65,12 +44,12 @@ struct FollowRouteView: View {
                     .padding(.bottom, 20)
                     
                     HStack(spacing: 8) {
-                        MainButton(text: "산책 중단하기", buttonState: .active2, font: .subtitle) {
+                        MainButton(text: "산책 중단하기", buttonState: .active2, size: .medium) {
                             viewModel.pauseTimer()
                             confirmType = .pause
                         }
                         
-                        MainButton(text: "산책 종료하기", buttonState: .active1, font: .subtitle) {
+                        MainButton(text: "산책 종료하기", buttonState: .active1, size: .medium) {
                             viewModel.pauseTimer()
                             confirmType = .finish
                         }
@@ -109,5 +88,7 @@ struct FollowRouteView: View {
             viewModel.startTimer()
             viewModel.fetchRouteGeometry()
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
     }
 }

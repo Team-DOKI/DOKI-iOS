@@ -7,8 +7,12 @@
 
 import Foundation
 
-struct WalkPreparationData: Identifiable {
+struct WalkPreparationData: Identifiable, Equatable {
     let id = UUID()
     var name: String
     var isChecked: Bool
+
+    static func == (lhs: WalkPreparationData, rhs: WalkPreparationData) -> Bool {
+        lhs.id == rhs.id && lhs.name == rhs.name && lhs.isChecked == rhs.isChecked
+    }
 }

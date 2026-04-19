@@ -10,43 +10,56 @@ import SwiftUI
 enum MyPageRoute: Route, Hashable {
     case userProfile
     case petProfile
-    
+
     case myPosts
     case myLikedPosts
     case myReviews
-    
+
     case regionSetting
     case appInfo
-    
+
     case dbtiStart
     case dbtiSurvey
     case dbtiResult
+
+    case routeDetail(postId: Int)
+    case myReviewsDetail(postId: Int)
 }
 
 struct MyPageCoordinatorView: View {
     @EnvironmentObject var tabBarState: TabBarState
     
     @StateObject var myPageCoordinator: Coordinator<MyPageRoute>
-    
+    @StateObject var followRouteCoordinator: Coordinator<FollowRouteRoute>
+
     @StateObject var myPageViewModel: MyPageViewModel
-    
+
     @StateObject var myPostsViewModel: MyPostsViewModel
     @StateObject var myLikedPostsViewModel: MyLikedPostsViewModel
     @StateObject var myReviewsViewModel: MyReviewsViewModel
-    
+
     @StateObject var regionSettingViewModel: RegionSettingViewModel
-    
+
+    @StateObject var followRouteViewModel: FollowRouteViewModel
+    @StateObject var followRouteReviewViewModel: FollowRouteReviewViewModel
+
+    @StateObject var routeDetailViewModel = RouteDetailViewModel(postAPIService: PostAPIService())
+
     @StateObject var dbtiViewModel = DBTIViewModel(entryContext: .myPage)
-    
+
     init(myPageCoordinator: Coordinator<MyPageRoute> = Coordinator<MyPageRoute>(), viewModelFactory: AppDIContainer.ViewModelFactory) {
         self._myPageCoordinator = StateObject(wrappedValue: myPageCoordinator)
-        
+        self._followRouteCoordinator = StateObject(wrappedValue: Coordinator<FollowRouteRoute>())
+
         self._myPageViewModel = StateObject(wrappedValue: viewModelFactory.makeMyPageViewModel())
-        
+
         self._myPostsViewModel = StateObject(wrappedValue: viewModelFactory.makeMyPostViewModel())
         self._myLikedPostsViewModel = StateObject(wrappedValue: viewModelFactory.makeMyLikedPostViewModel())
         self._myReviewsViewModel = StateObject(wrappedValue: viewModelFactory.makeMyReviewsViewModel())
         self._regionSettingViewModel = StateObject(wrappedValue: viewModelFactory.makeRegionSettingViewModel())
+
+        self._followRouteViewModel = StateObject(wrappedValue: viewModelFactory.makeFollowRouteViewModel())
+        self._followRouteReviewViewModel = StateObject(wrappedValue: viewModelFactory.makeFollowRouteReviewViewModel())
     }
     
     var body: some View {
@@ -82,8 +95,31 @@ struct MyPageCoordinatorView: View {
                         DBTISurveyView(viewModel: dbtiViewModel)
                     case .dbtiResult:
                         DBTIResultView(viewModel: dbtiViewModel)
+                    case .routeDetail:
+                        RouteDetailView(viewModel: routeDetailViewModel)
+                    case .myReviewsDetail:
+                        RouteDetailView(viewModel: routeDetailViewModel)
                     }
                 }
+        }
+        .fullScreenCover(
+            item: $followRouteCoordinator.fullScreenCover,
+            onDismiss: {
+                followRouteCoordinator.clearStack()
+                followRouteViewModel.hasReviewed = false
+            }
+        ) { _ in
+            NavigationStack(path: $followRouteCoordinator.fullScreenPath) {
+                FollowRouteView(viewModel: followRouteViewModel)
+                    .navigationDestination(for: FollowRouteRoute.self) { destination in
+                        switch destination {
+                        case .followRoute:
+                            FollowRouteView(viewModel: followRouteViewModel)
+                        case .followRouteReview:
+                            FollowRouteReviewView(viewModel: followRouteReviewViewModel)
+                        }
+                    }
+            }
         }
         .onChange(of: myPageCoordinator.path) { path in
             tabBarState.isHidden = !path.isEmpty
@@ -114,6 +150,23 @@ struct MyPageCoordinatorView: View {
                 myPageCoordinator.push(.dbtiSurvey)
             case .dbtiResult:
                 myPageCoordinator.push(.dbtiResult)
+            case .routeDetail(postId: let postId):
+                routeDetailViewModel.postId = postId
+                myPageCoordinator.push(.routeDetail(postId: postId))
+            case .myReviewsDetail:
+                break
+            }
+        }
+
+        routeDetailViewModel.navigationAction = { destination in
+            switch destination {
+            case .back:
+                myPageCoordinator.pop()
+            case .followRoute(let routeId, let postId, let address, let hasReviewed):
+                followRouteViewModel.hasReviewed = hasReviewed
+                followRouteViewModel.setRoute(routeId)
+                followRouteReviewViewModel.setup(postId: postId, routeId: routeId, address: address)
+                followRouteCoordinator.presentFullScreen(.followRoute)
             }
         }
         
@@ -132,6 +185,48 @@ struct MyPageCoordinatorView: View {
                 myPageCoordinator.popToRoot()
             }
         }
+
+        myPostsViewModel.navigationAction = { postId in
+            routeDetailViewModel.postId = postId
+            myPageCoordinator.push(.routeDetail(postId: postId))
+        }
+
+        myLikedPostsViewModel.navigationAction = { postId in
+            routeDetailViewModel.postId = postId
+            myPageCoordinator.push(.routeDetail(postId: postId))
+        }
+
+        myReviewsViewModel.navigationAction = { postId in
+            routeDetailViewModel.postId = postId
+            myPageCoordinator.push(.myReviewsDetail(postId: postId))
+        }
+
+        followRouteViewModel.navigationAction = { destination in
+            switch destination {
+            case .followRouteReview:
+                if followRouteViewModel.hasReviewed {
+                    followRouteCoordinator.dismiss()
+                } else {
+                    followRouteReviewViewModel.setWalkData(
+                        distanceString: followRouteViewModel.distanceString,
+                        elapsedTimeString: followRouteViewModel.elapsedTimeString,
+                        stepString: followRouteViewModel.stepString,
+                        startDate: followRouteViewModel.startDate
+                    )
+                    followRouteCoordinator.push(.followRouteReview)
+                }
+            default:
+                break
+            }
+        }
+
+        followRouteReviewViewModel.navigationAction = { destination in
+            switch destination {
+            case .backToRoot:
+                followRouteCoordinator.dismiss()
+            }
+        }
     }
+
 }
 

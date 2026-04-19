@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-// TODO: routeImage -> 임시 이미지로 대체
-
 class WalkReviewViewModel: ObservableObject {
     
     private let routeAPIService: RouteAPIServiceProtocol = RouteAPIService()
@@ -20,6 +18,7 @@ class WalkReviewViewModel: ObservableObject {
     var selectedFilterOptions: [FilterList] = []
     
     @Published var isShowReviewCompleted: Bool = false
+    private var uploadedPostId: Int = 0
     
     // 산책 게시물 제목
     @Published var title: String = ""
@@ -32,6 +31,7 @@ class WalkReviewViewModel: ObservableObject {
     
     
     @Published var walkImages: [UIImage] = []
+    @Published var walkImageIds: [Int] = []
     @Published var routeImage: UIImage = UIImage(resource: .imgUpperbodydog)
     
     @Published var selectedCongestion: FilteringOption?
@@ -47,6 +47,17 @@ class WalkReviewViewModel: ObservableObject {
     
     @Published var exchange: [FilteringOption] = []
     @Published var loadingStatus: LoadingStatus = .ready
+    @Published var tappedButton: Bool? = nil  // false = 나만보기, true = 공유하기
+
+    var isFormValid: Bool {
+        selectedCongestion != nil &&
+        selectedExchange != nil &&
+        safety.contains(where: { $0.isActive }) &&
+        convenience.contains(where: { $0.isActive }) &&
+        environment.contains(where: { $0.isActive }) &&
+        !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
     
     init(
         filterAPIService: FilterAPIService,
@@ -63,11 +74,73 @@ class WalkReviewViewModel: ObservableObject {
     }
     
     func navigateToDetail() {
-        navigationAction?(.routeDetail)
+        navigationAction?(.routeDetail(postId: uploadedPostId))
     }
     
     func showReviewComplete() {
         isShowReviewCompleted = true
+    }
+
+    func removeWalkImage(at index: Int) {
+        guard index < walkImages.count else { return }
+        walkImages.remove(at: index)
+        if index < walkImageIds.count {
+            walkImageIds.remove(at: index)
+        }
+    }
+
+    func uploadWalkImage(_ image: UIImage) {
+        Task {
+            do {
+                let imageId = try await uploadImageAndGetId(image)
+                await MainActor.run {
+                    walkImages.append(image)
+                    walkImageIds.append(imageId)
+                }
+            } catch {
+                print("산책 이미지 업로드 실패:", error.localizedDescription)
+            }
+        }
+    }
+
+    func replaceWalkImage(at index: Int, with image: UIImage) {
+        Task {
+            do {
+                let imageId = try await uploadImageAndGetId(image)
+                await MainActor.run {
+                    guard self.walkImages.indices.contains(index) else { return }
+                    self.walkImages[index] = image
+                    if self.walkImageIds.indices.contains(index) {
+                        self.walkImageIds[index] = imageId
+                    }
+                }
+            } catch {
+                print("이미지 교체 실패:", error.localizedDescription)
+            }
+        }
+    }
+
+    private func uploadImageAndGetId(_ image: UIImage) async throws -> Int {
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            throw NSError(domain: "ImageError", code: -1)
+        }
+        let presignedURLRequest = PresignedURLRequest(domain: "WALK", contentType: "image/jpeg")
+        guard let presignedData = try await imageAPIService.asyncPresignedURL(request: presignedURLRequest).data,
+              let uploadURL = URL(string: presignedData.uploadUrl) else {
+            throw NSError(domain: "PresignedError", code: -1)
+        }
+        try await uploadToS3(url: uploadURL, data: imageData)
+        let imageRequest = RegisterImageRequest(
+            imageUrl: presignedData.imageUrl,
+            contentType: "image/jpeg",
+            width: Int(image.size.width),
+            height: Int(image.size.height),
+            domain: "WALK"
+        )
+        guard let imageId = try await imageAPIService.asyncRegisterImage(request: imageRequest).data?.imageId else {
+            throw NSError(domain: "RegisterError", code: -1)
+        }
+        return imageId
     }
 }
 
@@ -125,8 +198,6 @@ extension WalkReviewViewModel {
         do {
             let response = try await filterAPIServie.fetchFilterCategories()
             selectedFilterOptions = response
-            selectedCongestion = selectedFilterOptions.filter { $0.filterType == .congestion }.flatMap { $0.options }[0]
-            selectedExchange = selectedFilterOptions.filter { $0.filterType == .exchange }.flatMap { $0.options }[0]
         } catch {
             print(error.localizedDescription)
         }
@@ -134,76 +205,20 @@ extension WalkReviewViewModel {
     
     func uploadPost(isPublic: Bool) {
         Task {
-            await MainActor.run { loadingStatus = .loading }
+            await MainActor.run {
+                loadingStatus = .loading
+                tappedButton = isPublic
+            }
             do {
-
                 let selectedOptionsForCategories = createSelectedOptions(selectedOption: selectedFilterOptions)
-                                
-                // 경로이미지 요청 도메인
-                let presignedURLRequest = PresignedURLRequest(
-                    domain: "ROUTE",
-                    contentType: "image/jpeg"
-                )
-                
-                // 경로이미지 데이터 추출
-                guard let routeCgImage = routeImage.cgImage,
-                      let routeImageData = UIImage(cgImage: routeCgImage).jpegData(compressionQuality: 0.8) else { return }
-                
-                // 경로이미지 presignedURL 발급
-                guard let presignedURLResponse = try await imageAPIService.asyncPresignedURL(request: presignedURLRequest).data,
-                      let uploadURL = URL(string: presignedURLResponse.uploadUrl) else { return }
-                
-                // S3 업로드
-                try await uploadToS3(url: uploadURL, data: routeImageData)
-                
-                
-                let routeImageRequest = RegisterImageRequest(
-                           imageUrl: presignedURLResponse.imageUrl,
-                           contentType: "image/jpeg",
-                           width: Int(routeImage.size.width),
-                           height: Int(routeImage.size.height),
-                           domain: "ROUTE"
-                       )
-                
-                // 경로이미지 ID 발급
-                guard let routeImageId = try await imageAPIService.asyncRegisterImage(request: routeImageRequest).data?.imageId else { return }
-                
-                var walkImageIds: [Int] = []
-                
-                for walkImage in walkImages {
-                    guard let cgImage = walkImage.cgImage,
-                        let imageData = UIImage(cgImage: cgImage).jpegData(compressionQuality: 0.8) else { return }
-                    
-                    let presignedURLRequest = PresignedURLRequest(
-                        domain: "ROUTE",
-                        contentType: "image/jpeg"
-                    )
-                    
-                    guard let presignedURLResponse = try await imageAPIService.asyncPresignedURL(request: presignedURLRequest).data,
-                          let uploadURL = URL(string: presignedURLResponse.uploadUrl) else { return }
-                    
-                    try await uploadToS3(url: uploadURL, data: imageData)
-                    
-                    let imageRequest = RegisterImageRequest(
-                        imageUrl: presignedURLResponse.imageUrl,
-                        contentType: "image/jpeg",
-                        width: Int(walkImage.size.width),
-                        height: Int(walkImage.size.height),
-                        domain: "ROUTE"
-                    )
-                    
-                    guard let walkImageId = try await imageAPIService.asyncRegisterImage(request: imageRequest).data?.imageId else {
-                        await MainActor.run { loadingStatus = .failed("산책 이미지 등록에 실패했습니다.") }
-                        return
-                    }
-                    walkImageIds.append(walkImageId)
-                }
-                
+
                 guard let nRouteId = WalkSessionManager.shared.nRouteId else {
                     await MainActor.run { loadingStatus = .failed("산책 루트 ID가 없습니다.") }
                     return
                 }
-                
+
+                let routeImageId = WalkSessionManager.shared.routeImageId ?? 0
+
                 let request = PostRegisterRequest(
                     title: title,
                     description: description,
@@ -214,11 +229,19 @@ extension WalkReviewViewModel {
                     walkImageIds: walkImageIds
                 )
                                                
-                let _ = try await postAPIService.uploadPost(request: request)
-                
-                await MainActor.run { loadingStatus = .success }
+                let response = try await postAPIService.uploadPost(request: request)
+
+                await MainActor.run {
+                    uploadedPostId = response.data?.postId ?? 0
+                    loadingStatus = .success
+                    tappedButton = nil
+                    showReviewComplete()
+                }
             } catch {
-                await MainActor.run { loadingStatus = .failed(error.localizedDescription) }
+                await MainActor.run {
+                    loadingStatus = .failed(error.localizedDescription)
+                    tappedButton = nil
+                }
             }
         }
     }

@@ -14,6 +14,8 @@ struct RouteTag: View {
         Text(text)
             .subActive(color: .defaultPrimary)
             .padding(8)
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
             .background(.primaryGra1)
             .cornerRadius(8)
     }

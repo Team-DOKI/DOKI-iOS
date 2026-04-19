@@ -25,7 +25,7 @@ extension FilterCategoryResponse {
                 name: $0.name
             )
         }
-        return categoryList + durationList
+        return durationList + categoryList
     }
 }
 

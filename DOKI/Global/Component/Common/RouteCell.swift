@@ -15,7 +15,7 @@ struct RouteCell: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            KFImage(URL(string: post.imageUrl))
+            KFImage(URL(string: post.imageUrl ?? ""))
                 .placeholder {
                     Image(.imgDefaultpost)
                         .resizable()

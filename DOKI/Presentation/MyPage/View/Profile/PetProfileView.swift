@@ -12,10 +12,62 @@ struct PetProfileView: View {
     @ObservedObject var viewModel: PetProfileViewModel
     
     @State private var selectedItem: PhotosPickerItem?
+    @State private var isShowPhotoSheet = false
     
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
+        ZStack {
+            mainContent
+            
+            if isShowPhotoSheet {
+                photoBottomSheet
+            }
+        }
+        .ignoresSafeArea(.keyboard)
+        .onAppear { viewModel.fetchBreedList() }
+        .onChange(of: viewModel.isSaveCompleted) { _, completed in
+            if completed {
+                dismiss()
+                viewModel.isSaveCompleted = false
+            }
+        }
+        .onChange(of: selectedItem) { _, newItem in
+            guard let newItem else { return }
+            
+            withAnimation {
+                    isShowPhotoSheet = false
+                }
+            
+            handleSelectedPhoto(newItem)
+        }
+        .sheet(isPresented: $viewModel.isShowBreedSearch) {
+            BreedSearchView(
+                breeds: viewModel.breedList,
+                selectedBreedName: viewModel.selectedBreedName,
+                searchText: $viewModel.breedSearchText,
+                onSelect: { breed in
+                    viewModel.selectBreed(breed)
+                },
+                onDismiss: {
+                    viewModel.toggleBreedSearchSheet()
+                }
+            )
+            .presentationDetents([.height(600)])
+        }
+        .topNavigationView(left: {
+            BackButton(action: {
+                dismiss()
+            })
+        }, center: {
+            Text("반려견 정보 입력")
+                .subtitle()
+        })
+    }
+}
+
+extension PetProfileView {
+    private var mainContent: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 0) {
                 Spacer().frame(height: 26)
@@ -47,77 +99,103 @@ struct PetProfileView: View {
                 text: "저장하기",
                 buttonState: viewModel.buttonDisabled ? .disabled : .active1,
                 action: {
-                    viewModel.saveButtonTapped(petId: 14)
+                    viewModel.saveButtonTapped(petId: AuthManager.shared.petId)
                 }
             )
             .padding(.horizontal, 16)
         }
-        .ignoresSafeArea(.keyboard)
-        .onAppear{ viewModel.fetchBreedList() }
-        .onChange(of: viewModel.isSaveCompleted) { _, completed in
-            if completed {
-                dismiss()
-                viewModel.isSaveCompleted = false
+    }
+}
+
+extension PetProfileView {
+    private var photoBottomSheet: some View {
+        ZStack {
+            Color.black.opacity(0.3)
+                .ignoresSafeArea()
+                .onTapGesture {
+                    isShowPhotoSheet = false
+                }
+            
+            VStack {
+                Spacer()
+                
+                VStack(spacing: 10) {
+                    VStack(spacing: 0) {
+                        PhotosPicker(
+                            selection: $selectedItem,
+                            matching: .images
+                        ) {
+                            Text("갤러리")
+                                .mainDefault(color: .defaultPrimary)
+                                .frame(maxWidth: .infinity, minHeight: 56)
+                        }
+                        
+                        Divider()
+                        
+                        Button {
+                            isShowPhotoSheet = false
+                            viewModel.setDefaultImage()
+                        } label: {
+                            Text("기본 이미지")
+                                .mainDefault(color: .defaultPrimary)
+                                .frame(maxWidth: .infinity, minHeight: 56)
+                        }
+                    }
+                    .background(Color.white)
+                    .cornerRadius(16)
+                    
+                    Button {
+                        withAnimation {
+                            isShowPhotoSheet = false
+                        }
+                    } label: {
+                        Text("취소")
+                            .frame(maxWidth: .infinity, minHeight: 56)
+                            .background(Color.defaultPrimary)
+                            .foregroundStyle(.white)
+                            .cornerRadius(8)
+                    }
+                }
+                .padding(.horizontal, 16)
+                .transition(.move(edge: .bottom))
             }
         }
-        .sheet(isPresented: $viewModel.isShowBreedSearch) {
-            BreedSearchView(
-                breeds: viewModel.breedList,
-                selectedBreedName: viewModel.selectedBreedName,
-                searchText: $viewModel.breedSearchText,
-                onSelect: { breed in
-                    viewModel.selectBreed(breed)
-                },
-                onDismiss: {
-                    viewModel.toggleBreedSearchSheet()
-                }
-            )
-            .presentationDetents([.height(600)])
-        }
-        .topNavigationView(left: {
-            BackButton(action: {
-                dismiss()
-            })
-        }, center: {
-            Text("반려견 정보 입력")
-                .subtitle()
-        })
+        .animation(.easeInOut, value: isShowPhotoSheet)
     }
 }
 
 extension PetProfileView {
     private var photoPicker: some View {
-        PhotosPicker(
-            selection: $selectedItem,
-            matching: .images
-        ) {
-            if let newImage = viewModel.newPetProfileImage {
-                Image(uiImage: newImage)
-                    .resizable()
-                    .frame(width: 94, height: 94)
-                    .aspectRatio(contentMode: .fill)
-                    .clipShape(Circle())
+        Button {
+            withAnimation {
+                isShowPhotoSheet = true
             }
-            else if let urlString = viewModel.petProfileImageUrl,
-                    let url = URL(string: urlString) {
-                AsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .frame(width: 94, height: 94)
-                        .aspectRatio(contentMode: .fill)
-                        .clipShape(Circle())
-                } placeholder: {
-                    ProgressView()
-                        .frame(width: 94, height: 94)
+        } label: {
+            ZStack(alignment: .bottomTrailing) {
+                Group {
+                    if let newImage = viewModel.newPetProfileImage {
+                        Image(uiImage: newImage)
+                            .resizable()
+                    }
+                    else if let urlString = viewModel.petProfileImageUrl,
+                            let url = URL(string: urlString) {
+                        AsyncImage(url: url) { image in
+                            image.resizable()
+                        } placeholder: {
+                            ProgressView()
+                        }
+                    }
+                    else {
+                        Image(.imgDefaultprofile)
+                            .resizable()
+                    }
                 }
+                .frame(width: 94, height: 94)
+                .aspectRatio(contentMode: .fill)
+                .clipShape(Circle())
+                
+                Image(.btnEditprofile)
             }
-            else {
-                Image(.btnDogprofile)
-            }
-        }
-        .onChange(of: selectedItem) { _, newItem in
-            guard let newItem else { return }
-            handleSelectedPhoto(newItem)
         }
     }
     
@@ -203,8 +281,6 @@ extension PetProfileView {
         }
     }
 }
-
-// MARK: - Helper
 
 extension PetProfileView {
     private func handleSelectedPhoto(_ item: PhotosPickerItem) {

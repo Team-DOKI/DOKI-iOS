@@ -16,26 +16,39 @@ struct FilterSettingView: View {
         VStack(alignment: .leading, spacing: 0) {
             Divider()
             
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 40) {
-                    walkTimeSection
-                    
-                    congestionSection
-                    
-                    dogInteractionSection
-                    
-                    safetySection
-                    
-                    convenienceSection
-                    
-                    environmentSection
-                    
-                    Spacer().frame(height: 20)
+            ScrollViewReader { proxy in
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 40) {
+                        walkTimeSection.id(FilterType.duration)
+
+                        congestionSection.id(FilterType.congestion)
+
+                        dogInteractionSection.id(FilterType.exchange)
+
+                        safetySection.id(FilterType.safety)
+
+                        convenienceSection.id(FilterType.convenience)
+
+                        environmentSection.id(FilterType.environment)
+
+                        Spacer().frame(height: 20)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 26)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 26)
+                .task {
+                    await viewModel.fetchFilterCategories()
+                    viewModel.setFilterOption()
+                    if let focusedType = viewModel.focusedFilterType {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            withAnimation {
+                                proxy.scrollTo(focusedType, anchor: .top)
+                            }
+                        }
+                    }
+                }
             }
-            
+
             MainButton(text: "적용하기") {
                 viewModel.saveOption()
             }
@@ -55,12 +68,7 @@ struct FilterSettingView: View {
                 } label: {
                     Image(.btnRefresh)
                 }
-                
             })
-        .task {
-            await viewModel.fetchFilterCategories()
-            viewModel.setFilterOption()
-        }
     }
 }
 
