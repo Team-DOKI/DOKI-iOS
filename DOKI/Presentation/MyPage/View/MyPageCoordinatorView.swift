@@ -106,7 +106,7 @@ struct MyPageCoordinatorView: View {
             item: $followRouteCoordinator.fullScreenCover,
             onDismiss: {
                 followRouteCoordinator.clearStack()
-                followRouteViewModel.skipReview = false
+                followRouteViewModel.hasReviewed = false
             }
         ) { _ in
             NavigationStack(path: $followRouteCoordinator.fullScreenPath) {
@@ -152,7 +152,6 @@ struct MyPageCoordinatorView: View {
                 myPageCoordinator.push(.dbtiResult)
             case .routeDetail(postId: let postId):
                 routeDetailViewModel.postId = postId
-                routeDetailViewModel.skipReviewAfterWalk = false
                 myPageCoordinator.push(.routeDetail(postId: postId))
             case .myReviewsDetail:
                 break
@@ -163,8 +162,8 @@ struct MyPageCoordinatorView: View {
             switch destination {
             case .back:
                 myPageCoordinator.pop()
-            case .followRoute(let routeId, let postId, let address):
-                followRouteViewModel.skipReview = routeDetailViewModel.skipReviewAfterWalk
+            case .followRoute(let routeId, let postId, let address, let hasReviewed):
+                followRouteViewModel.hasReviewed = hasReviewed
                 followRouteViewModel.setRoute(routeId)
                 followRouteReviewViewModel.setup(postId: postId, routeId: routeId, address: address)
                 followRouteCoordinator.presentFullScreen(.followRoute)
@@ -189,28 +188,24 @@ struct MyPageCoordinatorView: View {
 
         myPostsViewModel.navigationAction = { postId in
             routeDetailViewModel.postId = postId
-            routeDetailViewModel.skipReviewAfterWalk = false
             myPageCoordinator.push(.routeDetail(postId: postId))
         }
 
         myLikedPostsViewModel.navigationAction = { postId in
             routeDetailViewModel.postId = postId
-            routeDetailViewModel.skipReviewAfterWalk = false
             myPageCoordinator.push(.routeDetail(postId: postId))
         }
 
         myReviewsViewModel.navigationAction = { postId in
             routeDetailViewModel.postId = postId
-            routeDetailViewModel.skipReviewAfterWalk = true
             myPageCoordinator.push(.myReviewsDetail(postId: postId))
         }
 
         followRouteViewModel.navigationAction = { destination in
             switch destination {
             case .followRouteReview:
-                if followRouteViewModel.skipReview {
+                if followRouteViewModel.hasReviewed {
                     followRouteCoordinator.dismiss()
-                    followRouteViewModel.skipReview = false
                 } else {
                     followRouteReviewViewModel.setWalkData(
                         distanceString: followRouteViewModel.distanceString,

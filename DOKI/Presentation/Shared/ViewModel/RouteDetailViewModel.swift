@@ -10,7 +10,7 @@ import SwiftUI
 // TODO: - 위치 고민
 enum RouteDetailRoute {
     case back
-    case followRoute(routeId: Int, postId: Int, address: String)
+    case followRoute(routeId: Int, postId: Int, address: String, hasReviewed: Bool)
 }
 
 class RouteDetailViewModel: ObservableObject {
@@ -24,7 +24,6 @@ class RouteDetailViewModel: ObservableObject {
     @Published var recordDate: String = "           "
     @Published var walkRecord: String = "           "
     @Published var tagList: [String] = []
-    @Published var isExpanded: Bool = false
     @Published var petName = "          "
     @Published var routeImageURL = "            "
     @Published var description = "          "
@@ -34,6 +33,7 @@ class RouteDetailViewModel: ObservableObject {
     @Published var loadingStatus: LoadingStatus = .ready
     @Published var reviews: [ReviewResponse.CategoryTop] = []
     @Published var totalReviewCount = 0
+    @Published var hasReviewed: Bool = false
     @Published var isShowEditSheet = false
     @Published var isShowDeleteAlert = false
 
@@ -52,15 +52,13 @@ class RouteDetailViewModel: ObservableObject {
     //MARK: - Navigation
 
     var navigationAction: ((RouteDetailRoute)->())?
-    var skipReviewAfterWalk: Bool = false
-    
+
     func setRouteId(routeId: Int) {
         self.routeId = routeId
     }
     
     func navigateToBack() {
         navigationAction?(.back)
-        isExpanded = false
     }
     
     @MainActor
@@ -96,6 +94,7 @@ class RouteDetailViewModel: ObservableObject {
                 rawCategoryTexts = data.categoryTagTexts
                 isPublic = data.isPublic
                 isMine = data.isMine
+                hasReviewed = data.hasReviewed
                 userId = data.authorInfo.authorId
                 routeId = data.routeDisplay.routeId
                 loadingStatus = .success
@@ -121,7 +120,7 @@ class RouteDetailViewModel: ObservableObject {
     }
     
     func navigateToFollowRouteFollowRoute() {
-        navigationAction?(.followRoute(routeId: routeId ?? 0, postId: postId ?? 0, address: address))
+        navigationAction?(.followRoute(routeId: routeId ?? 0, postId: postId ?? 0, address: address, hasReviewed: hasReviewed))
     }
 
     func deletePostTapped() {

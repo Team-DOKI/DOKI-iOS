@@ -87,7 +87,8 @@ struct RecommendCoordinatorView: View {
                                 switch route {
                                 case .back:
                                     recommendCoordinator.pop()
-                                case .followRoute(let routeId, let postId, let address):
+                                case .followRoute(let routeId, let postId, let address, let hasReviewed):
+                                    followRouteViewModel.hasReviewed = hasReviewed
                                     followRouteViewModel.setRoute(routeId)
                                     followRouteReviewViewModel.setup(postId: postId, routeId: routeId, address: address)
                                     followRouteCoordinator.presentFullScreen(.followRoute)
@@ -103,6 +104,7 @@ struct RecommendCoordinatorView: View {
                     item: $followRouteCoordinator.fullScreenCover,
                     onDismiss: {
                         followRouteCoordinator.clearStack()
+                        followRouteViewModel.hasReviewed = false
                     }
                 ) { _ in
                     NavigationStack(path: $followRouteCoordinator.fullScreenPath) {
@@ -161,14 +163,17 @@ private extension RecommendCoordinatorView {
         followRouteViewModel.navigationAction = { destination in
             switch destination {
             case .followRouteReview:
-                followRouteReviewViewModel.setWalkData(
-                    distanceString: followRouteViewModel.distanceString,
-                    elapsedTimeString: followRouteViewModel.elapsedTimeString,
-                    stepString: followRouteViewModel.stepString,
-                    startDate: followRouteViewModel.startDate
-                )
-                followRouteCoordinator.push(.followRouteReview)
-
+                if followRouteViewModel.hasReviewed {
+                    followRouteCoordinator.dismiss()
+                } else {
+                    followRouteReviewViewModel.setWalkData(
+                        distanceString: followRouteViewModel.distanceString,
+                        elapsedTimeString: followRouteViewModel.elapsedTimeString,
+                        stepString: followRouteViewModel.stepString,
+                        startDate: followRouteViewModel.startDate
+                    )
+                    followRouteCoordinator.push(.followRouteReview)
+                }
             default:
                 break
             }
